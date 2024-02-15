@@ -1,0 +1,11 @@
+- Please make a website focused on presenting 4 to 6 childrens books
+  - The books should be shown on a bookshelf and can be clicked on for more details
+- There are other features of the website, including an area where a trained recommendation system model can recommend books. The model should use the data available at https://www.kaggle.com/datasets/modhiibrahimalmannaa/1000-children-books-on-amazom
+  - The list of books should be available to filter using tags 
+  - There should be a link to open each book in a window for an Amazon smile interface so the user can purchase 
+- A form that can take new children's book suggestions:
+  - The form should allow the user to submit the fields available in the dataset, such as adding more books to the list which can just be a new csv file for now
+- There should be an authentication option where the user can track books that they've read
+- There should be a 'More Resources' page that can list links to other resources
+- The backend can use javascript, next.js
+- The frontend can use next.js and react
