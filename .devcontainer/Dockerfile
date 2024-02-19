@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/devcontainers/anaconda:0-3
 
 # Install Node.js
 RUN apt-get update && apt-get install -y curl software-properties-common \
-    && curl -sL https://deb.nodesource.com/setup_14.x | bash - \
+    && curl -sL https://deb.nodesource.com/setup_lts.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 

@@ -1,3 +1,4 @@
 .env
 venv_gptengineer
 node_modules
+.next

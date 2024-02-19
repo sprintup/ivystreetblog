@@ -11,6 +11,7 @@ export default function Home() {
       </Head>
       <Auth />
       <main>
+        This is the homepage.
         <Bookshelf />
       </main>
     </div>
