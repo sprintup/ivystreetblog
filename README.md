@@ -26,3 +26,6 @@ Once your codespace is running, the project files will be loaded in a linux cont
 The deveopment of features (including just getting the thing to run) is not organized in the issues at this time. If there is interest in collaborating, let me know in the issues and I can organize it publically instead of just keeping track myself. 
 
 The first thing I'm going to work on is provisiong a better dev container (it's currently only has python 3 image, which means node is not installed). One of the coolest features is the ML model (hence the python), but this is a project for a class and I need to finish the website part first for a presentation. 
+
+### Serving Predictions
+![](public/serving-predictions.png)
