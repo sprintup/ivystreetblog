@@ -1,25 +1,24 @@
 {
   "name": "childrens-books-website",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "simple": "nodemon server.js"
   },
   "dependencies": {
-    "next": "latest",
-    "react": "^18.0.2",
-    "react-dom": "^18.0.2",
-    "next-auth": "^3.27.3",
-    "axios": "^0.21.1",
-    "tailwindcss": "^2.2.19",
-    "postcss": "^8.3.6",
-    "autoprefixer": "^10.3.1",
-    "prisma": "^2.30.3"
+    "@simplewebauthn/server": "^6.2.2",
+    "base64url": "^3.0.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "jwt-js-decode": "^1.5.1",
+    "lowdb": "^5.0.5"
   },
   "devDependencies": {
-    "eslint": "7.32.0",
-    "eslint-config-next": "11.1.2"
+    "nodemon": "^2.0.20"
   }
 }
