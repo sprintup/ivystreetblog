@@ -3,3 +3,4 @@ venv_gptengineer
 node_modules
 .next
 utils/venv_recsystem
+auth.json
