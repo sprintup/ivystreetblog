@@ -32,3 +32,8 @@ The first thing I'm going to work on is provisiong a better dev container (it's 
 
 ### Simple auth 
 I'm working on building out the authentication system and currently have simple authentication set up with a fake backend (thanks [frontend master - web authentication apis](https://frontendmasters.com/courses/web-auth-apis/)). I replaced the next.js logic for just a simple js implementation that can be found in /public/scripts. Start the app in a dev container and run `npm run simple`
+
+## Reference Projects
+- [API Design with Node.js V4 - Scott Moss](https://hendrixer.github.io/API-design-v4/)
+  - [github](https://github.com/Hendrixer/API-design-v4-course)
+- [Web Authentication APIs](https://firtman.github.io/authentication/)

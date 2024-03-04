@@ -1,23 +1,23 @@
-import React from 'react';
-import { signIn, signOut, useSession } from 'next-auth/client';
+// import React from 'react';
+// import { signIn, signOut, useSession } from 'next-auth/client';
 
-const Auth = () => {
-  const [session, loading] = useSession();
+// const Auth = () => {
+//   const [session, loading] = useSession();
 
-  if (loading) return <p>Loading...</p>;
+//   if (loading) return <p>Loading...</p>;
 
-  if (session) {
-    return (
-      <>
-        <p>Welcome, {session.user.name}!</p>
-        <button onClick={() => signOut()}>Sign out</button>
-      </>
-    );
-  }
+//   if (session) {
+//     return (
+//       <>
+//         <p>Welcome, {session.user.name}!</p>
+//         <button onClick={() => signOut()}>Sign out</button>
+//       </>
+//     );
+//   }
 
-  return (
-    <button onClick={() => signIn()}>Sign in</button>
-  );
-};
+//   return (
+//     <button onClick={() => signIn()}>Sign in</button>
+//   );
+// };
 
-export default Auth;
+// export default Auth;

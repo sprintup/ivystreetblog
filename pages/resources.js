@@ -1,12 +1,12 @@
 import React from 'react';
 
-const MoreResources = () => {
+const Resources = () => {
   // Placeholder for resources
   const resources = [];
 
   return (
     <div>
-      <h1>More Resources</h1>
+      <h1>Resources</h1>
       <ul>
         {resources.map((resource, index) => (
           <li key={index}>{resource}</li>
@@ -16,4 +16,4 @@ const MoreResources = () => {
   );
 };
 
-export default MoreResources;
+export default Resources;
