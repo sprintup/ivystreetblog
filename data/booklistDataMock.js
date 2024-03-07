@@ -10,14 +10,24 @@ const booklistData = [
         title: "The Treasure Hunters",
         author: "John Smith",
         publicationYear: 2010,
-        coverImage: "/book-covers/treasure-hunters.jpg",
+        coverImage: "https://placeholder-image-url.com/the-treasure-hunters", // Placeholder
+        buyLink: "https://placeholder-buy-url.com/the-treasure-hunters", // Placeholder
       },
       {
         isbn: "0987654321",
         title: "The Lost City",
         author: "Jane Doe",
         publicationYear: 2015,
-        coverImage: "/book-covers/lost-city.jpg",
+        coverImage: "https://placeholder-image-url.com/the-lost-city", // Placeholder
+        buyLink: "https://placeholder-buy-url.com/the-lost-city", // Placeholder
+      },
+      {
+        isbn: "0987654321",
+        title: "The Lost City alsdfjladjfoije sadf asif afo sdfis ad",
+        author: "Jane Doe",
+        publicationYear: 2015,
+        coverImage: "https://placeholder-image-url.com/the-lost-city", // Placeholder
+        buyLink: "https://placeholder-buy-url.com/the-lost-city", // Placeholder
       },
     ],
   },
@@ -31,14 +41,16 @@ const booklistData = [
         title: "The Enchanted Forest",
         author: "Sarah Johnson",
         publicationYear: 2012,
-        coverImage: "/book-covers/enchanted-forest.jpg",
+        coverImage: "https://placeholder-image-url.com/the-enchanted-forest", // Placeholder
+        buyLink: "https://placeholder-buy-url.com/the-enchanted-forest", // Placeholder
       },
       {
         isbn: "5544332211",
         title: "The Magical Kingdom",
         author: "Michael Brown",
         publicationYear: 2018,
-        coverImage: "/book-covers/magical-kingdom.jpg",
+        coverImage: "https://placeholder-image-url.com/the-magical-kingdom", // Placeholder
+        buyLink: "https://placeholder-buy-url.com/the-magical-kingdom", // Placeholder
       },
     ],
   },

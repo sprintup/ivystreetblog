@@ -1,29 +1,42 @@
 // components/BookModal.js
 import React from "react";
+import Modal from "react-modal";
+import styles from "./BookModal.module.css";
 
-const BookModal = ({ visible, onClose, booklist }) => {
-  if (!visible) return null;
+const BookModal = ({ isOpen, onClose, book }) => {
+  if (!isOpen || !book) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg p-8">
-        <h2 className="text-2xl font-bold mb-4">{booklist?.title}</h2>
-        <p className="text-lg mb-4">{booklist?.description}</p>
-        <ul>
-          {booklist?.books.map((book) => (
-            <li key={book.isbn} className="mb-2">
-              <span className="font-bold">{book.title}</span> by {book.author}
-            </li>
-          ))}
-        </ul>
-        <button
-          className="mt-4 bg-accent text-white px-4 py-2 rounded"
-          onClick={onClose}
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      contentLabel="Book Modal"
+      className={styles.modal}
+      overlayClassName={styles.modalOverlay}
+    >
+      <div className={styles.modalContent}>
+        <img
+          src={book.coverImage || "/placeholder-image.jpg"}
+          alt={book.title}
+          className={styles.modalImage}
+        />
+        <h2 className={styles.modalTitle}>{book.title}</h2>
+        <p className={styles.modalAuthor}>by {book.author}</p>
+        <p className={styles.modalIsbn}>ISBN: {book.isbn}</p>
+        <p className={styles.modalDescription}>{book.description}</p>
+        <a
+          href={book.buyLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.modalBuyLink}
         >
+          Buy Now
+        </a>
+        <button className={styles.closeButton} onClick={onClose}>
           Close
         </button>
       </div>
-    </div>
+    </Modal>
   );
 };
 
