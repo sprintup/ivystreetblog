@@ -1,0 +1,58 @@
+/* components/BookModal.module.css */
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 4px;
+  outline: none;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContent {
+  max-width: 400px;
+  width: 100%;
+}
+
+.modalTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.modalAuthor {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.modalIsbn {
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.closeButton {
+  padding: 0.5rem 1rem;
+  background-color: #3182ce;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.closeButton:hover {
+  background-color: #2c5282;
+}

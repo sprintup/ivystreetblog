@@ -1,3 +1,4 @@
+// components/Layout.js
 import Image from "next/image";
 import Link from "next/link";
 
@@ -42,7 +43,9 @@ export default function Layout({ children }) {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-grow">{children}</main>
+      <main className="flex-grow py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">{children}</div>
+      </main>
 
       {/* Footer */}
       <footer className="py-4">
