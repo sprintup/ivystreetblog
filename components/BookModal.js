@@ -1,58 +1,94 @@
 // components/BookModal.js
-import React from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
-import styles from "./BookModal.module.css";
 
 const BookModal = ({ isOpen, onClose, book }) => {
+  const [isProductDetailsOpen, setIsProductDetailsOpen] = useState(false);
+
   if (!isOpen || !book) return null;
+
+  const getBookCoverImage = (link) => {
+    const regex = /\/dp\/(\w+)/;
+    const match = link.match(regex);
+    if (match && match[1]) {
+      const asin = match[1];
+      return `https://images-na.ssl-images-amazon.com/images/P/${asin}.01._SCLZZZZZZZ_.jpg`;
+    }
+    return null;
+  };
+
+  const formatText = (text) => {
+    return text.replace(/\n+/g, "");
+  };
+
+  const toggleProductDetails = () => {
+    setIsProductDetailsOpen(!isProductDetailsOpen);
+  };
 
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
       contentLabel="Book Modal"
-      className={styles.modal}
-      overlayClassName={styles.modalOverlay}
+      className="flex items-center justify-center"
+      overlayClassName="fixed inset-0 bg-black bg-opacity-50"
     >
-      <div className={styles.modalContent}>
-        <h2 className={styles.modalTitle}>{book.Name}</h2>
-        <p className={styles.modalSeries}>{book.Series}</p>
-        <p className={styles.modalAuthor}>by {book.Author}</p>
-        <p className={styles.modalAge}>{book.Age}</p>
-        <p className={styles.modalRating}>
-          Rating: {book.Rating_out_of_5} ({book.No_of_Ratings} ratings)
-        </p>
-        <p className={styles.modalPrice}>
-          Price: {book.Price} (Before: {book.Price_Befor})
-        </p>
-        <p className={styles.modalCoverType}>Cover Type: {book.Cover_Type}</p>
-        <p className={styles.modalPublicationDate}>
-          Publication Date: {book.Publication_Date}
-        </p>
-        <div className={styles.modalDescription}>
-          <h3>Description:</h3>
-          <p>{book.Description}</p>
+      <div className="bg-white p-4 rounded-lg max-w-4xl w-full">
+        <div className="mb-4 flex justify-between items-start">
+          <div>
+            <h2 className="text-2xl font-bold mb-2">{book.Name}</h2>
+            <p className="text-lg mb-2">{book.Author}</p>
+          </div>
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+            onClick={onClose}
+          >
+            Close
+          </button>
         </div>
-        <div className={styles.modalProductDetails}>
-          <h3>Product Details:</h3>
-          <pre>{book.Product_Details}</pre>
+        <div className="md:grid md:grid-cols-3 md:gap-4">
+          <div className="mb-4 md:mb-0 md:col-span-1">
+            {getBookCoverImage(book.Link) && (
+              <a href={book.Link} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={getBookCoverImage(book.Link)}
+                  alt={book.Name}
+                  className="w-full h-auto mb-4 rounded md:w-48 md:h-64 md:object-cover cursor-pointer transition duration-300 ease-in-out transform hover:scale-105"
+                />
+              </a>
+            )}
+            <p className="text-lg mb-2">Age: {book.Age}</p>
+            <p className="text-lg mb-2">
+              Publication Date: {book.Publication_Date}
+            </p>
+            {book.Best_Seller && (
+              <p className="text-lg mb-2 text-blue-500">
+                Best Seller: {book.Best_Seller}
+              </p>
+            )}
+          </div>
+          <div className="md:col-span-2">
+            <div className="mb-4">
+              <h4 className="text-xl font-bold mb-2">Description:</h4>
+              <p className="text-lg whitespace-pre-wrap">
+                {formatText(book.Description)}
+              </p>
+            </div>
+            <div className="mb-4">
+              <h4
+                className="text-xl font-bold mb-2 cursor-pointer"
+                onClick={toggleProductDetails}
+              >
+                Product Details: {isProductDetailsOpen ? "▲" : "▼"}
+              </h4>
+              {isProductDetailsOpen && (
+                <p className="text-lg whitespace-pre-wrap">
+                  {formatText(book.Product_Details)}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
-        {book.Best_Seller && (
-          <p className={styles.modalBestSeller}>
-            Best Seller: {book.Best_Seller}
-          </p>
-        )}
-        <a
-          href={book.Link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.modalLink}
-        >
-          View on Amazon
-        </a>
-        <button className={styles.closeButton} onClick={onClose}>
-          Close
-        </button>
       </div>
     </Modal>
   );

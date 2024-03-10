@@ -22,19 +22,34 @@ export default function Layout({ children }) {
 
             {/* Nav Links */}
             <div className="flex space-x-4">
-              <Link href="/bookshelf" className="hover:text-secondary">
+              <Link
+                href="/bookshelf"
+                className="text-yellow hover:text-orange focus:text-orange"
+              >
                 Bookshelf
               </Link>
-              <Link href="/resources" className="hover:text-secondary">
+              <Link
+                href="/resources"
+                className="text-yellow hover:text-orange focus:text-orange"
+              >
                 Resources
               </Link>
-              <Link href="/about" className="hover:text-secondary">
+              <Link
+                href="/"
+                className="text-yellow hover:text-orange focus:text-orange"
+              >
                 About
               </Link>
-              <Link href="/register" className="hover:text-accent">
+              <Link
+                href="/register"
+                className="text-yellow hover:text-orange focus:text-orange"
+              >
                 Register
               </Link>
-              <Link href="/login" className="hover:text-accent">
+              <Link
+                href="/login"
+                className="text-yellow hover:text-orange focus:text-orange"
+              >
                 Login
               </Link>
             </div>

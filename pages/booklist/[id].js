@@ -46,10 +46,12 @@ const BooklistPage = () => {
 
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto py-8 px-4 text-white bg-secondary">
-        <div className="sticky top-0 bg-secondary py-4 mb-8 z-10">
-          <h2 className="text-3xl font-bold mb-4">{booklist.title}</h2>
-          <p className="text-xl text-secondary">{booklist.description}</p>
+      <div className="max-w-4xl mx-auto px-8 py-4 text-white bg-secondary">
+        <div className="sticky top-0 bg-secondary py-4 z-10">
+          <h2 className="text-3xl font-bold">{booklist.title}</h2>
+        </div>
+        <div className="mb-4">
+          <p className="text-xl">{booklist.description}</p>
         </div>
         <ul className="space-y-8">
           {booklist.books.map((book) => (
@@ -73,6 +75,7 @@ const BooklistPage = () => {
                       />
                     </a>
                   )}
+                  <p className="text-lg mb-2">Age: {book.Age}</p>
                   <p className="text-lg mb-2">
                     Publication Date: {book.Publication_Date}
                   </p>
@@ -92,12 +95,11 @@ const BooklistPage = () => {
                   <div className="mb-4">
                     <h4
                       className="text-xl font-bold mb-2 cursor-pointer"
-                      onClick={() => toggleExpand(book.ISBN_13)}
+                      onClick={() => toggleExpand(book.ID)}
                     >
-                      Product Details:{" "}
-                      {expandedBook === book.ISBN_13 ? "▲" : "▼"}
+                      Product Details: {expandedBook === book.ID ? "▲" : "▼"}
                     </h4>
-                    {expandedBook === book.ISBN_13 && (
+                    {expandedBook === book.ID && (
                       <p className="text-lg whitespace-pre-wrap">
                         {formatText(book.Product_Details)}
                       </p>
