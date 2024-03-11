@@ -67,7 +67,21 @@ export default function Layout({ children }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center">
             <p className="text-sm">
-              &copy; {new Date().getFullYear()} All rights reserved.
+              &copy; {new Date().getFullYear()} See{" "}
+              <Link
+                href="/terms"
+                className="text-yellow hover:text-orange focus:text-orange"
+              >
+                terms of service
+              </Link>{" "}
+              or
+              <Link
+                href="https://github.com/sprintup/ivystreetblog"
+                className="text-yellow hover:text-orange focus:text-orange"
+              >
+                edit on github
+              </Link>
+              .
             </p>
           </div>
         </div>
