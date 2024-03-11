@@ -35,8 +35,8 @@ const Resources = () => {
         Modifications to the Terms IvyStreet.blog reserves the right to modify
         these Terms at any time. Any changes will be effective immediately upon
         posting the revised Terms on the Website. If you have any questions
-        about these Terms, please contact us at [Your Contact Information]. Last
-        updated: 3.10.2024
+        about these Terms, please contact us at on Github. Last updated:
+        3.10.2024
       </p>
     </Layout>
   );

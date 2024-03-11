@@ -74,7 +74,7 @@ export default function Layout({ children }) {
               >
                 terms of service
               </Link>{" "}
-              or
+              or{" "}
               <Link
                 href="https://github.com/sprintup/ivystreetblog"
                 className="text-yellow hover:text-orange focus:text-orange"
