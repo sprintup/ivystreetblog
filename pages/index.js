@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <Layout>
       <Head>
-        <title>Children's Books</title>
+        <title>Ivy Street Blog</title>
         <link href="/styles/tailwind.css" rel="stylesheet" />
         <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png" />
