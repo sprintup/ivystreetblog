@@ -68,6 +68,10 @@ const Resources = () => {
       title: "Media Literacy Now",
       link: "https://medialiteracynow.org/",
     },
+    {
+      title: "Dolly Parton's Imagination Library",
+      link: "https://imaginationlibrary.com/letter-from-dolly/",
+    },
   ];
 
   return (

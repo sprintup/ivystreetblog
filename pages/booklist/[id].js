@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
 import booklistDataMock from "../../data/booklistDataMock";
+import BookSuggestions from "../../components/AddBook";
 
 const BooklistPage = () => {
   const router = useRouter();
@@ -44,11 +45,21 @@ const BooklistPage = () => {
     );
   }
 
+  const handleEdit = () => {
+    router.push(`/booklist/${id}/edit`);
+  };
+
   return (
     <Layout>
       <div className="max-w-4xl mx-auto px-8 py-4 text-white bg-secondary">
-        <div className="sticky top-0 bg-secondary py-4 z-10">
+        <div className="sticky top-0 bg-secondary py-4 z-10 flex justify-between items-center">
           <h2 className="text-3xl font-bold">{booklist.title}</h2>
+          <button
+            onClick={handleEdit}
+            className="px-4 py-2 bg-primary text-white font-bold rounded hover:bg-primary-dark transition ease-in-out duration-150"
+          >
+            Edit
+          </button>
         </div>
         <div className="mb-4">
           <p className="text-xl">{booklist.description}</p>

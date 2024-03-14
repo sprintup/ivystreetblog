@@ -1,0 +1,29 @@
+[
+  {
+    "books": [
+      {
+        "ID": 1,
+        "Name": "",
+        "Series": "",
+        "Description": "",
+        "Author": "",
+        "Age": "",
+        "Publication_Date": "",
+        "Product_Details": "",
+        "Publisher": "",
+        "ISBN": "",
+        "Link": ""
+        // "Source": "" this should be custom or base
+      }
+    ],
+    "booklists": [
+      {
+        "id": 1,
+        "title": "Children's Book Set Project - Mid-Point Draft",
+        "description": "...",
+        "bookIds": [1, 2]
+      }
+      // ... other booklist objects ...
+    ]
+  }
+]
