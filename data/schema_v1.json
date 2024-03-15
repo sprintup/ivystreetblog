@@ -1,5 +1,18 @@
 [
   {
+    "users": [
+      {
+        "id": 1,
+        "username": "user1",
+        "name": "John Doe",
+        "email": "john@example.com",
+        "password": "$2a$10$EXAMPLE_HASH", // Hashed password
+        "accessToken": "", // JWT access token
+        "refreshToken": "", // JWT refresh token
+        "tokenExpiration": 0, // Expiration timestamp of tokens
+        "trackedBooks": [1, 2] // IDs of books tracked by this user
+      }
+    ],
     "books": [
       {
         "ID": 1,
