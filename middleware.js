@@ -9,10 +9,13 @@ export function middleware(request) {
     "/terms",
   ];
 
+  const isBooklistRoute = request.nextUrl.pathname.startsWith("/booklist/");
+
   if (
     currentUser &&
     !request.nextUrl.pathname.startsWith("/dashboard") &&
-    !unprotectedRoutes.includes(request.nextUrl.pathname)
+    !unprotectedRoutes.includes(request.nextUrl.pathname) &&
+    !isBooklistRoute
   ) {
     return Response.redirect(new URL("/dashboard", request.url));
   }
@@ -20,7 +23,8 @@ export function middleware(request) {
   if (
     !currentUser &&
     !request.nextUrl.pathname.startsWith("/login") &&
-    !unprotectedRoutes.includes(request.nextUrl.pathname)
+    !unprotectedRoutes.includes(request.nextUrl.pathname) &&
+    !isBooklistRoute
   ) {
     return Response.redirect(new URL("/login", request.url));
   }

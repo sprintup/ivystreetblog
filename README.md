@@ -2,7 +2,7 @@
 
 # Overview
 
-This project started due to an assignment in a Children's Literature class, but will serve in the long term as a resource for the community that uses children books as the topic that can be used to practice different technologies. So below there are two parts that separate the concerns of the school project from the concerns of the website as a resource for the little free library.
+This project started due to an assignment in a Children's Literature class, but will serve in the long term as a resource for the community that uses children books as the topic that can be used to practice different technologies. So below there are two parts that separate the concerns of the school project from the concerns of the website as a resource for the little free library. The Adding books to the ![https://github.com/sprintup/ivystreetblog/blob/main/data/books_data.json](base booklist) is a great first pull request.
 
 ### School Part
 

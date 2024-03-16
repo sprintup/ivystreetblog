@@ -189,9 +189,9 @@ export default function RegisterPage() {
                   <p className="text-accent">
                     If you are under 18 years old, you must have your parent or
                     guardian complete and submit this form on your behalf.
-                    Please provide their contact information below. Your parent
-                    or guardian will be solely responsible for reviewing and
-                    accepting the terms of use.
+                    Please have them input their contact information below. Your
+                    parent or guardian will be solely responsible for reviewing
+                    and accepting the terms of use.
                   </p>
                 </div>
                 <div className="mb-4">
