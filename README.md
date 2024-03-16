@@ -4,6 +4,10 @@
 
 This project started due to an assignment in a Children's Literature class, but will serve in the long term as a resource for the community that uses children books as the topic that can be used to practice different technologies. So below there are two parts that separate the concerns of the school project from the concerns of the website as a resource for the little free library. The Adding books to the ![https://github.com/sprintup/ivystreetblog/blob/main/data/books_data.json](base booklist) is a great first pull request.
 
+## License
+
+This project is licensed under the [Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/). By contributing to this project, you agree to abide by the terms of this license.
+
 ### School Part
 
 There is a resource called [github pages](https://docs.github.com/en/pages/quickstart) that can be used to push a simple index page (just update the [index.html file](https://github.com/sprintup/ivystreetblog/blob/gh-pages/index.html) and push to the `gh-pages` branch), that I can turn into a react page in the main project. This page can be found [here](https://sprintup.github.io/ivystreetblog/)

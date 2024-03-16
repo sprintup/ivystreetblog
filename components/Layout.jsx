@@ -72,7 +72,7 @@ export default function Layout({ children }) {
                 href="/terms"
                 className="text-yellow hover:text-orange focus:text-orange"
               >
-                terms of service
+                terms of use
               </Link>{" "}
               or{" "}
               <Link
