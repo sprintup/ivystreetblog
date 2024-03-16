@@ -114,7 +114,7 @@ const Terms = () => {
       <h2 className="text-2xl font-bold mb-2">User-Generated Content</h2>
       <p className="mb-4">
         The Website may allow users to post, submit, or transmit content, such
-        as booklist titles and descriptions that might include book reviews, ratings, comments. 
+        as booklist titles and descriptions that might include book reviews, ratings and comments. 
         By posting or submitting content to the Website, you grant
         IvyStreet.blog a non-exclusive, royalty-free, perpetual, irrevocable,
         and fully sublicensable right to use, reproduce, modify, adapt, publish,
