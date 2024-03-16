@@ -1,7 +1,7 @@
 import React from "react";
 import Layout from "../components/Layout";
 
-const Resources = () => {
+const Terms = () => {
   return (
     <Layout>
       <h1 className="text-3xl font-bold mb-4">Terms of Service</h1>
@@ -9,11 +9,13 @@ const Resources = () => {
         Welcome to IvyStreet.blog (the "Website"), a platform dedicated to
         fostering the love of reading among children and providing a safe and
         engaging environment for them to explore the world of books.
-        IvyStreet.blog is a website aimed at promoting children's literacy and
-        encouraging a lifelong love for reading.
+        The website is aimed at promoting children's literacy and
+        encouraging a lifelong love for reading. The website is not a company, 
+        but rather an experiement I made to accompany my son's little free library. 
+        If it doesn't work out for unforseen reasons, I can just take the website down.
       </p>
       <p className="mb-4">
-        Our{" "}
+        The{" "}
         <a
           href="https://github.com/sprintup/ivystreetblog"
           className="text-yellow hover:text-orange"
@@ -41,16 +43,16 @@ const Resources = () => {
           >
             open source dataset
           </a>{" "}
-          that can be updated by the community.
+          that can be updated by the community
         </li>
         <li>
-          Virtual bookshelves for children to create and manage their booklists
+          Virtual bookshelves for booklovers to create and manage their booklists, regardless of how they find the book
         </li>
         <li>Open-source book recommendation system to discover new books</li>
         <li>
-          User-generated content, such as book reviews, ratings, and comments
+          User-generated content, such as booklist titles and descriptions
         </li>
-        <li>Resources and activities related to children's literature</li>
+        <li>Resources related to children's literature</li>
         <li>
           Offers the opportunity to learn programming through open source
           collaborations primarily through{" "}
@@ -64,6 +66,9 @@ const Resources = () => {
         </li>
       </ul>
       <p className="mb-4">
+        Please note that not all books in user-generated booklists are part of the base collection of children's books. In such cases, the username of the booklist owner will be included in the URL, for instance, /username/booklistname.
+      </p>
+      <p className="mb-4">
         By accessing or using the Website, you agree to be bound by these Terms
         of Service ("Terms"). If you do not agree to these Terms, please do not
         use the Website.
@@ -73,16 +78,20 @@ const Resources = () => {
       </h2>
       <p className="mb-4">
         IvyStreet.blog is committed to providing a safe and age-appropriate
-        environment for children. To ensure this, we require parental consent
+        environment for children first. To ensure this, we require parental consent
         and contact information for all users under the age of 18. If a user
-        violates these terms, the parent or guardian will be contacted via the
-        provided contact information. The email, password fields are for
-        authenticating the user only.
+        violates these terms, the account may be locked and the parent or guardian 
+        may be contacted via the provided contact information.
       </p>
       <p className="mb-4">
-        During the registration process, children under 18 must provide the name
-        and contact information of a parent or legal guardian. The parent or
-        guardian will be required to approve the child's account and agree to
+        The intent of the username is to keep the user annonymous, while providing
+        readers with information about the source of the booklist. (example: think /username/booklist)
+        Visiting booklists with recognizable usernames is encouraged (such as a teacher's summer reading 
+        list), while unrecognized usernames requires further parental approval. 
+      </p>
+      <p className="mb-4">
+        During the registration process, if the user is under 18, they must have the parent or
+        guardian approve the child's account and agree to
         these Terms on their behalf.
       </p>
       <h2 className="text-2xl font-bold mb-2">Use of the Website</h2>
@@ -95,13 +104,18 @@ const Resources = () => {
       <p className="mb-4">
         The code for this Website is open source, and you are free to copy,
         modify, and distribute the code in accordance with the applicable
-        open-source license.
+        open-source license. The original website will be accessible 
+        via <a
+          href="https://github.com/sprintup/ivystreetblog/issues"
+          className="text-yellow hover:text-orange"
+          target="_blank"
+        >https://www.ivystreet.blog/</a> (note: might redirect)
       </p>
       <h2 className="text-2xl font-bold mb-2">User-Generated Content</h2>
       <p className="mb-4">
         The Website may allow users to post, submit, or transmit content, such
-        as book reviews, ratings, comments, and booklist titles and
-        descriptions. By posting or submitting content to the Website, you grant
+        as booklist titles and descriptions that might include book reviews, ratings, comments. 
+        By posting or submitting content to the Website, you grant
         IvyStreet.blog a non-exclusive, royalty-free, perpetual, irrevocable,
         and fully sublicensable right to use, reproduce, modify, adapt, publish,
         translate, create derivative works from, distribute, and display such
@@ -136,9 +150,7 @@ const Resources = () => {
         reason, at its sole discretion. This includes, but is not limited to,
         violations of these Terms, unauthorized use of the Website, or any other
         conduct that IvyStreet.blog deems inappropriate or harmful to the
-        Website or its users. Users will be notified of any account termination
-        and given a chance to appeal the decision if they believe it was made in
-        error.
+        Website or its users. 
       </p>
       <h2 className="text-2xl font-bold mb-2">Intellectual Property</h2>
       <p className="mb-4">
@@ -153,12 +165,20 @@ const Resources = () => {
         the Website.
       </p>
       <p>
-        If you have any questions about these Terms, please contact us on
-        Github.
+        If you have any questions about these Terms, please contact me on
+        <a
+          href="https://github.com/sprintup/ivystreetblog/issues"
+          className="text-yellow hover:text-orange"
+          target="_blank"
+        > Github</a> or <a
+        href="https://www.linkedin.com/in/stephenprintup/"
+        className="text-yellow hover:text-orange"
+        target="_blank"
+      >Linkedin</a> or just knock on my door if you live in the neighborhood. 
       </p>
       <p className="mt-4">Last updated: 3.16.2024</p>
     </Layout>
   );
 };
 
-export default Resources;
+export default Terms;
