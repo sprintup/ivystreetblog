@@ -3,11 +3,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@layer utilities {
-  .font-heading {
-    @apply font-heading;
-  }
-  .font-accent {
-    @apply font-accent;
-  }
-}
