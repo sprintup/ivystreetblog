@@ -6,11 +6,28 @@
         "username": "user1",
         "name": "John Doe",
         "email": "john@example.com",
-        "password": "$2a$10$EXAMPLE_HASH", // Hashed password
-        "accessToken": "", // JWT access token
-        "refreshToken": "", // JWT refresh token
-        "tokenExpiration": 0, // Expiration timestamp of tokens
-        "trackedBooks": [1, 2] // IDs of books tracked by this user
+        "password": "$2a$10$EXAMPLE_HASH",
+        "accessToken": "",
+        "refreshToken": "",
+        "tokenExpiration": 0,
+        "isMinor": true,
+        "parentGuardianInfo": {
+          "name": "Jane Doe",
+          "email": "jane@example.com",
+          "phone": "123-456-7890"
+        },
+        "trackedBooks": [
+          {
+            "bookId": 1,
+            "status": "read",
+            "inWishlist": true
+          },
+          {
+            "bookId": 2,
+            "status": "to read",
+            "inWishlist": false
+          }
+        ]
       }
     ],
     "books": [
@@ -25,8 +42,8 @@
         "Product_Details": "",
         "Publisher": "",
         "ISBN": "",
-        "Link": ""
-        // "Source": "" this should be custom or base
+        "Link": "",
+        "Source": "custom"
       }
     ],
     "booklists": [
@@ -34,9 +51,9 @@
         "id": 1,
         "title": "Children's Book Set Project - Mid-Point Draft",
         "description": "...",
-        "bookIds": [1, 2]
+        "bookIds": [1, 2],
+        "visibility": "public"
       }
-      // ... other booklist objects ...
     ]
   }
 ]
