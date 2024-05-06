@@ -42,10 +42,6 @@ The first thing I'm going to work on is provisiong a better dev container (it's 
 
 ![](public/serving-predictions.png)
 
-### Simple auth
-
-I'm working on building out the authentication system and currently have simple authentication set up with a fake backend (thanks [frontend master - web authentication apis](https://frontendmasters.com/courses/web-auth-apis/)). I replaced the next.js logic for just a simple js implementation that can be found in /public/scripts. Start the app in a dev container and run `npm run simple`
-
 ## Reference Projects
 
 - [API Design with Node.js V4 - Scott Moss](https://hendrixer.github.io/API-design-v4/)
@@ -55,3 +51,37 @@ I'm working on building out the authentication system and currently have simple 
 ## Docs
 
 - [Next Pages Router](https://nextjs.org/docs/pages/building-your-application/routing)
+
+# Auth Video
+
+Based on this video ![Next.js Auth - Freecodecamp](https://youtu.be/MNm1XhDjX1s?si=Dg5NwwSuzblyX7kc&t=125)
+
+## Extensions used
+
+Name: ES7 React/Redux/GraphQL/React-Native snippets
+Id: rodrigovallades.es7-react-js-snippets
+Description: Simple extensions for React, Redux and Graphql in JS/TS with ES7 syntax (forked from dsznajder)
+Version: 1.9.3
+Publisher: rodrigovallades
+VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=rodrigovallades.es7-react-js-snippets
+
+## Cmds
+
+- `npx create-next-app` with `y`
+  - no typscript
+  - yes ESLint
+  - yes tailwind
+  - no src directory
+  - yes app router
+  - no custom import alias
+- `npm i next-auth`
+  - next version 13.5.4
+  - next-auth version ^4.23.2
+- `rafce` shortcut withe extension to make component using extension
+
+## Video Notes
+
+- Starting at about **25:40** in the video is where .env is configured, which is not checked into repo.
+- https://console.developers.google.com/
+- The [NEXTAUTH_SECRET](https://next-auth.js.org/configuration/options#nextauth_secret) is set set to encrypt traffic
+
