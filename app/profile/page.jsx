@@ -93,7 +93,7 @@ export default function ProfilePage() {
           People can view your public booklists by visiting:
         </p>
         <p className="text-sm text-blue-300 mt-1">
-          <Link href={`/${publicProfileName}`} target="_blank">
+          <Link href={`/${publicProfileName}`}>
             {typeof window !== "undefined" ? `${window.location.origin}/${publicProfileName}` : ""}
           </Link>
         </p>

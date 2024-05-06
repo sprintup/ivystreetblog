@@ -54,9 +54,9 @@ export default async function BookPublicDetails({ bookId }) {
                 </p>
             )}
             {book.Link && (
-                <a href={book.Link} target="_blank" rel="noopener noreferrer" className="text-blue-300">
-                    View Book
-                </a>
+                <p className="text-sm mb-1">
+                    <span className="font-bold">Link:</span> {book.Link}
+                </p>
             )}
         </div>
     );

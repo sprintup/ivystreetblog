@@ -60,8 +60,8 @@ function BookshelfContent({ session, booklists }) {
       {booklists.map((item) => (
         <div key={item.booklist._id} className="bg-secondary p-4 mb-4 rounded-lg flex justify-between items-center">
           <div>
-            <h4 className="text-xl font-bold mb-1">{item.booklist.title}</h4>
-            <p className="text-sm mb-2">{item.booklist.description}</p>
+            <h4 className="text-xl font-bold mb-1 mr-2">{item.booklist.title}</h4>
+            <p className="text-sm mb-2 mr-2">{item.booklist.description}</p>
             <p className="text-xs">Visibility: {item.booklist.visibility}</p>
           </div>
           {item.booklistOwner === session.user.email && (
