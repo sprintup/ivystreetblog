@@ -74,6 +74,7 @@ export async function createUser(login, name, email) {
       login,
       name,
       email,
+      publicProfileName: email.split("@")[0],
       bookListIds: [],
       trackedBooks: [],
       createdAt: currentDate,
