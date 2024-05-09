@@ -14,7 +14,7 @@ async function BookshelfData() {
   if (!session) {
     // Handle the case when the user is not authenticated
     // You can redirect to the login page or display an error message
-    throw new Error("User not authenticated");
+    throw new Error("User not authenticated"); 
   }
 
   const exists = await getUserIdByEmail(session.user.email);
