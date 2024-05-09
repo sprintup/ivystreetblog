@@ -64,14 +64,13 @@ export default async function handler() {
   return { User, Book, Booklist };
 }
 
-export async function createUser(id, login, name, email) {
+export async function createUser(login, name, email) {
   try {
     const { User } = await handler();
     // Get the current date and time
     const currentDate = new Date();
 
     const newUser = new User({
-      id,
       login,
       name,
       email,

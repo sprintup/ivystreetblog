@@ -21,7 +21,7 @@ async function BookshelfData() {
   if (!exists) {
     console.log("session: ", session)
     console.log(" login", session.user.login, " name", session.user.name, " email", session.user.email)
-    await createUser(session.user.id, session.user.login, session.user.name, session.user.email);
+    await createUser(session.user.login, session.user.name, session.user.email);
     console.log("User created");
   } else {
     console.log("User found");
