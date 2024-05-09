@@ -14,14 +14,14 @@ async function BookshelfData() {
   if (!session) {
     // Handle the case when the user is not authenticated
     // You can redirect to the login page or display an error message
-    throw new Error("User not authenticated");
+    throw new Error("User not authenticated"); 
   }
 
   const exists = await getUserIdByEmail(session.user.email);
   if (!exists) {
     console.log("session: ", session)
     console.log(" login", session.user.login, " name", session.user.name, " email", session.user.email)
-    await createUser(session.user.id, session.user.login, session.user.name, session.user.email);
+    await createUser(session.user.login, session.user.name, session.user.email);
     console.log("User created");
   } else {
     console.log("User found");
