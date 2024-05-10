@@ -1,0 +1,9 @@
+.descriptionContainer {
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.descriptionText {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}

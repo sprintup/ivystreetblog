@@ -1,0 +1,23 @@
+/* app/bookshelf/page.module.css */
+
+.descriptionContainer {
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.descriptionText {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.booklistCard {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  .booklistCard {
+    max-width: 500px;
+  }
+}

@@ -5,7 +5,7 @@ export const options = {
   providers: [
     GitHubProvider({
       profile(profile) {
-        console.log("Profile Github: ", profile);
+        // console.log("Profile Github: ", profile);
         // assign special stuff to session
         let userRole = "Github User";
         if (profile?.email == process.env.MY_EMAIL) {
