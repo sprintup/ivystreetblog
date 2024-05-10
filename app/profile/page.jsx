@@ -77,7 +77,9 @@ export default function ProfilePage() {
     <div className="bg-primary text-accent p-4 rounded-lg max-w-4xl mx-auto">
       <h1 className="text-2xl font-heading text-yellow mb-4">Profile</h1>
       {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
-      {successMessage && <p className="text-green-500 mb-4">{successMessage}</p>}
+      {successMessage && (
+        <p className="text-green-500 mb-4">{successMessage}</p>
+      )}
       <div className="mb-4">
         <label className="block text-lg font-accent mb-2">
           Public Profile Name:
@@ -89,12 +91,14 @@ export default function ProfilePage() {
           />
         </label>
         <p className="text-sm text-gray-300 mt-2">
-          Your public profile name will be used as the base URL for sharing your public booklists.
-          People can view your public booklists by visiting:
+          Your public profile name will be used as the base URL for sharing your
+          public booklists. People can view your public booklists by visiting:
         </p>
         <p className="text-sm text-blue-300 mt-1">
-          <Link href={`/${publicProfileName}`}>
-            {typeof window !== "undefined" ? `${window.location.origin}/${publicProfileName}` : ""}
+          <Link href={`/profile/${publicProfileName}`}>
+            {typeof window !== "undefined"
+              ? `${window.location.origin}/profile/${publicProfileName}`
+              : ""}
           </Link>
         </p>
       </div>

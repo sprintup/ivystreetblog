@@ -1,11 +1,11 @@
 import GitHubProvider from "next-auth/providers/github";
-import GoogleProvider from "next-auth/providers/google";
+// import GoogleProvider from "next-auth/providers/google";
 
 export const options = {
   providers: [
     GitHubProvider({
       profile(profile) {
-        console.log("Profile Github: ", profile);
+        // console.log("Profile Github: ", profile);
         // assign special stuff to session
         let userRole = "Github User";
         if (profile?.email == process.env.MY_EMAIL) {
@@ -22,6 +22,7 @@ export const options = {
     // GoogleProvider({
     //   profile(profile) {
     //     console.log("Profile Google: ", profile);
+    //     let userRole = "Google User";
     //     // no special roles for google provider, but we do need an id field and they don't provide one so we make one
     //     return {
     //       ...profile,

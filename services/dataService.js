@@ -106,6 +106,25 @@ export async function getUserIdByEmail(email) {
   }
 }
 
+export async function getUserByPublicProfileName(publicProfileName) {
+  try {
+    const { User } = await handler();
+    const user = await User.findOne({ publicProfileName });
+    if (!user) {
+      console.error(
+        "No user found with the provided public profile name:",
+        publicProfileName
+      );
+      return null;
+    }
+    // console.log("User found:", user);
+    return JSON.parse(JSON.stringify(user));
+  } catch (error) {
+    console.error("Error getting user by public profile name:", error);
+    throw error;
+  }
+}
+
 export async function addUserBooklist(userId, booklist) {
   try {
     const { User, Booklist } = await handler();
@@ -263,6 +282,33 @@ export async function addBookToBooklist(booklistId, bookData) {
   }
 }
 
+export async function getPublicBooklists() {
+  try {
+    const { Booklist } = await handler();
+    const publicBooklists = await Booklist.find({ visibility: "public" });
+    // console.log("Public booklists found:", publicBooklists);
+    return JSON.parse(JSON.stringify(publicBooklists));
+  } catch (error) {
+    console.error("Error getting public booklists:", error);
+    throw error;
+  }
+}
+
+export async function getPublicBooklistsByUserId(userId) {
+  try {
+    const { User } = await handler();
+    const user = await User.findById(userId).populate({
+      path: "bookListIds",
+      match: { visibility: "public" },
+    });
+    // console.log("Public booklists found:", user.bookListIds);
+    return JSON.parse(JSON.stringify(user.bookListIds));
+  } catch (error) {
+    console.error("Error getting public booklists:", error);
+    throw error;
+  }
+}
+
 export async function getBookById(bookId) {
   try {
     // console.log("Fetching book by ID:", bookId);
@@ -361,7 +407,9 @@ export async function updateUserProfile(userEmail, updatedData) {
     const { User } = await handler();
 
     // Check if the public profile name is already taken by another user
-    const existingUser = await User.findOne({ publicProfileName: updatedData.publicProfileName });
+    const existingUser = await User.findOne({
+      publicProfileName: updatedData.publicProfileName,
+    });
     if (existingUser && existingUser.email !== userEmail) {
       throw new Error("Public profile name is already taken.");
     }
@@ -379,40 +427,6 @@ export async function updateUserProfile(userEmail, updatedData) {
     return JSON.parse(JSON.stringify(user));
   } catch (error) {
     console.error("Error updating user profile:", error);
-    throw error;
-  }
-}
-
-export async function getUserByPublicProfileName(publicProfileName) {
-  try {
-    const { User } = await handler();
-    const user = await User.findOne({ publicProfileName });
-    if (!user) {
-      console.error(
-        "No user found with the provided public profile name:",
-        publicProfileName
-      );
-      return null;
-    }
-    // console.log("User found:", user);
-    return JSON.parse(JSON.stringify(user));
-  } catch (error) {
-    console.error("Error getting user by public profile name:", error);
-    throw error;
-  }
-}
-
-export async function getPublicBooklists(userId) {
-  try {
-    const { User } = await handler();
-    const user = await User.findById(userId).populate({
-      path: "bookListIds",
-      match: { visibility: "public" },
-    });
-    // console.log("Public booklists found:", user.bookListIds);
-    return JSON.parse(JSON.stringify(user.bookListIds));
-  } catch (error) {
-    console.error("Error getting public booklists:", error);
     throw error;
   }
 }

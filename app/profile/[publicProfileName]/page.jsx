@@ -3,7 +3,7 @@
 import React from "react";
 import {
   getUserByPublicProfileName,
-  getPublicBooklists,
+  getPublicBooklistsByUserId,
 } from "@services/dataService";
 import BooklistCard from "@components/BooklistCard";
 
@@ -16,7 +16,7 @@ export default async function PublicBookshelfPage({ params }) {
       return <div>User not found.</div>;
     }
 
-    const publicBooklists = await getPublicBooklists(user._id);
+    const publicBooklists = await getPublicBooklistsByUserId(user._id);
 
     return (
       <div className="bg-primary text-accent p-4 rounded-lg max-w-4xl mx-auto">
