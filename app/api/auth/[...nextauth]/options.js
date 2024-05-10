@@ -1,5 +1,5 @@
 import GitHubProvider from "next-auth/providers/github";
-import GoogleProvider from "next-auth/providers/google";
+// import GoogleProvider from "next-auth/providers/google";
 
 export const options = {
   providers: [
@@ -22,6 +22,7 @@ export const options = {
     // GoogleProvider({
     //   profile(profile) {
     //     console.log("Profile Google: ", profile);
+    //     let userRole = "Google User";
     //     // no special roles for google provider, but we do need an id field and they don't provide one so we make one
     //     return {
     //       ...profile,
