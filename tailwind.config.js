@@ -13,8 +13,12 @@ module.exports = {
       colors: {
         primary: "#0C192E", // Deep blue from the background
         secondary: "#024358", // Mid blue
-        tertiary: "#088271", // Green from the leaves
-        accent: "#fcf7f8", // light gray
+        tertiary: "#D16014", // Bronze
+        accent: "#D4D2D5", // light gray
+        // primary: "#0C192E", // Deep blue from the background
+        // secondary: "#024358", // Mid blue
+        // tertiary: "#D16014", // Bronze
+        // accent: "#D4D2D5", // light gray
         orange: "#FFA500", // Orange from the books
         highlight: "#A288A6", // Yellow from the stars/lights
         yellow: "#FFD700", // Yellow from the stars/lights

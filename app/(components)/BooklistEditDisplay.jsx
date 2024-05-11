@@ -2,8 +2,8 @@
 
 "use client";
 import { useState, useEffect } from "react";
-import BookAddComponent from "@components/bookAdd";
-import { useRouter } from 'next/navigation';
+import BookAddComponent from "@/app/(components)/bookAdd";
+import { useRouter } from "next/navigation";
 
 const fetchBookDetails = async (bookId) => {
   try {
@@ -52,7 +52,7 @@ export default function BooksDisplay({ booklistId }) {
 
   const handleEditBook = (bookId) => {
     router.push(`/bookEdit/${booklistId}/${bookId}`);
-  };  
+  };
 
   const handleDeleteBook = async (bookId) => {
     try {
@@ -81,8 +81,9 @@ export default function BooksDisplay({ booklistId }) {
 
   return (
     <div className="mt-8">
-      <h3 className="text-xl font-heading text-yellow mb-4">
-        {booklist.bookIds.length || 0} {booklist.bookIds.length === 1 ? 'Book' : 'Books'} in this Booklist
+      <h3 className="text-xl mb-4">
+        {booklist.bookIds.length || 0}{" "}
+        {booklist.bookIds.length === 1 ? "Book" : "Books"} in this Booklist
       </h3>
       {booklist.bookIds.map((bookId) => (
         <div key={bookId} className="flex justify-between items-center mb-4">
@@ -101,7 +102,10 @@ export default function BooksDisplay({ booklistId }) {
           </button>
         </div>
       ))}
-      <BookAddComponent booklistId={booklistId} onBookAdded={handleBookChange} />
+      <BookAddComponent
+        booklistId={booklistId}
+        onBookAdded={handleBookChange}
+      />
     </div>
   );
 }

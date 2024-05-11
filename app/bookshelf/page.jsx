@@ -61,7 +61,7 @@ function BookshelfContent({ session, booklists }) {
   return (
     <>
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-accent">
+        <h3 className="text-lg">
           {session?.user?.name} has {booklists.length || 0} booklists
         </h3>
         <Link

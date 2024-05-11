@@ -1,20 +1,19 @@
 "use client";
 import { useState } from "react";
-import { useSession } from 'next-auth/react';
+import { useSession } from "next-auth/react";
 
-
-export default function BookAddComponent({ booklistId, onBookAdded}) {
+export default function BookAddComponent({ booklistId, onBookAdded }) {
   return (
     <div className="bg-primary text-accent p-4 rounded-lg max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-heading text-yellow">Add a Book</h2>
+        <h2 className="text-2xl text-yellow">Add a Book</h2>
       </div>
-      <AddBookForm booklistId={booklistId} onBookAdded={onBookAdded}/>
+      <AddBookForm booklistId={booklistId} onBookAdded={onBookAdded} />
     </div>
   );
 }
 
-function AddBookForm({ booklistId, onBookAdded}) {
+function AddBookForm({ booklistId, onBookAdded }) {
   const [bookName, setBookName] = useState("");
   const [bookAuthor, setBookAuthor] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -22,7 +21,7 @@ function AddBookForm({ booklistId, onBookAdded}) {
   const { data: session } = useSession({
     required: true,
     onUnauthenticated() {
-      return { redirect: '/api/auth/signin?callbackUrl=/bookshelf' };
+      return { redirect: "/api/auth/signin?callbackUrl=/bookshelf" };
     },
   });
 
@@ -38,7 +37,12 @@ function AddBookForm({ booklistId, onBookAdded}) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ BooklistId: booklistId,  Name: bookName, Author: bookAuthor, BookOwner: session.user.email }),
+        body: JSON.stringify({
+          BooklistId: booklistId,
+          Name: bookName,
+          Author: bookAuthor,
+          BookOwner: session.user.email,
+        }),
       });
       if (response.ok) {
         setBookName("");
@@ -60,7 +64,7 @@ function AddBookForm({ booklistId, onBookAdded}) {
       {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
       <form onSubmit={handleAddBook}>
         <div className="mb-4">
-          <label className="block text-lg font-accent mb-2">
+          <label className="block text-lg mb-2">
             Book Name:
             <input
               type="text"
@@ -71,7 +75,7 @@ function AddBookForm({ booklistId, onBookAdded}) {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-lg font-accent mb-2">
+          <label className="block text-lg mb-2">
             Book Author:
             <input
               type="text"

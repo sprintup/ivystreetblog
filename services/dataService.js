@@ -31,6 +31,7 @@ const BooklistSchema = new mongoose.Schema({
   title: String,
   description: String,
   visibility: String,
+  booklistOwnerId: String,
   bookIds: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -106,6 +107,36 @@ export async function getUserIdByEmail(email) {
   }
 }
 
+export async function getUserById(userId) {
+  try {
+    const { User } = await handler();
+    const user = await User.findById(userId);
+    if (!user) {
+      // console.error("No user found with the provided userId:", userId);
+      return null;
+    }
+    return JSON.parse(JSON.stringify(user));
+  } catch (error) {
+    console.error("Error getting user by ID:", error);
+    throw error;
+  }
+}
+
+export async function getUserByEmail(email) {
+  try {
+    const { User } = await handler();
+    const user = await User.findOne({ email });
+    if (!user) {
+      console.error("No user found with the provided email:", email);
+      return null;
+    }
+    return JSON.parse(JSON.stringify(user));
+  } catch (error) {
+    console.error("Error getting user by email:", error);
+    throw error;
+  }
+}
+
 export async function getUserByPublicProfileName(publicProfileName) {
   try {
     const { User } = await handler();
@@ -141,6 +172,7 @@ export async function addUserBooklist(userId, booklist) {
       title: booklist.title,
       description: booklist?.description,
       visibility: booklist.visibility,
+      booklistOwnerId: userId,
       createdAt: currentDate,
       updatedAt: currentDate,
     });
@@ -150,7 +182,7 @@ export async function addUserBooklist(userId, booklist) {
     user.bookListIds?.push(newBooklist._id);
     await user.save();
 
-    console.log("Added booklist to user's collection:", user);
+    // console.log("Added booklist to user's collection:", user);
     return JSON.parse(JSON.stringify(user));
   } catch (error) {
     console.error("Error adding booklist to user's collection:", error);
@@ -218,7 +250,7 @@ export async function updateBooklist(booklistId, updatedData) {
       );
       return null;
     }
-    console.log("Booklist updated:", booklist);
+    // console.log("Booklist updated:", booklist);
     return JSON.parse(JSON.stringify(booklist));
   } catch (error) {
     console.error("Error updating booklist:", error);
