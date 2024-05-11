@@ -2,7 +2,7 @@
 
 "use client";
 import { useState, useEffect } from "react";
-import BookAddComponent from "./BookAddComponent";
+import BookAddComponent from "@/app/(components)/bookAdd";
 import { useRouter } from "next/navigation";
 
 const fetchBookDetails = async (bookId) => {
