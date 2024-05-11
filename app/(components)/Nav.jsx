@@ -20,20 +20,29 @@ const Nav = () => {
     setIsOpen(!isOpen);
   };
 
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <header className="bg-primary sticky top-0 z-50">
+    <header className="bg-secondary sticky top-0 z-50">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             {/* Logo */}
-            <Link href="/">
-              <Image
-                src="/logo.png"
-                alt="Logo"
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
+            <Link href="/" onClick={closeMenu}>
+              <div className="flex items-center">
+                <Image
+                  src="/logo.png"
+                  alt="Logo"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+                <span className="ml-2 text-yellow font-bold">
+                  Ivy Street Blog
+                </span>
+              </div>
             </Link>
           </div>
           <div className="hidden md:block">
@@ -49,6 +58,7 @@ const Nav = () => {
                     className={`text-yellow hover:text-orange focus:text-orange ${
                       isActive("/bookshelf") ? "font-bold" : ""
                     }`}
+                    onClick={closeMenu}
                   >
                     Bookshelf
                   </Link>
@@ -57,6 +67,7 @@ const Nav = () => {
                     className={`text-yellow hover:text-orange focus:text-orange ${
                       isActive("/profile") ? "font-bold" : ""
                     }`}
+                    onClick={closeMenu}
                   >
                     Profile
                   </Link>
@@ -67,38 +78,37 @@ const Nav = () => {
                 className={`text-yellow hover:text-orange focus:text-orange ${
                   isActive("/public-booklists") ? "font-bold" : ""
                 }`}
+                onClick={closeMenu}
               >
                 Public Booklists
               </Link>
-              <Link
-                href="/"
-                className={`text-yellow hover:text-orange focus:text-orange ${
-                  isActive("/") ? "font-bold" : ""
-                }`}
-              >
-                About
-              </Link>
-              <Link
-                href="/resources"
-                className={`text-yellow hover:text-orange focus:text-orange ${
-                  isActive("/resources") ? "font-bold" : ""
-                }`}
-              >
-                Resources
-              </Link>
-
-              <Link
-                href="/register"
-                className={`text-yellow hover:text-orange focus:text-orange ${
-                  isActive("/register") ? "font-bold" : ""
-                }`}
-              >
-                Register
-              </Link>
+              {!session && (
+                <Link
+                  href="/"
+                  className={`text-yellow hover:text-orange focus:text-orange ${
+                    isActive("/") ? "font-bold" : ""
+                  }`}
+                  onClick={closeMenu}
+                >
+                  About
+                </Link>
+              )}
+              {!session && (
+                <Link
+                  href="/register"
+                  className={`text-yellow hover:text-orange focus:text-orange ${
+                    isActive("/register") ? "font-bold" : ""
+                  }`}
+                  onClick={closeMenu}
+                >
+                  Register
+                </Link>
+              )}
               {session ? (
                 <Link
                   href="/api/auth/signout?callbackUrl=/"
                   className="text-yellow hover:text-orange focus:text-orange"
+                  onClick={closeMenu}
                 >
                   Logout
                 </Link>
@@ -106,6 +116,7 @@ const Nav = () => {
                 <Link
                   href="/api/auth/signin?callbackUrl=/bookshelf"
                   className="text-yellow hover:text-orange focus:text-orange"
+                  onClick={closeMenu}
                 >
                   Login
                 </Link>
@@ -171,6 +182,7 @@ const Nav = () => {
                 className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
                   isActive("/bookshelf") ? "bg-primary" : ""
                 }`}
+                onClick={closeMenu}
               >
                 Bookshelf
               </Link>
@@ -179,6 +191,7 @@ const Nav = () => {
                 className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
                   isActive("/profile") ? "bg-primary" : ""
                 }`}
+                onClick={closeMenu}
               >
                 Profile
               </Link>
@@ -189,38 +202,37 @@ const Nav = () => {
             className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
               isActive("/public-booklists") ? "bg-primary" : ""
             }`}
+            onClick={closeMenu}
           >
             Public Booklists
           </Link>
-          <Link
-            href="/"
-            className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
-              isActive("/") ? "bg-primary" : ""
-            }`}
-          >
-            About
-          </Link>
-          <Link
-            href="/resources"
-            className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
-              isActive("/resources") ? "bg-primary" : ""
-            }`}
-          >
-            Resources
-          </Link>
-
-          <Link
-            href="/register"
-            className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
-              isActive("/register") ? "bg-primary" : ""
-            }`}
-          >
-            Register
-          </Link>
+          {!session && (
+            <Link
+              href="/"
+              className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
+                isActive("/") ? "bg-primary" : ""
+              }`}
+              onClick={closeMenu}
+            >
+              About
+            </Link>
+          )}
+          {!session && (
+            <Link
+              href="/register"
+              className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
+                isActive("/register") ? "bg-primary" : ""
+              }`}
+              onClick={closeMenu}
+            >
+              Register
+            </Link>
+          )}
           {session ? (
             <Link
               href="/api/auth/signout?callbackUrl=/"
               className="text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium"
+              onClick={closeMenu}
             >
               Logout
             </Link>
@@ -228,6 +240,7 @@ const Nav = () => {
             <Link
               href="/api/auth/signin?callbackUrl=/bookshelf"
               className="text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium"
+              onClick={closeMenu}
             >
               Login
             </Link>

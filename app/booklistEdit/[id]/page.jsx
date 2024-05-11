@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import BooksDisplay from "./booksDisplay";
+import BooklistEditDisplay from "@components/BooklistEditDisplay";
 
 export default function EditBooklistPage({ params }) {
   const router = useRouter();
@@ -81,12 +81,12 @@ export default function EditBooklistPage({ params }) {
   return (
     <div className="bg-primary text-accent p-4 rounded-lg max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-heading text-yellow">Edit Booklist</h2>
+        <h2 className="text-2xl text-yellow">Edit Booklist</h2>
       </div>
       {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block text-lg font-accent mb-2">
+          <label className="block text-lg mb-2">
             Title:
             <input
               type="text"
@@ -97,7 +97,7 @@ export default function EditBooklistPage({ params }) {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-lg font-accent mb-2">
+          <label className="block text-lg mb-2">
             Description:
             <textarea
               type="text"
@@ -108,7 +108,7 @@ export default function EditBooklistPage({ params }) {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-lg font-accent mb-2">
+          <label className="block text-lg mb-2">
             Visibility:
             <select
               value={visibility}
@@ -136,7 +136,7 @@ export default function EditBooklistPage({ params }) {
           </button>
         </div>
       </form>
-      <BooksDisplay booklistId={booklistId} />
+      <BooklistEditDisplay booklistId={booklistId} />
     </div>
   );
 }
