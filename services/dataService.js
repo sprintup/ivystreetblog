@@ -20,9 +20,37 @@ const UserSchema = new mongoose.Schema({
   ],
   trackedBooks: [
     {
-      bookId: Number,
-      status: String,
-      inWishlist: Boolean,
+      bookId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Book",
+      },
+      status: {
+        type: String,
+        enum: ["to-read", "read"],
+        default: "to-read",
+      },
+      isFavorite: {
+        type: Boolean,
+        default: false,
+      },
+      review: String,
+      ratingPerceivedDifficulty: {
+        type: Number,
+        min: 1,
+        max: 10,
+        default: null,
+      },
+      isWishlistItem: {
+        type: Boolean,
+        default: false,
+      },
+      bookPriority: Number,
+    },
+  ],
+  favoriteBooklistIds: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Booklist",
     },
   ],
 });
@@ -41,7 +69,7 @@ const BooklistSchema = new mongoose.Schema({
 });
 
 const BookSchema = new mongoose.Schema({
-  Name: String,
+  name: String,
   Author: String,
   Description: String,
   Age: String,
@@ -314,6 +342,44 @@ export async function addBookToBooklist(booklistId, bookData) {
   }
 }
 
+export async function addBookToTrackedBooks(userId, bookId) {
+  try {
+    const { User } = await handler();
+    const user = await User.findOne({ _id: userId });
+    if (!user) {
+      console.error("No user found with the provided userId:", userId);
+      return null;
+    }
+
+    // Check if the book is already in the user's trackedBooks
+    const isBookTracked = user.trackedBooks.some(
+      (trackedBook) => trackedBook.bookId.toString() === bookId.toString()
+    );
+
+    if (!isBookTracked) {
+      // Add the book to the user's trackedBooks
+      user.trackedBooks.push({
+        bookId,
+        status: "to-read",
+        isFavorite: false,
+        review: "",
+        ratingPerceivedDifficulty: null,
+        isWishlistItem: false,
+        bookPriority: 0,
+      });
+      await user.save();
+      console.log("Book added to user's tracked books:", bookId);
+    } else {
+      console.log("Book is already in the user's tracked books:", bookId);
+    }
+
+    return JSON.parse(JSON.stringify(user));
+  } catch (error) {
+    console.error("Error adding book to user's tracked books:", error);
+    throw error;
+  }
+}
+
 export async function getPublicBooklists() {
   try {
     const { Booklist } = await handler();
@@ -354,6 +420,17 @@ export async function getBookById(bookId) {
     return JSON.parse(JSON.stringify(book));
   } catch (error) {
     console.error("Error getting book by ID:", error);
+    throw error;
+  }
+}
+
+export async function getBooksByIds(bookIds) {
+  try {
+    const { Book } = await handler();
+    const books = await Book.find({ _id: { $in: bookIds } });
+    return JSON.parse(JSON.stringify(books));
+  } catch (error) {
+    console.error("Error getting books by IDs:", error);
     throw error;
   }
 }
