@@ -25,12 +25,16 @@ const Nav = () => {
   };
 
   return (
-    <header className="bg-secondary sticky top-0 z-50">
+    <header className="bg-secondary sticky top-0 z-50 border-b-2 border-solid border-accent-100">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             {/* Logo */}
-            <Link href="/" onClick={closeMenu}>
+            <Link
+              href="/public-booklists"
+              onClick={closeMenu}
+              style={{ textDecoration: "none" }}
+            >
               <div className="flex items-center">
                 <Image
                   src="/logo.png"
@@ -60,7 +64,16 @@ const Nav = () => {
                     }`}
                     onClick={closeMenu}
                   >
-                    Bookshelf
+                    My Bookshelf
+                  </Link>
+                  <Link
+                    href="/reading-list"
+                    className={`text-yellow hover:text-orange focus:text-orange ${
+                      isActive("/reading-list") ? "font-bold" : ""
+                    }`}
+                    onClick={closeMenu}
+                  >
+                    My Reading List
                   </Link>
                   <Link
                     href="/profile"
@@ -73,25 +86,27 @@ const Nav = () => {
                   </Link>
                 </>
               )}
-              <Link
-                href="/public-booklists"
-                className={`text-yellow hover:text-orange focus:text-orange ${
-                  isActive("/public-booklists") ? "font-bold" : ""
-                }`}
-                onClick={closeMenu}
-              >
-                Public Booklists
-              </Link>
               {!session && (
-                <Link
-                  href="/"
-                  className={`text-yellow hover:text-orange focus:text-orange ${
-                    isActive("/") ? "font-bold" : ""
-                  }`}
-                  onClick={closeMenu}
-                >
-                  About
-                </Link>
+                <>
+                  <Link
+                    href="/public-booklists"
+                    className={`text-yellow hover:text-orange focus:text-orange ${
+                      isActive("/public-booklists") ? "font-bold" : ""
+                    }`}
+                    onClick={closeMenu}
+                  >
+                    Public Booklists
+                  </Link>
+                  <Link
+                    href="/"
+                    className={`text-yellow hover:text-orange focus:text-orange ${
+                      isActive("/") ? "font-bold" : ""
+                    }`}
+                    onClick={closeMenu}
+                  >
+                    About
+                  </Link>
+                </>
               )}
               {!session && (
                 <Link
@@ -184,7 +199,16 @@ const Nav = () => {
                 }`}
                 onClick={closeMenu}
               >
-                Bookshelf
+                My Bookshelf
+              </Link>
+              <Link
+                href="/reading-list"
+                className={`text-yellow hover:text-orange focus:text-orange ${
+                  isActive("/reading-list") ? "font-bold" : ""
+                }`}
+                onClick={closeMenu}
+              >
+                My Reading List
               </Link>
               <Link
                 href="/profile"
@@ -197,25 +221,27 @@ const Nav = () => {
               </Link>
             </>
           )}
-          <Link
-            href="/public-booklists"
-            className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
-              isActive("/public-booklists") ? "bg-primary" : ""
-            }`}
-            onClick={closeMenu}
-          >
-            Public Booklists
-          </Link>
           {!session && (
-            <Link
-              href="/"
-              className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
-                isActive("/") ? "bg-primary" : ""
-              }`}
-              onClick={closeMenu}
-            >
-              About
-            </Link>
+            <>
+              <Link
+                href="/public-booklists"
+                className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
+                  isActive("/public-booklists") ? "bg-primary" : ""
+                }`}
+                onClick={closeMenu}
+              >
+                Public Booklists
+              </Link>
+              <Link
+                href="/"
+                className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
+                  isActive("/") ? "bg-primary" : ""
+                }`}
+                onClick={closeMenu}
+              >
+                About
+              </Link>
+            </>
           )}
           {!session && (
             <Link

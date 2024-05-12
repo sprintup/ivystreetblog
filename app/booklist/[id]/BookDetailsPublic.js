@@ -1,27 +1,29 @@
-// components/BookDetails.jsx
+// app/booklist/[id]/BookDetailsPublic.js
 
 import React from "react";
-import { getBookById } from "@services/dataService";
+import Link from "next/link";
 
-export default async function BookPublicDetails({ bookId }) {
-  const book = await getBookById(bookId);
-
+export default function BookPublicDetails({ book }) {
   if (!book) {
     return null;
   }
 
   return (
-    <div className="bg-secondary p-4 rounded-lg shadow-md">
-      <h2 className="text-xl text-yellow mb-2">{book.Name}</h2>
+    <div className="bg-secondary p-4 rounded-lg shadow-md flex flex-col break-inside-avoid mb-4">
+      <Link href={`/book/${book._id}`}>
+        <h2 className="text-xl text-yellow mb-2 hover:underline">
+          {book.Name}
+        </h2>
+      </Link>
       {book.Author && (
         <p className="text-sm mb-1">
           <span className="font-bold">Author:</span> {book.Author}
         </p>
       )}
       {book.Description && (
-        <p className="text-sm mb-1">
+        <div className="text-sm mb-1 flex-grow pl-1 border-l-2 border-dotted border-accent-500">
           <span className="font-bold">Description:</span> {book.Description}
-        </p>
+        </div>
       )}
       {book.Age && (
         <p className="text-sm mb-1">
@@ -56,7 +58,15 @@ export default async function BookPublicDetails({ bookId }) {
       )}
       {book.Link && (
         <p className="text-sm mb-1">
-          <span className="font-bold">Link:</span> {book.Link}
+          <span className="font-bold">Link:</span>{" "}
+          <a
+            href={book.Link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-yellow hover:underline"
+          >
+            {book.Link}
+          </a>
         </p>
       )}
     </div>

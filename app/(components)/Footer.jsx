@@ -19,6 +19,12 @@ const Footer = () => {
             >
               Edit on Github
             </Link>
+            <Link
+              href="/register"
+              className="text-yellow hover:text-orange focus:text-orange"
+            >
+              Register
+            </Link>
           </div>
           <div className="flex flex-col items-start pl-4">
             <Link
