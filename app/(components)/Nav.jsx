@@ -73,25 +73,27 @@ const Nav = () => {
                   </Link>
                 </>
               )}
-              <Link
-                href="/public-booklists"
-                className={`text-yellow hover:text-orange focus:text-orange ${
-                  isActive("/public-booklists") ? "font-bold" : ""
-                }`}
-                onClick={closeMenu}
-              >
-                Public Booklists
-              </Link>
               {!session && (
-                <Link
-                  href="/"
-                  className={`text-yellow hover:text-orange focus:text-orange ${
-                    isActive("/") ? "font-bold" : ""
-                  }`}
-                  onClick={closeMenu}
-                >
-                  About
-                </Link>
+                <>
+                  <Link
+                    href="/public-booklists"
+                    className={`text-yellow hover:text-orange focus:text-orange ${
+                      isActive("/public-booklists") ? "font-bold" : ""
+                    }`}
+                    onClick={closeMenu}
+                  >
+                    Public Booklists
+                  </Link>
+                  <Link
+                    href="/"
+                    className={`text-yellow hover:text-orange focus:text-orange ${
+                      isActive("/") ? "font-bold" : ""
+                    }`}
+                    onClick={closeMenu}
+                  >
+                    About
+                  </Link>
+                </>
               )}
               {!session && (
                 <Link
@@ -197,25 +199,27 @@ const Nav = () => {
               </Link>
             </>
           )}
-          <Link
-            href="/public-booklists"
-            className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
-              isActive("/public-booklists") ? "bg-primary" : ""
-            }`}
-            onClick={closeMenu}
-          >
-            Public Booklists
-          </Link>
           {!session && (
-            <Link
-              href="/"
-              className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
-                isActive("/") ? "bg-primary" : ""
-              }`}
-              onClick={closeMenu}
-            >
-              About
-            </Link>
+            <>
+              <Link
+                href="/public-booklists"
+                className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
+                  isActive("/public-booklists") ? "bg-primary" : ""
+                }`}
+                onClick={closeMenu}
+              >
+                Public Booklists
+              </Link>
+              <Link
+                href="/"
+                className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
+                  isActive("/") ? "bg-primary" : ""
+                }`}
+                onClick={closeMenu}
+              >
+                About
+              </Link>
+            </>
           )}
           {!session && (
             <Link

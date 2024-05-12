@@ -1,5 +1,6 @@
 import GitHubProvider from "next-auth/providers/github";
 // import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 export const options = {
   providers: [
@@ -20,6 +21,7 @@ export const options = {
       clientSecret: process.env.GITHUB_SECRET,
     }),
     // GoogleProvider({
+    // this works, but could lead to duplicate accounts if someone (like me) has different emails for github and google.
     //   profile(profile) {
     //     console.log("Profile Google: ", profile);
     //     let userRole = "Google User";
@@ -32,6 +34,50 @@ export const options = {
     //   },
     //   clientId: process.env.GOOGLE_ID,
     //   clientSecret: process.env.GOOGLE_SECRET,
+    // }),
+    // CredentialsProvider({ // this will let you log in with email and password, but not register. to
+    // register you need a custom form like https://github.com/ClarityCoders/NextAuthTutorial-Video/blob/master/app/(components)/UserForm.jsx
+    // but the problem is you need to verify the email, otherwise you'll get a lot of bots.
+    // by just using github, we're circumventing this issue.
+    //   name: "Credentials",
+    //   credentials: {
+    //     email: {
+    //       label: "email:",
+    //       type: "text",
+    //       placeholder: "your-email",
+    //     },
+    //     password: {
+    //       label: "password:",
+    //       type: "password",
+    //       placeholder: "your-password",
+    //     },
+    //   },
+    //   async authorize(credentials) {
+    //     try {
+    //       const foundUser = await User.findOne({ email: credentials.email })
+    //         .lean()
+    //         .exec();
+
+    //       if (foundUser) {
+    //         console.log("User Exists");
+    //         const match = await bcrypt.compare(
+    //           credentials.password,
+    //           foundUser.password
+    //         );
+
+    //         if (match) {
+    //           console.log("Good Pass");
+    //           delete foundUser.password;
+
+    //           foundUser["role"] = "Unverified Email";
+    //           return foundUser;
+    //         }
+    //       }
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    //     return null;
+    //   },
     // }),
   ],
   callbacks: {
