@@ -256,6 +256,17 @@ export async function getBooklistById(booklistId) {
   }
 }
 
+export async function getBooklistsByBookId(bookId) {
+  try {
+    const { Booklist } = await handler();
+    const booklists = await Booklist.find({ bookIds: bookId });
+    return JSON.parse(JSON.stringify(booklists));
+  } catch (error) {
+    console.error("Error getting booklists by book ID:", error);
+    throw error;
+  }
+}
+
 export async function updateBooklist(booklistId, updatedData) {
   try {
     const { Booklist } = await handler();
@@ -539,3 +550,25 @@ export async function updateUserProfile(userEmail, updatedData) {
     throw error;
   }
 }
+
+// export async function getUserByEmail(email) {
+//   try {
+//     const { User } = await handler();
+//     const user = await User.findOne({ email });
+//     return JSON.parse(JSON.stringify(user));
+//   } catch (error) {
+//     console.error("Error getting user by email:", error);
+//     throw error;
+//   }
+// }
+
+// export async function getBooksByIds(bookIds) {
+//   try {
+//     const { Book } = await handler();
+//     const books = await Book.find({ _id: { $in: bookIds } });
+//     return JSON.parse(JSON.stringify(books));
+//   } catch (error) {
+//     console.error("Error getting books by IDs:", error);
+//     throw error;
+//   }
+// }

@@ -18,26 +18,12 @@ import styles from "./page.module.css";
 async function BookshelfData() {
   const session = await getServerSession(options);
   if (!session) {
-    // Handle the case when the user is not authenticated
-    // You can redirect to the login page or display an error message
     throw new Error("User not authenticated");
   }
 
   const exists = await getUserIdByEmail(session.user.email);
   if (!exists) {
-    console.log("session: ", session);
-    console.log(
-      " login",
-      session.user.login,
-      " name",
-      session.user.name,
-      " email",
-      session.user.email
-    );
     await createUser(session.user.login, session.user.name, session.user.email);
-    console.log("User created");
-  } else {
-    console.log("User found");
   }
 
   const booklists = await getBooklists(session.user.email);
@@ -81,7 +67,9 @@ function BookshelfContent({ session, booklists }) {
               {item.booklist.title}
             </h4>
             <div className={styles.descriptionContainer}>
-              <p className={`${styles.descriptionText} text-sm mb-2 mr-2`}>
+              <p
+                className={`${styles.descriptionText} text-sm mb-2 mr-2 border-l-2 border-solid border-dotted px-1`}
+              >
                 {item.booklist.description}
               </p>
             </div>
@@ -90,12 +78,20 @@ function BookshelfContent({ session, booklists }) {
             </p>
             <p className="text-xs">Books: {item.booklist.bookIds.length}</p>
             {item.booklistOwner === session.user.email && (
-              <Link
-                href={`/booklistEdit/${item.booklist._id}`}
-                className="px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300 no-underline absolute bottom-4 right-4"
-              >
-                Edit
-              </Link>
+              <div className="absolute bottom-4 right-4 space-x-2">
+                <Link
+                  href={`/booklistEdit/${item.booklist._id}`}
+                  className="px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300 no-underline"
+                >
+                  Edit
+                </Link>
+                <Link
+                  href={`/booklist/${item.booklist._id}`}
+                  className="px-4 py-2 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition duration-300 no-underline"
+                >
+                  View
+                </Link>
+              </div>
             )}
           </div>
         ))}

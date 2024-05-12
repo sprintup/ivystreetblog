@@ -30,7 +30,11 @@ const Nav = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             {/* Logo */}
-            <Link href="/" onClick={closeMenu}>
+            <Link
+              href="/public-booklists"
+              onClick={closeMenu}
+              style={{ textDecoration: "none" }}
+            >
               <div className="flex items-center">
                 <Image
                   src="/logo.png"
@@ -60,7 +64,16 @@ const Nav = () => {
                     }`}
                     onClick={closeMenu}
                   >
-                    Bookshelf
+                    My Bookshelf
+                  </Link>
+                  <Link
+                    href="/reading-list"
+                    className={`text-yellow hover:text-orange focus:text-orange ${
+                      isActive("/reading-list") ? "font-bold" : ""
+                    }`}
+                    onClick={closeMenu}
+                  >
+                    My Reading List
                   </Link>
                   <Link
                     href="/profile"
@@ -186,7 +199,16 @@ const Nav = () => {
                 }`}
                 onClick={closeMenu}
               >
-                Bookshelf
+                My Bookshelf
+              </Link>
+              <Link
+                href="/reading-list"
+                className={`text-yellow hover:text-orange focus:text-orange ${
+                  isActive("/reading-list") ? "font-bold" : ""
+                }`}
+                onClick={closeMenu}
+              >
+                My Reading List
               </Link>
               <Link
                 href="/profile"

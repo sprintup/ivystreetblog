@@ -1,10 +1,11 @@
 // app/book/[id]/page.jsx
 
 import React from "react";
-import { getBookById } from "@services/dataService";
+import { getBookById, getBooklistsByBookId } from "@services/dataService";
 import { Suspense } from "react";
 import AddToReadingListButton from "@components/AddToReadingListButton";
 import BookImage from "./BookImage";
+import Link from "next/link";
 
 const ImagePlaceholder = () => (
   <div className="w-48 h-64 bg-gray-200 animate-pulse"></div>
@@ -13,6 +14,7 @@ const ImagePlaceholder = () => (
 export default async function BookPage({ params }) {
   const { id } = params;
   const book = await getBookById(id);
+  const booklists = await getBooklistsByBookId(id);
 
   if (!book) {
     return <div>Book not found.</div>;
@@ -87,6 +89,25 @@ export default async function BookPage({ params }) {
           <div className="mt-8">
             <AddToReadingListButton book={book} />
           </div>
+          {booklists.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-xl font-bold mb-4">
+                Booklists containing this book:
+              </h2>
+              <ul>
+                {booklists.map((booklist) => (
+                  <li key={booklist._id} className="mb-2">
+                    <Link
+                      href={`/booklist/${booklist._id}`}
+                      className="text-yellow hover:text-orange"
+                    >
+                      {booklist.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </div>
