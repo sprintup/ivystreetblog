@@ -31,7 +31,7 @@ const Nav = () => {
           <div className="flex items-center">
             {/* Logo */}
             <Link
-              href="/public-booklists"
+              href="/"
               onClick={closeMenu}
               style={{ textDecoration: "none" }}
             >
@@ -43,6 +43,14 @@ const Nav = () => {
                   height={40}
                   className="rounded-full"
                 />
+              </div>
+            </Link>
+            <Link
+              href="/public-booklists"
+              onClick={closeMenu}
+              style={{ textDecoration: "none" }}
+            >
+              <div className="flex items-center">
                 <span className="ml-2 text-yellow font-bold">
                   Ivy Street Blog
                 </span>
@@ -203,8 +211,8 @@ const Nav = () => {
               </Link>
               <Link
                 href="/reading-list"
-                className={`text-yellow hover:text-orange focus:text-orange ${
-                  isActive("/reading-list") ? "font-bold" : ""
+                className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
+                  isActive("/reading-list") ? "bg-primary" : ""
                 }`}
                 onClick={closeMenu}
               >

@@ -15,7 +15,7 @@ export default function RegisterPage() {
       <div className="bg-secondary p-8 rounded-lg shadow-md w-full max-w-4xl mx-4">
         <div className="flex flex-col md:flex-row md:justify-between md:items-start">
           <div className="w-full md:w-2/3">
-            <h2 className="text-3xl font-heading text-accent mb-6">Register</h2>
+            <h2 className="text-3xl text-accent mb-6">Register</h2>
             <div className="space-y-4">
               {/* GitHub Account */}
               <div>

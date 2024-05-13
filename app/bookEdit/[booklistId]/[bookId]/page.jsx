@@ -5,15 +5,15 @@ import { useRouter } from "next/navigation";
 export default function EditBook({ params }) {
   const { booklistId, bookId } = params;
   const [bookName, setBookName] = useState("");
-  const [author, setAuthor] = useState('');
-  const [description, setDescription] = useState('');
-  const [age, setAge] = useState('');
-  const [series, setSeries] = useState('');
-  const [publicationDate, setPublicationDate] = useState('');
-  const [publisher, setPublisher] = useState('');
-  const [isbn, setIsbn] = useState('');
-  const [link, setLink] = useState('');
-  const [source, setSource] = useState('');
+  const [author, setAuthor] = useState("");
+  const [description, setDescription] = useState("");
+  const [age, setAge] = useState("");
+  const [series, setSeries] = useState("");
+  const [publicationDate, setPublicationDate] = useState("");
+  const [publisher, setPublisher] = useState("");
+  const [isbn, setIsbn] = useState("");
+  const [link, setLink] = useState("");
+  const [source, setSource] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
@@ -43,7 +43,6 @@ export default function EditBook({ params }) {
 
     fetchBook();
   }, [bookId]);
-
 
   const handleUpdateBook = async (e) => {
     e.preventDefault();
@@ -78,15 +77,15 @@ export default function EditBook({ params }) {
       console.error("Error updating book:", error);
       setErrorMessage("An error occurred. Please try again.");
     }
-  };  
+  };
 
   return (
     <div className="mt-8">
-      <h4 className="text-lg font-heading text-yellow mb-4">Edit Book</h4>
+      <h4 className="text-lg text-yellow mb-4">Edit Book</h4>
       {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
       <form onSubmit={handleUpdateBook}>
         <div className="mb-4">
-          <label className="block text-lg font-accent mb-2">
+          <label className="block text-lg mb-2">
             Book Name:
             <input
               type="text"
@@ -97,7 +96,7 @@ export default function EditBook({ params }) {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-lg font-accent mb-2">
+          <label className="block text-lg mb-2">
             Author:
             <input
               type="text"
@@ -108,7 +107,7 @@ export default function EditBook({ params }) {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-lg font-accent mb-2">
+          <label className="block text-lg mb-2">
             Description:
             <textarea
               type="text"
@@ -119,7 +118,7 @@ export default function EditBook({ params }) {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-lg font-accent mb-2">
+          <label className="block text-lg mb-2">
             Age:
             <input
               type="text"
@@ -130,7 +129,7 @@ export default function EditBook({ params }) {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-lg font-accent mb-2">
+          <label className="block text-lg mb-2">
             Series:
             <input
               type="text"
@@ -141,7 +140,7 @@ export default function EditBook({ params }) {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-lg font-accent mb-2">
+          <label className="block text-lg mb-2">
             Publication Date:
             <input
               type="text"
@@ -152,7 +151,7 @@ export default function EditBook({ params }) {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-lg font-accent mb-2">
+          <label className="block text-lg mb-2">
             Publisher:
             <input
               type="text"
@@ -163,7 +162,7 @@ export default function EditBook({ params }) {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-lg font-accent mb-2">
+          <label className="block text-lg mb-2">
             ISBN:
             <input
               type="text"
@@ -174,7 +173,7 @@ export default function EditBook({ params }) {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-lg font-accent mb-2">
+          <label className="block text-lg mb-2">
             Link:
             <input
               type="text"
@@ -185,7 +184,7 @@ export default function EditBook({ params }) {
           </label>
         </div>
         <div className="mb-4">
-          <label className="block text-lg font-accent mb-2">
+          <label className="block text-lg mb-2">
             Source:
             <input
               type="text"
@@ -203,6 +202,5 @@ export default function EditBook({ params }) {
         </button>
       </form>
     </div>
-
   );
 }

@@ -75,13 +75,13 @@ export default function ProfilePage() {
 
   return (
     <div className="bg-primary text-accent p-4 rounded-lg max-w-4xl mx-auto">
-      <h1 className="text-2xl font-heading text-yellow mb-4">Profile</h1>
+      <h1 className="text-2xl text-yellow mb-4">Profile</h1>
       {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
       {successMessage && (
         <p className="text-green-500 mb-4">{successMessage}</p>
       )}
       <div className="mb-4">
-        <label className="block text-lg font-accent mb-2">
+        <label className="block text-lg mb-2">
           Public Profile Name:
           <input
             type="text"

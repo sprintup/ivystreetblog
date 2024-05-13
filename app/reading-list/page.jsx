@@ -2,12 +2,12 @@
 
 import React from "react";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { options } from "@auth/options";
 import { getUserByEmail, getBooksByIds } from "@services/dataService";
-import BookDetailsPublic from "@components/BookDetailsPublic";
+import ReadingListBook from "./ReadingListBook";
 
 export default async function ReadingListPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(options);
 
   if (!session) {
     return <div>Please log in to view your reading list.</div>;
@@ -17,6 +17,7 @@ export default async function ReadingListPage() {
   const trackedBooks = user.trackedBooks.filter(
     (book) => book.status === "to-read"
   );
+
   const bookIds = trackedBooks.map((book) => book.bookId);
   const books = await getBooksByIds(bookIds);
 
@@ -26,11 +27,18 @@ export default async function ReadingListPage() {
       {books.length === 0 ? (
         <p>Your reading list is empty.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <ul className="space-y-4">
           {books.map((book) => (
-            <BookDetailsPublic key={book._id} book={book} />
+            <ReadingListBook
+              key={book._id}
+              book={book}
+              trackedBook={trackedBooks.find(
+                (trackedBook) =>
+                  trackedBook.bookId.toString() === book._id.toString()
+              )}
+            />
           ))}
-        </div>
+        </ul>
       )}
     </div>
   );

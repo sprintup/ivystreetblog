@@ -21,7 +21,7 @@ const Footer = () => {
             </Link>
             <Link
               href="/register"
-              className="text-yellow hover:text-orange focus:text-orange"
+              className="text-yellow hover:text-orange focus:text-orange block px-2 rounded-md text-base font-medium bg-primary"
             >
               Register
             </Link>
