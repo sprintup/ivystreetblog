@@ -1,97 +1,11 @@
 // services/dataService.js
-import mongoose from "mongoose";
-import dbConnect from "@services/dbConnect";
+import handler from "./models";
+import {
+  getUserByEmail as getUserByEmailWithPopulatedBook,
+  updateTrackedBooks,
+} from "./_trackedBookService";
 
-const UserSchema = new mongoose.Schema({
-  login: String,
-  name: String,
-  email: String,
-  publicProfileName: {
-    type: String,
-    unique: true,
-    trim: true,
-    lowercase: true,
-  },
-  bookListIds: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Booklist",
-    },
-  ],
-  trackedBooks: [
-    {
-      bookId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Book",
-      },
-      status: {
-        type: String,
-        enum: ["to-read", "read"],
-        default: "to-read",
-      },
-      isFavorite: {
-        type: Boolean,
-        default: false,
-      },
-      review: String,
-      ratingPerceivedDifficulty: {
-        type: Number,
-        min: 1,
-        max: 10,
-        default: null,
-      },
-      isWishlistItem: {
-        type: Boolean,
-        default: false,
-      },
-      bookPriority: Number,
-    },
-  ],
-  favoriteBooklistIds: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Booklist",
-    },
-  ],
-});
-
-const BooklistSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  visibility: String,
-  booklistOwnerId: String,
-  bookIds: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Book",
-    },
-  ],
-});
-
-const BookSchema = new mongoose.Schema({
-  name: String,
-  Author: String,
-  Description: String,
-  Age: String,
-  Series: String,
-  Publication_Date: String,
-  Publisher: String,
-  ISBN: String,
-  Link: String,
-  Source: String,
-  BookOwner: String,
-});
-
-export default async function handler() {
-  await dbConnect();
-
-  const User = mongoose.models.User || mongoose.model("User", UserSchema);
-  const Book = mongoose.models.Book || mongoose.model("Book", BookSchema);
-  const Booklist =
-    mongoose.models.Booklist || mongoose.model("Booklist", BooklistSchema);
-
-  return { User, Book, Booklist };
-}
+export { getUserByEmailWithPopulatedBook, updateTrackedBooks };
 
 export async function createUser(login, name, email) {
   try {
@@ -550,25 +464,3 @@ export async function updateUserProfile(userEmail, updatedData) {
     throw error;
   }
 }
-
-// export async function getUserByEmail(email) {
-//   try {
-//     const { User } = await handler();
-//     const user = await User.findOne({ email });
-//     return JSON.parse(JSON.stringify(user));
-//   } catch (error) {
-//     console.error("Error getting user by email:", error);
-//     throw error;
-//   }
-// }
-
-// export async function getBooksByIds(bookIds) {
-//   try {
-//     const { Book } = await handler();
-//     const books = await Book.find({ _id: { $in: bookIds } });
-//     return JSON.parse(JSON.stringify(books));
-//   } catch (error) {
-//     console.error("Error getting books by IDs:", error);
-//     throw error;
-//   }
-// }
