@@ -25,7 +25,7 @@ const UserSchema = new mongoose.Schema({
       },
       status: {
         type: String,
-        enum: ["to-read", "read"],
+        enum: ["to-read", "finished"],
         default: "to-read",
       },
       isFavorite: {
