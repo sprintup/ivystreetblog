@@ -46,7 +46,7 @@ const Nav = () => {
               </div>
             </Link>
             <Link
-              href="/public-booklists"
+              href="/public-bookshelf"
               onClick={closeMenu}
               style={{ textDecoration: "none" }}
             >
@@ -97,9 +97,9 @@ const Nav = () => {
               {!session && (
                 <>
                   <Link
-                    href="/public-booklists"
+                    href="/public-bookshelf"
                     className={`text-yellow hover:text-orange focus:text-orange ${
-                      isActive("/public-booklists") ? "font-bold" : ""
+                      isActive("/public-bookshelf") ? "font-bold" : ""
                     }`}
                     onClick={closeMenu}
                   >
@@ -232,9 +232,9 @@ const Nav = () => {
           {!session && (
             <>
               <Link
-                href="/public-booklists"
+                href="/public-bookshelf"
                 className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive("/public-booklists") ? "bg-primary" : ""
+                  isActive("/public-bookshelf") ? "bg-primary" : ""
                 }`}
                 onClick={closeMenu}
               >

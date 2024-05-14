@@ -1,4 +1,4 @@
-// app/public-booklists/page.jsx
+// app/public-bookshelf/page.jsx
 
 import React from "react";
 import { getPublicBooklists, getUserById } from "@services/dataService";
@@ -10,11 +10,11 @@ export default async function PublicBooklistsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl text-yellow mb-4">Public Booklists</h1>
+      <h1 className="text-2xl mb-4">Public Bookshelf</h1>
       {publicBooklists.length === 0 ? (
         <p>No public booklists available.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {publicBooklists.map(async (booklist) => {
             const user = await getUserById(booklist.booklistOwnerId);
 

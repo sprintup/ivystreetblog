@@ -14,11 +14,12 @@ import { options } from "@auth/options";
 import BookModal from "@components/BookModal";
 import Link from "next/link";
 import styles from "./page.module.css";
+import { redirect } from "next/navigation";
 
 async function BookshelfData() {
   const session = await getServerSession(options);
   if (!session) {
-    throw new Error("User not authenticated");
+    redirect("/");
   }
 
   const exists = await getUserIdByEmail(session.user.email);
@@ -57,44 +58,74 @@ function BookshelfContent({ session, booklists }) {
           Add Booklist
         </Link>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {booklists.map((item) => (
-          <div
-            key={item.booklist._id}
-            className={`${styles.booklistCard} bg-secondary p-4 rounded-lg shadow-md relative`}
+      <div className="mt-2">
+        <p className="mb-2">
+          Public booklists will appear on the{" "}
+          <Link
+            href="/public-bookshelf"
+            className="text-yellow hover:text-orange"
           >
-            <h4 className="text-xl font-bold mb-1 mr-2">
-              {item.booklist.title}
-            </h4>
-            <div className={styles.descriptionContainer}>
-              <p
-                className={`${styles.descriptionText} text-sm mb-2 mr-2 border-l-2 border-solid border-dotted px-1`}
-              >
-                {item.booklist.description}
-              </p>
-            </div>
-            <p className="text-xs mb-2">
-              Visibility: {item.booklist.visibility}
-            </p>
-            <p className="text-xs">Books: {item.booklist.bookIds.length}</p>
-            {item.booklistOwner === session.user.email && (
-              <div className="absolute bottom-4 right-4 space-x-2">
-                <Link
-                  href={`/booklistEdit/${item.booklist._id}`}
-                  className="px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300 no-underline"
+            Public Booklists
+          </Link>{" "}
+          page, which can be accessed from the{" "}
+          <Link href="/profile" className="text-yellow hover:text-orange">
+            Profile
+          </Link>{" "}
+          page.
+        </p>
+      </div>
+      <details className="mb-4">
+        <summary className="text-yellow hover:text-orange cursor-pointer">
+          Show More Information
+        </summary>
+        <div className="mt-2">
+          <p>
+            Private reading lists are perfect for curating a list of books to
+            put on hold at the library, where the librarians will find them for
+            you and collect them all for you to pick up.
+          </p>
+        </div>
+      </details>
+      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+        {booklists
+          .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+          .map((item) => (
+            <div
+              key={item.booklist._id}
+              className={`${styles.booklistCard} bg-secondary p-4 rounded-lg shadow-md relative`}
+            >
+              <h4 className="text-xl font-bold mb-1 mr-2">
+                {item.booklist.title}
+              </h4>
+              <div className={styles.descriptionContainer}>
+                <p
+                  className={`${styles.descriptionText} text-sm mb-2 mr-2 border-l-2 border-solid border-dotted px-1`}
                 >
-                  Edit
-                </Link>
-                <Link
-                  href={`/booklist/${item.booklist._id}`}
-                  className="px-4 py-2 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition duration-300 no-underline"
-                >
-                  View
-                </Link>
+                  {item.booklist.description}
+                </p>
               </div>
-            )}
-          </div>
-        ))}
+              <p className="text-xs mb-2">
+                Visibility: {item.booklist.visibility}
+              </p>
+              <p className="text-xs">Books: {item.booklist.bookIds.length}</p>
+              {item.booklistOwner === session.user.email && (
+                <div className="absolute bottom-4 right-4 space-x-2">
+                  <Link
+                    href={`/booklistEdit/${item.booklist._id}`}
+                    className="px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300 no-underline"
+                  >
+                    Edit
+                  </Link>
+                  <Link
+                    href={`/booklist/${item.booklist._id}`}
+                    className="px-4 py-2 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition duration-300 no-underline"
+                  >
+                    View
+                  </Link>
+                </div>
+              )}
+            </div>
+          ))}
       </div>
       <BookModal />
     </>

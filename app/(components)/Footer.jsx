@@ -28,10 +28,10 @@ const Footer = () => {
           </div>
           <div className="flex flex-col items-start pl-4">
             <Link
-              href="/public-booklists"
+              href="/public-bookshelf"
               className="text-yellow hover:text-orange focus:text-orange block px-2 rounded-md text-base font-medium bg-primary"
             >
-              Public Booklists
+              Public Bookshelf
             </Link>
             <Link
               href="/"

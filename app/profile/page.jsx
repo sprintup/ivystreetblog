@@ -75,7 +75,7 @@ export default function ProfilePage() {
 
   return (
     <div className="bg-primary text-accent p-4 rounded-lg max-w-4xl mx-auto">
-      <h1 className="text-2xl text-yellow mb-4">Profile</h1>
+      <h1 className="text-2xl mb-4">Profile</h1>
       {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
       {successMessage && (
         <p className="text-green-500 mb-4">{successMessage}</p>
