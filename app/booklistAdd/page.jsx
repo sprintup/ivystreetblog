@@ -8,7 +8,7 @@ export default function BooklistPage() {
   const { data: session } = useSession({
     required: true,
     onUnauthenticated() {
-      return { redirect: "/api/auth/signin?callbackUrl=/bookshelf" };
+      return { redirect: "/api/auth/signin?callbackUrl=/my-bookshelf" };
     },
   });
 
@@ -41,8 +41,8 @@ export default function BooklistPage() {
         setTitle("");
         setDescription("");
         setVisibility("public");
-        // Redirect to the /bookshelf page and reload it
-        router.push("/bookshelf");
+        // Redirect to the /my-bookshelf page and reload it
+        router.push("/my-bookshelf");
         router.refresh();
       } else {
         console.error("Error adding booklist");

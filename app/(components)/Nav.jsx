@@ -66,9 +66,18 @@ const Nav = () => {
                     Welcome, {session.user.name}!
                   </span>
                   <Link
-                    href="/bookshelf"
+                    href="/public-bookshelf"
                     className={`text-yellow hover:text-orange focus:text-orange ${
-                      isActive("/bookshelf") ? "font-bold" : ""
+                      isActive("/public-bookshelf") ? "font-bold" : ""
+                    }`}
+                    onClick={closeMenu}
+                  >
+                    Public Bookshelf
+                  </Link>
+                  <Link
+                    href="/my-bookshelf"
+                    className={`text-yellow hover:text-orange focus:text-orange ${
+                      isActive("/my-bookshelf") ? "font-bold" : ""
                     }`}
                     onClick={closeMenu}
                   >
@@ -137,7 +146,7 @@ const Nav = () => {
                 </Link>
               ) : (
                 <Link
-                  href="/api/auth/signin?callbackUrl=/bookshelf"
+                  href="/api/auth/signin?callbackUrl=/my-bookshelf"
                   className="text-yellow hover:text-orange focus:text-orange"
                   onClick={closeMenu}
                 >
@@ -201,9 +210,18 @@ const Nav = () => {
                 Welcome, {session.user.name}!
               </span>
               <Link
-                href="/bookshelf"
+                href="/public-bookshelf"
                 className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive("/bookshelf") ? "bg-primary" : ""
+                  isActive("/public-bookshelf") ? "bg-primary" : ""
+                }`}
+                onClick={closeMenu}
+              >
+                Public Bookshelf
+              </Link>
+              <Link
+                href="/my-bookshelf"
+                className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
+                  isActive("/my-bookshelf") ? "bg-primary" : ""
                 }`}
                 onClick={closeMenu}
               >
@@ -272,7 +290,7 @@ const Nav = () => {
             </Link>
           ) : (
             <Link
-              href="/api/auth/signin?callbackUrl=/bookshelf"
+              href="/api/auth/signin?callbackUrl=/my-bookshelf"
               className="text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium"
               onClick={closeMenu}
             >

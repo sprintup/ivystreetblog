@@ -48,7 +48,7 @@ export default function EditBooklistPage({ params }) {
         body: JSON.stringify({ title, description, visibility }),
       });
       if (response.ok) {
-        router.push("/bookshelf");
+        router.push("/my-bookshelf");
         router.refresh();
       } else {
         console.error("Error updating booklist:", response.statusText);
@@ -66,7 +66,7 @@ export default function EditBooklistPage({ params }) {
         method: "DELETE",
       });
       if (response.ok) {
-        router.push("/bookshelf");
+        router.push("/my-bookshelf");
         router.refresh();
       } else {
         console.error("Error deleting booklist:", response.statusText);

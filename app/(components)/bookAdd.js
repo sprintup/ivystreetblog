@@ -21,7 +21,7 @@ function AddBookForm({ booklistId, onBookAdded }) {
   const { data: session } = useSession({
     required: true,
     onUnauthenticated() {
-      return { redirect: "/api/auth/signin?callbackUrl=/bookshelf" };
+      return { redirect: "/api/auth/signin?callbackUrl=/my-bookshelf" };
     },
   });
 

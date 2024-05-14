@@ -9,7 +9,7 @@ export default function BookPublicDetails({ book }) {
   }
 
   return (
-    <div className="bg-secondary p-4 rounded-lg shadow-md flex flex-col break-inside-avoid mb-4">
+    <div className="bg-secondary p-4 rounded-lg shadow-md flex flex-col break-inside-avoid mb-2">
       <Link href={`/book/${book._id}`}>
         <h2 className="text-xl text-yellow mb-2 hover:underline">
           {book.Name}

@@ -28,7 +28,7 @@ export default async function BooklistPage({ params }) {
   return (
     <div className="bg-primary text-accent p-4 rounded-lg">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl text-yellow">{booklist.title}</h1>
+        <h1 className="text-2xl">{booklist.title}</h1>
         <ShareButton url={`${process.env.NEXTAUTH_URL}/booklist/${id}`} />
       </div>
       <p className="text-lg mb-4">{booklist.description}</p>

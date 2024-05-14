@@ -1,4 +1,4 @@
-// app/bookshelf/page.jsx
+// app/my-bookshelf/page.jsx
 
 import React, { Suspense } from "react";
 import BookDetails from "@components/BookDetails";
@@ -36,7 +36,7 @@ export default async function Bookshelf() {
 
   return (
     <>
-      <h1 className="text-4xl font-bold mb-4">Bookshelf</h1>
+      <h1 className="text-4xl font-bold mb-4">My Bookshelf</h1>
       <Suspense fallback={<div>Loading booklists...</div>}>
         <BookshelfContent session={session} booklists={booklists} />
       </Suspense>
