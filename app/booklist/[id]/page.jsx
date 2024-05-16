@@ -5,7 +5,10 @@ import {
   getBooklistById,
   getUserById,
   getBooksByIds,
-} from "@services/dataService";
+  getBooklistsByUserId,
+} from "@/interactors/_baseInteractor";
+import { getServerSession } from "next-auth/next";
+import { options } from "@auth/options";
 import ShareButton from "@/app/(components)/ShareButton";
 import Link from "next/link";
 import BooklistMasonry from "./BooklistMasonry";
@@ -25,6 +28,11 @@ export default async function BooklistPage({ params }) {
   const user = await getUserById(booklist.booklistOwnerId);
   const books = await getBooksByIds(booklist.bookIds);
 
+  const session = await getServerSession(options);
+  const userBooklists = session
+    ? await getBooklistsByUserId(session.user.id)
+    : [];
+
   return (
     <div className="bg-primary text-accent p-4 rounded-lg">
       <div className="flex justify-between items-center mb-4">
@@ -43,7 +51,10 @@ export default async function BooklistPage({ params }) {
           </Link>
         </p>
       )}
-      <BooklistMasonry booklist={{ ...booklist, books }} />
+      <BooklistMasonry
+        booklist={{ ...booklist, books }}
+        userBooklists={userBooklists}
+      />
     </div>
   );
 }

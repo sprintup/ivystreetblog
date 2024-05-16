@@ -1,5 +1,5 @@
 // app/api/booklist/route.js
-import { getUserIdByEmail, addUserBooklist } from "@services/dataService";
+import { getUserIdByEmail, addUserBooklist } from "@/interactors/_baseInteractor";
 
 export async function POST(request) {
   const { userEmail, booklist } = await request.json();

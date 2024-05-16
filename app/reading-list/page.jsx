@@ -3,7 +3,7 @@
 import React from "react";
 import { getServerSession } from "next-auth/next";
 import { options } from "@auth/options";
-import { getUserByEmail, getBooksByIds } from "@services/dataService";
+import { getUserByEmail, getBooksByIds } from "@/interactors/_baseInteractor";
 import ToReadBook from "./ToReadBook";
 import FinishedBook from "./FinishedBook";
 

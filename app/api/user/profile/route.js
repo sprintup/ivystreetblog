@@ -2,7 +2,7 @@
 
 import { getServerSession } from "next-auth/next";
 import { options } from "@auth/options";
-import { getUserProfile, updateUserProfile } from "@services/dataService";
+import { getUserProfile, updateUserProfile } from "@/interactors/_baseInteractor";
 
 export async function GET(request) {
   const session = await getServerSession(options);

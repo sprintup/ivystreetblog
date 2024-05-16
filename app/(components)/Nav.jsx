@@ -62,9 +62,7 @@ const Nav = () => {
             <div className="ml-10 flex items-baseline space-x-4">
               {session && (
                 <>
-                  <span className="text-yellow">
-                    Welcome, {session.user.name}!
-                  </span>
+                  <span>Welcome, {session.user.name}!</span>
                   <Link
                     href="/public-bookshelf"
                     className={`text-yellow hover:text-orange focus:text-orange ${
@@ -206,7 +204,7 @@ const Nav = () => {
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
           {session && (
             <>
-              <span className="text-yellow block px-3 py-2">
+              <span className="block px-3 py-2">
                 Welcome, {session.user.name}!
               </span>
               <Link

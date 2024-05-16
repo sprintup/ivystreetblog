@@ -1,5 +1,5 @@
 
-import { getBooklistById, updateBooklist, removeBooklist } from '@services/dataService';
+import { getBooklistById, updateBooklist, removeBooklist } from '@/interactors/_baseInteractor';
 
 export async function GET(request, { params }) {
     try {

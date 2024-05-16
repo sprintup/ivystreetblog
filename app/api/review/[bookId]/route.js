@@ -2,7 +2,7 @@
 
 import { getServerSession } from "next-auth/next";
 import { options } from "@auth/options";
-import { getUserByEmail, updateTrackedBooks } from "@services/dataService";
+import { getUserByEmail, updateTrackedBooks } from "@/interactors/_baseInteractor";
 
 export async function PUT(request, { params }) {
   const session = await getServerSession(options);

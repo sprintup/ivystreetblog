@@ -1,7 +1,7 @@
 // app/public-bookshelf/page.jsx
 
 import React from "react";
-import { getPublicBooklists, getUserById } from "@services/dataService";
+import { getPublicBooklists, getUserById } from "@/interactors/_baseInteractor";
 import Link from "next/link";
 import styles from "./page.module.css";
 

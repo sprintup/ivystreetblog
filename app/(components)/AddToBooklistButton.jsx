@@ -6,15 +6,31 @@ import React, { useState } from "react";
 
 export default function AddToBooklistButton({ book, userBooklists }) {
   const [selectedBooklist, setSelectedBooklist] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleBooklistChange = (e) => {
     setSelectedBooklist(e.target.value);
   };
 
   const handleAddToBooklist = async () => {
-    // Implement the logic to add the book to the selected booklist
-    // You can make an API call here to update the booklist
-    // Example: await addBookToBooklist(selectedBooklist, book);
+    try {
+      const response = await fetch(`/api/booklist/${selectedBooklist}/book`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ bookId: book._id }),
+      });
+
+      if (response.ok) {
+        setMessage("Book added to the booklist successfully!");
+      } else {
+        throw new Error("Failed to add book to the booklist.");
+      }
+    } catch (error) {
+      console.error("Error adding book to the booklist:", error);
+      setMessage("Failed to add book to the booklist. Please try again.");
+    }
   };
 
   return (
@@ -22,10 +38,10 @@ export default function AddToBooklistButton({ book, userBooklists }) {
       <select
         value={selectedBooklist}
         onChange={handleBooklistChange}
-        className="px-2 py-1 rounded-md bg-primary text-yellow"
+        className="my-2 px-2 py-1 rounded-md bg-primary text-yellow"
       >
         <option value="">Select Booklist</option>
-        {userBooklists?.map((booklist) => (
+        {userBooklists.map((booklist) => (
           <option key={booklist._id} value={booklist._id}>
             {booklist.title}
           </option>
@@ -33,10 +49,11 @@ export default function AddToBooklistButton({ book, userBooklists }) {
       </select>
       <button
         onClick={handleAddToBooklist}
-        className="px-2 py-1 rounded-md bg-yellow text-primary"
+        className="my-2 px-2 py-1 rounded-md bg-yellow text-primary"
       >
         Add To Booklist
       </button>
+      {message && <p className="mt-2 text-sm text-yellow">{message}</p>}
     </div>
   );
 }

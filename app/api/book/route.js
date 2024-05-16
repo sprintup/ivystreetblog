@@ -1,4 +1,4 @@
-import { addBookToBooklist, updateBookInBooklist, deleteBook } from '@services/dataService';
+import { addBookToBooklist, updateBookInBooklist, deleteBook } from '@/interactors/_baseInteractor';
 
 export async function POST(request) {
     try {

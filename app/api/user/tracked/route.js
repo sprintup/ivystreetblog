@@ -1,6 +1,6 @@
 // app/api/user/tracked/route.js
 
-import { addBookToTrackedBooks, getUserIdByEmail } from "@services/dataService";
+import { addBookToTrackedBooks, getUserIdByEmail } from "@/interactors/_baseInteractor";
 import { getServerSession } from "next-auth/next";
 import { options } from "@auth/options";
 

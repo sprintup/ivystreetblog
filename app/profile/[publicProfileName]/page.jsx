@@ -4,7 +4,7 @@ import React from "react";
 import {
   getUserByPublicProfileName,
   getPublicBooklistsByUserId,
-} from "@services/dataService";
+} from "@/interactors/_baseInteractor";
 import Link from "next/link";
 import styles from "./page.module.css";
 

@@ -1,6 +1,6 @@
 // app/api/book/[id]/route.js
 
-import { getBookById } from '@services/dataService';
+import { getBookById } from '@/interactors/_baseInteractor';
 
 export async function GET(request, { params }) {
   try {

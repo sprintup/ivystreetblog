@@ -1,7 +1,10 @@
 // app/book/[id]/page.jsx
 
 import React from "react";
-import { getBookById, getBooklistsByBookId } from "@services/dataService";
+import {
+  getBookById,
+  getBooklistsByBookId,
+} from "@/interactors/_baseInteractor";
 import { Suspense } from "react";
 import AddToReadingListButton from "@components/AddToReadingListButton";
 import BookImage from "./BookImage";
