@@ -1,32 +1,27 @@
 // CreateUserInteractor.ts
 
 import { BaseInteractor } from "@interactors/BaseInteractor";
-import { IUser, handler } from "@gateways/models";
+import { IUser } from "@/domain/models";
+import { UserRepository } from "@/repositories/UserRepository";
 
 export class CreateUserInteractor extends BaseInteractor {
+  static async create() {
+    const userRepo = new UserRepository();
+    await userRepo.initializeModels();
+    const interactor = new CreateUserInteractor({userRepo});
+    return interactor;
+  }
+  
   async findOrCreateUser(login: string, name: string, email: string): Promise<IUser> {
     try {
-      const { User } = await handler();
-      
       // Check if the user already exists based on the email
-      const existingUser = await User.findOne({ email });
-      
+      const existingUser = await this.userRepo.findUser(email);
       if (existingUser) {
-        // console.log("User already exists:", existingUser);
         return this.convertToPlainObject(existingUser) as IUser;
       }
-      
-      const newUser = new User({
-        login,
-        name,
-        email,
-        publicProfileName: email.split("@")[0],
-        bookListIds: [],
-        trackedBooks: [],
-      });
-      
-      await newUser.save();
-      console.log("Created new user:", newUser);
+
+      const newUser = await this.userRepo.createUser(login, name, email);
+
       return this.convertToPlainObject(newUser) as IUser;
     } catch (error) {
       console.error("Error finding or creating user:", error);

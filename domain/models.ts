@@ -1,4 +1,4 @@
-import dbConnect from "@gateways/dbConnect";
+import dbConnect from "@/repositories/dbConnect";
 import mongoose, { Document, Model } from "mongoose";
 
 export interface IUser extends Document {

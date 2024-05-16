@@ -1,7 +1,7 @@
 // UpdateUserProfileInteractor.ts
 
 import { BaseInteractor } from "../BaseInteractor";
-import { IUser } from "@gateways/models";
+import { IUser } from "@/domain/models";
 
 interface UpdateUserProfileData {
   publicProfileName?: string;

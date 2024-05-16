@@ -16,7 +16,7 @@ async function BookshelfData() {
     redirect("/");
   }
 
-  const createUserInteractor = new CreateUserInteractor();
+  const createUserInteractor = await CreateUserInteractor.create();
   const user = await createUserInteractor.findOrCreateUser(
     session.user.login,
     session.user.name,
@@ -24,7 +24,7 @@ async function BookshelfData() {
   );
 
   const readBooklistsInteractor = await ReadBooklistsInteractor.create();
-  const booklists = await readBooklistsInteractor.execute(session.user.email);
+  const booklists = await readBooklistsInteractor.execute(user.email);
   return { session, booklists };
 }
 

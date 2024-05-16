@@ -1,7 +1,7 @@
 // UpdateBooklistInteractor.ts
 
 import { BaseInteractor } from "../BaseInteractor";
-import { IBooklist } from "@gateways/models";
+import { IBooklist } from "@/domain/models";
 
 interface UpdateBooklistData {
   title?: string;

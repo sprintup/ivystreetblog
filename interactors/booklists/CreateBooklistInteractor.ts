@@ -1,7 +1,7 @@
 // CreateBooklistInteractor.ts
 
 import { BaseInteractor } from "../BaseInteractor";
-import { IUser, IBooklist } from "@gateways/models";
+import { IUser, IBooklist } from "@/domain/models";
 
 interface BooklistInput {
   title: string;

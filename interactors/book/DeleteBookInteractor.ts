@@ -1,7 +1,7 @@
 // DeleteBookInteractor.ts
 
 import { BaseInteractor } from "../BaseInteractor";
-import { IBook } from "@gateways/models";
+import { IBook } from "@/domain/models";
 
 /**
  * DeleteBookInteractor

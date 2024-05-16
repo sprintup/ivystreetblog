@@ -1,7 +1,9 @@
 // interactors/booklists/ReadBooklistsInteractor.ts
 
 import { BaseInteractor } from "@interactors/BaseInteractor";
-import { IBooklist } from "@gateways/models";
+import { IBooklist } from "@/domain/models";
+import { UserRepository } from "@/repositories/UserRepository";
+import { BooklistRepository } from "@/repositories/BooklistRepository";
 
 /**
  * ReadBooklistsInteractor
@@ -15,27 +17,13 @@ import { IBooklist } from "@gateways/models";
  */
 export class ReadBooklistsInteractor extends BaseInteractor {
   static async create() {
-    const interactor = new ReadBooklistsInteractor();
-    await interactor.initializeModels();
+    const booklistRepo = new BooklistRepository();
+    await booklistRepo.initializeModels();
+    const interactor = new ReadBooklistsInteractor({booklistRepo});
     return interactor;
   }
 
   async execute(userEmail: string): Promise<IBooklist[]> {
-    try {
-      const user = await this.User.findOne({ email: userEmail }).populate<{ bookListIds: IBooklist[] }>({
-        path: 'bookListIds',
-        model: this.Booklist.modelName,
-      });
-      if (!user) {
-        console.error("No user found with the provided userEmail:", userEmail);
-        return [];
-      }
-
-      const booklists: IBooklist[] = user.bookListIds;
-      return booklists;
-    } catch (error) {
-      console.error("Error fetching booklists:", error);
-      throw error;
-    }
+    return this.booklistRepo.getBooklistsByUserEmail(userEmail);
   }
 }

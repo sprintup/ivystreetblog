@@ -1,5 +1,5 @@
 import { BaseInteractor } from "../BaseInteractor";
-import { IBooklist, IBook } from "@gateways/models";
+import { IBooklist, IBook } from "@/domain/models";
 
 interface BookData {
   title: string;

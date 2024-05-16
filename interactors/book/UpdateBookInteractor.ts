@@ -1,7 +1,7 @@
 // UpdateBookInteractor.ts
 
 import { BaseInteractor } from "../BaseInteractor";
-import { IBook } from "@gateways/models";
+import { IBook } from "@/domain/models";
 
 interface UpdateBookData {
   [key: string]: any;
