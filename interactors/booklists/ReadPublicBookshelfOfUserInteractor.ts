@@ -1,6 +1,6 @@
 // ReadPublicBookshelfOfUserInteractor.ts
 
-import { BaseInteractor } from "../../BaseInteractor";
+import { BaseInteractor } from "../BaseInteractor";
 import { IBooklist } from "@/domain/models";
 
 /**
@@ -15,21 +15,6 @@ import { IBooklist } from "@/domain/models";
  */
 export class ReadPublicBookshelfOfUserInteractor extends BaseInteractor {
   async execute(userId: string): Promise<IBooklist[]> {
-    try {
-      const user = await this.User.findById(userId).populate({
-        path: "bookListIds",
-        match: { visibility: "public" },
-      });
-
-      if (!user) {
-        console.error("User not found with the provided userId:", userId);
-        return [];
-      }
-
-      return this.convertToPlainObject(user.bookListIds) as IBooklist[];
-    } catch (error) {
-      console.error("Error getting public booklists:", error);
-      throw error;
-    }
+    return this.booklistRepo.getPublicBooklistsByUserId(userId);
   }
 }

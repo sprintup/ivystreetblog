@@ -16,16 +16,6 @@ import { IBooklist } from "@/domain/models";
  */
 export class ReadBooklistInteractor extends BaseInteractor {
   async execute(booklistId: string): Promise<IBooklist | null> {
-    try {
-      const booklist = await this.Booklist.findById(booklistId);
-      if (!booklist) {
-        console.error("No booklist found with the provided booklistId:", booklistId);
-        return null;
-      }
-      return this.convertToPlainObject(booklist) as IBooklist;
-    } catch (error) {
-      console.error("Error getting booklist by ID:", error);
-      throw error;
-    }
+    return this.booklistRepo.getBooklistById(booklistId);
   }
 }

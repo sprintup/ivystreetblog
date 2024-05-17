@@ -1,4 +1,5 @@
-import { BaseInteractor } from "../../BaseInteractor";
+import { BooklistRepository } from "@/repositories/BooklistRepository";
+import { BaseInteractor } from "../BaseInteractor";
 import { IBooklist } from "@/domain/models";
 
 /**
@@ -9,6 +10,12 @@ import { IBooklist } from "@/domain/models";
  * Then I can see all the public booklists.
  */
 export class ReadPublicBookshelfInteractor extends BaseInteractor {
+  static async create() {
+    const booklistRepo = new BooklistRepository();
+    await booklistRepo.initializeModels();
+    const interactor = new ReadPublicBookshelfInteractor({booklistRepo});
+    return interactor;
+  }
   /**
    * @method execute
    *
@@ -17,12 +24,6 @@ export class ReadPublicBookshelfInteractor extends BaseInteractor {
    * @returns {Promise<IBooklist[]>} A promise that resolves to an array of public booklists.
    */
   async execute(): Promise<IBooklist[]> {
-    try {
-      const publicBooklists = await this.Booklist.find({ visibility: "public" });
-      return publicBooklists.map(this.convertToPlainObject) as IBooklist[];
-    } catch (error) {
-      console.error("Error getting public booklists:", error);
-      throw error;
-    }
+    return this.booklistRepo.getPublicBooklists();
   }
 }

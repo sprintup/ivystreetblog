@@ -1,12 +1,14 @@
 // app/public-bookshelf/page.jsx
 
 import React from "react";
-import { getPublicBooklists, getUserById } from "@/interactors/_baseInteractor";
+import { ReadPublicBookshelfInteractor } from "@interactors/booklists/ReadPublicBookshelfInteractor";
 import Link from "next/link";
 import styles from "./page.module.css";
 
 export default async function PublicBooklistsPage() {
-  const publicBooklists = await getPublicBooklists();
+  const readPublicBookshelfInteractor =
+    await ReadPublicBookshelfInteractor.create();
+  const publicBooklists = await readPublicBookshelfInteractor.execute();
 
   return (
     <div>
@@ -16,7 +18,7 @@ export default async function PublicBooklistsPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {publicBooklists.map(async (booklist) => {
-            const user = await getUserById(booklist.booklistOwnerId);
+            const booklistOwner = booklist.booklistOwnerId;
 
             return (
               <div
@@ -32,14 +34,14 @@ export default async function PublicBooklistsPage() {
                   </p>
                 </div>
                 <p className="text-xs mb-2">Books: {booklist.bookIds.length}</p>
-                {user && (
+                {booklistOwner && (
                   <p className="text-sm">
                     Booklist creator:{" "}
                     <Link
-                      href={`/profile/${user.publicProfileName}`}
+                      href={`/profile/${booklistOwner.publicProfileName}`}
                       className="text-yellow hover:text-orange"
                     >
-                      {user.publicProfileName}
+                      {booklistOwner.publicProfileName}
                     </Link>
                   </p>
                 )}

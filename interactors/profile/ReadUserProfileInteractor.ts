@@ -15,16 +15,6 @@ import { IUser } from "@/domain/models";
  */
 export class ReadUserProfileInteractor extends BaseInteractor {
   async execute(userEmail: string): Promise<IUser | null> {
-    try {
-      const user = await this.User.findOne({ email: userEmail });
-      if (!user) {
-        console.error("No user found with the provided email:", userEmail);
-        return null;
-      }
-      return this.convertToPlainObject(user) as IUser;
-    } catch (error) {
-      console.error("Error getting user profile:", error);
-      throw error;
-    }
+    return this.profileRepo.getUserByEmail(userEmail);
   }
 }

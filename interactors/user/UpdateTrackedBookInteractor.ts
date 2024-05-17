@@ -1,3 +1,6 @@
+import { IUser } from "@/domain/models";
+import { BaseInteractor } from "../BaseInteractor";
+
 /**
  * @class UpdateTrackedBookInteractor
  *
@@ -16,17 +19,6 @@ export class UpdateTrackedBookInteractor extends BaseInteractor {
      * @returns {Promise<IUser | null>} A promise that resolves to the updated user or null if not found.
      */
     async execute(userId: string, updatedTrackedBooks: Array<string>): Promise<IUser | null> {
-      try {
-        const user = await this.User.findById(userId);
-        if (!user) {
-          throw new Error("User not found");
-        }
-        user.trackedBooks = updatedTrackedBooks;
-        await user.save();
-        return this.convertToPlainObject(user) as IUser;
-      } catch (error) {
-        console.error("Error updating tracked books:", error);
-        throw error;
-      }
+      return this.userRepo.updateTrackedBooks(userId, updatedTrackedBooks);
     }
   }

@@ -15,12 +15,6 @@ import { IBook } from "@/domain/models";
  */
 export class ReadBookInteractor extends BaseInteractor {
   async execute(bookIds: string[]): Promise<IBook[]> {
-    try {
-      const books = await this.Book.find({ _id: { $in: bookIds } });
-      return this.convertToPlainObject(books) as IBook[];
-    } catch (error) {
-      console.error("Error getting books by IDs:", error);
-      throw error;
-    }
+    return this.bookRepo.getBooksByIds(bookIds);
   }
 }

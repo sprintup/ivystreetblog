@@ -21,33 +21,7 @@ interface BooklistInput {
  * @returns {Promise<IUser | null>} A promise that resolves to the updated user or null if not found.
  */
 export class CreateBooklistInteractor extends BaseInteractor {
-  async execute(userId: string, booklist: BooklistInput): Promise<IUser | null> {
-    try {
-      const user = await this.User.findById(userId);
-      if (!user) {
-        console.error("No user found with the provided userId:", userId);
-        return null;
-      }
-
-      const currentDate = new Date();
-
-      const newBooklist = new this.Booklist({
-        title: booklist.title,
-        description: booklist.description,
-        visibility: booklist.visibility,
-        booklistOwnerId: userId,
-        createdAt: currentDate,
-        updatedAt: currentDate,
-      });
-      await newBooklist.save();
-
-      user.bookListIds?.push(newBooklist._id);
-      await user.save();
-
-      return this.convertToPlainObject(user) as IUser;
-    } catch (error) {
-      console.error("Error adding booklist to user's collection:", error);
-      throw error;
-    }
+  async execute(userEmail: string, booklist: BooklistInput): Promise<IUser | null> {
+    return this.booklistRepo.createBooklist(userEmail, booklist);
   }
 }

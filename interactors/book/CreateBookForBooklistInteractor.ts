@@ -21,26 +21,6 @@ interface BookData {
  */
 export class CreateBookForBooklistInteractor extends BaseInteractor {
   async execute(booklistId: string, bookData: BookData): Promise<IBook | null> {
-    try {
-      const booklist = await this.Booklist.findOne({ _id: booklistId });
-      if (!booklist) {
-        console.error("No booklist found with the provided booklistId:", booklistId);
-        return null;
-      }
-
-      // Create a new book document
-      const newBook = new this.Book(bookData);
-      await newBook.save();
-
-      // Add the ObjectId of the new book to the bookIds array of the booklist
-      booklist.bookIds.push(newBook._id);
-      await booklist.save();
-
-      console.log("Book added to booklist:", newBook);
-      return this.convertToPlainObject(newBook) as IBook;
-    } catch (error) {
-      console.error("Error adding book to booklist:", error);
-      throw error;
-    }
+    return this.bookRepo.addNewBookToBooklist(booklistId, bookData);
   }
 }

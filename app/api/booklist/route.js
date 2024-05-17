@@ -1,12 +1,12 @@
 // app/api/booklist/route.js
 import { getUserIdByEmail, addUserBooklist } from "@/interactors/_baseInteractor";
+import { CreateBooklistInteractor } from "@interactors/booklists/CreateBooklistInteractor"
 
 export async function POST(request) {
   const { userEmail, booklist } = await request.json();
   try {
-    const userId = await getUserIdByEmail(userEmail);
-    if (userId) {
-      const result = await addUserBooklist(userId, booklist);
+    const result = await addUserBooklist(userEmail, booklist);
+    if (result) {
       return new Response(JSON.stringify(result), { status: 200 });
     } else {
       console.error("No user found with the provided email:", userEmail);

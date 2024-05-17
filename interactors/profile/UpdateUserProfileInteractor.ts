@@ -21,29 +21,6 @@ interface UpdateUserProfileData {
  */
 export class UpdateUserProfileInteractor extends BaseInteractor {
   async execute(userEmail: string, updatedData: UpdateUserProfileData): Promise<IUser | null> {
-    try {
-      // Check if the public profile name is already taken by another user
-      const existingUser = await this.User.findOne({
-        publicProfileName: updatedData.publicProfileName,
-      });
-      if (existingUser && existingUser.email !== userEmail) {
-        throw new Error("Public profile name is already taken.");
-      }
-
-      const user = await this.User.findOneAndUpdate(
-        { email: userEmail },
-        { $set: updatedData },
-        { new: true }
-      );
-      if (!user) {
-        console.error("No user found with the provided email:", userEmail);
-        return null;
-      }
-      console.log("User profile updated:", user);
-      return this.convertToPlainObject(user) as IUser;
-    } catch (error) {
-      console.error("Error updating user profile:", error);
-      throw error;
-    }
+    return this.profileRepo.updateUserProfile(userEmail, updatedData);
   }
 }

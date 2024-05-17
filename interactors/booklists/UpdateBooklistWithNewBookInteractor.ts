@@ -19,19 +19,7 @@ export class UpdateBooklistWithNewBookInteractor extends BaseInteractor {
    * @returns {Promise<void>} A promise that resolves when the operation is complete.
    */
   async addBook(booklistId: string, bookId: string): Promise<void> {
-    try {
-      const booklist = await this.Booklist.findById(booklistId);
-      if (!booklist) {
-        throw new Error("Booklist not found");
-      }
-      if (!booklist.bookIds.includes(bookId)) {
-        booklist.bookIds.push(bookId);
-        await booklist.save();
-      }
-    } catch (error) {
-      console.error("Error adding book to the booklist:", error);
-      throw error;
-    }
+    
   }
 
   /**
@@ -43,12 +31,6 @@ export class UpdateBooklistWithNewBookInteractor extends BaseInteractor {
    * @returns {Promise<IBooklist[]>} A promise that resolves to an array of the user's booklists.
    */
   async getBooklists(userId: string): Promise<IBooklist[]> {
-    try {
-      const booklists = await this.Booklist.find({ booklistOwnerId: userId });
-      return booklists.map(this.convertToPlainObject) as IBooklist[];
-    } catch (error) {
-      console.error("Error getting booklists by user ID:", error);
-      throw error;
-    }
+    return this.booklistRepo.getBooklistsByUserId(userId);
   }
 }

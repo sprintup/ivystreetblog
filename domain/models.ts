@@ -105,7 +105,10 @@ const BooklistSchema = new mongoose.Schema({
   title: String,
   description: String,
   visibility: String,
-  booklistOwnerId: String,
+  booklistOwnerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   bookIds: [
     {
       type: mongoose.Schema.Types.ObjectId,

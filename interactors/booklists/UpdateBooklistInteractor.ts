@@ -22,27 +22,6 @@ interface UpdateBooklistData {
  */
 export class UpdateBooklistInteractor extends BaseInteractor {
   async execute(booklistId: string, updatedData: UpdateBooklistData): Promise<IBooklist | null> {
-    try {
-      const booklist = await this.Booklist.findByIdAndUpdate(
-        booklistId,
-        {
-          $set: {
-            title: updatedData.title,
-            description: updatedData.description,
-            visibility: updatedData.visibility,
-            updatedAt: new Date(),
-          },
-        },
-        { new: true }
-      );
-      if (!booklist) {
-        console.error("No booklist found with the provided booklistId:", booklistId);
-        return null;
-      }
-      return this.convertToPlainObject(booklist) as IBooklist;
-    } catch (error) {
-      console.error("Error updating booklist:", error);
-      throw error;
-    }
+    return this.booklistRepo.updateBooklist(booklistId, updatedData);
   }
 }
