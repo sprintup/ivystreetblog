@@ -1,5 +1,6 @@
 // Read BooklistInteractor.ts
 
+import { BooklistRepository } from "@/repositories/BooklistRepository";
 import { BaseInteractor } from "../BaseInteractor";
 import { IBooklist } from "@/domain/models";
 
@@ -15,6 +16,13 @@ import { IBooklist } from "@/domain/models";
  * @returns {Promise<IBooklist | null>} A promise that resolves to the booklist object or null if not found.
  */
 export class ReadBooklistInteractor extends BaseInteractor {
+  static async create() {
+    const booklistRepo = new BooklistRepository();
+    await booklistRepo.initializeModels();
+    const interactor = new ReadBooklistInteractor({booklistRepo});
+    return interactor;
+  }
+  
   async execute(booklistId: string): Promise<IBooklist | null> {
     return this.booklistRepo.getBooklistById(booklistId);
   }

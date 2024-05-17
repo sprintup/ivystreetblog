@@ -1,5 +1,6 @@
 // CreateBooklistInteractor.ts
 
+import { BooklistRepository } from "@/repositories/BooklistRepository";
 import { BaseInteractor } from "../BaseInteractor";
 import { IUser, IBooklist } from "@/domain/models";
 
@@ -21,6 +22,13 @@ interface BooklistInput {
  * @returns {Promise<IUser | null>} A promise that resolves to the updated user or null if not found.
  */
 export class CreateBooklistInteractor extends BaseInteractor {
+  static async create() {
+    const booklistRepo = new BooklistRepository();
+    await booklistRepo.initializeModels();
+    const interactor = new CreateBooklistInteractor({booklistRepo});
+    return interactor;
+  }
+
   async execute(userEmail: string, booklist: BooklistInput): Promise<IUser | null> {
     return this.booklistRepo.createBooklist(userEmail, booklist);
   }
