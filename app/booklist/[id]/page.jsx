@@ -1,12 +1,7 @@
 // app/booklist/[id]/page.jsx
 
 import React from "react";
-import {
-  getBooklistById,
-  getUserById,
-  getBooksByIds,
-  getBooklistsByUserId,
-} from "@/interactors/_baseInteractor";
+import { ReadBooklistInteractor } from "@interactors/booklists/ReadBooklistInteractor";
 import { getServerSession } from "next-auth/next";
 import { options } from "@auth/options";
 import ShareButton from "@/app/(components)/ShareButton";
@@ -15,7 +10,8 @@ import BooklistMasonry from "./BooklistMasonry";
 
 export default async function BooklistPage({ params }) {
   const { id } = params;
-  const booklist = await getBooklistById(id);
+  const readBooklistInteractor = await ReadBooklistInteractor.create();
+  let booklist = await readBooklistInteractor.execute(id);
 
   if (!booklist) {
     return <div>Booklist not found.</div>;
@@ -24,14 +20,13 @@ export default async function BooklistPage({ params }) {
   if (booklist.visibility !== "public") {
     return <div>This booklist is not public.</div>;
   }
+  booklist = booklist.toObject();
 
-  const user = await getUserById(booklist.booklistOwnerId);
-  const books = await getBooksByIds(booklist.bookIds);
+  const booklistOwner = booklist.booklistOwnerId;
+  const books = booklist.bookIds;
 
   const session = await getServerSession(options);
-  const userBooklists = session
-    ? await getBooklistsByUserId(session.user.id)
-    : [];
+  const userBooklists = session ? booklistOwner.bookListIds : [];
 
   return (
     <div className="bg-primary text-accent p-4 rounded-lg">
@@ -40,14 +35,14 @@ export default async function BooklistPage({ params }) {
         <ShareButton url={`${process.env.NEXTAUTH_URL}/booklist/${id}`} />
       </div>
       <p className="text-lg mb-4">{booklist.description}</p>
-      {user && (
+      {booklistOwner && (
         <p className="text-sm mb-4">
           Booklist creator:{" "}
           <Link
-            href={`/profile/${user.publicProfileName}`}
+            href={`/profile/${booklistOwner.publicProfileName}`}
             className="text-yellow hover:text-orange"
           >
-            {user.publicProfileName}
+            {booklistOwner.publicProfileName}
           </Link>
         </p>
       )}

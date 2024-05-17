@@ -15,11 +15,11 @@ import { BooklistRepository } from "@/repositories/BooklistRepository";
  * @param {string} userEmail - The email of the user.
  * @returns {Promise<IBooklist[]>} A promise that resolves to an array of booklists assigned to the user.
  */
-export class ReadBooklistsInteractor extends BaseInteractor {
+export class ReadMyBookshelfInteractor extends BaseInteractor {
   static async create() {
     const booklistRepo = new BooklistRepository();
     await booklistRepo.initializeModels();
-    const interactor = new ReadBooklistsInteractor({booklistRepo});
+    const interactor = new ReadMyBookshelfInteractor({booklistRepo});
     return interactor;
   }
 

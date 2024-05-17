@@ -2,7 +2,7 @@
 
 import React, { Suspense } from "react";
 import { CreateUserInteractor } from "@interactors/user/CreateUserInteractor";
-import { ReadBooklistsInteractor } from "@/interactors/booklists/ReadBooklistsInteractor";
+import { ReadMyBookshelfInteractor } from "@/interactors/booklists/ReadMyBookshelfInteractor";
 import { getServerSession } from "next-auth/next";
 import { options } from "@auth/options";
 import BookModal from "@components/BookModal";
@@ -23,7 +23,7 @@ async function BookshelfData() {
     session.user.email
   );
 
-  const readBooklistsInteractor = await ReadBooklistsInteractor.create();
+  const readBooklistsInteractor = await ReadMyBookshelfInteractor.create();
   const booklists = await readBooklistsInteractor.execute(user.email);
   return { session, booklists };
 }

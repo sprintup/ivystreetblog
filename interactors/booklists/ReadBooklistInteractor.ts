@@ -24,6 +24,6 @@ export class ReadBooklistInteractor extends BaseInteractor {
   }
   
   async execute(booklistId: string): Promise<IBooklist | null> {
-    return this.booklistRepo.getBooklistById(booklistId);
+    return this.booklistRepo.getBooklistByIdWithUserAndUserBooklistsAndBooks(booklistId);
   }
 }

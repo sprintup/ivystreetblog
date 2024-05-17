@@ -80,9 +80,25 @@ export class BooklistRepository extends BaseRepository {
     }
   }
 
-  async getBooklistById(booklistId: string): Promise<IBooklist | null> {
+  /**
+   * Retrieves a booklist by its ID, along with the associated user, user booklists, and books.
+   * @param booklistId - The ID of the booklist to retrieve.
+   * @returns A Promise that resolves to the retrieved booklist, or null if no booklist is found.
+   * @throws If there is an error while retrieving the booklist.
+   */
+  async getBooklistByIdWithUserAndUserBooklistsAndBooks(booklistId: string): Promise<IBooklist | null> {
     try {
-      const booklist = await this.Booklist.findById(booklistId);
+      const booklist = await this.Booklist.findById(booklistId)
+        .populate({
+          path: 'booklistOwnerId',
+          model: 'User',
+          populate: {
+            path: 'bookListIds',
+            model: 'Booklist'
+          }
+        })
+        .populate('bookIds');
+        
       if (!booklist) {
         console.error("No booklist found with the provided booklistId:", booklistId);
         return null;
@@ -92,42 +108,13 @@ export class BooklistRepository extends BaseRepository {
       console.error("Error getting booklist by ID:", error);
       throw error;
     }
-  }
-
-  async getBooklistsByBookId(bookId: string): Promise<IBooklist[]> {
-    try {
-      const booklists = await this.Booklist.find({ bookIds: bookId });
-      return booklists;
-    } catch (error) {
-      console.error("Error getting booklists by book ID:", error);
-      throw error;
-    }
-  }
+  }  
 
   async getPublicBooklists(): Promise<IBooklist[]> {
     try {
       const publicBooklists = await this.Booklist.find({ visibility: "public" })
         .populate('booklistOwnerId');
       return publicBooklists;
-    } catch (error) {
-      console.error("Error getting public booklists:", error);
-      throw error;
-    }
-  }
-
-  async getPublicBooklistsByUserId(userId: string): Promise<IBooklist[]> {
-    try {
-      const user = await this.User.findById(userId).populate<{ bookListIds: IBooklist[] }>({
-        path: "bookListIds",
-        match: { visibility: "public" },
-      });
-  
-      if (!user) {
-        console.error("User not found with the provided userId:", userId);
-        return [];
-      }
-  
-      return user.bookListIds;
     } catch (error) {
       console.error("Error getting public booklists:", error);
       throw error;
