@@ -1,8 +1,7 @@
-import { IBookData } from "@/domain/interfaces";
-import { BaseInteractor } from "@interactors/BaseInteractor";
-import { IBooklist, IBook } from "@/domain/models";
-import { BookRepository } from "@/repositories/BookRepository";
-
+import { IBookData } from '@/domain/interfaces';
+import { BaseInteractor } from '@interactors/BaseInteractor';
+import { IBooklist, IBook } from '@/domain/models';
+import { BookRepository } from '@/repositories/BookRepository';
 
 /**
  * @class CreateBookForBooklistInteractor
@@ -17,15 +16,17 @@ import { BookRepository } from "@/repositories/BookRepository";
  * @param {BookData} bookData - The details of the book to add.
  * @returns {Promise<IBook | null>} A promise that resolves to the added book or null if not found.
  */
-export class CreateBookForBooklistInteractor extends BaseInteractor {
+export class AddBookFromCollectionToBooklistInteractor extends BaseInteractor {
   static async create() {
     const bookRepo = new BookRepository();
     await bookRepo.initializeModels();
-    const interactor = new CreateBookForBooklistInteractor({bookRepo});
+    const interactor = new AddBookFromCollectionToBooklistInteractor({
+      bookRepo,
+    });
     return interactor;
   }
 
-  async execute(userId: string, booklistId: string, bookData: IBookData): Promise<IBook | null> {
-    return this.bookRepo.addNewBookToBooklistAndBooksCollection(booklistId, userId, bookData);
+  async execute(booklistId: string, bookId: string): Promise<IBooklist | null> {
+    return this.bookRepo.addBookToBooklist(booklistId, bookId);
   }
 }

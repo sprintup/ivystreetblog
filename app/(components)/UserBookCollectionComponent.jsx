@@ -3,7 +3,10 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import BookAddComponent from './BookAddComponent';
 
-export default function UserBookCollection({ booklistId, onBookAdded }) {
+export default function UserBookCollectionComponent({
+  booklistId,
+  onBookAdded,
+}) {
   const { data: session } = useSession();
   const [userBooks, setUserBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);

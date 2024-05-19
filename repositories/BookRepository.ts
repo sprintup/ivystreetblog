@@ -50,11 +50,10 @@ export class BookRepository extends BaseRepository {
     return { books, totalBooks };
   }
 
-  async addNewBookToBooklistAndBooksCollection(
+  async addBookToBooklist(
     booklistId: string,
-    userId: string,
-    bookData: IBookData
-  ): Promise<IBook | null> {
+    bookId: string
+  ): Promise<IBooklist | null> {
     try {
       // Find the booklist
       const booklist = await this.Booklist.findById(booklistId);
@@ -66,25 +65,26 @@ export class BookRepository extends BaseRepository {
         return null;
       }
 
-      // Create a new book document
-      const newBook = new this.Book({
-        name: bookData.Name,
-        Author: bookData.Author,
-        BookOwner: userId,
-        // Add any other book properties from bookData
-      });
-      await newBook.save();
+      // Find the book
+      const book = await this.Book.findById(bookId);
+      if (!book) {
+        console.error('No book found with the provided bookId:', bookId);
+        return null;
+      }
 
-      // Add the new book to the booklist
-      booklist.bookIds.push(newBook._id);
+      // Check if the book is already in the booklist
+      if (booklist.bookIds.includes(bookId)) {
+        console.warn(`Book with ID ${bookId} is already in the booklist`);
+        return booklist;
+      }
+
+      // Add the book to the booklist
+      booklist.bookIds.push(bookId);
       await booklist.save();
 
-      return newBook;
+      return booklist;
     } catch (error) {
-      console.error(
-        'Error adding new book to booklist and books collection:',
-        error
-      );
+      console.error('Error adding book to booklist:', error);
       throw error;
     }
   }

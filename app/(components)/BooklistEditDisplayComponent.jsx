@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import UserBookCollection from '@/app/(components)/UserBookCollection';
+import UserBookCollectionComponent from '@/app/(components)/UserBookCollectionComponent';
 
 export default function BooklistEditDisplayComponent({ booklistId }) {
   const [booklist, setBooklist] = useState(null);
@@ -74,7 +74,7 @@ export default function BooklistEditDisplayComponent({ booklistId }) {
           </button>
         </div>
       ))}
-      <UserBookCollection
+      <UserBookCollectionComponent
         booklistId={booklistId}
         onBookAdded={handleBookChange}
       />
