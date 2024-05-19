@@ -1,37 +1,42 @@
 // BooklistRepository.ts
-import { IBooklist, IUser } from "@/domain/models";
-import { BaseRepository } from "@/repositories/BaseRepository";
+import { IBooklist, IUser } from '@/domain/models';
+import { BaseRepository } from '@/repositories/BaseRepository';
 import mongoose from 'mongoose';
 
 export class BooklistRepository extends BaseRepository {
   async getBooklistsByUserEmail(userEmail: string): Promise<IBooklist[]> {
     try {
-      const user = await this.User.findOne({ email: userEmail }).populate<{ bookListIds: IBooklist[] }>({
+      const user = await this.User.findOne({ email: userEmail }).populate<{
+        bookListIds: IBooklist[];
+      }>({
         path: 'bookListIds',
         model: this.Booklist.modelName,
       });
       if (!user) {
-        console.error("No user found with the provided userEmail:", userEmail);
+        console.error('No user found with the provided userEmail:', userEmail);
         return [];
       }
 
       const booklists: IBooklist[] = user.bookListIds;
       return booklists;
     } catch (error) {
-      console.error("Error fetching booklists:", error);
+      console.error('Error fetching booklists:', error);
       throw error;
     }
   }
 
-  async createBooklist(userEmail: string, booklist: { title: string, description?: string, visibility: string }): Promise<IUser | null> {
+  async createBooklist(
+    userEmail: string,
+    booklist: { title: string; description?: string; visibility: string }
+  ): Promise<IUser | null> {
     try {
       // Find the user by their email
       const user = await this.User.findOne({ email: userEmail });
       if (!user) {
-        console.error("No user found with the provided email:", userEmail);
+        console.error('No user found with the provided email:', userEmail);
         return null;
       }
-  
+
       // Create a new booklist with the provided details and the user's id
       const newBooklist = new this.Booklist({
         title: booklist.title,
@@ -40,7 +45,7 @@ export class BooklistRepository extends BaseRepository {
         booklistOwnerId: user._id,
       });
       await newBooklist.save();
-  
+
       // If the user has a bookListIds field, add the new booklist's id to it
       if (user.bookListIds) {
         user.bookListIds.push(newBooklist._id);
@@ -49,33 +54,36 @@ export class BooklistRepository extends BaseRepository {
         user.bookListIds = [newBooklist._id];
       }
       await user.save();
-  
+
       return user;
     } catch (error) {
-      console.error("Error creating booklist:", error);
+      console.error('Error creating booklist:', error);
       throw error;
     }
-  }  
+  }
 
   async removeBooklist(booklistId: string): Promise<IBooklist | null> {
     try {
       // Find the booklist by ID and remove it
       const removedBooklist = await this.Booklist.findByIdAndDelete(booklistId);
       if (!removedBooklist) {
-        console.error("No booklist found with the provided booklistId:", booklistId);
+        console.error(
+          'No booklist found with the provided booklistId:',
+          booklistId
+        );
         return null;
       }
-  
+
       // Remove the booklist reference from the user's bookListIds array
       await this.User.updateMany(
         { bookListIds: booklistId },
         { $pull: { bookListIds: booklistId } }
       );
-  
-      console.log("Booklist removed:", removedBooklist);
+
+      console.log('Booklist removed:', removedBooklist);
       return removedBooklist;
     } catch (error) {
-      console.error("Error removing booklist:", error);
+      console.error('Error removing booklist:', error);
       throw error;
     }
   }
@@ -86,7 +94,9 @@ export class BooklistRepository extends BaseRepository {
    * @returns A Promise that resolves to the retrieved booklist, or null if no booklist is found.
    * @throws If there is an error while retrieving the booklist.
    */
-  async getBooklistByIdWithUserAndUserBooklistsAndBooks(booklistId: string): Promise<IBooklist | null> {
+  async getBooklistByIdWithUserAndUserBooklistsAndBooks(
+    booklistId: string
+  ): Promise<IBooklist | null> {
     try {
       const booklist = await this.Booklist.findById(booklistId)
         .populate({
@@ -94,34 +104,67 @@ export class BooklistRepository extends BaseRepository {
           model: 'User',
           populate: {
             path: 'bookListIds',
-            model: 'Booklist'
-          }
+            model: 'Booklist',
+          },
         })
         .populate('bookIds');
-        
+
       if (!booklist) {
-        console.error("No booklist found with the provided booklistId:", booklistId);
+        console.error(
+          'No booklist found with the provided booklistId:',
+          booklistId
+        );
         return null;
       }
       return booklist;
     } catch (error) {
-      console.error("Error getting booklist by ID:", error);
-      throw error;
-    }
-  }  
-
-  async getPublicBooklists(): Promise<IBooklist[]> {
-    try {
-      const publicBooklists = await this.Booklist.find({ visibility: "public" })
-        .populate('booklistOwnerId');
-      return publicBooklists;
-    } catch (error) {
-      console.error("Error getting public booklists:", error);
+      console.error('Error getting booklist by ID:', error);
       throw error;
     }
   }
 
-  async updateBooklist(booklistId: string, updatedData: { title?: string, description?: string, visibility?: string }): Promise<IBooklist | null> {
+  async getBooklistByIdWithBooks(
+    booklistId: string
+  ): Promise<IBooklist | null> {
+    try {
+      const booklist = await this.Booklist.findById(booklistId).populate({
+        path: 'bookIds',
+        model: 'Book',
+        select:
+          'Name Author Description Age Series Publication_Date Publisher ISBN Link Source',
+      });
+
+      if (!booklist) {
+        console.error(
+          'No booklist found with the provided booklistId:',
+          booklistId
+        );
+        return null;
+      }
+
+      return booklist;
+    } catch (error) {
+      console.error('Error getting booklist by ID:', error);
+      throw error;
+    }
+  }
+
+  async getPublicBooklists(): Promise<IBooklist[]> {
+    try {
+      const publicBooklists = await this.Booklist.find({
+        visibility: 'public',
+      }).populate('booklistOwnerId');
+      return publicBooklists;
+    } catch (error) {
+      console.error('Error getting public booklists:', error);
+      throw error;
+    }
+  }
+
+  async updateBooklist(
+    booklistId: string,
+    updatedData: { title?: string; description?: string; visibility?: string }
+  ): Promise<IBooklist | null> {
     try {
       const booklist = await this.Booklist.findByIdAndUpdate(
         booklistId,
@@ -136,12 +179,15 @@ export class BooklistRepository extends BaseRepository {
         { new: true }
       );
       if (!booklist) {
-        console.error("No booklist found with the provided booklistId:", booklistId);
+        console.error(
+          'No booklist found with the provided booklistId:',
+          booklistId
+        );
         return null;
       }
       return booklist;
     } catch (error) {
-      console.error("Error updating booklist:", error);
+      console.error('Error updating booklist:', error);
       throw error;
     }
   }
@@ -150,7 +196,7 @@ export class BooklistRepository extends BaseRepository {
     try {
       const booklist = await this.Booklist.findById(booklistId);
       if (!booklist) {
-        throw new Error("Booklist not found");
+        throw new Error('Booklist not found');
       }
       const bookObjectId = new mongoose.Types.ObjectId(bookId);
       if (!booklist.bookIds.includes(bookObjectId)) {
@@ -158,7 +204,7 @@ export class BooklistRepository extends BaseRepository {
         await booklist.save();
       }
     } catch (error) {
-      console.error("Error adding book to the booklist:", error);
+      console.error('Error adding book to the booklist:', error);
       throw error;
     }
   }
@@ -168,10 +214,8 @@ export class BooklistRepository extends BaseRepository {
       const booklists = await this.Booklist.find({ booklistOwnerId: userId });
       return booklists;
     } catch (error) {
-      console.error("Error getting booklists by user ID:", error);
+      console.error('Error getting booklists by user ID:', error);
       throw error;
     }
   }
-  
 }
-

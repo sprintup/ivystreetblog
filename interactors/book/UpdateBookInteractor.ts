@@ -1,5 +1,6 @@
 // UpdateBookInteractor.ts
 
+import { BookRepository } from "@/repositories/BookRepository";
 import { BaseInteractor } from "../BaseInteractor";
 import { IBook } from "@/domain/models";
 
@@ -20,6 +21,13 @@ interface UpdateBookData {
  * @returns {Promise<IBook | null>} A promise that resolves to the updated book or null if not found.
  */
 export class UpdateBookInteractor extends BaseInteractor {
+  static async create() {
+    const bookRepo = new BookRepository();
+    await bookRepo.initializeModels();
+    const interactor = new UpdateBookInteractor({bookRepo});
+    return interactor;
+  }
+
   async execute(booklistId: string, bookId: string, updatedData: UpdateBookData): Promise<IBook | null> {
     return this.bookRepo.updateBookInBooklist(booklistId, bookId, updatedData);
   }

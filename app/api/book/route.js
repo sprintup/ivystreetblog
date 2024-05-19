@@ -1,23 +1,33 @@
-import { addBookToBooklist, updateBookInBooklist, deleteBook } from '@/interactors/_baseInteractor';
+import { getServerSession } from "next-auth/next";
+import { options } from "@auth/options";
+import { CreateBookInteractor } from "@interactors/book/CreateBookInteractor";
+import { UpdateBookInteractor } from "@interactors/book/UpdateBookInteractor";
+import { DeleteBookInteractor } from "@interactors/book/DeleteBookInteractor";
 
 export async function POST(request) {
+    const session = await getServerSession(options);
+    if (!session) {
+        return new Response("Unauthorized", { status: 401 });
+    }
+
+    const createBookInteractor = await CreateBookInteractor.create();
+    const { Name, Author } = await request.json();
+    const userEmail = session.user.email;
+
     try {
-        const { BooklistId, Name, Author, BookOwner } = await request.json();
-        const newBook = await addBookToBooklist(BooklistId, { Name, Author, BookOwner });
-        if (newBook) {
-            return new Response(JSON.stringify(newBook), { status: 201 });
-        } else {
-            return new Response(JSON.stringify({ error: "Failed to add book to booklist" }), { status: 400 });
-        }
+        const newBook = await createBookInteractor.execute(userEmail, { Name, Author });
+        return new Response(JSON.stringify(newBook), { status: 201 });
     } catch (error) {
-        return new Response(JSON.stringify({ error: error.toString() }), { status: 500 });
+        console.error("Error creating new book:", error);
+        return new Response("Failed to create new book", { status: 500 });
     }
 }
 
 export async function PUT(request, { params }) {
     try {
         const { bookId, booklistId, BookName, Series, Description, Author, Age, Publication_Date, Product_Details, Publisher, ISBN, Link, Source, BookOwner } = await request.json();
-        const updatedBook = await updateBookInBooklist(booklistId, bookId, { BookName, Series, Description, Author, Age, Publication_Date, Product_Details, Publisher, ISBN, Link, Source, BookOwner });
+        const updateBookInteractor = await UpdateBookInteractor.create();
+        const updatedBook = await updateBookInteractor.execute(booklistId, bookId, { BookName, Series, Description, Author, Age, Publication_Date, Product_Details, Publisher, ISBN, Link, Source, BookOwner });
         if (updatedBook) {
             return new Response(JSON.stringify(updatedBook), { status: 200 });
         } else {
@@ -32,7 +42,8 @@ export async function PUT(request, { params }) {
 export async function DELETE(request) {
     try {
         const { bookId, BooklistId } = await request.json();
-        const deletedBook = await deleteBook(bookId, BooklistId);
+        const deleteBookInteractor = await DeleteBookInteractor.create();
+        const deletedBook = await deleteBookInteractor.execute(bookId, BooklistId);
         if (deletedBook) {
             return new Response(JSON.stringify({ message: "Book deleted successfully" }), { status: 200 });
         } else {

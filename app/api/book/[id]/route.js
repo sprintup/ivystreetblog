@@ -1,11 +1,12 @@
 // app/api/book/[id]/route.js
 
-import { getBookById } from '@/interactors/_baseInteractor';
+import { ReadBookInteractor } from "@/interactors/book/ReadBooksForReadingListInteractor"
 
 export async function GET(request, { params }) {
   try {
     const bookId = params.id;
-    const book = await getBookById(bookId);
+    const readBookInteractor = await ReadBookInteractor.create();
+    const book = await readBookInteractor.execute(bookId);
     if (book) {
       return new Response(JSON.stringify(book), { status: 200 });
     } else {

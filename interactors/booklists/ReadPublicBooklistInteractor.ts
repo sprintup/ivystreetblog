@@ -1,8 +1,8 @@
 // Read BooklistInteractor.ts
 
-import { BooklistRepository } from "@/repositories/BooklistRepository";
-import { BaseInteractor } from "../BaseInteractor";
-import { IBooklist } from "@/domain/models";
+import { BooklistRepository } from '@/repositories/BooklistRepository';
+import { BaseInteractor } from '../BaseInteractor';
+import { IBooklist } from '@/domain/models';
 
 /**
  * Read
@@ -15,15 +15,17 @@ import { IBooklist } from "@/domain/models";
  * @param {string} booklistId - The ID of the booklist to retrieve.
  * @returns {Promise<IBooklist | null>} A promise that resolves to the booklist object or null if not found.
  */
-export class ReadBooklistInteractor extends BaseInteractor {
+export class ReadPublicBooklistInteractor extends BaseInteractor {
   static async create() {
     const booklistRepo = new BooklistRepository();
     await booklistRepo.initializeModels();
-    const interactor = new ReadBooklistInteractor({booklistRepo});
+    const interactor = new ReadPublicBooklistInteractor({ booklistRepo });
     return interactor;
   }
-  
+
   async execute(booklistId: string): Promise<IBooklist | null> {
-    return this.booklistRepo.getBooklistByIdWithUserAndUserBooklistsAndBooks(booklistId);
+    return this.booklistRepo.getBooklistByIdWithUserAndUserBooklistsAndBooks(
+      booklistId
+    );
   }
 }

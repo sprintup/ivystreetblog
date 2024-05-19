@@ -118,7 +118,7 @@ const BooklistSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const BookSchema = new mongoose.Schema({
-  name: String,
+  Name: String,
   Author: String,
   Description: String,
   Age: String,
@@ -128,7 +128,10 @@ const BookSchema = new mongoose.Schema({
   ISBN: String,
   Link: String,
   Source: String,
-  BookOwner: String,
+  BookOwner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 }, { timestamps: true });
 
 export async function handler(): Promise<{
