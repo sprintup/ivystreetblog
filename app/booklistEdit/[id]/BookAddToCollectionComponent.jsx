@@ -2,10 +2,12 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 
-export default function BookAddComponent() {
+export default function BookAddToCollectionComponent({ onBookAdded }) {
   const [bookName, setBookName] = useState('');
   const [bookAuthor, setBookAuthor] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const { data: session } = useSession({
     required: true,
@@ -16,10 +18,16 @@ export default function BookAddComponent() {
 
   const handleAddBookToCollection = async e => {
     e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage('');
+    setSuccessMessage('');
+
     if (!bookName) {
       setErrorMessage('Please provide a book name.');
+      setIsLoading(false);
       return;
     }
+
     try {
       const response = await fetch(`/api/book`, {
         method: 'POST',
@@ -31,10 +39,13 @@ export default function BookAddComponent() {
           Author: bookAuthor,
         }),
       });
+
       if (response.ok) {
+        const newBook = await response.json();
         setBookName('');
         setBookAuthor('');
-        setErrorMessage('');
+        setSuccessMessage('Book added to your collection successfully!');
+        onBookAdded(newBook);
       } else {
         console.error('Error adding book:', response.statusText);
         setErrorMessage('Failed to add book. Please try again.');
@@ -42,6 +53,8 @@ export default function BookAddComponent() {
     } catch (error) {
       console.error('Error adding book:', error);
       setErrorMessage('An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -52,6 +65,9 @@ export default function BookAddComponent() {
       </div>
       <div>
         {errorMessage && <p className='text-red-500 mb-4'>{errorMessage}</p>}
+        {successMessage && (
+          <p className='text-green-500 mb-4'>{successMessage}</p>
+        )}
         <form onSubmit={handleAddBookToCollection}>
           <div className='mb-4'>
             <label className='block text-lg mb-2'>
@@ -78,8 +94,9 @@ export default function BookAddComponent() {
           <button
             type='submit'
             className='px-4 py-2 bg-yellow text-primary font-bold rounded-lg hover:bg-orange transition duration-300'
+            disabled={isLoading}
           >
-            Add Book to Collection
+            {isLoading ? 'Adding...' : 'Add Book to Collection'}
           </button>
         </form>
       </div>

@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import BookAddComponent from './BookAddComponent';
+import BookAddToCollectionComponent from './BookAddToCollectionComponent';
 
 export default function UserBookCollectionComponent({
   booklistId,
@@ -58,6 +58,10 @@ export default function UserBookCollectionComponent({
     } catch (error) {
       console.error('Error adding book to booklist:', error);
     }
+  };
+
+  const handleBookAdded = newBook => {
+    setUserBooks(prevBooks => [newBook, ...prevBooks]);
   };
 
   // Pagination
@@ -139,7 +143,7 @@ export default function UserBookCollectionComponent({
           )}
         </div>
       )}
-      <BookAddComponent />
+      <BookAddToCollectionComponent onBookAdded={handleBookAdded} />
     </div>
   );
 }

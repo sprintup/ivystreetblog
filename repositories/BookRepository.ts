@@ -164,4 +164,32 @@ export class BookRepository extends BaseRepository {
       throw error;
     }
   }
+
+  async removeBookFromBooklist(
+    booklistId: string,
+    bookId: string
+  ): Promise<IBooklist | null> {
+    try {
+      // Find the booklist
+      const booklist = await this.Booklist.findById(booklistId);
+      if (!booklist) {
+        console.error(
+          'No booklist found with the provided booklistId:',
+          booklistId
+        );
+        return null;
+      }
+
+      // Remove the book from the booklist
+      booklist.bookIds = booklist.bookIds.filter(
+        id => id.toString() !== bookId
+      );
+      await booklist.save();
+
+      return booklist;
+    } catch (error) {
+      console.error('Error removing book from booklist:', error);
+      throw error;
+    }
+  }
 }

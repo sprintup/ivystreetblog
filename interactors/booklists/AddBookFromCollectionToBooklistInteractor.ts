@@ -8,7 +8,7 @@ import { BookRepository } from '@/repositories/BookRepository';
  *
  * As a user,
  * When I have the editBooklist page open and I add a book,
- * Then that book should be added to the books collection and be tracked by the booklist.
+ * Then that book should be added to the books collection.
  *
  * @method execute
  * @param {string} userId - The ID of the user adding the book.

@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import BooklistEditDisplayComponent from '@/app/(components)/BooklistEditDisplayComponent';
+import BooklistEditDisplayComponent from './BooklistEditDisplayComponent';
 
 export default function EditBooklistPage({ params }) {
   const router = useRouter();

@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import UserBookCollectionComponent from '@/app/(components)/UserBookCollectionComponent';
+import UserBookCollectionComponent from './UserBookCollectionComponent';
+import BookRemoveFromCollectionComponent from './BookRemoveFromCollectionComponent';
 
 export default function BooklistEditDisplayComponent({ booklistId }) {
   const [booklist, setBooklist] = useState(null);
@@ -11,7 +12,6 @@ export default function BooklistEditDisplayComponent({ booklistId }) {
 
   const fetchBooklist = async () => {
     try {
-      console.log('booklistId: ', booklistId);
       const response = await fetch(`/api/booklist/${booklistId}/books`);
       if (response.ok) {
         const data = await response.json();
@@ -29,30 +29,6 @@ export default function BooklistEditDisplayComponent({ booklistId }) {
     fetchBooklist();
   };
 
-  const handleRemoveBookFromBooklist = async bookId => {
-    try {
-      const response = await fetch(`/api/booklist/${booklistId}/book`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ bookId }),
-      });
-      if (response.ok) {
-        handleBookChange();
-      } else {
-        console.error(
-          'Error removing book from booklist:',
-          response.statusText
-        );
-        // setErrorMessage("Failed to remove book from booklist. Please try again."); TODO
-      }
-    } catch (error) {
-      console.error('Error removing book from booklist:', error);
-      // setErrorMessage("An error occurred. Please try again.");
-    }
-  };
-
   if (!booklist) {
     return <div>Loading...</div>;
   }
@@ -66,12 +42,11 @@ export default function BooklistEditDisplayComponent({ booklistId }) {
       {booklist.bookIds.map(book => (
         <div key={book._id} className='flex justify-between items-center mb-4'>
           <BookDetails book={book} />
-          <button
-            onClick={() => handleRemoveBookFromBooklist(book._id)}
-            className='px-4 py-2 mx-1 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition duration-300'
-          >
-            Remove from Booklist
-          </button>
+          <BookRemoveFromCollectionComponent
+            bookId={book._id}
+            booklistId={booklistId}
+            onBookRemoved={handleBookChange}
+          />
         </div>
       ))}
       <UserBookCollectionComponent
