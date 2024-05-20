@@ -111,7 +111,7 @@ export class BookRepository extends BaseRepository {
         { $pull: { trackedBooks: { bookId: bookId } } }
       );
 
-      console.log('Book deleted:', book);
+      // console.log('Book deleted:', book);
       return book;
     } catch (error) {
       console.error('Error deleting book:', error);
@@ -204,6 +204,25 @@ export class BookRepository extends BaseRepository {
       return booklist;
     } catch (error) {
       console.error('Error removing book from booklist:', error);
+      throw error;
+    }
+  }
+
+  async archiveBookInUserCollection(bookId: string): Promise<IBook> {
+    try {
+      const book = await this.Book.findByIdAndUpdate(
+        bookId,
+        { IsArchived: true },
+        { new: true }
+      );
+
+      if (!book) {
+        throw new Error('Book not found');
+      }
+
+      return book;
+    } catch (error) {
+      console.error('Error archiving book:', error);
       throw error;
     }
   }

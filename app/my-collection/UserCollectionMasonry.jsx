@@ -7,6 +7,7 @@ import Masonry from 'react-masonry-css';
 import Link from 'next/link';
 import BookDetailsPublic from '@/app/(components)/BookDetailsPublicComponent';
 import './UserCollectionMasonry.css';
+import { useRouter } from 'next/navigation';
 
 const breakpointColumnsObj = {
   default: 4,
@@ -18,6 +19,7 @@ const breakpointColumnsObj = {
 export default function UserCollectionMasonry({ books, setBooks }) {
   const [selectedBookId, setSelectedBookId] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const router = useRouter();
 
   const handleDeleteBook = async () => {
     try {
@@ -30,9 +32,9 @@ export default function UserCollectionMasonry({ books, setBooks }) {
       });
 
       if (response.ok) {
-        setBooks(books.filter(book => book._id !== selectedBookId));
         setSelectedBookId(null);
         setIsPopupOpen(false);
+        router.refresh();
       } else {
         console.error('Error removing book:', response.statusText);
       }
@@ -41,7 +43,8 @@ export default function UserCollectionMasonry({ books, setBooks }) {
     }
   };
 
-  const handleArchiveBook = async () => {
+  const handleArchiveBook = async bookId => {
+    setSelectedBookId(bookId);
     try {
       const response = await fetch(`/api/book/archive`, {
         method: 'PUT',
@@ -52,9 +55,9 @@ export default function UserCollectionMasonry({ books, setBooks }) {
       });
 
       if (response.ok) {
-        setBooks(books.filter(book => book._id !== selectedBookId));
         setSelectedBookId(null);
         setIsPopupOpen(false);
+        router.refresh();
       } else {
         console.error('Error archiving book:', response.statusText);
       }
@@ -98,7 +101,7 @@ export default function UserCollectionMasonry({ books, setBooks }) {
                 </button>
                 <button
                   className='bg-gray-500 text-white px-2 py-1 rounded mb-2 text-sm md:text-base'
-                  onClick={() => openPopup(book._id)}
+                  onClick={() => handleArchiveBook(book._id)}
                 >
                   Archive
                 </button>

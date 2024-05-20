@@ -1,5 +1,5 @@
-import dbConnect from "@/repositories/dbConnect";
-import mongoose, { Document, Model } from "mongoose";
+import dbConnect from '@/repositories/dbConnect';
+import mongoose, { Document, Model } from 'mongoose';
 
 export interface IUser extends Document {
   login: string;
@@ -13,7 +13,7 @@ export interface IUser extends Document {
 
 export interface ITrackedBook {
   bookId: mongoose.Types.ObjectId;
-  status: "to-read" | "finished";
+  status: 'to-read' | 'finished';
   isFavorite: boolean;
   review: string;
   ratingPerceivedDifficulty: number | null;
@@ -47,92 +47,104 @@ export type UserModel = Model<IUser>;
 export type BooklistModel = Model<IBooklist>;
 export type BookModel = Model<IBook>;
 
-const UserSchema = new mongoose.Schema({
-  login: String,
-  name: String,
-  email: String,
-  publicProfileName: {
-    type: String,
-    unique: true,
-    trim: true,
-    lowercase: true,
-  },
-  bookListIds: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Booklist",
+const UserSchema = new mongoose.Schema(
+  {
+    login: String,
+    name: String,
+    email: String,
+    publicProfileName: {
+      type: String,
+      unique: true,
+      trim: true,
+      lowercase: true,
     },
-  ],
-  trackedBooks: [
-    {
-      bookId: {
+    bookListIds: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Book",
+        ref: 'Booklist',
       },
-      status: {
-        type: String,
-        enum: ["to-read", "finished"],
-        default: "to-read",
+    ],
+    trackedBooks: [
+      {
+        bookId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Book',
+        },
+        status: {
+          type: String,
+          enum: ['to-read', 'finished'],
+          default: 'to-read',
+        },
+        isFavorite: {
+          type: Boolean,
+          default: false,
+        },
+        review: String,
+        ratingPerceivedDifficulty: {
+          type: Number,
+          min: 1,
+          max: 10,
+          default: null,
+        },
+        isWishlistItem: {
+          type: Boolean,
+          default: false,
+        },
+        bookPriority: Number,
       },
-      isFavorite: {
-        type: Boolean,
-        default: false,
+    ],
+    favoriteBooklistIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Booklist',
       },
-      review: String,
-      ratingPerceivedDifficulty: {
-        type: Number,
-        min: 1,
-        max: 10,
-        default: null,
-      },
-      isWishlistItem: {
-        type: Boolean,
-        default: false,
-      },
-      bookPriority: Number,
-    },
-  ],
-  favoriteBooklistIds: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Booklist",
-    },
-  ],
-}, { timestamps: true });
-
-
-const BooklistSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  visibility: String,
-  booklistOwnerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ],
   },
-  bookIds: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Book",
-    },
-  ],
-}, { timestamps: true });
+  { timestamps: true }
+);
 
-const BookSchema = new mongoose.Schema({
-  Name: String,
-  Author: String,
-  Description: String,
-  Age: String,
-  Series: String,
-  Publication_Date: String,
-  Publisher: String,
-  ISBN: String,
-  Link: String,
-  Source: String,
-  BookOwner: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+const BooklistSchema = new mongoose.Schema(
+  {
+    title: String,
+    description: String,
+    visibility: String,
+    booklistOwnerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    bookIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Book',
+      },
+    ],
   },
-}, { timestamps: true });
+  { timestamps: true }
+);
+
+const BookSchema = new mongoose.Schema(
+  {
+    Name: String,
+    Author: String,
+    Description: String,
+    Age: String,
+    Series: String,
+    Publication_Date: String,
+    Publisher: String,
+    ISBN: String,
+    Link: String,
+    Source: String,
+    BookOwner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    IsArchived: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
+);
 
 export async function handler(): Promise<{
   User: UserModel;
@@ -141,10 +153,13 @@ export async function handler(): Promise<{
 }> {
   await dbConnect();
 
-  const User = mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
-  const Book = mongoose.models.Book || mongoose.model<IBook>("Book", BookSchema);
+  const User =
+    mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
+  const Book =
+    mongoose.models.Book || mongoose.model<IBook>('Book', BookSchema);
   const Booklist =
-    mongoose.models.Booklist || mongoose.model<IBooklist>("Booklist", BooklistSchema);
+    mongoose.models.Booklist ||
+    mongoose.model<IBooklist>('Booklist', BooklistSchema);
 
   return { User, Book, Booklist };
 }
