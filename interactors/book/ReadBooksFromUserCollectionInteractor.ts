@@ -1,14 +1,14 @@
-// ReadBooksFromUsersCollectionInteractor.ts
+// ReadBooksFromUserCollectionInteractor.ts
 
 import { BookRepository } from '@/repositories/BookRepository';
 import { BaseInteractor } from '../BaseInteractor';
 import { IBook } from '@/domain/models';
 
 /**
- * ReadBooksFromUsersCollectionInteractor
+ * ReadBooksFromUserCollectionInteractor
  *
  * As a user,
- * When I view my collection of books,
+ * When I view my collection of books from my-collection pagee,
  * Then I see the most recently modified 5 books.
  *
  * @param {string} userId - The ID of the user whose books to retrieve.
@@ -16,19 +16,18 @@ import { IBook } from '@/domain/models';
  * @param {number} limit - The number of books to retrieve per page.
  * @returns {Promise<{ books: IBook[], totalBooks: number }>} A promise that resolves to an object containing the book details and the total number of books.
  */
-export class ReadBooksFromUsersCollectionInteractor extends BaseInteractor {
+export class ReadBooksFromUserCollectionInteractor extends BaseInteractor {
   static async create() {
     const bookRepo = new BookRepository();
     await bookRepo.initializeModels();
-    const interactor = new ReadBooksFromUsersCollectionInteractor({ bookRepo });
+    const interactor = new ReadBooksFromUserCollectionInteractor({
+      bookRepo,
+    });
     return interactor;
   }
 
-  async execute(
-    userEmail: string,
-    page: number,
-    limit: number
-  ): Promise<{ books: IBook[]; totalBooks: number }> {
-    return this.bookRepo.getUserBooksPaginated(userEmail, page, limit);
+  async execute(userEmail: string): Promise<IBook[]> {
+    const books = await this.bookRepo.getBooksByUserEmail(userEmail);
+    return books;
   }
 }

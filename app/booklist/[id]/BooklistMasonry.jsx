@@ -1,14 +1,14 @@
 // app/booklist/[id]/BooklistMasonry.jsx
 
-"use client";
+'use client';
 
-import React from "react";
-import Masonry from "react-masonry-css";
-import BookDetailsPublic from "./BookDetailsPublic";
-import AddToReadingListButton from "@components/AddToReadingListButton";
-import AddToBooklistButton from "@components/AddToBooklistButton";
-import { useSession } from "next-auth/react";
-import "./BooklistMasonry.css";
+import React from 'react';
+import Masonry from 'react-masonry-css';
+import BookDetailsPublic from '../../(components)/BookDetailsPublicComponent';
+import AddToReadingListButton from '@components/AddToReadingListButton';
+import AddToBooklistButton from '@components/AddToBooklistButton';
+import { useSession } from 'next-auth/react';
+import './BooklistMasonry.css';
 
 const breakpointColumnsObj = {
   default: 4,
@@ -23,14 +23,14 @@ export default function BooklistMasonry({ booklist, userBooklists }) {
   return (
     <Masonry
       breakpointCols={breakpointColumnsObj}
-      className="my-masonry-grid"
-      columnClassName="my-masonry-grid_column"
+      className='my-masonry-grid'
+      columnClassName='my-masonry-grid_column'
     >
-      {booklist.books.map((book) => (
+      {booklist.books.map(book => (
         <div key={book._id}>
           <BookDetailsPublic book={book} />
           {session && (
-            <div className="flex space-x-2">
+            <div className='flex space-x-2'>
               <AddToReadingListButton book={book} />
               <AddToBooklistButton book={book} userBooklists={userBooklists} />
             </div>

@@ -89,31 +89,27 @@ export class BookRepository extends BaseRepository {
     }
   }
 
-  async deleteBookFromBooklist(
-    booklistId: string,
+  async deleteBookFromCollectionAndBooklistsAndTrackedBooks(
     bookId: string
   ): Promise<IBook | null> {
     try {
-      const booklist = await this.Booklist.findById(booklistId);
-      if (!booklist) {
-        console.error(
-          'No booklist found with the provided booklistId:',
-          booklistId
-        );
-        return null;
-      }
-
       const book = await this.Book.findByIdAndDelete(bookId);
       if (!book) {
         console.error('No book found with the provided bookId:', bookId);
         return null;
       }
 
-      // Remove the book reference from the booklist's bookIds array
-      booklist.bookIds = booklist.bookIds.filter(
-        id => id.toString() !== bookId
+      // Remove the book reference from all booklists
+      await this.Booklist.updateMany(
+        { bookIds: bookId },
+        { $pull: { bookIds: bookId } }
       );
-      await booklist.save();
+
+      // Remove the book reference from all users' trackedBooks
+      await this.User.updateMany(
+        { 'trackedBooks.bookId': bookId },
+        { $pull: { trackedBooks: { bookId: bookId } } }
+      );
 
       console.log('Book deleted:', book);
       return book;
@@ -129,6 +125,25 @@ export class BookRepository extends BaseRepository {
       return books;
     } catch (error) {
       console.error('Error getting books by IDs:', error);
+      throw error;
+    }
+  }
+
+  async getBooksByUserEmail(userEmail: string): Promise<IBookDocument[]> {
+    try {
+      // Find the user by email
+      const user = await this.User.findOne({ email: userEmail });
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // Find the books associated with the user
+      const books = await this.Book.find({ BookOwner: user._id });
+
+      return books;
+    } catch (error) {
+      console.error('Error retrieving books by user email:', error);
       throw error;
     }
   }

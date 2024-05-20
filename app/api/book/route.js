@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth/next";
 import { options } from "@auth/options";
 import { CreateBookInteractor } from "@interactors/book/CreateBookInteractor";
 import { UpdateBookInteractor } from "@interactors/book/UpdateBookInteractor";
-import { DeleteBookInteractor } from "@interactors/book/DeleteBookInteractor";
+import { DeleteBookFromCollectionAndAllBooklistsInteractor } from "@/interactors/book/DeleteBookFromCollectionAndAllBooklistsInteractor";
 
 export async function POST(request) {
     const session = await getServerSession(options);
@@ -41,15 +41,12 @@ export async function PUT(request, { params }) {
 // TODO MAKE SURE ITS THE RIGHT USER
 export async function DELETE(request) {
     try {
-        const { bookId, BooklistId } = await request.json();
-        const deleteBookInteractor = await DeleteBookInteractor.create();
-        const deletedBook = await deleteBookInteractor.execute(bookId, BooklistId);
-        if (deletedBook) {
-            return new Response(JSON.stringify({ message: "Book deleted successfully" }), { status: 200 });
-        } else {
-            return new Response(JSON.stringify({ error: "Book not found" }), { status: 404 });
-        }
+        const { bookId } = await request.json();
+        const deleteBookInteractor = await DeleteBookFromCollectionAndAllBooklistsInteractor.create();
+        await deleteBookInteractor.execute(bookId);
+        return new Response(JSON.stringify({ message: "Book removed successfully" }), { status: 200 });
     } catch (error) {
+        console.error("Error removing book:", error);
         return new Response(JSON.stringify({ error: error.toString() }), { status: 500 });
     }
 }

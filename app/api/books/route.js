@@ -1,11 +1,11 @@
 // app/api/books/route.js
-import { ReadBooksFromUsersCollectionInteractor } from "@/interactors/book/ReadBooksFromUsersCollectionInteractor";
+import { ReadBooksFromUserCollectionPaginatedInteractor } from "@interactors/book/ReadBooksFromUserCollectionPaginatedInteractor";
 
 export async function POST(request) {
     try {
         const { page, limit, userEmail } = await request.json();
 
-        const readBooksFromUsersCollectionInteractor = await ReadBooksFromUsersCollectionInteractor.create();
+        const readBooksFromUsersCollectionInteractor = await ReadBooksFromUserCollectionPaginatedInteractor.create();
         const { books, totalBooks } = await readBooksFromUsersCollectionInteractor.execute(userEmail, page, limit);
 
         return new Response(JSON.stringify({ books, totalBooks }), {

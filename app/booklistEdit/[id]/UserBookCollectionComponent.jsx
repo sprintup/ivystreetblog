@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import BookAddToCollectionComponent from './BookAddToCollectionComponent';
+import BookAddToCollectionComponent from '@components/BookAddToCollectionComponent';
 
 export default function UserBookCollectionComponent({
   booklistId,
