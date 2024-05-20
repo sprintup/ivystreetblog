@@ -17,7 +17,7 @@ const breakpointColumnsObj = {
 };
 
 export default function UserCollectionMasonry({ books, setBooks }) {
-  const [selectedBookId, setSelectedBookId] = useState(null);
+  const [selectedBook, setSelectedBook] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const router = useRouter();
 
@@ -28,11 +28,11 @@ export default function UserCollectionMasonry({ books, setBooks }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ bookId: selectedBookId }),
+        body: JSON.stringify({ bookId: selectedBook._id }),
       });
 
       if (response.ok) {
-        setSelectedBookId(null);
+        setSelectedBook(null);
         setIsPopupOpen(false);
         router.refresh();
       } else {
@@ -43,36 +43,34 @@ export default function UserCollectionMasonry({ books, setBooks }) {
     }
   };
 
-  const handleArchiveBook = async bookId => {
-    setSelectedBookId(bookId);
+  const handleToggleArchiveBook = async bookId => {
     try {
-      const response = await fetch(`/api/book/archive`, {
+      const response = await fetch(`/api/book/toggleArchive`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ bookId: selectedBookId }),
+        body: JSON.stringify({ bookId: bookId }),
       });
 
       if (response.ok) {
-        setSelectedBookId(null);
         setIsPopupOpen(false);
         router.refresh();
       } else {
-        console.error('Error archiving book:', response.statusText);
+        console.error('Error toggling book archive:', response.statusText);
       }
     } catch (error) {
-      console.error('Error archiving book:', error);
+      console.error('Error toggling book archive:', error);
     }
   };
 
-  const openPopup = bookId => {
-    setSelectedBookId(bookId);
+  const openPopup = book => {
+    setSelectedBook(book);
     setIsPopupOpen(true);
   };
 
   const closePopup = () => {
-    setSelectedBookId(null);
+    setSelectedBook(null);
     setIsPopupOpen(false);
   };
 
@@ -95,15 +93,17 @@ export default function UserCollectionMasonry({ books, setBooks }) {
                 </Link>
                 <button
                   className='bg-red-500 text-white px-2 py-1 rounded mr-2 mb-2 text-sm md:text-base'
-                  onClick={() => openPopup(book._id)}
+                  onClick={() => openPopup(book)}
                 >
                   Delete
                 </button>
                 <button
-                  className='bg-gray-500 text-white px-2 py-1 rounded mb-2 text-sm md:text-base'
-                  onClick={() => handleArchiveBook(book._id)}
+                  className={`${
+                    book.IsArchived ? 'bg-blue-500' : 'bg-gray-500'
+                  } text-white px-2 py-1 rounded mb-2 text-sm md:text-base`}
+                  onClick={() => handleToggleArchiveBook(book._id)}
                 >
-                  Archive
+                  {book.IsArchived ? 'Unarchive' : 'Archive'}
                 </button>
               </div>
             }
@@ -119,11 +119,13 @@ export default function UserCollectionMasonry({ books, setBooks }) {
               Deleting a book from your collection will also delete it from all
               booklists and other people's reading lists.
             </p>
-            <p className='mb-4 text-gray-700'>
-              If you want to move the book out of your collection but keep it
-              available on other users' reading lists and booklists, you can
-              choose to archive the book instead.
-            </p>
+            {!selectedBook.IsArchived && (
+              <p className='mb-4 text-gray-700'>
+                If you want to move the book out of your collection but keep it
+                available on other users' reading lists and booklists, you can
+                choose to archive the book instead.
+              </p>
+            )}
             <div className='flex flex-wrap justify-end'>
               <button
                 className='bg-red-500 text-white px-4 py-2 rounded mr-2 mb-2'
@@ -131,12 +133,14 @@ export default function UserCollectionMasonry({ books, setBooks }) {
               >
                 Delete
               </button>
-              <button
-                className='bg-gray-500 text-white px-4 py-2 rounded mr-2 mb-2'
-                onClick={handleArchiveBook}
-              >
-                Archive
-              </button>
+              {!selectedBook.IsArchived && (
+                <button
+                  className='bg-gray-500 text-white px-4 py-2 rounded mr-2 mb-2'
+                  onClick={() => handleToggleArchiveBook(selectedBook._id)}
+                >
+                  Archive
+                </button>
+              )}
               <button
                 className='bg-gray-300 text-gray-800 px-4 py-2 rounded mb-2'
                 onClick={closePopup}

@@ -30,7 +30,7 @@ export interface IBooklist extends Document {
 }
 
 export interface IBook extends Document {
-  name: string;
+  Name: string;
   Author: string;
   Description: string;
   Age: string;
@@ -40,7 +40,10 @@ export interface IBook extends Document {
   ISBN: string;
   Link: string;
   Source: string;
-  BookOwner: string;
+  BookOwner: Types.ObjectId;
+  IsArchived: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export type UserModel = Model<IUser>;

@@ -1,6 +1,6 @@
 // BookRepository.ts
 import { IBookData } from '@/domain/interfaces';
-import { IBook } from '@/domain/models';
+import { BookModel, IBook } from '@/domain/models';
 import { BaseRepository } from '@/repositories/BaseRepository';
 
 export class BookRepository extends BaseRepository {
@@ -208,22 +208,22 @@ export class BookRepository extends BaseRepository {
     }
   }
 
-  async archiveBookInUserCollection(bookId: string): Promise<IBook> {
+  async toggleBookArchiveInUserCollection(bookId: string): Promise<IBook> {
+    console.log('trying to find bookId: ', bookId);
     try {
-      const book = await this.Book.findByIdAndUpdate(
-        bookId,
-        { IsArchived: true },
-        { new: true }
-      );
+      const book: BookModel = await this.Book.findById(bookId);
 
       if (!book) {
         throw new Error('Book not found');
       }
 
+      book.IsArchived = !book.IsArchived;
+      await book.save();
+
       return book;
     } catch (error) {
-      console.error('Error archiving book:', error);
-      throw error;
+      console.error('Error toggling book archive:', error);
+      throw new Error('Failed to toggle book archive');
     }
   }
 }

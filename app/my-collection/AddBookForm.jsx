@@ -78,14 +78,14 @@ export default function AddBookForm() {
   };
 
   return (
-    <div className='mb-4'>
+    <div>
       <button
         className='bg-secondary text-yellow px-4 py-2 rounded'
         onClick={toggleExpanded}
       >
         {isExpanded ? 'Collapse' : 'Add Book'}
       </button>
-      <div className='m-2'>
+      <div className='mt-2'>
         {errorMessage && (
           <p className='text-red-500 mb-4 transition-opacity duration-500 ease-out opacity-100'>
             {errorMessage}
