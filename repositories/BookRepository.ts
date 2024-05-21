@@ -39,12 +39,12 @@ export class BookRepository extends BaseRepository {
 
     const skip = (page - 1) * limit;
     const [books, totalBooks] = await Promise.all([
-      this.Book.find({ BookOwner: user._id })
+      this.Book.find({ BookOwner: user._id, IsArchived: false })
         .sort({ updatedAt: -1 })
         .skip(skip)
         .limit(limit)
         .exec(),
-      this.Book.countDocuments({ BookOwner: user._id }),
+      this.Book.countDocuments({ BookOwner: user._id, IsArchived: false }),
     ]);
 
     return { books, totalBooks };

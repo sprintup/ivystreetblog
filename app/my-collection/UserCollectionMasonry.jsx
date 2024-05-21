@@ -16,9 +16,11 @@ const breakpointColumnsObj = {
   500: 1,
 };
 
-export default function UserCollectionMasonry({ books, setBooks }) {
+export default function UserCollectionMasonry({ books }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
   const router = useRouter();
 
   const handleDeleteBook = async () => {
@@ -55,12 +57,39 @@ export default function UserCollectionMasonry({ books, setBooks }) {
 
       if (response.ok) {
         setIsPopupOpen(false);
+        const updatedBook = await response.json();
+        console.log(
+          'updatedBook.book.IsArchived: ',
+          updatedBook.book.IsArchived
+        );
+        setMessage(
+          updatedBook.book.IsArchived
+            ? 'Book archived successfully!'
+            : 'Book unarchived successfully!'
+        );
+        setMessageType('success');
+        setTimeout(() => {
+          setMessage('');
+          setMessageType('');
+        }, 3000);
         router.refresh();
       } else {
         console.error('Error toggling book archive:', response.statusText);
+        setMessage('Failed to toggle book archive. Please try again.');
+        setMessageType('error');
+        setTimeout(() => {
+          setMessage('');
+          setMessageType('');
+        }, 3000);
       }
     } catch (error) {
       console.error('Error toggling book archive:', error);
+      setMessage('An error occurred. Please try again.');
+      setMessageType('error');
+      setTimeout(() => {
+        setMessage('');
+        setMessageType('');
+      }, 3000);
     }
   };
 
@@ -75,42 +104,52 @@ export default function UserCollectionMasonry({ books, setBooks }) {
   };
 
   return (
-    <Masonry
-      breakpointCols={breakpointColumnsObj}
-      className='my-masonry-grid'
-      columnClassName='my-masonry-grid_column'
-    >
-      {books.map(book => (
-        <div key={book._id}>
-          <BookDetailsPublic
-            book={book}
-            buttons={
-              <div className='flex flex-wrap justify-end'>
-                <Link href={`/bookEdit/${book._id}`}>
-                  <button className='bg-yellow text-primary px-2 py-1 rounded mr-2 mb-2 text-sm md:text-base'>
-                    Edit
-                  </button>
-                </Link>
-                <button
-                  className='bg-red-500 text-white px-2 py-1 rounded mr-2 mb-2 text-sm md:text-base'
-                  onClick={() => openPopup(book)}
-                >
-                  Delete
-                </button>
-                <button
-                  className={`${
-                    book.IsArchived ? 'bg-blue-500' : 'bg-gray-500'
-                  } text-white px-2 py-1 rounded mb-2 text-sm md:text-base`}
-                  onClick={() => handleToggleArchiveBook(book._id)}
-                >
-                  {book.IsArchived ? 'Unarchive' : 'Archive'}
-                </button>
-              </div>
-            }
-          />
+    <div>
+      {message && (
+        <div
+          className={`fixed top-20 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded z-50 ${
+            messageType === 'success' ? 'bg-green-500' : 'bg-red-500'
+          } text-white`}
+        >
+          {message}
         </div>
-      ))}
-
+      )}
+      <Masonry
+        breakpointCols={breakpointColumnsObj}
+        className='my-masonry-grid'
+        columnClassName='my-masonry-grid_column'
+      >
+        {books.map(book => (
+          <div key={book._id}>
+            <BookDetailsPublic
+              book={book}
+              buttons={
+                <div className='flex flex-wrap justify-end'>
+                  <Link href={`/bookEdit/${book._id}`}>
+                    <button className='bg-yellow text-primary px-2 py-1 rounded mr-2 mb-2 text-sm md:text-base'>
+                      Edit
+                    </button>
+                  </Link>
+                  <button
+                    className='bg-red-500 text-white px-2 py-1 rounded mr-2 mb-2 text-sm md:text-base'
+                    onClick={() => openPopup(book)}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className={`${
+                      book.IsArchived ? 'bg-blue-500' : 'bg-gray-500'
+                    } text-white px-2 py-1 rounded mb-2 text-sm md:text-base`}
+                    onClick={() => handleToggleArchiveBook(book._id)}
+                  >
+                    {book.IsArchived ? 'Unarchive' : 'Archive'}
+                  </button>
+                </div>
+              }
+            />
+          </div>
+        ))}
+      </Masonry>
       {isPopupOpen && (
         <div className='fixed inset-0 flex items-center justify-center z-50'>
           <div className='bg-white p-8 mx-4 md:mx-8 lg:mx-16 rounded shadow-lg'>
@@ -151,6 +190,6 @@ export default function UserCollectionMasonry({ books, setBooks }) {
           </div>
         </div>
       )}
-    </Masonry>
+    </div>
   );
 }

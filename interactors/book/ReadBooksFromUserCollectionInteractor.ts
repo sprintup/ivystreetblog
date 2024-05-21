@@ -26,8 +26,8 @@ export class ReadBooksFromUserCollectionInteractor extends BaseInteractor {
     return interactor;
   }
 
-  async execute(userEmail: string): Promise<IBook[]> {
+  async execute(userEmail: string): Promise<object> {
     const books = await this.bookRepo.getBooksByUserEmail(userEmail);
-    return books;
+    return this.convertToPlainObject(books);
   }
 }

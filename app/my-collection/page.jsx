@@ -23,11 +23,11 @@ export default async function UserCollectionPage({ searchParams }) {
     return <div>No books found in your collection.</div>;
   }
 
-  const books = booksData.map(book => book.toObject());
-
   const showArchived = searchParams.show === 'archived';
 
-  const filteredBooks = books.filter(book => book.IsArchived === showArchived);
+  const filteredBooks = booksData.filter(
+    book => book.IsArchived === showArchived
+  );
 
   return (
     <div className='bg-primary text-accent p-4 rounded-lg'>
