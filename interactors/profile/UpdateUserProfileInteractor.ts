@@ -1,26 +1,41 @@
-// UpdateUserProfileInteractor.ts
+// interactors/profile/UpdateUserProfileInteractor.ts
 
-import { BaseInteractor } from "../BaseInteractor";
-import { IUser } from "@/domain/models";
-
-interface UpdateUserProfileData {
-  publicProfileName?: string;
-  // Add other fields as needed
-}
+import { BaseInteractor } from '../BaseInteractor';
+import { UserRepository } from '@/repositories/UserRepository';
+import { IUser } from '@/domain/models';
+import { ProfileRepository } from '@/repositories/ProfileRepository';
 
 /**
- * UpdateUserProfileInteractor
+ * @class UpdateUserProfileInteractor
  *
  * As a user,
  * When I update my publicProfileName,
  * Then I'm able to access my bookshelf from the new name.
- *
- * @param {string} userEmail - The email of the user whose profile is being updated.
- * @param {UpdateUserProfileData} updatedData - The updated data for the user profile.
- * @returns {Promise<IUser | null>} A promise that resolves to the updated user profile or null if not found.
  */
 export class UpdateUserProfileInteractor extends BaseInteractor {
-  async execute(userEmail: string, updatedData: UpdateUserProfileData): Promise<IUser | null> {
-    return this.profileRepo.updateUserProfile(userEmail, updatedData);
+  static async create() {
+    const profileRepo = new ProfileRepository();
+    await profileRepo.initializeModels();
+    const interactor = new UpdateUserProfileInteractor({ profileRepo });
+    return interactor;
+  }
+
+  /**
+   * @method execute
+   *
+   * Updates the user's public profile name.
+   *
+   * @param {string} userEmail - The email of the user.
+   * @param {string} newPublicProfileName - The new public profile name.
+   * @returns {Promise<IUser | null>} A promise that resolves to the updated user or null if not found.
+   */
+  async execute(
+    userEmail: string,
+    publicProfileName: string
+  ): Promise<IUser | null> {
+    return this.profileRepo.updateUserPublicProfileName(
+      userEmail,
+      publicProfileName
+    );
   }
 }

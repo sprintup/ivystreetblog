@@ -1,53 +1,87 @@
 // BookRepository.ts
-import { IBook, IUser } from "@/domain/models";
-import { BaseRepository } from "@/repositories/BaseRepository";
+import { IBook, IBooklist, IUser } from '@/domain/models';
+import { BaseRepository } from '@/repositories/BaseRepository';
 
 export class ProfileRepository extends BaseRepository {
   async getUserByEmail(userEmail: string): Promise<IUser | null> {
     try {
       const user = await this.User.findOne({ email: userEmail });
       if (!user) {
-        console.error("No user found with the provided email:", userEmail);
+        console.error('No user found with the provided email:', userEmail);
         return null;
       }
       return user;
     } catch (error) {
-      console.error("Error getting user profile:", error);
+      console.error('Error getting user profile:', error);
       throw error;
     }
   }
- 
-  async updateUserProfile(userEmail, updatedData) {
+
+  async updateUserPublicProfileName(
+    userEmail: string,
+    publicProfileName: string
+  ): Promise<IUser | null> {
     try {
-      // Validate if the new public profile name is not used by another user
-      const userWithSameProfileName = await this.User.findOne({
-        publicProfileName: updatedData.publicProfileName,
-      });
-  
-      // If the profile name is already used and not by the current user, throw an error
-      if (userWithSameProfileName && userWithSameProfileName.email !== userEmail) {
-        throw new Error("Public profile name is already in use.");
-      }
-  
-      // Find the user by email and update their data with the new values
-      const updatedUser = await this.User.findOneAndUpdate(
+      const user = await this.User.findOneAndUpdate(
         { email: userEmail },
-        { $set: updatedData },
+        { publicProfileName },
         { new: true }
-      );
-  
-      if (!updatedUser) {
-        console.error("No user found with the provided email:", userEmail);
+      )
+        .lean()
+        .exec();
+
+      return user;
+    } catch (error) {
+      console.error("Error updating user's public profile name:", error);
+      throw error;
+    }
+  }
+
+  async getPublicBooklistsByPublicProfileName(
+    publicProfileName: string
+  ): Promise<IBooklist[] | null> {
+    try {
+      const user = await this.User.findOne({ publicProfileName }).lean().exec();
+      if (!user) {
         return null;
       }
-  
-      console.log("User profile updated:", updatedUser);
-      return updatedUser;
+
+      const publicBooklists = await this.Booklist.find({
+        booklistOwnerId: user._id,
+        visibility: 'public',
+      })
+        .lean()
+        .exec();
+
+      return publicBooklists;
     } catch (error) {
-      console.error("Error updating user profile:", error);
+      console.error(
+        'Error retrieving public booklists by public profile name:',
+        error
+      );
       throw error;
     }
   }
-  
-}
 
+  async getPublicProfileName(userEmail: string): Promise<string | null> {
+    try {
+      const user = await this.User.findOne(
+        { email: userEmail },
+        'publicProfileName'
+      )
+        .lean()
+        .exec();
+      if (!user) {
+        return null;
+      }
+
+      return user.publicProfileName;
+    } catch (error) {
+      console.error(
+        'Error retrieving public profile name by user email:',
+        error
+      );
+      throw error;
+    }
+  }
+}
