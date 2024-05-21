@@ -119,6 +119,14 @@ export class BookRepository extends BaseRepository {
     }
   }
 
+  async getBooklistsByBookId(bookId: string) {
+    return this.Booklist.find({ books: bookId });
+  }
+
+  async getBookById(bookId: string): Promise<IBook | null> {
+    return this.Book.findById(bookId);
+  }
+
   async getBooksByIds(bookIds: string[]): Promise<IBook[]> {
     try {
       const books = await this.Book.find({ _id: { $in: bookIds } });
