@@ -114,6 +114,36 @@ export class UserRepository extends BaseRepository {
     }
   }
 
+  async updateTrackedBookReview(
+    userEmail: string,
+    bookId: string,
+    review: string,
+    ratingPerceivedDifficulty: number
+  ): Promise<void> {
+    try {
+      const user = await this.User.findOne({ email: userEmail });
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const trackedBookIndex = user.trackedBooks.findIndex(
+        book => book.bookId.toString() === bookId
+      );
+
+      if (trackedBookIndex !== -1) {
+        user.trackedBooks[trackedBookIndex].review = review;
+        user.trackedBooks[trackedBookIndex].ratingPerceivedDifficulty =
+          ratingPerceivedDifficulty;
+        await user.save();
+      } else {
+        throw new Error('Tracked book not found');
+      }
+    } catch (error) {
+      console.error('Error updating tracked book review:', error);
+      throw error;
+    }
+  }
+
   async deleteTrackedBook(
     userEmail: string,
     bookId: string
