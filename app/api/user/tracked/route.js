@@ -1,6 +1,6 @@
 // app/api/user/tracked/route.js
 
-import { addBookToTrackedBooks, getUserIdByEmail } from "@/interactors/_baseInteractor";
+import { CreateTrackedBookInteractor } from "@/interactors/user/CreateTrackedBookInteractor";
 import { getServerSession } from "next-auth/next";
 import { options } from "@auth/options";
 
@@ -14,12 +14,11 @@ export async function POST(request) {
   const { bookId } = await request.json();
 
   try {
-    const userId = await getUserIdByEmail(session.user.email);
-    if (!userId) {
+    const createTrackedBookInteractor = await CreateTrackedBookInteractor.create();
+    const updatedUser = await createTrackedBookInteractor.execute(session.user.email, bookId);
+    if (!updatedUser) {
       return new Response("User not found", { status: 404 });
     }
-
-    await addBookToTrackedBooks(userId, bookId);
     return new Response("Book added to tracked books", { status: 200 });
   } catch (error) {
     console.error("Error adding book to tracked books:", error);
