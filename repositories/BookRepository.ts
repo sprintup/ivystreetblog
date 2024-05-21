@@ -148,21 +148,8 @@ export class BookRepository extends BaseRepository {
     }
   }
 
-  async updateBookInBooklist(
-    booklistId: string,
-    bookId: string,
-    updatedData: any
-  ): Promise<IBook | null> {
+  async updateBook(bookId: string, updatedData: any): Promise<IBook | null> {
     try {
-      const booklist = await this.Booklist.findById(booklistId);
-      if (!booklist) {
-        console.error(
-          'No booklist found with the provided booklistId:',
-          booklistId
-        );
-        return null;
-      }
-
       const book = await this.Book.findByIdAndUpdate(
         bookId,
         { $set: updatedData },
@@ -175,7 +162,7 @@ export class BookRepository extends BaseRepository {
 
       return book;
     } catch (error) {
-      console.error('Error updating book in booklist:', error);
+      console.error('Error updating book:', error);
       throw error;
     }
   }

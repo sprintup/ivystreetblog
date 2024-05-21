@@ -25,9 +25,9 @@ export async function POST(request) {
 
 export async function PUT(request, { params }) {
     try {
-        const { bookId, booklistId, BookName, Series, Description, Author, Age, Publication_Date, Product_Details, Publisher, ISBN, Link, Source, BookOwner } = await request.json();
+        const { bookId, BookName, Series, Description, Author, Age, Publication_Date, Product_Details, Publisher, ISBN, Link, Source, BookOwner } = await request.json();
         const updateBookInteractor = await UpdateBookInteractor.create();
-        const updatedBook = await updateBookInteractor.execute(booklistId, bookId, { BookName, Series, Description, Author, Age, Publication_Date, Product_Details, Publisher, ISBN, Link, Source, BookOwner });
+        const updatedBook = await updateBookInteractor.execute(bookId, { BookName, Series, Description, Author, Age, Publication_Date, Product_Details, Publisher, ISBN, Link, Source, BookOwner });
         if (updatedBook) {
             return new Response(JSON.stringify(updatedBook), { status: 200 });
         } else {

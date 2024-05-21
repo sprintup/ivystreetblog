@@ -1,11 +1,11 @@
-// ReadBooksForReadingListInteractor.ts
+// ReadBookForEditBookInteractor.ts
 
-import { BookRepository } from "@/repositories/BookRepository";
-import { BaseInteractor } from "../BaseInteractor";
-import { IBook } from "@/domain/models";
+import { BookRepository } from '@/repositories/BookRepository';
+import { BaseInteractor } from '../BaseInteractor';
+import { IBook } from '@/domain/models';
 
 /**
- * ReadBooksForReadingListInteractor
+ * ReadBookForEditBookInteractor
  *
  * As a user,
  * When I view the reading list,
@@ -14,15 +14,15 @@ import { IBook } from "@/domain/models";
  * @param {string[]} bookIds - The IDs of the books to retrieve.
  * @returns {Promise<IBook[]>} A promise that resolves to an array of book details.
  */
-export class ReadBooksForReadingListInteractor extends BaseInteractor {
+export class ReadBookForEditBookInteractor extends BaseInteractor {
   static async create() {
     const bookRepo = new BookRepository();
     await bookRepo.initializeModels();
-    const interactor = new ReadBooksForReadingListInteractor({bookRepo});
+    const interactor = new ReadBookForEditBookInteractor({ bookRepo });
     return interactor;
   }
 
   async execute(bookIds: string[]): Promise<IBook[]> {
-    return this.bookRepo.getBooksByIds(bookIds); 
+    return this.bookRepo.getBooksByIds(bookIds);
   }
 }

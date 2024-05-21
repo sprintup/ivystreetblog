@@ -23,16 +23,19 @@ export default function EditBook({ params }) {
         const response = await fetch(`/api/book/${params.bookId}`);
         if (response.ok) {
           const data = await response.json();
-          setBookName(data.Name || '');
-          setAuthor(data.Author || '');
-          setDescription(data.Description || '');
-          setAge(data.Age || '');
-          setSeries(data.Series || '');
-          setPublicationDate(data.Publication_Date || '');
-          setPublisher(data.Publisher || '');
-          setIsbn(data.ISBN || '');
-          setLink(data.Link || '');
-          setSource(data.Source || '');
+          if (data.length > 0) {
+            const book = data[0];
+            setBookName(book.Name || '');
+            setAuthor(book.Author || '');
+            setDescription(book.Description || '');
+            setAge(book.Age || '');
+            setSeries(book.Series || '');
+            setPublicationDate(book.Publication_Date || '');
+            setPublisher(book.Publisher || '');
+            setIsbn(book.ISBN || '');
+            setLink(book.Link || '');
+            setSource(book.Source || '');
+          }
         } else {
           console.error('Error fetching book:', response.statusText);
         }
