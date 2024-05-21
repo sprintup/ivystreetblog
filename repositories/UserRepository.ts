@@ -66,26 +66,38 @@ export class UserRepository extends BaseRepository {
     }
   }
 
-  async updateTrackedBooks(userId, updatedTrackedBooks) {
+  async updateBookStatus(userEmail: string, bookId: string, status: string) {
+    if (status !== 'to-read' && status !== 'finished') {
+      throw new Error(`Invalid status: ${status}`);
+    }
     try {
-      // Find the user by their ID
-      const user = await this.User.findById(userId);
+      // Find the user by their email
+      const user = await this.User.findOne({ email: userEmail });
       if (!user) {
         throw new Error('User not found');
       }
 
-      // Update the user's trackedBooks with the new list
-      user.trackedBooks = updatedTrackedBooks;
+      // Find the book in the user's trackedBooks
+      const trackedBook = user.trackedBooks.find(
+        book => book.bookId._id.toString() === bookId
+      );
+      if (!trackedBook) {
+        throw new Error("Book not found in user's tracked books");
+      }
+
+      // Update the status of the tracked book
+      trackedBook.status = status;
 
       // Save the updated user document
       await user.save();
 
       return user;
     } catch (error) {
-      console.error('Error updating tracked books:', error);
+      console.error('Error updating book status:', error);
       throw error;
     }
   }
+
   async getUserWithTrackedBooksByEmail(email: string): Promise<IUser | null> {
     try {
       const user = await this.User.findOne({ email })
@@ -98,6 +110,30 @@ export class UserRepository extends BaseRepository {
       return user;
     } catch (error) {
       console.error('Error retrieving user with tracked books:', error);
+      throw error;
+    }
+  }
+
+  async deleteTrackedBook(
+    userEmail: string,
+    bookId: string
+  ): Promise<IUser | null> {
+    try {
+      const user = await this.User.findOne({ email: userEmail });
+      if (!user) {
+        return null;
+      }
+
+      const updatedTrackedBooks = user.trackedBooks.filter(
+        book => book.bookId.toString() !== bookId
+      );
+
+      user.trackedBooks = updatedTrackedBooks;
+      await user.save();
+
+      return user;
+    } catch (error) {
+      console.error('Error deleting tracked book:', error);
       throw error;
     }
   }

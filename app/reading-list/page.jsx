@@ -14,10 +14,6 @@ export default async function ReadingListPage() {
     return <div>Please log in to view your reading list.</div>;
   }
 
-  return <ReadingList session={session} />;
-}
-
-async function ReadingList({ session }) {
   const readUserForReadingListInteractor =
     await ReadUserForReadingListInteractor.create();
   const user = await readUserForReadingListInteractor.execute(
@@ -31,7 +27,7 @@ async function ReadingList({ session }) {
   const toReadBooks = user.trackedBooks.filter(
     book => book.status === 'to-read'
   );
-  console.log('toReadBooks: ', toReadBooks);
+
   const finishedBooks = user.trackedBooks.filter(
     book => book.status === 'finished'
   );

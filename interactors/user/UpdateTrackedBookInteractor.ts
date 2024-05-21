@@ -1,24 +1,26 @@
-import { IUser } from "@/domain/models";
-import { BaseInteractor } from "../BaseInteractor";
+import { IUser } from '@/domain/models';
+import { BaseInteractor } from '../BaseInteractor';
+import { UserRepository } from '@/repositories/UserRepository';
 
 /**
  * @class UpdateTrackedBookInteractor
  *
  * As a user,
- * When I browse to any book,
- * Then I can update my reading list.
+ * When I change the status of a book in my reading list,
+ * Then the status of my tracked book changes.
  */
 export class UpdateTrackedBookInteractor extends BaseInteractor {
-    /**
-     * @method execute
-     *
-     * Updates the tracked books for a user.
-     *
-     * @param {string} userId - The ID of the user whose tracked books are being updated.
-     * @param {Array} updatedTrackedBooks - The updated list of tracked books.
-     * @returns {Promise<IUser | null>} A promise that resolves to the updated user or null if not found.
-     */
-    async execute(userId: string, updatedTrackedBooks: Array<string>): Promise<IUser | null> {
-      return this.userRepo.updateTrackedBooks(userId, updatedTrackedBooks);
-    }
+  static async create() {
+    const userRepo = new UserRepository();
+    await userRepo.initializeModels();
+    const interactor = new UpdateTrackedBookInteractor({ userRepo });
+    return interactor;
   }
+  async execute(
+    userEmail: string,
+    bookId: string,
+    status: string
+  ): Promise<IUser | null> {
+    return this.userRepo.updateBookStatus(userEmail, bookId, status);
+  }
+}

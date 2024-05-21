@@ -2,7 +2,8 @@
 
 import { getServerSession } from "next-auth/next";
 import { options } from "@auth/options";
-import { getUserByEmail, updateTrackedBooks } from "@/interactors/_baseInteractor";
+import { UpdateTrackedBookInteractor } from "@/interactors/user/UpdateTrackedBookInteractor";
+import { DeleteTrackedBookInteractor } from "@/interactors/user/DeleteTrackedBookInteractor";
 
 export async function PUT(request, { params }) {
   const session = await getServerSession(options);
@@ -11,14 +12,10 @@ export async function PUT(request, { params }) {
   }
 
   const { bookId } = params;
-  const { status } = await request.json();
+  const body = await request.json(); // This will contain all the data sent in the body of the request
 
-  const user = await getUserByEmail(session.user.email);
-  const trackedBooks = user.trackedBooks.map((book) =>
-    book.bookId.toString() === bookId ? { ...book, status } : book
-  );
-
-  await updateTrackedBooks(user._id, trackedBooks);
+  const updateTrackedBookInteractor = await UpdateTrackedBookInteractor.create();
+  await updateTrackedBookInteractor.execute(session.user.email, bookId, body.status); // Use body.status here
 
   return new Response("Book status updated", { status: 200 });
 }
@@ -31,12 +28,8 @@ export async function DELETE(request, { params }) {
 
   const { bookId } = params;
 
-  const user = await getUserByEmail(session.user.email);
-  const trackedBooks = user.trackedBooks.filter(
-    (book) => book.bookId.toString() !== bookId
-  );
-
-  await updateTrackedBooks(user._id, trackedBooks);
+  const deleteTrackedBookInteractor = await DeleteTrackedBookInteractor.create();
+  await deleteTrackedBookInteractor.execute(session.user.email, bookId);
 
   return new Response("Book removed from reading list", { status: 200 });
 }
