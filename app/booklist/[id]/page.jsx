@@ -26,7 +26,8 @@ export default async function BooklistPage({ params }) {
   const books = booklist.bookIds;
 
   const session = await getServerSession(options);
-  const userBooklists = session ? booklistOwner.bookListIds : [];
+  const userBooklists =
+    session && booklistOwner ? booklistOwner.bookListIds : [];
 
   return (
     <div className='bg-primary text-accent p-4 rounded-lg'>

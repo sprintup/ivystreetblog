@@ -88,12 +88,6 @@ export class BooklistRepository extends BaseRepository {
     }
   }
 
-  /**
-   * Retrieves a booklist by its ID, along with the associated user, user booklists, and books.
-   * @param booklistId - The ID of the booklist to retrieve.
-   * @returns A Promise that resolves to the retrieved booklist, or null if no booklist is found.
-   * @throws If there is an error while retrieving the booklist.
-   */
   async getBooklistByIdWithUserAndUserBooklistsAndBooks(
     booklistId: string
   ): Promise<IBooklist | null> {
