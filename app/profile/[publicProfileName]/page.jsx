@@ -11,11 +11,11 @@ export default async function PublicBookshelfPage({ params }) {
   try {
     const readUserProfileInteractor =
       await ReadUserPublicProfileInteractor.create();
-    const { publicBooklists } = await readUserProfileInteractor.execute(
+    const publicBooklists = await readUserProfileInteractor.execute(
       publicProfileName
     );
 
-    if (!user) {
+    if (!publicBooklists) {
       return <div>User not found.</div>;
     }
 
