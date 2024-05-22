@@ -4,7 +4,7 @@
 
 import React from 'react';
 import Masonry from 'react-masonry-css';
-import BookDetailsPublic from '../../(components)/BookDetailsPublicComponent';
+import BookDetailsPublicComponent from '../../(components)/BookDetailsPublicComponent';
 import AddToReadingListButton from '@components/AddToReadingListButton';
 import AddToBooklistButton from '@components/AddToBooklistButton';
 import { useSession } from 'next-auth/react';
@@ -28,7 +28,7 @@ export default function BooklistMasonry({ booklist, userBooklists }) {
     >
       {booklist.books.map(book => (
         <div key={book._id}>
-          <BookDetailsPublic book={book} />
+          <BookDetailsPublicComponent book={book} />
           {session && (
             <div className='flex space-x-2'>
               <AddToReadingListButton book={book} />
