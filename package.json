@@ -20,6 +20,7 @@
     "react-modal": "^3.16.1"
   },
   "devDependencies": {
+    "@types/mongoose": "^5.11.97",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.4",

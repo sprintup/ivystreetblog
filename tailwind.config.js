@@ -20,7 +20,7 @@ module.exports = {
         // tertiary: "#D16014", // Bronze
         // accent: "#D4D2D5", // light gray
         orange: "#FFA500", // Orange from the books
-        highlight: "#A288A6", // Yellow from the stars/lights
+        public: "#A288A6", // More of a purple color
         yellow: "#FFD700", // Yellow from the stars/lights
       },
       fontFamily: {

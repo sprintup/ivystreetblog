@@ -1,19 +1,20 @@
 // app/api/user/profile/route.js
 
-import { getServerSession } from "next-auth/next";
-import { options } from "@auth/options";
-import { getUserProfile, updateUserProfile } from "@services/dataService";
+import { ReadUserEditProfileInteractor } from "@/interactors/profile/ReadUserEditProfileInteractor";
+import { UpdateUserProfileInteractor } from "@/interactors/profile/UpdateUserProfileInteractor";
 
-export async function GET(request) {
-  const session = await getServerSession(options);
-  if (!session) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
+export async function POST(request) {
+  const { email } = await request.json();
+
+  if (!email) {
+    return new Response(JSON.stringify({ error: "Email is required" }), {
+      status: 400,
     });
   }
 
   try {
-    const userProfile = await getUserProfile(session.user.email);
+    const readUserProfileInteractor = await ReadUserEditProfileInteractor.create();
+    const userProfile = await readUserProfileInteractor.execute(email);
     return new Response(JSON.stringify(userProfile), { status: 200 });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.toString() }), {
@@ -21,20 +22,27 @@ export async function GET(request) {
     });
   }
 }
+
 export async function PUT(request) {
-  const session = await getServerSession(options);
-  if (!session) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
+  const { email, publicProfileName } = await request.json();
+
+  if (!email) {
+    return new Response(JSON.stringify({ error: "Email is required" }), {
+      status: 400,
     });
   }
 
   try {
-    const { publicProfileName } = await request.json();
-    const updatedProfile = await updateUserProfile(session.user.email, {
-      publicProfileName,
-    });
-    return new Response(JSON.stringify(updatedProfile), { status: 200 });
+    const updateUserProfileInteractor = await UpdateUserProfileInteractor.create();
+    const updatedUser = await updateUserProfileInteractor.execute(email, publicProfileName);
+
+    if (!updatedUser) {
+      return new Response(JSON.stringify({ error: "User not found" }), {
+        status: 404,
+      });
+    }
+
+    return new Response(JSON.stringify(updatedUser), { status: 200 });
   } catch (error) {
     if (error.message === "Public profile name is already taken.") {
       return new Response(JSON.stringify({ error: error.message }), {

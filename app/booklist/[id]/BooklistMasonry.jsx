@@ -1,13 +1,14 @@
 // app/booklist/[id]/BooklistMasonry.jsx
 
-"use client";
+'use client';
 
-import React from "react";
-import Masonry from "react-masonry-css";
-import BookDetailsPublic from "./BookDetailsPublic";
-import AddToReadingListButton from "@components/AddToReadingListButton";
-import { useSession } from "next-auth/react";
-import "./BooklistMasonry.css";
+import React, { useState, useEffect } from 'react';
+import Masonry from 'react-masonry-css';
+import BookDetailsPublicComponent from '../../(components)/BookDetailsPublicComponent';
+import AddToReadingListButton from '@components/AddToReadingListButton';
+import AddToBooklistButton from '@components/AddToBooklistButton';
+import { useSession } from 'next-auth/react';
+import './BooklistMasonry.css';
 
 const breakpointColumnsObj = {
   default: 4,
@@ -18,17 +19,46 @@ const breakpointColumnsObj = {
 
 export default function BooklistMasonry({ booklist }) {
   const { data: session } = useSession();
+  const [userBooklists, setUserBooklists] = useState([]);
+
+  useEffect(() => {
+    const fetchUserBooklists = async () => {
+      if (session) {
+        try {
+          const response = await fetch('/api/user/booklists', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: session.user.email }),
+          });
+          const data = await response.json();
+          setUserBooklists(data);
+        } catch (error) {
+          console.error('Error fetching user booklists:', error);
+        }
+      }
+    };
+
+    fetchUserBooklists();
+  }, [session]);
 
   return (
     <Masonry
       breakpointCols={breakpointColumnsObj}
-      className="my-masonry-grid"
-      columnClassName="my-masonry-grid_column"
+      className='my-masonry-grid'
+      columnClassName='my-masonry-grid_column'
     >
-      {booklist.books.map((book) => (
+      {booklist.books.map(book => (
         <div key={book._id}>
-          <BookDetailsPublic book={book} />
-          {session && <AddToReadingListButton book={book} />}
+          <BookDetailsPublicComponent book={book} />
+          {session && (
+            <div className='flex space-x-2'>
+              <AddToReadingListButton book={book} />
+              <AddToBooklistButton
+                book={book}
+                signedInUserBooklists={userBooklists}
+              />
+            </div>
+          )}
         </div>
       ))}
     </Masonry>

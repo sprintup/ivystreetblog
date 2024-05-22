@@ -3,7 +3,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@services/*": ["./services/*"],
+      "@domain/*": ["./domain/*"],
+      "@interactors/*": ["./interactors/*"],
+      "@repositories/*": ["./repositories/*"],
       "@components/*": ["./app/(components)/*"],
       "@auth/*": ["./app/api/auth/[...nextauth]/*"],
       "@app/*": ["./app/*"],

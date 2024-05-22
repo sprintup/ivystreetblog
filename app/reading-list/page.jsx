@@ -1,11 +1,11 @@
 // app/reading-list/page.jsx
 
-import React from "react";
-import { getServerSession } from "next-auth/next";
-import { options } from "@auth/options";
-import { getUserByEmail, getBooksByIds } from "@services/dataService";
-import ToReadBook from "./ToReadBook";
-import FinishedBook from "./FinishedBook";
+import React from 'react';
+import { getServerSession } from 'next-auth/next';
+import { options } from '@auth/options';
+import { ReadUserForReadingListInteractor } from '@/interactors/user/ReadUserForReadingListInteractor';
+import ToReadBook from './ToReadBook';
+import FinishedBook from './FinishedBook';
 
 export default async function ReadingListPage() {
   const session = await getServerSession(options);
@@ -14,60 +14,55 @@ export default async function ReadingListPage() {
     return <div>Please log in to view your reading list.</div>;
   }
 
-  return <ReadingList session={session} />;
-}
+  const readUserForReadingListInteractor =
+    await ReadUserForReadingListInteractor.create();
+  const user = await readUserForReadingListInteractor.execute(
+    session.user.email
+  );
 
-async function ReadingList({ session }) {
-  const user = await getUserByEmail(session.user.email);
+  if (!user) {
+    return <div>User not found.</div>;
+  }
+
   const toReadBooks = user.trackedBooks.filter(
-    (book) => book.status === "to-read"
+    book => book.status === 'to-read'
   );
+
   const finishedBooks = user.trackedBooks.filter(
-    (book) => book.status === "finished"
+    book => book.status === 'finished'
   );
-
-  const toReadBookIds = toReadBooks.map((book) => book.bookId);
-  const finishedBookIds = finishedBooks.map((book) => book.bookId);
-
-  const toReadBookDetails = await getBooksByIds(toReadBookIds);
-  const finishedBookDetails = await getBooksByIds(finishedBookIds);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl font-bold text-yellow mb-8">My Reading List</h1>
-      <div>
-        <h2 className="text-2xl font-bold text-yellow mb-4">To Read</h2>
-        {toReadBookDetails.length === 0 ? (
+    <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
+      <h1 className='text-3xl font-bold mb-8'>My Reading List</h1>
+      <div className='mb-2'>
+        <h2 className='text-2xl font-bold mb-4'>To Read</h2>
+        {toReadBooks.length === 0 ? (
           <p>No books in your "To Read" list.</p>
         ) : (
-          <ul className="space-y-4 mb-8">
-            {toReadBookDetails.map((book) => (
+          <ul className='space-y-4 mb-8'>
+            {toReadBooks.map(trackedBook => (
               <ToReadBook
-                key={book._id}
-                book={book}
-                trackedBook={toReadBooks.find(
-                  (trackedBook) =>
-                    trackedBook.bookId.toString() === book._id.toString()
-                )}
+                key={trackedBook.bookId._id}
+                book={trackedBook.bookId}
+                trackedBook={trackedBook}
               />
             ))}
           </ul>
         )}
       </div>
-      <div>
-        <h2 className="text-2xl font-bold text-yellow mb-4">Finished Books</h2>
-        {finishedBookDetails.length === 0 ? (
+      <hr></hr>
+      <div className='mt-2'>
+        <h2 className='text-2xl font-bold mb-4'>Finished Books</h2>
+        {finishedBooks.length === 0 ? (
           <p>No books in your "Finished Books" list.</p>
         ) : (
-          <ul className="space-y-4">
-            {finishedBookDetails.map((book) => (
+          <ul className='space-y-4'>
+            {finishedBooks.map(trackedBook => (
               <FinishedBook
-                key={book._id}
-                book={book}
-                trackedBook={finishedBooks.find(
-                  (trackedBook) =>
-                    trackedBook.bookId.toString() === book._id.toString()
-                )}
+                key={trackedBook.bookId._id}
+                book={trackedBook.bookId}
+                trackedBook={trackedBook}
               />
             ))}
           </ul>
