@@ -167,4 +167,20 @@ export class UserRepository extends BaseRepository {
       throw error;
     }
   }
+
+  async getUserBooklistsByEmail(email: string): Promise<IBooklist[]> {
+    try {
+      const user = await this.User.findOne({ email })
+        .populate('bookListIds')
+        .lean()
+        .exec();
+      if (!user) {
+        throw new Error(`User with email ${email} not found`);
+      }
+      return user.bookListIds;
+    } catch (error) {
+      console.error('Error retrieving user booklists:', error);
+      throw error;
+    }
+  }
 }

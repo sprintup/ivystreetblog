@@ -2,7 +2,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Masonry from 'react-masonry-css';
 import BookDetailsPublicComponent from '../../(components)/BookDetailsPublicComponent';
 import AddToReadingListButton from '@components/AddToReadingListButton';
@@ -17,8 +17,29 @@ const breakpointColumnsObj = {
   500: 1,
 };
 
-export default function BooklistMasonry({ booklist, userBooklists }) {
+export default function BooklistMasonry({ booklist }) {
   const { data: session } = useSession();
+  const [userBooklists, setUserBooklists] = useState([]);
+
+  useEffect(() => {
+    const fetchUserBooklists = async () => {
+      if (session) {
+        try {
+          const response = await fetch('/api/user/booklists', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: session.user.email }),
+          });
+          const data = await response.json();
+          setUserBooklists(data);
+        } catch (error) {
+          console.error('Error fetching user booklists:', error);
+        }
+      }
+    };
+
+    fetchUserBooklists();
+  }, [session]);
 
   return (
     <Masonry
@@ -32,7 +53,10 @@ export default function BooklistMasonry({ booklist, userBooklists }) {
           {session && (
             <div className='flex space-x-2'>
               <AddToReadingListButton book={book} />
-              <AddToBooklistButton book={book} userBooklists={userBooklists} />
+              <AddToBooklistButton
+                book={book}
+                signedInUserBooklists={userBooklists}
+              />
             </div>
           )}
         </div>

@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 
-export default function AddToBooklistButton({ book, userBooklists }) {
+export default function AddToBooklistButton({ book, signedInUserBooklists }) {
   const [selectedBooklist, setSelectedBooklist] = useState('');
   const [message, setMessage] = useState('');
 
@@ -42,7 +42,7 @@ export default function AddToBooklistButton({ book, userBooklists }) {
           className='w-full px-3 py-1 pr-8 rounded-md bg-primary text-yellow text-sm appearance-none'
         >
           <option value=''>Select Booklist</option>
-          {userBooklists.map(booklist => (
+          {signedInUserBooklists.map(booklist => (
             <option key={booklist._id} value={booklist._id}>
               {booklist.title}
             </option>
