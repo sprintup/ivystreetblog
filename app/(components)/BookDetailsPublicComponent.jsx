@@ -1,15 +1,27 @@
 // app/booklist/[id]/BookDetailsPublicComponent.js
 
 import React from 'react';
+import Link from 'next/link';
 
 export default function BookDetailsPublicComponent({ book, buttons }) {
   if (!book) {
     return null;
   }
 
+  const truncateText = (text, maxLength) => {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return `${text.slice(0, maxLength)}...`;
+  };
+
   return (
     <div className='bg-secondary p-4 rounded-lg shadow-md flex flex-col break-inside-avoid mb-2'>
-      <h2 className='text-xl text-yellow mb-2 hover:underline'>{book.Name}</h2>
+      <Link href={`/book/${book._id}`}>
+        <h2 className='text-xl text-yellow mb-2 hover:underline cursor-pointer'>
+          {book.Name}
+        </h2>
+      </Link>
       {book.Author && (
         <p className='text-sm mb-1'>
           <span className='font-bold'>Author:</span> {book.Author}
@@ -52,15 +64,16 @@ export default function BookDetailsPublicComponent({ book, buttons }) {
         </p>
       )}
       {book.Link && (
-        <p className='text-sm mb-1'>
+        <p className='text-sm mb-1 break-all'>
           <span className='font-bold'>Link:</span>{' '}
           <a
             href={book.Link}
             target='_blank'
             rel='noopener noreferrer'
             className='text-yellow hover:underline'
+            title={book.Link}
           >
-            {book.Link}
+            {truncateText(book.Link, 30)}
           </a>
         </p>
       )}
