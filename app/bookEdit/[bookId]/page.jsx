@@ -83,7 +83,7 @@ export default function EditBook({ params }) {
 
   return (
     <div className='mt-8'>
-      <h4 className='text-lg text-yellow mb-4'>Edit Book</h4>
+      <h4 className='text-2xl mb-4'>Edit Book</h4>
       {errorMessage && <p className='text-red-500 mb-4'>{errorMessage}</p>}
       <form onSubmit={handleUpdateBook}>
         <div className='mb-4'>
