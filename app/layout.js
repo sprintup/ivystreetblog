@@ -17,7 +17,7 @@ export default async function RootLayout({ children }) {
             <Nav session={session} />
 
             {/* Main Content */}
-            <main className="flex-grow py-8">
+            <main className="flex-grow py-8 mb-20">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {children}
               </div>
