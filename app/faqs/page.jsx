@@ -2,7 +2,14 @@
 
 import React from 'react';
 import Accordion from '@components/Accordion';
-import { passkeysContent, homeScreenContent } from './accordionContent';
+import {
+  passkeysContent,
+  homeScreenContent,
+  whyGithubContent,
+  submitIssuesContent,
+  collaborateOnGitHubContent,
+  useForOwnLibraryContent,
+} from './accordionContent';
 
 export default function FAQPage() {
   return (
@@ -12,12 +19,26 @@ export default function FAQPage() {
           Frequently Asked Questions
         </h2>
         <div className='space-y-4'>
+          <Accordion title='Why GitHub?' content={whyGithubContent} />
           {/* Passkeys */}
           <Accordion title='Setting up Passkeys' content={passkeysContent} />
 
           {/* Add to Home Screen */}
           <Accordion title='Add to Home Screen' content={homeScreenContent} />
 
+          <Accordion
+            title='Submitting bugs or feature requests'
+            content={submitIssuesContent}
+          />
+
+          <Accordion
+            title='How to collaborate on GitHub?'
+            content={collaborateOnGitHubContent}
+          />
+          <Accordion
+            title='How to use this type of website for your own little free library?'
+            content={useForOwnLibraryContent}
+          />
           {/* Add other FAQ items */}
         </div>
       </div>

@@ -16,7 +16,11 @@ const Accordion = ({ title, content, isOpenByDefault = false }) => {
         className='w-full text-left focus:outline-none'
         onClick={toggleAccordion}
       >
-        <h3 className='text-xl font-bold text-accent text-yellow hover:text-orange'>
+        <h3
+          className={`text-xl font-bold text-accent ${
+            isOpen ? 'text-orange' : 'text-yellow'
+          } hover:text-orange`}
+        >
           {title}
         </h3>
       </button>

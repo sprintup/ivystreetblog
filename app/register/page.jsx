@@ -8,6 +8,7 @@ import {
   passkeysContent,
   homeScreenContent,
   parentalContent,
+  whyGithubContent,
 } from '@app/faqs/accordionContent';
 
 export default function RegisterPage() {
@@ -24,6 +25,7 @@ export default function RegisterPage() {
                 content={githubContent}
                 isOpenByDefault={true}
               />
+              <Accordion title='Why GitHub?' content={whyGithubContent} />
 
               {/* Parental Approval */}
               <Accordion

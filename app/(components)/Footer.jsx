@@ -14,7 +14,7 @@ const Footer = () => {
               Terms of service
             </Link>
             <Link
-              href='https://github.com/sprintup/ivystreetblog'
+              href={process.env.NEXT_PUBLIC_GITHUB_REPO_URL}
               className='text-yellow hover:text-orange focus:text-orange block px-2 rounded-md text-base font-medium bg-primary'
             >
               Edit on Github
