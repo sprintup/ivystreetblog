@@ -1,8 +1,8 @@
 // app/faq/page.jsx
 
 import React from 'react';
-import Accordion from '../../components/Accordion';
-import { passkeysContent } from '../accordionContent';
+import Accordion from '@components/Accordion';
+import { passkeysContent, homeScreenContent } from './accordionContent';
 
 export default function FAQPage() {
   return (
@@ -17,6 +17,7 @@ export default function FAQPage() {
 
           {/* Add to Home Screen */}
           <Accordion title='Add to Home Screen' content={homeScreenContent} />
+
           {/* Add other FAQ items */}
         </div>
       </div>

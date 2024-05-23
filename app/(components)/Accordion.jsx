@@ -1,3 +1,4 @@
+'use client';
 // components/Accordion.jsx
 
 import React, { useState } from 'react';
