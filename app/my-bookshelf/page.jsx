@@ -8,6 +8,8 @@ import { options } from '@auth/options';
 import Link from 'next/link';
 import styles from './page.module.css';
 import { redirect } from 'next/navigation';
+import { revalidateTag } from 'next/cache';
+import { BOOKLISTS_TAG } from '@domain/commons';
 
 async function BookshelfData() {
   const session = await getServerSession(options);
@@ -24,6 +26,7 @@ async function BookshelfData() {
 
   const readBooklistsInteractor = await ReadMyBookshelfInteractor.create();
   const booklists = await readBooklistsInteractor.execute(user.email);
+  revalidateTag(BOOKLISTS_TAG);
   return { session, booklists };
 }
 

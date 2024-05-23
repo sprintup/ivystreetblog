@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import BookAddToCollectionComponent from '@components/BookAddToCollectionComponent';
+import { BOOKLISTS_TAG } from '@domain/commons';
 
 export default function UserBookCollectionComponent({
   booklistId,
@@ -49,6 +50,7 @@ export default function UserBookCollectionComponent({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ bookId }),
+        next: { tags: [BOOKLISTS_TAG] },
       });
       if (response.ok) {
         onBookAdded();
