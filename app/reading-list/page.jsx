@@ -6,6 +6,7 @@ import { options } from '@auth/options';
 import { ReadUserForReadingListInteractor } from '@/interactors/user/ReadUserForReadingListInteractor';
 import ToReadBook from './ToReadBook';
 import FinishedBook from './FinishedBook';
+import UserBookCollectionComponent from './UserBookCollectionComponent';
 
 export default async function ReadingListPage() {
   const session = await getServerSession(options);
@@ -35,38 +36,41 @@ export default async function ReadingListPage() {
   return (
     <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
       <h1 className='text-3xl font-bold mb-8'>My Reading List</h1>
-      <div className='mb-2'>
-        <h2 className='text-2xl font-bold mb-4'>To Read</h2>
-        {toReadBooks.length === 0 ? (
-          <p>No books in your "To Read" list.</p>
-        ) : (
-          <ul className='space-y-4 mb-8'>
-            {toReadBooks.map(trackedBook => (
-              <ToReadBook
-                key={trackedBook.bookId._id}
-                book={trackedBook.bookId}
-                trackedBook={trackedBook}
-              />
-            ))}
-          </ul>
-        )}
-      </div>
-      <hr></hr>
-      <div className='mt-2'>
-        <h2 className='text-2xl font-bold mb-4'>Finished Books</h2>
-        {finishedBooks.length === 0 ? (
-          <p>No books in your "Finished Books" list.</p>
-        ) : (
-          <ul className='space-y-4'>
-            {finishedBooks.map(trackedBook => (
-              <FinishedBook
-                key={trackedBook.bookId._id}
-                book={trackedBook.bookId}
-                trackedBook={trackedBook}
-              />
-            ))}
-          </ul>
-        )}
+      <UserBookCollectionComponent />
+      <hr className='my-8' />
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+        <div>
+          <h2 className='text-2xl font-bold mb-4'>To Read</h2>
+          {toReadBooks.length === 0 ? (
+            <p>No books in your "To Read" list.</p>
+          ) : (
+            <ul className='space-y-4'>
+              {toReadBooks.map(trackedBook => (
+                <ToReadBook
+                  key={trackedBook.bookId._id}
+                  book={trackedBook.bookId}
+                  trackedBook={trackedBook}
+                />
+              ))}
+            </ul>
+          )}
+        </div>
+        <div>
+          <h2 className='text-2xl font-bold mb-4'>Finished Books</h2>
+          {finishedBooks.length === 0 ? (
+            <p>No books in your "Finished Books" list.</p>
+          ) : (
+            <ul className='space-y-4'>
+              {finishedBooks.map(trackedBook => (
+                <FinishedBook
+                  key={trackedBook.bookId._id}
+                  book={trackedBook.bookId}
+                  trackedBook={trackedBook}
+                />
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );

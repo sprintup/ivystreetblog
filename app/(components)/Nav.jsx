@@ -1,4 +1,3 @@
-// app/(components)/Nav.jsx
 'use client';
 
 import { useState } from 'react';
@@ -12,9 +11,7 @@ const Nav = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
-  const isActive = href => {
-    return pathname === href;
-  };
+  const isActive = href => pathname === href;
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -23,6 +20,30 @@ const Nav = () => {
   const closeMenu = () => {
     setIsOpen(false);
   };
+
+  const NavLink = ({ href, children, onClick }) => (
+    <Link
+      href={href}
+      className={`text-yellow hover:text-orange focus:text-orange ${
+        isActive(href) ? 'font-bold' : ''
+      }`}
+      onClick={onClick}
+    >
+      {children}
+    </Link>
+  );
+
+  const MobileNavLink = ({ href, children, onClick }) => (
+    <Link
+      href={href}
+      className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
+        isActive(href) ? 'bg-primary' : ''
+      }`}
+      onClick={onClick}
+    >
+      {children}
+    </Link>
+  );
 
   return (
     <header className='bg-secondary sticky top-0 z-50 border-b-2 border-solid border-accent-100'>
@@ -63,84 +84,64 @@ const Nav = () => {
               {session && (
                 <>
                   <span>Welcome, {session.user.name}!</span>
-                  <Link
+                  <NavLink
                     href='/my-collection'
-                    className={`text-yellow hover:text-orange focus:text-orange ${
-                      isActive('/my-collection') ? 'font-bold' : ''
-                    }`}
+                    isActive={isActive}
                     onClick={closeMenu}
                   >
                     My Collection
-                  </Link>
-                  <Link
+                  </NavLink>
+                  <NavLink
                     href='/my-bookshelf'
-                    className={`text-yellow hover:text-orange focus:text-orange ${
-                      isActive('/my-bookshelf') ? 'font-bold' : ''
-                    }`}
+                    isActive={isActive}
                     onClick={closeMenu}
                   >
                     My Bookshelf
-                  </Link>
-                  <Link
+                  </NavLink>
+                  <NavLink
                     href='/reading-list'
-                    className={`text-yellow hover:text-orange focus:text-orange ${
-                      isActive('/reading-list') ? 'font-bold' : ''
-                    }`}
+                    isActive={isActive}
                     onClick={closeMenu}
                   >
                     My Reading List
-                  </Link>
-                  <Link
+                  </NavLink>
+                  <NavLink
                     href='/profile'
-                    className={`text-yellow hover:text-orange focus:text-orange ${
-                      isActive('/profile') ? 'font-bold' : ''
-                    }`}
+                    isActive={isActive}
                     onClick={closeMenu}
                   >
                     Profile
-                  </Link>
+                  </NavLink>
                 </>
               )}
               {!session && (
                 <>
-                  <Link
-                    href='/'
-                    className={`text-yellow hover:text-orange focus:text-orange ${
-                      isActive('/') ? 'font-bold' : ''
-                    }`}
+                  <NavLink href='/' isActive={isActive} onClick={closeMenu}>
+                    About
+                  </NavLink>
+                  <NavLink
+                    href='/register'
+                    isActive={isActive}
                     onClick={closeMenu}
                   >
-                    About
-                  </Link>
+                    Register
+                  </NavLink>
                 </>
               )}
-              {!session && (
-                <Link
-                  href='/register'
-                  className={`text-yellow hover:text-orange focus:text-orange ${
-                    isActive('/register') ? 'font-bold' : ''
-                  }`}
-                  onClick={closeMenu}
-                >
-                  Register
-                </Link>
-              )}
               {session ? (
-                <Link
+                <NavLink
                   href='/api/auth/signout?callbackUrl=/'
-                  className='text-yellow hover:text-orange focus:text-orange'
                   onClick={closeMenu}
                 >
                   Logout
-                </Link>
+                </NavLink>
               ) : (
-                <Link
+                <NavLink
                   href='/api/auth/signin?callbackUrl=/my-bookshelf'
-                  className='text-yellow hover:text-orange focus:text-orange'
                   onClick={closeMenu}
                 >
                   Login
-                </Link>
+                </NavLink>
               )}
             </div>
           </div>
@@ -198,84 +199,64 @@ const Nav = () => {
               <span className='block px-3 py-2'>
                 Welcome, {session.user.name}!
               </span>
-              <Link
+              <MobileNavLink
                 href='/my-collection'
-                className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive('/my-collection') ? 'bg-primary' : ''
-                }`}
+                isActive={isActive}
                 onClick={closeMenu}
               >
                 My Collection
-              </Link>
-              <Link
+              </MobileNavLink>
+              <MobileNavLink
                 href='/my-bookshelf'
-                className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive('/my-bookshelf') ? 'bg-primary' : ''
-                }`}
+                isActive={isActive}
                 onClick={closeMenu}
               >
                 My Bookshelf
-              </Link>
-              <Link
+              </MobileNavLink>
+              <MobileNavLink
                 href='/reading-list'
-                className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive('/reading-list') ? 'bg-primary' : ''
-                }`}
+                isActive={isActive}
                 onClick={closeMenu}
               >
                 My Reading List
-              </Link>
-              <Link
+              </MobileNavLink>
+              <MobileNavLink
                 href='/profile'
-                className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive('/profile') ? 'bg-primary' : ''
-                }`}
+                isActive={isActive}
                 onClick={closeMenu}
               >
                 Profile
-              </Link>
+              </MobileNavLink>
             </>
           )}
           {!session && (
             <>
-              <Link
-                href='/'
-                className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive('/') ? 'bg-primary' : ''
-                }`}
+              <MobileNavLink href='/' isActive={isActive} onClick={closeMenu}>
+                About
+              </MobileNavLink>
+              <MobileNavLink
+                href='/register'
+                isActive={isActive}
                 onClick={closeMenu}
               >
-                About
-              </Link>
+                Register
+              </MobileNavLink>
             </>
           )}
-          {!session && (
-            <Link
-              href='/register'
-              className={`text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium ${
-                isActive('/register') ? 'bg-primary' : ''
-              }`}
-              onClick={closeMenu}
-            >
-              Register
-            </Link>
-          )}
           {session ? (
-            <Link
+            <MobileNavLink
               href='/api/auth/signout?callbackUrl=/'
-              className='text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium'
               onClick={closeMenu}
             >
               Logout
-            </Link>
+            </MobileNavLink>
           ) : (
-            <Link
+            <MobileNavLink
               href='/api/auth/signin?callbackUrl=/my-bookshelf'
-              className='text-yellow hover:text-orange focus:text-orange block px-3 py-2 rounded-md text-base font-medium'
               onClick={closeMenu}
             >
               Login
-            </Link>
+            </MobileNavLink>
           )}
         </div>
       </div>
