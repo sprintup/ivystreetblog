@@ -9,7 +9,7 @@ import Link from 'next/link';
 import styles from './page.module.css';
 import { redirect } from 'next/navigation';
 import { revalidateTag } from 'next/cache';
-import { BOOKLISTS_TAG } from '@domain/commons';
+import { BOOKS_TAG } from '@domain/commons';
 import AccordionWrapper from '@/app/(components)/AccordionWrapper';
 import Accordion from '@/app/(components)/Accordion';
 import {
@@ -34,7 +34,7 @@ async function BookshelfData() {
 
   const readBooklistsInteractor = await ReadMyBookshelfInteractor.create();
   const booklists = await readBooklistsInteractor.execute(user.email);
-  revalidateTag(BOOKLISTS_TAG);
+  revalidateTag(BOOKS_TAG);
   return { session, booklists };
 }
 

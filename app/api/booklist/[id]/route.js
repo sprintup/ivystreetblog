@@ -21,9 +21,9 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const booklistId = params.id;
-    const { title, description, visibility } = await request.json();
+    const { title, description, visibility, openForRecommendations } = await request.json();
     const updateBooklistInteractor = await UpdateBooklistInteractor.create();
-    const updatedBooklist = await updateBooklistInteractor.execute(booklistId, { title, description, visibility });
+    const updatedBooklist = await updateBooklistInteractor.execute(booklistId, { title, description, visibility, openForRecommendations });
     if (updatedBooklist) {
       return new Response(JSON.stringify(updatedBooklist), { status: 200 });
     } else {

@@ -21,6 +21,7 @@ export default function EditBooklistPage({ params }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [visibility, setVisibility] = useState('public');
+  const [openForRecommendations, setOpenForRecommendations] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [booklistId, setBooklistId] = useState(params.id);
 
@@ -33,6 +34,7 @@ export default function EditBooklistPage({ params }) {
           setTitle(booklist.title);
           setDescription(booklist.description);
           setVisibility(booklist.visibility);
+          setOpenForRecommendations(booklist.openForRecommendations);
         } else {
           console.error('Error fetching booklist:', response.statusText);
           setErrorMessage('Failed to fetch booklist. Please try again.');
@@ -54,7 +56,12 @@ export default function EditBooklistPage({ params }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, description, visibility }),
+        body: JSON.stringify({
+          title,
+          description,
+          visibility,
+          openForRecommendations,
+        }),
       });
       if (response.ok) {
         router.push('/my-bookshelf');
@@ -153,6 +160,17 @@ export default function EditBooklistPage({ params }) {
               <option value='public'>Public</option>
               <option value='private'>Private</option>
             </select>
+          </label>
+        </div>
+        <div className='mb-4'>
+          <label className='flex items-center text-lg'>
+            <input
+              type='checkbox'
+              checked={openForRecommendations}
+              onChange={e => setOpenForRecommendations(e.target.checked)}
+              className='mr-2'
+            />
+            Open for recommendations
           </label>
         </div>
         <div className='flex justify-between'>

@@ -27,7 +27,12 @@ export class BooklistRepository extends BaseRepository {
 
   async createBooklist(
     userEmail: string,
-    booklist: { title: string; description?: string; visibility: string }
+    booklist: {
+      title: string;
+      description?: string;
+      visibility: string;
+      openForRecommendations: boolean;
+    }
   ): Promise<IUser | null> {
     try {
       // Find the user by their email
@@ -42,6 +47,7 @@ export class BooklistRepository extends BaseRepository {
         title: booklist.title,
         description: booklist.description,
         visibility: booklist.visibility,
+        openForRecommendations: booklist.openForRecommendations,
         booklistOwnerId: user._id,
       });
       await newBooklist.save();
@@ -157,7 +163,12 @@ export class BooklistRepository extends BaseRepository {
 
   async updateBooklist(
     booklistId: string,
-    updatedData: { title?: string; description?: string; visibility?: string }
+    updatedData: {
+      title?: string;
+      description?: string;
+      visibility?: string;
+      openForRecommendations?: boolean;
+    }
   ): Promise<IBooklist | null> {
     try {
       const booklist = await this.Booklist.findByIdAndUpdate(
@@ -167,6 +178,7 @@ export class BooklistRepository extends BaseRepository {
             title: updatedData.title,
             description: updatedData.description,
             visibility: updatedData.visibility,
+            openForRecommendations: updatedData.openForRecommendations,
             updatedAt: new Date(),
           },
         },

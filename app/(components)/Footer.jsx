@@ -27,7 +27,7 @@ const Footer = () => {
 
   return (
     <footer
-      className={`py-4 fixed bottom-0 left-0 right-0 transition-opacity duration-300 bg-primary ${
+      className={`py-4 fixed bottom-0 left-0 right-0 transition-opacity duration-300 bg-primary border-t-2 border-solid border-accent-100 ${
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
     >
@@ -38,7 +38,7 @@ const Footer = () => {
               href='/terms'
               className='text-yellow hover:text-orange focus:text-orange block px-2 rounded-md text-base font-medium'
             >
-              Terms of service (last updated 5.23.2024)
+              Terms of service (5.23.2024)
             </Link>
             <Link
               href={process.env.NEXT_PUBLIC_GITHUB_REPO_URL}

@@ -6,7 +6,7 @@ import { options } from '@auth/options';
 import { ReadUserForReadingListInteractor } from '@/interactors/user/ReadUserForReadingListInteractor';
 import ToReadBook from './ToReadBook';
 import FinishedBook from './FinishedBook';
-import UserBookCollectionComponent from './UserBookCollectionComponent';
+import UserBookCollectionWrapper from './UserBookCollectionWrapper';
 import AccordionWrapper from '@/app/(components)/AccordionWrapper';
 import Accordion from '@/app/(components)/Accordion';
 import {
@@ -53,7 +53,7 @@ export default async function ReadingListPage() {
           content={whatIsACollectionContent}
         />
       </AccordionWrapper>
-      <UserBookCollectionComponent />
+      <UserBookCollectionWrapper session={session} />
       <hr className='my-8' />
       <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
         <div>

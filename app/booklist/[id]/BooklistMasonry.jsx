@@ -7,11 +7,12 @@ import Masonry from 'react-masonry-css';
 import BookDetailsPublicComponent from '../../(components)/BookDetailsPublicComponent';
 import AddToReadingListButton from '@components/AddToReadingListButton';
 import AddToBooklistButton from '@components/AddToBooklistButton';
+import RecommendBookToBooklistButton from '@components/RecommendBookToBooklistButton';
 import { useSession } from 'next-auth/react';
 import './BooklistMasonry.css';
 
 const breakpointColumnsObj = {
-  default: 4,
+  default: 3,
   1100: 3,
   700: 2,
   500: 1,
@@ -20,47 +21,68 @@ const breakpointColumnsObj = {
 export default function BooklistMasonry({ booklist }) {
   const { data: session } = useSession();
   const [userBooklists, setUserBooklists] = useState([]);
+  const [userBooks, setUserBooks] = useState([]);
 
   useEffect(() => {
-    const fetchUserBooklists = async () => {
+    const fetchUserData = async () => {
       if (session) {
         try {
-          const response = await fetch('/api/user/booklists', {
+          // Fetch user booklists
+          const booklistsResponse = await fetch('/api/user/booklists', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: session.user.email }),
           });
-          const data = await response.json();
-          setUserBooklists(data);
+          const booklistsData = await booklistsResponse.json();
+          setUserBooklists(booklistsData);
+
+          // Fetch user books
+          const booksResponse = await fetch('/api/user/books', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: session.user.email }),
+          });
+          const booksData = await booksResponse.json();
+          setUserBooks(booksData);
         } catch (error) {
-          console.error('Error fetching user booklists:', error);
+          console.error('Error fetching user data:', error);
         }
       }
     };
 
-    fetchUserBooklists();
+    fetchUserData();
   }, [session]);
 
   return (
-    <Masonry
-      breakpointCols={breakpointColumnsObj}
-      className='my-masonry-grid'
-      columnClassName='my-masonry-grid_column'
-    >
-      {booklist.books.map(book => (
-        <div key={book._id}>
-          <BookDetailsPublicComponent book={book} />
-          {session && (
-            <div className='flex space-x-2'>
-              <AddToReadingListButton book={book} />
-              <AddToBooklistButton
-                book={book}
-                signedInUserBooklists={userBooklists}
-              />
-            </div>
-          )}
+    <div>
+      <Masonry
+        breakpointCols={breakpointColumnsObj}
+        className='my-masonry-grid'
+        columnClassName='my-masonry-grid_column'
+      >
+        {booklist.books.map(book => (
+          <div key={book._id}>
+            <BookDetailsPublicComponent book={book} />
+            {session && (
+              <div className='flex space-x-2'>
+                <AddToReadingListButton book={book} />
+                <AddToBooklistButton
+                  book={book}
+                  signedInUserBooklists={userBooklists}
+                />
+              </div>
+            )}
+          </div>
+        ))}
+      </Masonry>
+      {session && (
+        <div className='mt-4'>
+          <RecommendBookToBooklistButton
+            booklist={booklist}
+            signedInUserBooks={userBooks}
+          />
         </div>
-      ))}
-    </Masonry>
+      )}
+    </div>
   );
 }

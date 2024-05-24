@@ -23,6 +23,7 @@ export default function BooklistPage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [visibility, setVisibility] = useState('public');
+  const [openForRecommendations, setOpenForRecommendations] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleAddBooklist = async () => {
@@ -32,6 +33,7 @@ export default function BooklistPage() {
       description,
       bookIds: [],
       visibility,
+      openForRecommendations,
     };
 
     try {
@@ -49,6 +51,7 @@ export default function BooklistPage() {
         setTitle('');
         setDescription('');
         setVisibility('public');
+        setOpenForRecommendations(false);
         // Redirect to the /my-bookshelf page and reload it
         router.push('/my-bookshelf');
         router.refresh();
@@ -120,6 +123,17 @@ export default function BooklistPage() {
             <option value='public'>Public</option>
             <option value='private'>Private</option>
           </select>
+        </label>
+      </div>
+      <div className='mb-4'>
+        <label className='flex items-center text-lg'>
+          <input
+            type='checkbox'
+            checked={openForRecommendations}
+            onChange={e => setOpenForRecommendations(e.target.checked)}
+            className='mr-2'
+          />
+          Open for recommendations
         </label>
       </div>
       <div className='flex justify-end'>

@@ -1,6 +1,7 @@
+//app\booklistEdit\[id]\BooklistEditDisplayComponent.jsx
 'use client';
 import { useState, useEffect } from 'react';
-import UserBookCollectionComponent from './UserBookCollectionComponent';
+import UserBookCollectionWrapper from './UserBookCollectionWrapper';
 import BookRemoveFromCollectionComponent from './BookRemoveFromCollectionComponent';
 
 export default function BooklistEditDisplayComponent({ booklistId }) {
@@ -24,11 +25,6 @@ export default function BooklistEditDisplayComponent({ booklistId }) {
     }
   };
 
-  const handleBookChange = () => {
-    // Refresh the booklist data after a book is added/removed
-    fetchBooklist();
-  };
-
   if (!booklist) {
     return <div>Loading...</div>;
   }
@@ -45,14 +41,10 @@ export default function BooklistEditDisplayComponent({ booklistId }) {
           <BookRemoveFromCollectionComponent
             bookId={book._id}
             booklistId={booklistId}
-            onBookRemoved={handleBookChange}
           />
         </div>
       ))}
-      <UserBookCollectionComponent
-        booklistId={booklistId}
-        onBookAdded={handleBookChange}
-      />
+      <UserBookCollectionWrapper booklistId={booklistId} />
     </div>
   );
 }

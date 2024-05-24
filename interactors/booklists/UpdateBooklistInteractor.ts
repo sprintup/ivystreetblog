@@ -1,13 +1,14 @@
 // UpdateBooklistInteractor.ts
 
-import { BooklistRepository } from "@/repositories/BooklistRepository";
-import { BaseInteractor } from "../BaseInteractor";
-import { IBooklist } from "@/domain/models";
+import { BooklistRepository } from '@/repositories/BooklistRepository';
+import { BaseInteractor } from '../BaseInteractor';
+import { IBooklist } from '@/domain/models';
 
 interface UpdateBooklistData {
   title?: string;
   description?: string;
   visibility?: string;
+  openForRecommendations?: boolean;
 }
 
 /**
@@ -25,11 +26,14 @@ export class UpdateBooklistInteractor extends BaseInteractor {
   static async create() {
     const booklistRepo = new BooklistRepository();
     await booklistRepo.initializeModels();
-    const interactor = new UpdateBooklistInteractor({booklistRepo});
+    const interactor = new UpdateBooklistInteractor({ booklistRepo });
     return interactor;
   }
 
-  async execute(booklistId: string, updatedData: UpdateBooklistData): Promise<IBooklist | null> {
+  async execute(
+    booklistId: string,
+    updatedData: UpdateBooklistData
+  ): Promise<IBooklist | null> {
     return this.booklistRepo.updateBooklist(booklistId, updatedData);
   }
 }
