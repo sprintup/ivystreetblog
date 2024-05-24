@@ -100,9 +100,7 @@ export default function AddBookForm() {
       {isExpanded && (
         <div className='mt-2 bg-primary text-accent p-4 rounded-lg max-w-4xl mx-auto'>
           <div className='flex justify-between items-center mb-4'>
-            <h2 className='text-2xl text-yellow'>
-              Add a book to my collection
-            </h2>
+            <h2 className='text-2xl'>Add a book to my collection</h2>
           </div>
           <div>
             <form onSubmit={handleAddBookToCollection}>

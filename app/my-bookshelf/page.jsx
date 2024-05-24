@@ -10,6 +10,14 @@ import styles from './page.module.css';
 import { redirect } from 'next/navigation';
 import { revalidateTag } from 'next/cache';
 import { BOOKLISTS_TAG } from '@domain/commons';
+import AccordionWrapper from '@/app/(components)/AccordionWrapper';
+import Accordion from '@/app/(components)/Accordion';
+import {
+  privateBooklistContent,
+  whatIsBookshelfContent,
+  whatIsABooklistContent,
+  makeBooklistPublicContent,
+} from '@/app/faqs/accordionContent';
 
 async function BookshelfData() {
   const session = await getServerSession(options);
@@ -36,6 +44,25 @@ export default async function MyBookshelf() {
   return (
     <>
       <h1 className='text-4xl font-bold mb-4'>My Bookshelf</h1>
+      <AccordionWrapper title='Show More Information'>
+        <Accordion
+          title='What is a bookshelf?'
+          content={whatIsBookshelfContent}
+          isOpenByDefault={true}
+        />
+        <Accordion
+          title='What is a booklist?'
+          content={whatIsABooklistContent}
+        />
+        <Accordion
+          title='What does it mean to make a booklist private?'
+          content={privateBooklistContent}
+        />
+        <Accordion
+          title='What does it mean to make a booklist public?'
+          content={makeBooklistPublicContent}
+        />
+      </AccordionWrapper>
       <Suspense fallback={<div>Loading booklists...</div>}>
         <BookshelfContent session={session} booklists={booklists} />
       </Suspense>
@@ -46,16 +73,18 @@ export default async function MyBookshelf() {
 function BookshelfContent({ session, booklists }) {
   return (
     <>
-      <div className='flex justify-between items-center'>
-        <h3 className='text-lg'>
-          {session?.user?.name} has {booklists.length || 0} booklists
-        </h3>
-        <Link
-          href='/booklistAdd'
-          className='px-4 py-2 mb-2 bg-yellow text-primary font-bold rounded-lg hover:bg-orange transition duration-300 no-underline'
-        >
-          Add Booklist
-        </Link>
+      <div className='mb-4'>
+        <div className='flex justify-between items-center mb-2'>
+          <h3 className='text-lg'>
+            {session?.user?.name} has {booklists.length || 0} booklists
+          </h3>
+          <Link
+            href='/booklistAdd'
+            className='px-4 py-2 bg-yellow text-primary font-bold rounded-lg hover:bg-orange transition duration-300 no-underline'
+          >
+            Add Booklist
+          </Link>
+        </div>
       </div>
       <div className='mt-2'>
         <p className='mb-2'>
@@ -73,18 +102,6 @@ function BookshelfContent({ session, booklists }) {
           page.
         </p>
       </div>
-      <details className='mb-4'>
-        <summary className='text-yellow hover:text-orange cursor-pointer'>
-          Show More Information
-        </summary>
-        <div className='mt-2'>
-          <p>
-            Private reading lists are perfect for curating a list of books to
-            put on hold at the library, where the librarians will find them for
-            you and collect them all for you to pick up.
-          </p>
-        </div>
-      </details>
       <div className='grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
         {booklists
           .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))

@@ -9,6 +9,14 @@ import {
   submitIssuesContent,
   collaborateOnGitHubContent,
   useForOwnLibraryContent,
+  whatIsProfileContent,
+  whatIsReadingListContent,
+  whatIsBookshelfContent,
+  makeBooklistPublicContent,
+  privateBooklistContent,
+  whatIsACollectionContent,
+  whatIsABooklistContent,
+  parentalContent,
 } from './accordionContent';
 
 export default function FAQPage() {
@@ -20,12 +28,40 @@ export default function FAQPage() {
         </h2>
         <div className='space-y-4'>
           <Accordion title='Why GitHub?' content={whyGithubContent} />
-          {/* Passkeys */}
+          <Accordion
+            title='Parental approval is required'
+            content={parentalContent}
+          />
+          <Accordion
+            title='What is a booklist?'
+            content={whatIsABooklistContent}
+          />
+          <Accordion
+            title='What is a collection?'
+            content={whatIsACollectionContent}
+          />
+          <Accordion
+            title='What is a private booklist?'
+            content={privateBooklistContent}
+          />
+          <Accordion
+            title='What does it mean to make a booklist public?'
+            content={makeBooklistPublicContent}
+          />
+          <Accordion
+            title='What is a bookshelf?'
+            content={whatIsBookshelfContent}
+          />
+          <Accordion
+            title='What is a reading list?'
+            content={whatIsReadingListContent}
+          />
+          <Accordion
+            title='What is a public profile name?'
+            content={whatIsProfileContent}
+          />
           <Accordion title='Setting up Passkeys' content={passkeysContent} />
-
-          {/* Add to Home Screen */}
           <Accordion title='Add to Home Screen' content={homeScreenContent} />
-
           <Accordion
             title='Submitting bugs or feature requests'
             content={submitIssuesContent}
@@ -39,7 +75,6 @@ export default function FAQPage() {
             title='How to use this type of website for your own little free library?'
             content={useForOwnLibraryContent}
           />
-          {/* Add other FAQ items */}
         </div>
       </div>
     </div>

@@ -76,7 +76,7 @@ export default function UserBookCollectionComponent({
 
   return (
     <div className='mt-8'>
-      <h3 className='text-2xl text-yellow mb-4'>My Book Collection</h3>
+      <h3 className='text-2xl mb-4'>My Book Collection</h3>
       {userBooks.length === 0 ? (
         <p>You don't have any books in your collection yet.</p>
       ) : (

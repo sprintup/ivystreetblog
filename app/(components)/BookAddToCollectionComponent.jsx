@@ -61,7 +61,7 @@ export default function BookAddToCollectionComponent({ onBookAdded }) {
   return (
     <div className='bg-primary text-accent p-4 rounded-lg max-w-4xl mx-auto'>
       <div className='flex justify-between items-center mb-4'>
-        <h2 className='text-2xl text-yellow'>Add a book to my collection</h2>
+        <h2 className='text-2xl'>Add a book to my collection</h2>
       </div>
       <div>
         {errorMessage && <p className='text-red-500 mb-4'>{errorMessage}</p>}

@@ -38,7 +38,7 @@ const Footer = () => {
               href='/terms'
               className='text-yellow hover:text-orange focus:text-orange block px-2 rounded-md text-base font-medium'
             >
-              Terms of service
+              Terms of service (last updated 5.23.2024)
             </Link>
             <Link
               href={process.env.NEXT_PUBLIC_GITHUB_REPO_URL}

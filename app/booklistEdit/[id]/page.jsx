@@ -6,6 +6,14 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import BooklistEditDisplayComponent from './BooklistEditDisplayComponent';
 import Link from 'next/link';
+import AccordionWrapper from '@/app/(components)/AccordionWrapper';
+import Accordion from '@/app/(components)/Accordion';
+import {
+  privateBooklistContent as privateBooklistContent,
+  makeBooklistPublicContent,
+  whatIsABooklistContent,
+  whatIsACollectionContent,
+} from '@/app/faqs/accordionContent';
 
 export default function EditBooklistPage({ params }) {
   const router = useRouter();
@@ -81,13 +89,34 @@ export default function EditBooklistPage({ params }) {
 
   return (
     <div className='bg-primary text-accent p-4 rounded-lg max-w-4xl mx-auto'>
-      <div className='flex justify-between items-center mb-4'>
-        <h2 className='text-2xl text-yellow'>Edit Booklist</h2>
-        <Link href={`/booklist/${params.id}`}>
-          <button className='px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300'>
-            View Booklist
-          </button>
-        </Link>
+      <div className='mb-4'>
+        <div className='flex justify-between items-center mb-2'>
+          <h2 className='text-2xl'>Edit Booklist</h2>
+          <Link href={`/booklist/${params.id}`}>
+            <button className='px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300'>
+              View Public Booklist
+            </button>
+          </Link>
+        </div>
+        <AccordionWrapper title='Show More Information'>
+          <Accordion
+            title='What is a booklist?'
+            content={whatIsABooklistContent}
+            isOpenByDefault={true}
+          />
+          <Accordion
+            title='What is a collection?'
+            content={whatIsACollectionContent}
+          />
+          <Accordion
+            title='What does it mean to make a booklist private?'
+            content={privateBooklistContent}
+          />
+          <Accordion
+            title='What does it mean to make a booklist public?'
+            content={makeBooklistPublicContent}
+          />
+        </AccordionWrapper>
       </div>
       {errorMessage && <p className='text-red-500 mb-4'>{errorMessage}</p>}
       <form onSubmit={handleSubmitOfUpdateBooklistForm}>
