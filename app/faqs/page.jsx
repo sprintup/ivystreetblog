@@ -17,6 +17,7 @@ import {
   whatIsACollectionContent,
   whatIsABooklistContent,
   parentalContent,
+  whatIsIvyStreetBlogContent,
 } from './accordionContent';
 
 export default function FAQPage() {
@@ -27,6 +28,11 @@ export default function FAQPage() {
           Frequently Asked Questions
         </h2>
         <div className='space-y-4'>
+          <Accordion
+            title='Welcome to Ivy Street Blog! What is this?'
+            content={whatIsIvyStreetBlogContent}
+            isOpenByDefault={true}
+          />
           <Accordion title='Why GitHub?' content={whyGithubContent} />
           <Accordion
             title='Parental approval is required'

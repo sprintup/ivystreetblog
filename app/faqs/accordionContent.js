@@ -425,13 +425,48 @@ export const thisIsPublicBooklistContent = (
             <Link href="/public-bookshelf" className="text-yellow hover:text-orange">
                 browse the public bookshelf
             </Link>{' '}
-            or even the creator's public profile name.
+            or even the curator's public profile name.
         </p>
         <p className="text-accent mt-4">
             Once you're logged in, simply click the "Add to Reading List" button to save it for later. You can also click the "Add to Booklist" button to add the book to one of your own booklists, making it easy to organize and share your own curated booklist.
         </p>
         <p className="text-accent mt-4">
             You can use the share button to share this booklist several ways, including by text, email, or a QR code that can be made into a sticker or something.
+        </p>
+    </>
+);
+
+export const whatIsIvyStreetBlogContent = (
+    <>
+        <p className="text-accent">
+            The Ivy Street Blog is a community-driven platform dedicated to sharing and discovering book recommendations. It's a place where book lovers can curate and share their own booklists, browse public booklists created by others, and find inspiration for their next great read.
+        </p>
+        <p className="text-accent mt-4">
+            At its core, the Ivy Street Blog is powered by the passion and knowledge of its users. Whether you're an avid reader, a librarian, a teacher, or simply someone who enjoys sharing their love of books, you can contribute to the community by creating and sharing your own booklists.
+        </p>
+        <p className="text-accent mt-4">
+            One of the unique features of the Ivy Street Blog is the ability to create and share public booklists. These curated lists of books can be organized around any theme or topic you choose, allowing you to share your literary discoveries and recommendations with others who share your interests.
+        </p>
+        <p className="text-accent mt-4">
+            In addition to creating and sharing booklists, you can also{' '}
+            <Link href="/public-bookshelf" className="text-yellow hover:text-orange">
+                browse the public bookshelf
+            </Link>{' '}
+            to discover new books and booklists created by others in the community. You can search by the curator's public profile name, making it easy to find booklists that align with your reading preferences.
+        </p>
+    </>
+);
+
+export const whatIsPublicBookshelfContent = (
+    <>
+        <p className="text-accent">
+            The public bookshelf is a central hub where you can explore and discover public booklists created by members of the Ivy Street Blog community. It's a treasure trove of curated book recommendations, organized in booklists centered on a specific genre, topic. You can even browse the the curator's other public booklists by clicking their public profile name.
+        </p>
+        <p className="text-accent mt-4">
+            Whether you're looking for new books to add to your reading list, seeking inspiration for your next booklist, or simply want to browse the diverse literary tastes of the community, the public bookshelf is the perfect starting point.
+        </p>
+        <p className="text-accent mt-4">
+            Once you find a booklist that catches your eye, you can explore the individual books it contains. If a book piques your interest, you can easily add it to your reading list or one of your own booklists with just a few clicks, making it a seamless experience to discover and organize your next literary adventure.
         </p>
     </>
 );

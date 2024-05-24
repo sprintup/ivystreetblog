@@ -9,7 +9,10 @@ import Link from 'next/link';
 import BooklistMasonry from './BooklistMasonry';
 import AccordionWrapper from '@/app/(components)/AccordionWrapper';
 import Accordion from '@/app/(components)/Accordion';
-import { thisIsPublicBooklistContent } from '@/app/faqs/accordionContent';
+import {
+  thisIsPublicBooklistContent,
+  whatIsIvyStreetBlogContent,
+} from '@/app/faqs/accordionContent';
 
 export default async function BooklistPage({ params }) {
   const { id } = params;
@@ -40,15 +43,19 @@ export default async function BooklistPage({ params }) {
       </div>
       <AccordionWrapper title='Show More Information'>
         <Accordion
+          title='Welcome to Ivy Street Blog! What is this?'
+          content={whatIsIvyStreetBlogContent}
+          isOpenByDefault={true}
+        />
+        <Accordion
           title='This is a public booklist. What does that mean?'
           content={thisIsPublicBooklistContent}
-          isOpenByDefault={true}
         />
       </AccordionWrapper>
       <p className='text-lg mb-4'>{booklist.description}</p>
       {booklistOwner && (
         <p className='text-sm mb-4'>
-          Booklist creator:{' '}
+          Booklist curator:{' '}
           <Link
             href={`/profile/${booklistOwner.publicProfileName}`}
             className='text-yellow hover:text-orange'
