@@ -7,6 +7,15 @@ import { ReadBooksFromUserCollectionInteractor } from '@interactors/book/ReadBoo
 import UserCollectionMasonry from './UserCollectionMasonry';
 import AddBookForm from './AddBookForm';
 import Link from 'next/link';
+import AccordionWrapper from '@/app/(components)/AccordionWrapper';
+import Accordion from '@/app/(components)/Accordion';
+import {
+  deleteArchiveBookContent,
+  whyAmazonLinksContent,
+  whatIsABooklistContent,
+  whatIsACollectionContent,
+  whatIsReadingListContent,
+} from '@/app/faqs/accordionContent';
 
 export default async function UserCollectionPage({ searchParams }) {
   const session = await getServerSession(options);
@@ -31,8 +40,33 @@ export default async function UserCollectionPage({ searchParams }) {
 
   return (
     <div className='bg-primary text-accent p-4 rounded-lg'>
-      <div className='flex justify-between items-center mb-4'>
-        <h1 className='text-2xl'>My Collection</h1>
+      <div className='mb-4'>
+        <div className='flex justify-between items-center mb-2'>
+          <h1 className='text-4xl font-bold mb-4'>My Collection</h1>
+        </div>
+        <AccordionWrapper title='Show More Information'>
+          <Accordion
+            title='What is a collection?'
+            content={whatIsACollectionContent}
+            isOpenByDefault={true}
+          />
+          <Accordion
+            title='What is a booklist?'
+            content={whatIsABooklistContent}
+          />
+          <Accordion
+            title='What is a reading list?'
+            content={whatIsReadingListContent}
+          />
+          <Accordion
+            title='Why do we prefer Amazon links in book details?'
+            content={whyAmazonLinksContent}
+          />
+          <Accordion
+            title="What's the difference between deleting and archiving a book?"
+            content={deleteArchiveBookContent}
+          />
+        </AccordionWrapper>
       </div>
       <div className='flex mb-4 items-center space-x-4'>
         <AddBookForm />

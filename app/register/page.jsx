@@ -3,11 +3,13 @@
 
 import { useState } from 'react';
 import Accordion from '@components/Accordion';
+import Link from 'next/link';
 import {
   githubContent,
   passkeysContent,
   homeScreenContent,
   parentalContent,
+  whyGithubContent,
 } from '@app/faqs/accordionContent';
 
 export default function RegisterPage() {
@@ -24,6 +26,7 @@ export default function RegisterPage() {
                 content={githubContent}
                 isOpenByDefault={true}
               />
+              <Accordion title='Why GitHub?' content={whyGithubContent} />
 
               {/* Parental Approval */}
               <Accordion
@@ -46,26 +49,43 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Login Button */}
+          {/* Login Button and Bulleted List */}
           <div className='mt-8 md:mt-0 md:ml-8'>
+            <ul className='text-accent text-sm mb-4 list-disc list-inside'>
+              <li className='mb-2'>
+                <span>
+                  By registering, you agree to our{' '}
+                  <Link
+                    href='/terms'
+                    rel='noopener noreferrer'
+                    className='text-yellow hover:text-orange'
+                  >
+                    terms of use
+                  </Link>
+                  .
+                </span>
+              </li>
+              <li className='mb-2'>
+                Changing email in GitHub will result in a duplicate account
+                being created.
+              </li>
+              <li className='mb-2'>
+                More{' '}
+                <Link href='/faqs' className='text-yellow hover:text-orange'>
+                  FAQs
+                </Link>{' '}
+                are found in the footer.
+              </li>
+              <li className='mb-2'>
+                When you log in, please set your public profile name.
+              </li>
+            </ul>
             <a
               href='/api/auth/signin'
               className='block w-full md:w-auto bg-yellow text-primary text-center font-bold py-2 px-4 rounded-md hover:bg-orange transition duration-300'
             >
               Log in with GitHub
             </a>
-            <p className='text-accent text-sm mt-4'>
-              By registering, you agree to our{' '}
-              <a
-                href='/terms'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='text-yellow hover:text-orange'
-              >
-                terms of use
-              </a>
-              .
-            </p>
           </div>
         </div>
       </div>

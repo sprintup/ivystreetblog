@@ -5,6 +5,9 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import AccordionWrapper from '@/app/(components)/AccordionWrapper';
+import Accordion from '@/app/(components)/Accordion';
+import { whatIsProfileContent } from '@/app/faqs/accordionContent';
 
 export default function ProfilePage() {
   const { data: session } = useSession();
@@ -75,7 +78,14 @@ export default function ProfilePage() {
 
   return (
     <div className='bg-primary text-accent p-4 rounded-lg max-w-4xl mx-auto'>
-      <h1 className='text-2xl mb-4'>Profile</h1>
+      <h1 className='text-4xl font-bold mb-4'>Profile</h1>
+      <AccordionWrapper title='Show More Information'>
+        <Accordion
+          title='What is a public profile name?'
+          content={whatIsProfileContent}
+          isOpenByDefault={true}
+        />
+      </AccordionWrapper>
       {errorMessage && <p className='text-red-500 mb-4'>{errorMessage}</p>}
       {successMessage && (
         <p className='text-green-500 mb-4'>{successMessage}</p>
@@ -92,7 +102,7 @@ export default function ProfilePage() {
         </label>
         <p className='text-sm text-gray-300 mt-2'>
           Your public profile name will be used as the base URL for sharing your
-          public booklists. People can view your public booklists by visiting:
+          public shelf. People can view your public bookshelf by visiting:
         </p>
         <p className='text-sm text-blue-300 mt-1'>
           <Link href={`/profile/${publicProfileName}`}>
