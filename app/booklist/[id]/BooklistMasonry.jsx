@@ -7,7 +7,6 @@ import Masonry from 'react-masonry-css';
 import BookDetailsPublicComponent from '../../(components)/BookDetailsPublicComponent';
 import AddToReadingListButton from '@components/AddToReadingListButton';
 import AddToBooklistButton from '@components/AddToBooklistButton';
-import RecommendBookToBooklistButton from '@components/RecommendBookToBooklistButton';
 import { useSession } from 'next-auth/react';
 import './BooklistMasonry.css';
 
@@ -75,14 +74,6 @@ export default function BooklistMasonry({ booklist }) {
           </div>
         ))}
       </Masonry>
-      {session && (
-        <div className='mt-4'>
-          <RecommendBookToBooklistButton
-            booklist={booklist}
-            signedInUserBooks={userBooks}
-          />
-        </div>
-      )}
     </div>
   );
 }

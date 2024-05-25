@@ -1,7 +1,8 @@
 // BooklistRepository.ts
-import { IBooklist, IUser } from '@/domain/models';
+import { IBooklist, IBookRecommendation, IUser } from '@/domain/models';
 import { BaseRepository } from '@/repositories/BaseRepository';
 import mongoose from 'mongoose';
+import { RecommendBookData } from '@/domain/interfaces';
 
 export class BooklistRepository extends BaseRepository {
   async getBooklistsByUserEmail(userEmail: string): Promise<IBooklist[]> {
@@ -221,6 +222,48 @@ export class BooklistRepository extends BaseRepository {
       return booklists;
     } catch (error) {
       console.error('Error getting booklists by user ID:', error);
+      throw error;
+    }
+  }
+
+  async recommendBookToBooklist(
+    booklistId: string,
+    recommendationData: RecommendBookData
+  ): Promise<IBooklist | null> {
+    const { bookId, recommendedBy, recommendationReason } = recommendationData;
+    const recommendedByUser = await this.findUser(recommendedBy);
+    if (!recommendedByUser) {
+      throw new Error('User not found');
+    }
+    try {
+      const booklist = await this.Booklist.findById(booklistId);
+      if (!booklist) {
+        console.error('No booklist found with the provided ID:', booklistId);
+        return null;
+      }
+
+      const recommendedBook = await this.Book.findById(bookId);
+      if (!recommendedBook) {
+        console.error(
+          'No recommended book found with the provided ID:',
+          bookId
+        );
+        return null;
+      }
+
+      const recommendation: IBookRecommendation = {
+        bookId: recommendedBook._id,
+        recommendedBy: recommendedByUser._id,
+        status: 'offered',
+        recommendationReason,
+      };
+
+      booklist.bookRecommendations.push(recommendation);
+      await booklist.save();
+
+      return booklist;
+    } catch (error) {
+      console.error('Error recommending book to booklist:', error);
       throw error;
     }
   }

@@ -13,6 +13,7 @@ import {
   thisIsPublicBooklistContent,
   whatIsIvyStreetBlogContent,
 } from '@/app/faqs/accordionContent';
+import RecommendBookToBooklistComponent from './RecommendBookToBooklistComponent';
 
 export default async function BooklistPage({ params }) {
   const { id } = params;
@@ -37,9 +38,12 @@ export default async function BooklistPage({ params }) {
 
   return (
     <div className='bg-primary text-accent p-4 rounded-lg'>
-      <div className='flex justify-between items-center mb-4'>
-        <h1 className='text-2xl'>{booklist.title}</h1>
-        <ShareButton url={`${process.env.NEXTAUTH_URL}/booklist/${id}`} />
+      <div className='mb-4'>
+        <h1 className='text-4xl font-bold mb-2'>Public Booklist</h1>
+        <div className='flex justify-between items-center'>
+          <h2 className='text-2xl'>Booklist Title: {booklist.title}</h2>
+          <ShareButton url={`${process.env.NEXTAUTH_URL}/booklist/${id}`} />
+        </div>
       </div>
       <AccordionWrapper title='Show More Information'>
         <Accordion
@@ -68,6 +72,11 @@ export default async function BooklistPage({ params }) {
         booklist={{ ...booklist, books }}
         userBooklists={userBooklists}
       />
+      {session && (
+        <div className='mt-4'>
+          <RecommendBookToBooklistComponent booklist={booklist} />
+        </div>
+      )}
     </div>
   );
 }

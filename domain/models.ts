@@ -1,5 +1,5 @@
 import dbConnect from '@/repositories/dbConnect';
-import mongoose, { Document, Model } from 'mongoose';
+import mongoose, { Document, Model, Types } from 'mongoose';
 
 export interface IUser extends Document {
   login: string;
