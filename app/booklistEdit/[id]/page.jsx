@@ -4,7 +4,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import BooklistEditDisplayComponent from './BooklistEditDisplayComponent';
 import Link from 'next/link';
 import AccordionWrapper from '@/app/(components)/AccordionWrapper';
 import Accordion from '@/app/(components)/Accordion';
@@ -14,6 +13,8 @@ import {
   whatIsABooklistContent,
   whatIsACollectionContent,
 } from '@/app/faqs/accordionContent';
+import UserBookCollectionWrapper from './UserBookCollectionWrapper';
+import BookRemoveFromCollectionComponent from './BookRemoveFromCollectionComponent';
 
 export default function EditBooklistPage({ params }) {
   const router = useRouter();
@@ -24,17 +25,19 @@ export default function EditBooklistPage({ params }) {
   const [openForRecommendations, setOpenForRecommendations] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [booklistId, setBooklistId] = useState(params.id);
+  const [booklist, setBooklist] = useState(null);
 
   useEffect(() => {
     const fetchBooklist = async () => {
       try {
-        const response = await fetch(`/api/booklist/${params.id}`);
+        const response = await fetch(`/api/booklist/${params.id}/edit`);
         if (response.ok) {
-          const booklist = await response.json();
-          setTitle(booklist.title);
-          setDescription(booklist.description);
-          setVisibility(booklist.visibility);
-          setOpenForRecommendations(booklist.openForRecommendations);
+          const data = await response.json();
+          setTitle(data.title);
+          setDescription(data.description);
+          setVisibility(data.visibility);
+          setOpenForRecommendations(data.openForRecommendations);
+          setBooklist(data);
         } else {
           console.error('Error fetching booklist:', response.statusText);
           setErrorMessage('Failed to fetch booklist. Please try again.');
@@ -93,6 +96,10 @@ export default function EditBooklistPage({ params }) {
       setErrorMessage('An error occurred. Please try again.');
     }
   };
+
+  if (!booklist) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className='bg-primary text-accent p-4 rounded-lg max-w-4xl mx-auto'>
@@ -189,7 +196,57 @@ export default function EditBooklistPage({ params }) {
           </button>
         </div>
       </form>
-      <BooklistEditDisplayComponent booklistId={booklistId} />
+      <div className='mt-8'>
+        <h3 className='text-xl mb-4'>
+          {booklist.bookIds.length || 0}{' '}
+          {booklist.bookIds.length === 1 ? 'Book' : 'Books'} in this Booklist
+        </h3>
+        {booklist.bookIds.map(book => (
+          <div
+            key={book._id}
+            className='flex justify-between items-center mb-4'
+          >
+            <BookDetails book={book} />
+            <BookRemoveFromCollectionComponent
+              bookId={book._id}
+              booklistId={booklistId}
+            />
+          </div>
+        ))}
+        <hr />
+        <UserBookCollectionWrapper booklistId={booklistId} />
+      </div>
+    </div>
+  );
+}
+
+function BookDetails({ book }) {
+  if (!book) {
+    return <div>Loading book details...</div>;
+  }
+
+  return (
+    <div className='w-full px-3 mx-3 py-2 bg-secondary text-accent rounded-md'>
+      <div>
+        <h4 className='text-xl font-bold mb-1'>{book.Name}</h4>
+        <p className='text-sm mb-2'>Author: {book.Author}</p>
+        {book.Description && (
+          <p className='text-sm mb-1'>Description: {book.Description}</p>
+        )}
+        {book.Age && <p className='text-sm mb-1'>Age: {book.Age}</p>}
+        {book.Series && <p className='text-sm mb-1'>Series: {book.Series}</p>}
+        {book.Publication_Date && (
+          <p className='text-sm mb-1'>
+            Publication Date: {book.Publication_Date}
+          </p>
+        )}
+        {book.Publisher && (
+          <p className='text-sm mb-1'>Publisher: {book.Publisher}</p>
+        )}
+        {book.ISBN && <p className='text-sm mb-1'>ISBN: {book.ISBN}</p>}
+        {book.Link && <p className='text-sm mb-1'>Link: {book.Link}</p>}
+        {book.Source && <p className='text-sm mb-1'>Source: {book.Source}</p>}
+      </div>
     </div>
   );
 }

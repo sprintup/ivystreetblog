@@ -2,7 +2,7 @@
 
 import React, { Suspense } from 'react';
 import { CreateUserInteractor } from '@interactors/user/CreateUserInteractor';
-import { ReadMyBookshelfInteractor } from '@/interactors/booklists/ReadMyBookshelfInteractor';
+import { ReadMyBookShelfInteractor } from '@/interactors/booklists/private/ReadMyBookShelfInteractor';
 import { getServerSession } from 'next-auth/next';
 import { options } from '@auth/options';
 import Link from 'next/link';
@@ -32,7 +32,7 @@ async function BookshelfData() {
     session.user.email
   );
 
-  const readBooklistsInteractor = await ReadMyBookshelfInteractor.create();
+  const readBooklistsInteractor = await ReadMyBookShelfInteractor.create();
   const booklists = await readBooklistsInteractor.execute(user.email);
   revalidateTag(BOOKS_TAG);
   return { session, booklists };
@@ -119,7 +119,19 @@ function BookshelfContent({ session, booklists }) {
                 </p>
               </div>
               <p className='text-xs mb-2'>Visibility: {booklist.visibility}</p>
-              <p className='text-xs'>Books: {booklist.bookIds.length}</p>
+              <p className='text-xs mb-2'>
+                Books: {booklist.bookIds.length}{' '}
+                {booklist.bookRecommendations.length > 0 && (
+                  <>
+                    |{' '}
+                    <Link href={`/recommendations/${booklist._id}`}>
+                      <span className='text-yellow hover:text-orange'>
+                        Recommendations: {booklist.bookRecommendations.length}
+                      </span>
+                    </Link>
+                  </>
+                )}
+              </p>
               <div className='absolute bottom-4 right-4 space-x-2'>
                 <Link
                   href={`/booklistEdit/${booklist._id}`}

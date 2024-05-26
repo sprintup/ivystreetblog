@@ -1,7 +1,7 @@
-// UpdateBooklistInteractor.ts
+// interactors\booklists\private\UpdateBookListInteractor.ts
 
 import { BooklistRepository } from '@/repositories/BooklistRepository';
-import { BaseInteractor } from '../BaseInteractor';
+import { BaseInteractor } from '../../BaseInteractor';
 import { IBooklist } from '@/domain/models';
 
 interface UpdateBooklistData {
@@ -22,11 +22,11 @@ interface UpdateBooklistData {
  * @param {UpdateBooklistData} updatedData - The updated data for the booklist.
  * @returns {Promise<IBooklist | null>} A promise that resolves to the updated booklist or null if not found.
  */
-export class UpdateBooklistInteractor extends BaseInteractor {
+export class UpdateBookListInteractor extends BaseInteractor {
   static async create() {
     const booklistRepo = new BooklistRepository();
     await booklistRepo.initializeModels();
-    const interactor = new UpdateBooklistInteractor({ booklistRepo });
+    const interactor = new UpdateBookListInteractor({ booklistRepo });
     return interactor;
   }
 

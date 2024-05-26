@@ -1,9 +1,12 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { FaChevronDown } from 'react-icons/fa';
 
 const Footer = () => {
   const [isVisible, setIsVisible] = useState(true);
+  const [isScrollPossible, setIsScrollPossible] = useState(false);
+  const [isScrolledToTop, setIsScrolledToTop] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,9 +20,13 @@ const Footer = () => {
       } else {
         setIsVisible(true);
       }
+
+      setIsScrollPossible(scrollHeight > clientHeight);
+      setIsScrolledToTop(scrollTop === 0);
     };
 
     window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check initial scroll position
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -31,9 +38,22 @@ const Footer = () => {
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
     >
+      {isVisible && isScrollPossible && isScrolledToTop && (
+        <div className='absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full'>
+          <div className='flex flex-col items-center'>
+            <FaChevronDown className='text-yellow hover:text-orange focus:text-orange mb-1' />
+          </div>
+        </div>
+      )}
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='flex justify-center items-center'>
           <div className='flex flex-col items-end border-r border-accent pr-4'>
+            <Link
+              href='/faqs'
+              className='text-yellow hover:text-orange focus:text-orange block px-2 rounded-md text-base font-medium'
+            >
+              FAQs
+            </Link>
             <Link
               href='/terms'
               className='text-yellow hover:text-orange focus:text-orange block px-2 rounded-md text-base font-medium'
@@ -45,12 +65,6 @@ const Footer = () => {
               className='text-yellow hover:text-orange focus:text-orange block px-2 rounded-md text-base font-medium'
             >
               Edit on Github
-            </Link>
-            <Link
-              href='/faqs'
-              className='text-yellow hover:text-orange focus:text-orange block px-2 rounded-md text-base font-medium'
-            >
-              FAQs
             </Link>
           </div>
           <div className='flex flex-col items-start pl-4'>

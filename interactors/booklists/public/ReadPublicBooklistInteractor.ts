@@ -1,7 +1,7 @@
 // Read BooklistInteractor.ts
 
 import { BooklistRepository } from '@/repositories/BooklistRepository';
-import { BaseInteractor } from '../BaseInteractor';
+import { BaseInteractor } from '../../BaseInteractor';
 import { IBooklist } from '@/domain/models';
 
 /**
@@ -9,8 +9,8 @@ import { IBooklist } from '@/domain/models';
  * BooklistInteractor
  *
  * As a user,
- * When I click the edit button on the booklist on the my-bookshelf page,
- * Then I can see that booklist along with the book details.
+ * When I want to view a booklist by ID, such as after clicking the booklist from the public-bookshelf,
+ * Then I can see that booklist.
  *
  * @param {string} booklistId - The ID of the booklist to retrieve.
  * @returns {Promise<IBooklist | null>} A promise that resolves to the booklist object or null if not found.
@@ -24,6 +24,8 @@ export class ReadPublicBooklistInteractor extends BaseInteractor {
   }
 
   async execute(booklistId: string): Promise<IBooklist | null> {
-    return this.booklistRepo.getBooklistByIdWithBooks(booklistId);
+    return this.booklistRepo.getPublicBooklistByIdWithUserAndUserBooklistsAndBooks(
+      booklistId
+    );
   }
 }

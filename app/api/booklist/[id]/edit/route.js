@@ -1,12 +1,10 @@
-// app/api/booklist/[id]/books/route.js
-
-import { ReadPublicBooklistInteractor } from "@/interactors/booklists/public/ReadPublicBooklistInteractor";
+import { ReadMyBookShelfEditInteractor } from "@/interactors/booklists/private/ReadMyBookShelfEditInteractor";
 
 export async function GET(request, { params }) {
     try {
         const booklistId = params.id;
-        const readPublicBooklistInteractor = await ReadPublicBooklistInteractor.create();
-        const booklist = await readPublicBooklistInteractor.execute(booklistId);
+        const readMyBookShelfEditInteractor = await ReadMyBookShelfEditInteractor.create();
+        const booklist = await readMyBookShelfEditInteractor.execute(booklistId);
 
         if (booklist) {
             return new Response(JSON.stringify(booklist), { status: 200 });

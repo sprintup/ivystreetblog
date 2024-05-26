@@ -34,7 +34,7 @@ export default function UserBookCollectionComponent({ session, children }) {
   const fetchUserBooks = async () => {
     if (session) {
       try {
-        const response = await fetch(`/api/books`, {
+        const response = await fetch(`/api/collection`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 // app/booklist/[id]/page.jsx
 
 import React from 'react';
-import { ReadPublicBooklistInteractor } from '@/interactors/booklists/ReadPublicBooklistInteractor';
+import { ReadPublicBooklistInteractor } from '@/interactors/booklists/public/ReadPublicBooklistInteractor';
 import { getServerSession } from 'next-auth/next';
 import { options } from '@auth/options';
 import ShareButton from '@/app/(components)/ShareButton';
@@ -17,8 +17,9 @@ import RecommendBookToBooklistComponent from './RecommendBookToBooklistComponent
 
 export default async function BooklistPage({ params }) {
   const { id } = params;
-  const readBooklistInteractor = await ReadPublicBooklistInteractor.create();
-  let booklist = await readBooklistInteractor.execute(id);
+  const readPublicBooklistInteractor =
+    await ReadPublicBooklistInteractor.create();
+  let booklist = await readPublicBooklistInteractor.execute(id);
 
   if (!booklist) {
     return <div>Booklist not found.</div>;
@@ -40,22 +41,22 @@ export default async function BooklistPage({ params }) {
     <div className='bg-primary text-accent p-4 rounded-lg'>
       <div className='mb-4'>
         <h1 className='text-4xl font-bold mb-2'>Public Booklist</h1>
+        <AccordionWrapper title='Show More Information'>
+          <Accordion
+            title='Welcome to Ivy Street Blog! What is this?'
+            content={whatIsIvyStreetBlogContent}
+            isOpenByDefault={true}
+          />
+          <Accordion
+            title='This is a public booklist. What does that mean?'
+            content={thisIsPublicBooklistContent}
+          />
+        </AccordionWrapper>
         <div className='flex justify-between items-center'>
-          <h2 className='text-2xl'>Booklist Title: {booklist.title}</h2>
+          <h2 className='text-2xl italic'>{booklist.title}</h2>
           <ShareButton url={`${process.env.NEXTAUTH_URL}/booklist/${id}`} />
         </div>
       </div>
-      <AccordionWrapper title='Show More Information'>
-        <Accordion
-          title='Welcome to Ivy Street Blog! What is this?'
-          content={whatIsIvyStreetBlogContent}
-          isOpenByDefault={true}
-        />
-        <Accordion
-          title='This is a public booklist. What does that mean?'
-          content={thisIsPublicBooklistContent}
-        />
-      </AccordionWrapper>
       <p className='text-lg mb-4'>{booklist.description}</p>
       {booklistOwner && (
         <p className='text-sm mb-4'>

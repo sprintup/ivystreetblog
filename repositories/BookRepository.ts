@@ -221,4 +221,32 @@ export class BookRepository extends BaseRepository {
       throw new Error('Failed to toggle book archive');
     }
   }
+
+  async updateRecommendationStatus(
+    recommendationId: string,
+    status: 'accepted' | 'rejected'
+  ): Promise<IBooklist | null> {
+    try {
+      const updatedBooklist = await this.Booklist.findOneAndUpdate(
+        { 'bookRecommendations._id': recommendationId },
+        { $set: { 'bookRecommendations.$.status': status } },
+        { new: true }
+      )
+        .populate('bookRecommendations.bookId')
+        .populate('bookRecommendations.recommendedBy', 'publicProfileName');
+
+      if (!updatedBooklist) {
+        console.error(
+          'No booklist found with the provided recommendation ID:',
+          recommendationId
+        );
+        return null;
+      }
+
+      return updatedBooklist;
+    } catch (error) {
+      console.error('Error updating recommendation status:', error);
+      throw error;
+    }
+  }
 }

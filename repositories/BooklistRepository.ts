@@ -95,11 +95,14 @@ export class BooklistRepository extends BaseRepository {
     }
   }
 
-  async getBooklistByIdWithUserAndUserBooklistsAndBooks(
+  async getPublicBooklistByIdWithUserAndUserBooklistsAndBooks(
     booklistId: string
   ): Promise<IBooklist | null> {
     try {
-      const booklist = await this.Booklist.findById(booklistId)
+      const booklist = await this.Booklist.findOne({
+        _id: booklistId,
+        visibility: 'public',
+      })
         .populate({
           path: 'booklistOwnerId',
           model: 'User',
@@ -112,7 +115,7 @@ export class BooklistRepository extends BaseRepository {
 
       if (!booklist) {
         console.error(
-          'No booklist found with the provided booklistId:',
+          'No public booklist found with the provided booklistId:',
           booklistId
         );
         return null;
@@ -264,6 +267,61 @@ export class BooklistRepository extends BaseRepository {
       return booklist;
     } catch (error) {
       console.error('Error recommending book to booklist:', error);
+      throw error;
+    }
+  }
+
+  async getBooklistRecommendations(
+    booklistId: string
+  ): Promise<IBookRecommendation[]> {
+    try {
+      const booklist = await this.Booklist.findById(booklistId)
+        .populate({
+          path: 'bookRecommendations.bookId',
+          model: 'Book',
+        })
+        .populate({
+          path: 'bookRecommendations.recommendedBy',
+          model: 'User',
+          select: 'publicProfileName',
+        });
+
+      if (!booklist) {
+        console.error('No booklist found with the provided ID:', booklistId);
+        return [];
+      }
+
+      return booklist.bookRecommendations;
+    } catch (error) {
+      console.error('Error getting booklist recommendations:', error);
+      throw error;
+    }
+  }
+
+  async updateRecommendationStatus(
+    recommendationId: string,
+    status: 'accepted' | 'rejected'
+  ): Promise<IBooklist | null> {
+    try {
+      const updatedBooklist = await this.Booklist.findOneAndUpdate(
+        { 'bookRecommendations._id': recommendationId },
+        { $set: { 'bookRecommendations.$.status': status } },
+        { new: true }
+      )
+        .populate('bookRecommendations.bookId')
+        .populate('bookRecommendations.recommendedBy', 'publicProfileName');
+
+      if (!updatedBooklist) {
+        console.error(
+          'No booklist found with the provided recommendation ID:',
+          recommendationId
+        );
+        return null;
+      }
+
+      return updatedBooklist;
+    } catch (error) {
+      console.error('Error updating recommendation status:', error);
       throw error;
     }
   }

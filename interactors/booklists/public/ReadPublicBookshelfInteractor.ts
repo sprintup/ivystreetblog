@@ -1,6 +1,6 @@
-import { BooklistRepository } from "@/repositories/BooklistRepository";
-import { BaseInteractor } from "../BaseInteractor";
-import { IBooklist } from "@/domain/models";
+import { BooklistRepository } from '@/repositories/BooklistRepository';
+import { BaseInteractor } from '../../BaseInteractor';
+import { IBooklist } from '@/domain/models';
 
 /**
  * @class ReadPublicBookshelfInteractor
@@ -13,7 +13,7 @@ export class ReadPublicBookshelfInteractor extends BaseInteractor {
   static async create() {
     const booklistRepo = new BooklistRepository();
     await booklistRepo.initializeModels();
-    const interactor = new ReadPublicBookshelfInteractor({booklistRepo});
+    const interactor = new ReadPublicBookshelfInteractor({ booklistRepo });
     return interactor;
   }
   /**

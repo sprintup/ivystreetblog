@@ -1,4 +1,4 @@
-import { RecommendBookToBooklistInteractor } from "@/interactors/booklists/RecommendBookToBooklistInteractor";
+import { RecommendBookToBooklistInteractor } from "@/interactors/booklists/recommendation/RecommendBookToBooklistInteractor";
 
 export async function POST(request, { params }) {
     try {

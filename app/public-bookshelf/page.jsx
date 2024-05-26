@@ -1,7 +1,7 @@
 // app/public-bookshelf/page.jsx
 
 import React from 'react';
-import { ReadPublicBookshelfInteractor } from '@interactors/booklists/ReadPublicBookshelfInteractor';
+import { ReadPublicBookshelfInteractor } from '@/interactors/booklists/public/ReadPublicBookshelfInteractor';
 import Link from 'next/link';
 import styles from './page.module.css';
 import AccordionWrapper from '@/app/(components)/AccordionWrapper';
