@@ -26,6 +26,9 @@ export class ReadBooklistRecommendationsInteractor extends BaseInteractor {
   }
 
   async execute(booklistId: string): Promise<IBookRecommendation[]> {
-    return this.booklistRepo.getBooklistRecommendations(booklistId);
+    const response = await this.booklistRepo.getBooklistRecommendations(
+      booklistId
+    );
+    return this.convertToPlainObject(response) as IBookRecommendation[];
   }
 }
