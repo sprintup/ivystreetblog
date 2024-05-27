@@ -33,7 +33,9 @@ export default async function PublicBookshelfPage({ params }) {
                 key={booklist._id}
                 className='bg-secondary p-4 rounded-lg shadow-md'
               >
-                <Link href={`/public-booklist/${booklist._id}`}>
+                <Link
+                  href={`/public-bookshelf/public-booklist/${booklist._id}`}
+                >
                   <h2 className='text-xl text-yellow mb-2'>{booklist.title}</h2>
                 </Link>
                 <div className={styles.descriptionContainer}>

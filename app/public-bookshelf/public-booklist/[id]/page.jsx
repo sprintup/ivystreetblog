@@ -1,4 +1,4 @@
-// app/public-booklist/[id]/page.jsx
+// app/public-bookshelf/public-booklist/[id]/page.jsx
 
 import React from 'react';
 import { ReadPublicBooklistInteractor } from '@/interactors/booklists/public/ReadPublicBooklistInteractor';

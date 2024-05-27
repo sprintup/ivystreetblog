@@ -125,7 +125,7 @@ export default function UserCollectionMasonry({ books }) {
               book={book}
               buttons={
                 <div className='flex flex-wrap justify-end'>
-                  <Link href={`/bookEdit/${book._id}`}>
+                  <Link href={`/my-collection/bookEdit/${book._id}`}>
                     <button className='bg-yellow text-primary px-2 py-1 rounded mr-2 mb-2 text-sm md:text-base'>
                       Edit
                     </button>

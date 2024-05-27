@@ -8,7 +8,7 @@ interface UpdateBooklistData {
   title?: string;
   description?: string;
   visibility?: string;
-  openForRecommendations?: boolean;
+  openToRecommendations?: boolean;
 }
 
 /**

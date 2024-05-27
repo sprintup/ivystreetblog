@@ -1,10 +1,10 @@
-// app/public-booklist/[id]/BooklistMasonry.jsx
+// app/public-bookshelf/public-booklist/[id]/BooklistMasonry.jsx
 
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import Masonry from 'react-masonry-css';
-import BookDetailsPublicComponent from '../../(components)/BookDetailsPublicComponent';
+import BookDetailsPublicComponent from '@components/BookDetailsPublicComponent';
 import AddToReadingListButton from '@components/AddToReadingListButton';
 import AddToBooklistButton from './AddToBooklistButton';
 import { useSession } from 'next-auth/react';

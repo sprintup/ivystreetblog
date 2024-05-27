@@ -79,7 +79,7 @@ function BookshelfContent({ session, booklists }) {
             {session?.user?.name} has {booklists.length || 0} booklists
           </h3>
           <Link
-            href='/booklistAdd'
+            href='/my-bookshelf/booklistAdd'
             className='px-4 py-2 bg-yellow text-primary font-bold rounded-lg hover:bg-orange transition duration-300 no-underline'
           >
             Add Booklist
@@ -119,28 +119,39 @@ function BookshelfContent({ session, booklists }) {
                 </p>
               </div>
               <p className='text-xs mb-2'>Visibility: {booklist.visibility}</p>
-              <p className='text-xs mb-2'>
-                Books: {booklist.bookIds.length}{' '}
-                {booklist.bookRecommendations.length > 0 && (
-                  <>
-                    |{' '}
-                    <Link href={`/recommendations/${booklist._id}`}>
-                      <span className='text-yellow hover:text-orange'>
-                        Recommendations: {booklist.bookRecommendations.length}
-                      </span>
-                    </Link>
-                  </>
-                )}
-              </p>
+              <p className='text-xs mb-2'>Books: {booklist.bookIds.length}</p>
+              {booklist.bookRecommendations.length > 0 ? (
+                <p className='text-xs mb-2'>
+                  <Link
+                    href={`/my-bookshelf/booklistEdit/recommendations/${booklist._id}`}
+                  >
+                    <span className='text-yellow hover:text-orange'>
+                      Recommendations: {booklist.bookRecommendations.length}
+                    </span>
+                  </Link>
+                </p>
+              ) : (
+                <p
+                  className={`text-xs mb-2 ${
+                    booklist.openToRecommendations
+                      ? 'text-green-500'
+                      : 'text-red-500'
+                  }`}
+                >
+                  {booklist.openToRecommendations
+                    ? 'Open to recommendations'
+                    : 'Closed to recommendations'}
+                </p>
+              )}
               <div className='absolute bottom-4 right-4 space-x-2'>
                 <Link
-                  href={`/booklistEdit/${booklist._id}`}
+                  href={`/my-bookshelf/booklistEdit/${booklist._id}`}
                   className='px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300 no-underline'
                 >
                   Edit
                 </Link>
                 <Link
-                  href={`/public-booklist/${booklist._id}`}
+                  href={`/public-bookshelf/public-booklist/${booklist._id}`}
                   className='px-4 py-2 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition duration-300 no-underline'
                 >
                   View

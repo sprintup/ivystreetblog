@@ -32,7 +32,7 @@ export class BooklistRepository extends BaseRepository {
       title: string;
       description?: string;
       visibility: string;
-      openForRecommendations: boolean;
+      openToRecommendations: boolean;
     }
   ): Promise<IUser | null> {
     try {
@@ -42,14 +42,14 @@ export class BooklistRepository extends BaseRepository {
         console.error('No user found with the provided email:', userEmail);
         return null;
       }
-
+      console.log('open for recommendations: ', booklist.openToRecommendations);
       // Create a new booklist with the provided details and the user's id
       const newBooklist = new this.Booklist({
         title: booklist.title,
         description: booklist.description,
         visibility: booklist.visibility,
-        openForRecommendations: booklist.openForRecommendations,
         booklistOwnerId: user._id,
+        openToRecommendations: booklist.openToRecommendations,
       });
       await newBooklist.save();
 
@@ -171,7 +171,7 @@ export class BooklistRepository extends BaseRepository {
       title?: string;
       description?: string;
       visibility?: string;
-      openForRecommendations?: boolean;
+      openToRecommendations?: boolean;
     }
   ): Promise<IBooklist | null> {
     try {
@@ -182,7 +182,7 @@ export class BooklistRepository extends BaseRepository {
             title: updatedData.title,
             description: updatedData.description,
             visibility: updatedData.visibility,
-            openForRecommendations: updatedData.openForRecommendations,
+            openToRecommendations: updatedData.openToRecommendations,
             updatedAt: new Date(),
           },
         },

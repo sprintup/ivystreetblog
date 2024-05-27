@@ -1,4 +1,4 @@
-// app/reading-list/FinishedBook.jsx
+// app/my-reading-list/FinishedBook.jsx
 
 'use client';
 

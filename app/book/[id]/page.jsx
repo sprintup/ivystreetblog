@@ -99,7 +99,7 @@ export default async function BookPage({ params }) {
                 {booklists.map(booklist => (
                   <li key={booklist._id} className='mb-2'>
                     <Link
-                      href={`/public-booklist/${booklist._id}`}
+                      href={`/public-bookshelf/public-booklist/${booklist._id}`}
                       className='text-yellow hover:text-orange'
                     >
                       {booklist.title}

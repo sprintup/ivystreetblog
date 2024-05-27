@@ -23,7 +23,7 @@ export default function BooklistPage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [visibility, setVisibility] = useState('public');
-  const [openForRecommendations, setOpenForRecommendations] = useState(false);
+  const [openToRecommendations, setOpenForRecommendations] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleAddBooklist = async () => {
@@ -33,9 +33,9 @@ export default function BooklistPage() {
       description,
       bookIds: [],
       visibility,
-      openForRecommendations,
+      openToRecommendations,
     };
-
+    console.log('Adding booklist:', booklist);
     try {
       const response = await fetch('/api/booklist', {
         method: 'POST',
@@ -129,7 +129,7 @@ export default function BooklistPage() {
         <label className='flex items-center text-lg'>
           <input
             type='checkbox'
-            checked={openForRecommendations}
+            checked={openToRecommendations}
             onChange={e => setOpenForRecommendations(e.target.checked)}
             className='mr-2'
           />

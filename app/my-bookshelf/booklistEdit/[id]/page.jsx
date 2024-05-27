@@ -22,7 +22,7 @@ export default function EditBooklistPage({ params }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [visibility, setVisibility] = useState('public');
-  const [openForRecommendations, setOpenForRecommendations] = useState(false);
+  const [openToRecommendations, setOpenForRecommendations] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [booklistId, setBooklistId] = useState(params.id);
   const [booklist, setBooklist] = useState(null);
@@ -36,7 +36,7 @@ export default function EditBooklistPage({ params }) {
           setTitle(data.title);
           setDescription(data.description);
           setVisibility(data.visibility);
-          setOpenForRecommendations(data.openForRecommendations);
+          setOpenForRecommendations(data.openToRecommendations);
           setBooklist(data);
         } else {
           console.error('Error fetching booklist:', response.statusText);
@@ -63,7 +63,7 @@ export default function EditBooklistPage({ params }) {
           title,
           description,
           visibility,
-          openForRecommendations,
+          openToRecommendations,
         }),
       });
       if (response.ok) {
@@ -106,7 +106,7 @@ export default function EditBooklistPage({ params }) {
       <div className='mb-4'>
         <div className='flex justify-between items-center mb-2'>
           <h2 className='text-2xl'>Edit Booklist</h2>
-          <Link href={`/public-booklist/${params.id}`}>
+          <Link href={`/public-bookshelf/public-booklist/${params.id}`}>
             <button className='px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300'>
               View Public Booklist
             </button>
@@ -173,7 +173,7 @@ export default function EditBooklistPage({ params }) {
           <label className='flex items-center text-lg'>
             <input
               type='checkbox'
-              checked={openForRecommendations}
+              checked={openToRecommendations}
               onChange={e => setOpenForRecommendations(e.target.checked)}
               className='mr-2'
             />

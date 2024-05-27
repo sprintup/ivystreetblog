@@ -13,7 +13,7 @@ const Footer = () => {
       const scrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight;
-      const clientHeight = document.documentElement.clientHeight;
+      const clientHeight = window.innerHeight;
 
       if (scrollTop > 0 && scrollTop + clientHeight < scrollHeight - 20) {
         setIsVisible(false);
@@ -32,13 +32,16 @@ const Footer = () => {
     };
   }, []);
 
+  const shouldShowDownwardArrow =
+    isVisible && isScrollPossible && isScrolledToTop;
+
   return (
     <footer
       className={`py-4 fixed bottom-0 left-0 right-0 transition-opacity duration-300 bg-primary border-t-2 border-solid border-accent-100 ${
         isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
     >
-      {isVisible && isScrollPossible && isScrolledToTop && (
+      {shouldShowDownwardArrow && (
         <div className='absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full'>
           <div className='flex flex-col items-center'>
             <FaChevronDown className='text-yellow hover:text-orange focus:text-orange mb-1' />

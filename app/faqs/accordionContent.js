@@ -346,7 +346,7 @@ export const makeBooklistPublicContent = (
             A few things happen when you have a public booklist.
         </p>
         <p className="text-accent mt-4">
-            First, when a user navigates to your public booklist page (at a URL that looks something like baseUrl/public-booklist/66385c63205c1f4ab1c9f3e2), they will be able to see all of the books you've added to that booklist and will be able to add those books to their reading list or their booklists. Your public booklist will be accessible to anyone, including those without an account.
+            First, when a user navigates to your public booklist page (at a URL that looks something like baseUrl/public-bookshelf/public-booklist/66385c63205c1f4ab1c9f3e2), they will be able to see all of the books you've added to that booklist and will be able to add those books to their reading list or their booklists. Your public booklist will be accessible to anyone, including those without an account.
         </p>
         <p className="text-accent mt-4">
             Second, your public profile name becomes part of the URL that people can use to view all of your public booklists. Users are able to browse your other public booklists by pressing your public profile name on the public booklist page.

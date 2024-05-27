@@ -1,4 +1,4 @@
-// app/reading-list/RemoveButton.jsx
+// app/my-reading-list/RemoveButton.jsx
 
 'use client';
 

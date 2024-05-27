@@ -1,4 +1,4 @@
-// app/reading-list/page.jsx
+// app/my-reading-list/page.jsx
 
 import React from 'react';
 import { getServerSession } from 'next-auth/next';
