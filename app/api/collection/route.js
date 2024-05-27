@@ -1,4 +1,4 @@
-// app/api/books/route.js
+// app/api/collection/route.js
 import { ReadBooksFromUserCollectionPaginatedInteractor } from "@interactors/book/ReadBooksFromUserCollectionPaginatedInteractor";
 
 export async function POST(request) {

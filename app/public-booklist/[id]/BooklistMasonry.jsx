@@ -1,4 +1,4 @@
-// app/booklist/[id]/BooklistMasonry.jsx
+// app/public-booklist/[id]/BooklistMasonry.jsx
 
 'use client';
 
@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import Masonry from 'react-masonry-css';
 import BookDetailsPublicComponent from '../../(components)/BookDetailsPublicComponent';
 import AddToReadingListButton from '@components/AddToReadingListButton';
-import AddToBooklistButton from '@components/AddToBooklistButton';
+import AddToBooklistButton from './AddToBooklistButton';
 import { useSession } from 'next-auth/react';
 import './BooklistMasonry.css';
 
@@ -19,30 +19,24 @@ const breakpointColumnsObj = {
 
 export default function BooklistMasonry({ booklist }) {
   const { data: session } = useSession();
-  const [userBooklists, setUserBooklists] = useState([]);
-  const [userBooks, setUserBooks] = useState([]);
+  const [userBooklistsForDropdown, setUserBooklistsForDropdown] = useState([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
       if (session) {
         try {
           // Fetch user booklists
-          const booklistsResponse = await fetch('/api/user/booklists', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: session.user.email }),
-          });
-          const booklistsData = await booklistsResponse.json();
-          setUserBooklists(booklistsData);
-
-          // Fetch user books
-          const booksResponse = await fetch('/api/user/books', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: session.user.email }),
-          });
-          const booksData = await booksResponse.json();
-          setUserBooks(booksData);
+          const booklistsResponse = await fetch(
+            '/api/user/booklists-dropdown',
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: session.user.email }),
+            }
+          );
+          const booklistsDataIncludingPrivateBooklists =
+            await booklistsResponse.json();
+          setUserBooklistsForDropdown(booklistsDataIncludingPrivateBooklists);
         } catch (error) {
           console.error('Error fetching user data:', error);
         }
@@ -67,7 +61,7 @@ export default function BooklistMasonry({ booklist }) {
                 <AddToReadingListButton book={book} />
                 <AddToBooklistButton
                   book={book}
-                  signedInUserBooklists={userBooklists}
+                  signedInUserBooklists={userBooklistsForDropdown}
                 />
               </div>
             )}

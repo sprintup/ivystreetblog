@@ -1,4 +1,4 @@
-// app/booklist/[id]/page.jsx
+// app/public-booklist/[id]/page.jsx
 
 import React from 'react';
 import { ReadPublicBooklistInteractor } from '@/interactors/booklists/public/ReadPublicBooklistInteractor';
@@ -54,7 +54,9 @@ export default async function BooklistPage({ params }) {
         </AccordionWrapper>
         <div className='flex justify-between items-center'>
           <h2 className='text-2xl italic'>{booklist.title}</h2>
-          <ShareButton url={`${process.env.NEXTAUTH_URL}/booklist/${id}`} />
+          <ShareButton
+            url={`${process.env.NEXTAUTH_URL}/public-booklist/${id}`}
+          />
         </div>
       </div>
       <p className='text-lg mb-4'>{booklist.description}</p>

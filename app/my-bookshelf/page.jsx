@@ -140,7 +140,7 @@ function BookshelfContent({ session, booklists }) {
                   Edit
                 </Link>
                 <Link
-                  href={`/booklist/${booklist._id}`}
+                  href={`/public-booklist/${booklist._id}`}
                   className='px-4 py-2 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition duration-300 no-underline'
                 >
                   View
