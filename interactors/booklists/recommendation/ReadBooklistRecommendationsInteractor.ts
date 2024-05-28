@@ -1,7 +1,7 @@
 // interactors/booklists/ReadBooklistRecommendationsInteractor.ts
 
 import { BaseInteractor } from '@interactors/BaseInteractor';
-import { IBookRecommendation } from '@/domain/models';
+import { IBookRecommendation, IBooklist } from '@/domain/models';
 import { BooklistRepository } from '@/repositories/BooklistRepository';
 
 /**
@@ -13,7 +13,7 @@ import { BooklistRepository } from '@/repositories/BooklistRepository';
  *
  * @method execute
  * @param {string} booklistId - The ID of the booklist.
- * @returns {Promise<IBookRecommendation[]>} A promise that resolves to an array of book recommendations.
+ * @returns {Promise<{ booklist: IBooklist | null; recommendations: IBookRecommendation[] }>} A promise that resolves to an object containing the booklist and its recommendations.
  */
 export class ReadBooklistRecommendationsInteractor extends BaseInteractor {
   static async create() {
@@ -25,10 +25,22 @@ export class ReadBooklistRecommendationsInteractor extends BaseInteractor {
     return interactor;
   }
 
-  async execute(booklistId: string): Promise<IBookRecommendation[]> {
+  async execute(booklistId: string): Promise<{
+    booklist: IBooklist | null;
+    recommendations: IBookRecommendation[];
+  }> {
     const response = await this.booklistRepo.getBooklistRecommendations(
       booklistId
     );
-    return this.convertToPlainObject(response) as IBookRecommendation[];
+
+    return {
+      booklist: response.booklist
+        ? (this.convertToPlainObject(response.booklist) as IBooklist)
+        : null,
+      recommendations: response.recommendations.map(
+        recommendation =>
+          this.convertToPlainObject(recommendation) as IBookRecommendation
+      ),
+    };
   }
 }

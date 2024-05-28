@@ -54,7 +54,7 @@ export default function OfferedRecommendation({
         href={`/book/${recommendation.bookId._id}`}
         className='text-yellow hover:text-orange'
       >
-        Recommended Book: {recommendation.bookId.Name}
+        {recommendation.bookId.Name}
       </Link>
       <div className='flex justify-between items-center mb-2'>
         <span className='text-sm font-bold'>
