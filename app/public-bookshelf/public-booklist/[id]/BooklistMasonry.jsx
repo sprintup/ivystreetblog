@@ -55,16 +55,17 @@ export default function BooklistMasonry({ booklist }) {
       >
         {booklist.books.map(book => (
           <div key={book._id}>
-            <BookDetailsPublicComponent book={book} />
-            {session && (
-              <div className='flex space-x-2'>
-                <AddToReadingListButton book={book} />
-                <AddToBooklistButton
-                  book={book}
-                  signedInUserBooklists={userBooklistsForDropdown}
-                />
-              </div>
-            )}
+            <BookDetailsPublicComponent book={book}>
+              {session && (
+                <div className='flex space-x-2 mt-4'>
+                  <AddToReadingListButton book={book} />
+                  <AddToBooklistButton
+                    book={book}
+                    signedInUserBooklists={userBooklistsForDropdown}
+                  />
+                </div>
+              )}
+            </BookDetailsPublicComponent>
           </div>
         ))}
       </Masonry>

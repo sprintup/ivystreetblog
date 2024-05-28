@@ -17,6 +17,7 @@ import {
   whatIsBookshelfContent,
   whatIsABooklistContent,
   makeBooklistPublicContent,
+  whatIsRecommendationContent,
 } from '@/app/faqs/accordionContent';
 
 async function BookshelfData() {
@@ -61,6 +62,10 @@ export default async function MyBookshelf() {
         <Accordion
           title='What does it mean to make a booklist public?'
           content={makeBooklistPublicContent}
+        />
+        <Accordion
+          title='What is a book recommendation?'
+          content={whatIsRecommendationContent}
         />
       </AccordionWrapper>
       <Suspense fallback={<div>Loading booklists...</div>}>
@@ -118,8 +123,16 @@ function BookshelfContent({ session, booklists }) {
                   {booklist.description}
                 </p>
               </div>
-              <p className='text-xs mb-2'>Visibility: {booklist.visibility}</p>
-              <p className='text-xs mb-2'>Books: {booklist.bookIds.length}</p>
+              <p className='text-xs my-2'>Books: {booklist.bookIds.length}</p>
+              <p
+                className={`text-xs mb-2 ${
+                  booklist.visibility === 'public'
+                    ? 'text-green-500'
+                    : 'text-red-500'
+                }`}
+              >
+                Visibility: {booklist.visibility}
+              </p>
               {booklist.bookRecommendations.length > 0 ? (
                 <p className='text-xs mb-2'>
                   <Link

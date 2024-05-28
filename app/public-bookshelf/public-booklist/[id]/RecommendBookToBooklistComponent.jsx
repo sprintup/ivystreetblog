@@ -54,15 +54,12 @@ export default function RecommendBookToBooklistComponent({ booklist }) {
 
   return (
     <div className='border border-yellow rounded-md p-4'>
-      <h2 className='text-2xl'>Recommend Book to Booklist from Collection</h2>
-      <div className='relative mb-4'>
-        <textarea
-          value={recommendationReason}
-          onChange={handleRecommendationReasonChange}
-          placeholder='Enter recommendation reason'
-          className='w-full px-3 py-1 pr-8 rounded-md bg-secondary text-yellow text-sm'
-        ></textarea>
-      </div>
+      <h2 className='text-2xl'>
+        Recommend Book to Booklist from My Collection
+      </h2>
+      <p className='mb-4'>
+        1. Select a book from your collection that you want to recommend.
+      </p>
       <UserBookCollectionComponent session={session}>
         {({ book }) => (
           <button
@@ -76,8 +73,19 @@ export default function RecommendBookToBooklistComponent({ booklist }) {
       {selectedBook && (
         <div className='mt-4'>
           <p>
-            Selected Book: {selectedBook.Name} by {selectedBook.Author}
+            2. Add a comment for why the owner of the booklist should consider
+            <u> {selectedBook.Name}</u> for their booklist named{' '}
+            <b>{booklist.title}</b> that is about{' '}
+            <i>"{booklist.description}"</i>.
           </p>
+          <div className='relative mb-4'>
+            <textarea
+              value={recommendationReason}
+              onChange={handleRecommendationReasonChange}
+              placeholder='Enter recommendation reason'
+              className='w-full px-3 py-1 pr-8 rounded-md bg-secondary text-yellow text-sm'
+            ></textarea>
+          </div>
           <button
             onClick={handleRecommendBook}
             className='mt-2 px-3 py-1 rounded-md bg-yellow text-primary text-sm w-full'

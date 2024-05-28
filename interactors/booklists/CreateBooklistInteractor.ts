@@ -34,6 +34,7 @@ export class CreateBooklistInteractor extends BaseInteractor {
     userEmail: string,
     booklist: BooklistInput
   ): Promise<IUser | null> {
-    return this.booklistRepo.createBooklist(userEmail, booklist);
+    const result = await this.booklistRepo.createBooklist(userEmail, booklist);
+    return this.convertToPlainObject(result) as IUser | null;
   }
 }

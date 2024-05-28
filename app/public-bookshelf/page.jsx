@@ -6,7 +6,10 @@ import Link from 'next/link';
 import styles from './page.module.css';
 import AccordionWrapper from '@/app/(components)/AccordionWrapper';
 import Accordion from '@/app/(components)/Accordion';
-import { whatIsPublicBookshelfContent } from '@/app/faqs/accordionContent';
+import {
+  whatIsPublicBookshelfContent,
+  whatIsRecommendationContent,
+} from '@/app/faqs/accordionContent';
 
 export default async function PublicBooklistsPage() {
   const readPublicBookshelfInteractor =
@@ -21,6 +24,10 @@ export default async function PublicBooklistsPage() {
           title='What is the public bookshelf?'
           content={whatIsPublicBookshelfContent}
           isOpenByDefault={true}
+        />
+        <Accordion
+          title='What is a book recommendation?'
+          content={whatIsRecommendationContent}
         />
       </AccordionWrapper>
       {publicBooklists.length === 0 ? (
@@ -47,7 +54,7 @@ export default async function PublicBooklistsPage() {
                 </div>
                 <p className='text-xs mb-2'>Books: {booklist.bookIds.length}</p>
                 {booklistOwner && (
-                  <p className='text-sm'>
+                  <p className='text-sm mb-2'>
                     Booklist curator:{' '}
                     <Link
                       href={`/profile/${booklistOwner.publicProfileName}`}
@@ -57,6 +64,17 @@ export default async function PublicBooklistsPage() {
                     </Link>
                   </p>
                 )}
+                <p
+                  className={`text-xs ${
+                    booklist.openToRecommendations
+                      ? 'text-green-500'
+                      : 'text-red-500'
+                  }`}
+                >
+                  {booklist.openToRecommendations
+                    ? 'Open to recommendations'
+                    : 'Not open to recommendations'}
+                </p>
               </div>
             );
           })}

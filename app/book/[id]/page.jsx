@@ -2,14 +2,14 @@
 
 import React from 'react';
 import { ReadBookForBookDetailsInteractor } from '@/interactors/book/ReadBookForBookDetailsInteractor';
+import { ReadUserBooklistsInteractor } from '@interactors/user/ReadUserBooklistsInteractor';
 import { Suspense } from 'react';
 import AddToReadingListButton from '@components/AddToReadingListButton';
+import AddToBooklistButton from '@components/AddToBooklistButton';
 import BookImage from './BookImage';
 import Link from 'next/link';
 import { getServerSession } from 'next-auth/next';
 import { options } from '@auth/options';
-import { ReadUserBooklistsInteractor } from '@interactors/user/ReadUserBooklistsInteractor';
-import AddToBooklistButton from '@components/AddToBooklistButton';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 
 const ImagePlaceholder = () => (
@@ -27,8 +27,11 @@ export default async function BookPage({ params }) {
   }
 
   const session = await getServerSession(options);
-  const interactor = await ReadUserBooklistsInteractor.create();
-  const userBooklistsForDropdown = await interactor.execute(session.user.email);
+  let userBooklistsForDropdown = [];
+  if (session) {
+    const interactor = await ReadUserBooklistsInteractor.create();
+    userBooklistsForDropdown = await interactor.execute(session?.user?.email);
+  }
 
   const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(
     book.Name
@@ -116,6 +119,29 @@ export default async function BookPage({ params }) {
               </a>
             </p>
           )}
+          <div className='flex items-center justify-between mb-2'>
+            {book.BookOwner && (
+              <div className='flex items-center justify-between mb-2'>
+                <div className='flex items-center'>
+                  <span className='font-bold mr-2'>Book Owner:</span>
+                  <Link
+                    href={`/profile/${book.BookOwner.publicProfileName}`}
+                    className='text-yellow hover:text-orange text-base hover:underline'
+                  >
+                    {book.BookOwner.publicProfileName}
+                  </Link>
+                </div>
+              </div>
+            )}
+            {session && session.user.email === book.BookOwner.email && (
+              <Link
+                href={`/my-collection/bookEdit/${book._id}`}
+                className='px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300'
+              >
+                Edit Book
+              </Link>
+            )}
+          </div>
           <div className='mt-8'>
             {session && (
               <div style={{ display: 'flex', gap: '0.5rem' }}>

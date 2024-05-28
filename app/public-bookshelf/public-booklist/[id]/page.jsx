@@ -12,6 +12,7 @@ import Accordion from '@/app/(components)/Accordion';
 import {
   thisIsPublicBooklistContent,
   whatIsIvyStreetBlogContent,
+  howToRecommendContent,
 } from '@/app/faqs/accordionContent';
 import RecommendBookToBooklistComponent from './RecommendBookToBooklistComponent';
 
@@ -50,15 +51,25 @@ export default async function BooklistPage({ params }) {
             title='This is a public booklist. What does that mean?'
             content={thisIsPublicBooklistContent}
           />
+          <Accordion
+            title='How do I recommend a book to a booklist?'
+            content={howToRecommendContent}
+          />
         </AccordionWrapper>
         <div className='flex justify-between items-center'>
-          <h2 className='text-2xl italic'>{booklist.title}</h2>
+          <div className='flex items-center mb-4'>
+            <span className='text-accent mr-2'>Booklist Title:</span>
+            <h2 className='text-2xl'>{booklist.title}</h2>
+          </div>
           <ShareButton
             url={`${process.env.NEXTAUTH_URL}/public-booklist/${id}`}
           />
         </div>
       </div>
-      <p className='text-lg mb-4'>{booklist.description}</p>
+      <div className='flex items-start mb-4'>
+        <span className='text-accent mr-2'>Description:</span>
+        <p className='text-lg'>{booklist.description}</p>
+      </div>
       {booklistOwner && (
         <p className='text-sm mb-4'>
           Booklist curator:{' '}
@@ -74,10 +85,20 @@ export default async function BooklistPage({ params }) {
         booklist={{ ...booklist, books }}
         userBooklists={userBooklists}
       />
-      {session && booklist.openToRecommendations && (
-        <div className='mt-4'>
-          <RecommendBookToBooklistComponent booklist={booklist} />
-        </div>
+      {booklist.openToRecommendations ? (
+        session ? (
+          <div className='mt-4'>
+            <RecommendBookToBooklistComponent booklist={booklist} />
+          </div>
+        ) : (
+          <p className='text-accent mt-4'>
+            Please log in to recommend books to this booklist.
+          </p>
+        )
+      ) : (
+        <p className='text-accent mt-4'>
+          This booklist is currently closed to recommendations.
+        </p>
       )}
     </div>
   );

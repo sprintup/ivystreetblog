@@ -18,6 +18,8 @@ import {
   whatIsABooklistContent,
   parentalContent,
   whatIsIvyStreetBlogContent,
+  whatIsRecommendationContent,
+  howToRecommendContent,
 } from './accordionContent';
 
 export default function FAQPage() {
@@ -65,6 +67,14 @@ export default function FAQPage() {
           <Accordion
             title='What is a public profile name?'
             content={whatIsProfileContent}
+          />
+          <Accordion
+            title='What is a book recommendation?'
+            content={whatIsRecommendationContent}
+          />
+          <Accordion
+            title='How do I recommend a book to a booklist?'
+            content={howToRecommendContent}
           />
           <Accordion title='Setting up Passkeys' content={passkeysContent} />
           <Accordion title='Add to Home Screen' content={homeScreenContent} />

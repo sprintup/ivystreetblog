@@ -26,8 +26,10 @@ export class ReadBookForBookDetailsInteractor extends BaseInteractor {
     const book = await this.bookRepo.getBookById(bookId);
     const booklists = await this.bookRepo.getBooklistsByBookId(bookId);
     return [
-      (this.convertToPlainObject(book) as IBook) || null,
-      this.convertToPlainObject(booklists) as IBooklist[],
+      book ? (this.convertToPlainObject(book) as IBook) : null,
+      booklists.map(
+        booklist => this.convertToPlainObject(booklist) as IBooklist
+      ),
     ];
   }
 }

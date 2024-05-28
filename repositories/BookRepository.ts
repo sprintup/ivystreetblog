@@ -119,12 +119,12 @@ export class BookRepository extends BaseRepository {
     }
   }
 
-  async getBooklistsByBookId(bookId: string) {
-    return this.Booklist.find({ books: bookId });
+  async getBooklistsByBookId(bookId: string): Promise<IBooklist[]> {
+    return this.Booklist.find({ bookIds: bookId }).populate('booklistOwnerId');
   }
 
   async getBookById(bookId: string): Promise<IBook | null> {
-    return this.Book.findById(bookId);
+    return this.Book.findById(bookId).populate('BookOwner');
   }
 
   async getBooksByIds(bookIds: string[]): Promise<IBook[]> {

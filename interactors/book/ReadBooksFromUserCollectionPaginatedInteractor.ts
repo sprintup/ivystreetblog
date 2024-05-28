@@ -9,7 +9,7 @@ import { IBook } from '@/domain/models';
  *
  * As a user,
  * When I view my collection of books from the edit booklist page,
- * Then I see the most recently modified 5 books.
+ * Then I see the paginated books based on the provided page and limit.
  *
  * @param {string} userId - The ID of the user whose books to retrieve.
  * @param {number} page - The page number for pagination.
@@ -31,6 +31,14 @@ export class ReadBooksFromUserCollectionPaginatedInteractor extends BaseInteract
     page: number,
     limit: number
   ): Promise<{ books: IBook[]; totalBooks: number }> {
-    return this.bookRepo.getUserBooksPaginated(userEmail, page, limit);
+    const { books, totalBooks } = await this.bookRepo.getUserBooksPaginated(
+      userEmail,
+      page,
+      limit
+    );
+    return {
+      books: books.map(book => this.convertToPlainObject(book) as IBook),
+      totalBooks,
+    };
   }
 }

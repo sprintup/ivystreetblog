@@ -39,12 +39,12 @@ export default function AddToBooklistButton({ book, signedInUserBooklists }) {
   };
 
   return (
-    <div className='border border-yellow rounded-md p-4'>
+    <div className='rounded-md px-2'>
       <div className='relative'>
         <select
           value={selectedBooklist}
           onChange={handleBooklistChange}
-          className='w-full px-3 py-1 pr-8 rounded-md bg-secondary text-yellow text-sm appearance-none'
+          className='w-full px-3 py-1 pr-8 border border-yellow rounded-md bg-secondary text-yellow text-sm appearance-none'
         >
           <option value=''>Select Booklist</option>
           {signedInUserBooklists.map(booklist => (

@@ -25,7 +25,7 @@ export interface IBooklist extends Document {
   title: string;
   description: string;
   visibility: string;
-  booklistOwnerId: string;
+  booklistOwnerId: mongoose.Types.ObjectId;
   bookIds: mongoose.Types.ObjectId[];
   openToRecommendations: boolean;
   bookRecommendations: IBookRecommendation[];
