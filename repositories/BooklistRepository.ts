@@ -271,14 +271,13 @@ export class BooklistRepository extends BaseRepository {
     }
   }
 
-  async getBooklistRecommendations(
-    booklistId: string
-  ): Promise<{
+  async getBooklistRecommendations(booklistId: string): Promise<{
     booklist: IBooklist | null;
     recommendations: IBookRecommendation[];
   }> {
     try {
       const booklist = await this.Booklist.findById(booklistId)
+        .populate('bookIds')
         .populate({
           path: 'bookRecommendations.bookId',
           model: 'Book',
@@ -301,14 +300,13 @@ export class BooklistRepository extends BaseRepository {
     }
   }
 
-  async updateRecommendationStatus(
-    recommendationId: string,
-    status: 'accepted' | 'rejected'
+  async rejectRecommendationStatus(
+    recommendationId: string
   ): Promise<IBooklist | null> {
     try {
       const updatedBooklist = await this.Booklist.findOneAndUpdate(
         { 'bookRecommendations._id': recommendationId },
-        { $set: { 'bookRecommendations.$.status': status } },
+        { $set: { 'bookRecommendations.$.status': 'rejected' } },
         { new: true }
       )
         .populate('bookRecommendations.bookId')
@@ -333,13 +331,15 @@ export class BooklistRepository extends BaseRepository {
     recommendationId: string
   ): Promise<IBooklist | null> {
     try {
-      const booklist = await this.Booklist.findOne({
-        'bookRecommendations._id': recommendationId,
-      })
+      const updatedBooklist = await this.Booklist.findOneAndUpdate(
+        { 'bookRecommendations._id': recommendationId },
+        { $set: { 'bookRecommendations.$.status': 'accepted' } },
+        { new: true }
+      )
         .populate('bookRecommendations.bookId')
         .populate('bookRecommendations.recommendedBy', 'publicProfileName');
 
-      if (!booklist) {
+      if (!updatedBooklist) {
         console.error(
           'No booklist found with the provided recommendation ID:',
           recommendationId
@@ -347,41 +347,7 @@ export class BooklistRepository extends BaseRepository {
         return null;
       }
 
-      const recommendation = booklist.bookRecommendations.find(
-        rec => rec._id.toString() === recommendationId
-      );
-
-      if (!recommendation) {
-        console.error(
-          'Recommendation not found in the booklist:',
-          recommendationId
-        );
-        return null;
-      }
-
-      const { bookId, recommendedBy } = recommendation;
-
-      // Clone the recommended book and create a new book object
-      const clonedBook: IBook = {
-        ...bookId.toObject(),
-        _id: undefined,
-        BookOwner: booklist.booklistOwnerId,
-        Source: `Recommended by ${recommendedBy.publicProfileName}`,
-      };
-
-      // Save the cloned book to the database
-      const newBook = new this.Book(clonedBook);
-      const savedBook = await newBook.save();
-
-      // Add the cloned book to the booklist
-      booklist.bookIds.push(savedBook._id);
-
-      // Update the recommendation status to 'accepted'
-      recommendation.status = 'accepted';
-
-      await booklist.save();
-
-      return booklist;
+      return updatedBooklist;
     } catch (error) {
       console.error('Error accepting recommendation:', error);
       throw error;

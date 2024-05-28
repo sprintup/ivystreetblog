@@ -24,8 +24,10 @@ export class ReadPublicBooklistInteractor extends BaseInteractor {
   }
 
   async execute(booklistId: string): Promise<IBooklist | null> {
-    return this.booklistRepo.getPublicBooklistByIdWithUserAndUserBooklistsAndBooks(
-      booklistId
-    );
+    const result =
+      await this.booklistRepo.getPublicBooklistByIdWithUserAndUserBooklistsAndBooks(
+        booklistId
+      );
+    return this.convertToPlainObject(result) as IBooklist | null;
   }
 }

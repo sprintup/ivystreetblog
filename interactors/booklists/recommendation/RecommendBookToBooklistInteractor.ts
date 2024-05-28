@@ -32,9 +32,10 @@ export class RecommendBookToBooklistInteractor extends BaseInteractor {
     booklistId: string,
     recommendBookData: RecommendBookData
   ): Promise<IBooklist | null> {
-    return this.booklistRepo.recommendBookToBooklist(
+    const result = await this.booklistRepo.recommendBookToBooklist(
       booklistId,
       recommendBookData
     );
+    return this.convertToPlainObject(result) as IBooklist | null;
   }
 }

@@ -33,14 +33,23 @@ export class ReadBooklistRecommendationsInteractor extends BaseInteractor {
       booklistId
     );
 
+    const booklist = response.booklist
+      ? this.convertToPlainObject(response.booklist)
+      : null;
+
+    if (booklist) {
+      booklist.bookIds = booklist.bookIds.map((book: any) =>
+        this.convertToPlainObject(book)
+      );
+    }
+
+    const recommendations = response.recommendations.map(recommendation =>
+      this.convertToPlainObject(recommendation)
+    );
+
     return {
-      booklist: response.booklist
-        ? (this.convertToPlainObject(response.booklist) as IBooklist)
-        : null,
-      recommendations: response.recommendations.map(
-        recommendation =>
-          this.convertToPlainObject(recommendation) as IBookRecommendation
-      ),
+      booklist,
+      recommendations,
     };
   }
 }

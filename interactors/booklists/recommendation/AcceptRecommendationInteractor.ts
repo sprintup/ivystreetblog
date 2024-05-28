@@ -9,7 +9,7 @@ import { IBooklist } from '@/domain/models';
  *
  * As a user who has received an offered recommendation status,
  * When I press accept,
- * Then I clone the book, add it to my collection, and add that book to my booklist.
+ * Then it changes the status of the recommendation to accepted.
  *
  * @param {string} recommendationId - The ID of the recommendation to accept.
  * @returns {Promise<IBooklist | null>} A promise that resolves to the updated booklist or null if not found.
@@ -25,6 +25,9 @@ export class AcceptRecommendationInteractor extends BaseInteractor {
   }
 
   async execute(recommendationId: string): Promise<IBooklist | null> {
-    return this.booklistRepo.acceptRecommendation(recommendationId);
+    const result = await this.booklistRepo.acceptRecommendation(
+      recommendationId
+    );
+    return this.convertToPlainObject(result) as IBooklist | null;
   }
 }

@@ -28,7 +28,6 @@ export default async function BooklistPage({ params }) {
   if (booklist.visibility !== 'public') {
     return <div>This booklist is not public.</div>;
   }
-  booklist = booklist.toObject();
 
   const booklistOwner = booklist.booklistOwnerId;
   const books = booklist.bookIds;
@@ -75,7 +74,7 @@ export default async function BooklistPage({ params }) {
         booklist={{ ...booklist, books }}
         userBooklists={userBooklists}
       />
-      {session && (
+      {session && booklist.openToRecommendations && (
         <div className='mt-4'>
           <RecommendBookToBooklistComponent booklist={booklist} />
         </div>
