@@ -25,6 +25,9 @@ export class ReadBookForBookDetailsInteractor extends BaseInteractor {
   async execute(bookId: string): Promise<[IBook | null, IBooklist[]]> {
     const book = await this.bookRepo.getBookById(bookId);
     const booklists = await this.bookRepo.getBooklistsByBookId(bookId);
-    return [book, booklists];
+    return [
+      (this.convertToPlainObject(book) as IBook) || null,
+      this.convertToPlainObject(booklists) as IBooklist[],
+    ];
   }
 }

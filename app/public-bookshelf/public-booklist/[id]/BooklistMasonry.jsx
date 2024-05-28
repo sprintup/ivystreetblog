@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import Masonry from 'react-masonry-css';
 import BookDetailsPublicComponent from '@components/BookDetailsPublicComponent';
 import AddToReadingListButton from '@components/AddToReadingListButton';
-import AddToBooklistButton from './AddToBooklistButton';
+import AddToBooklistButton from '@components/AddToBooklistButton';
 import { useSession } from 'next-auth/react';
 import './BooklistMasonry.css';
 
