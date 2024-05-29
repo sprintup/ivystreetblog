@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { BOOKLISTS_TAG } from '@domain/commons';
 
 export default function BookRemoveFromCollectionComponent({
   bookId,
@@ -20,11 +21,12 @@ export default function BookRemoveFromCollectionComponent({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ bookId }),
+        next: { tags: [BOOKLISTS_TAG] },
       });
 
       if (response.ok) {
-        onBookRemoved();
         setMessage('Book removed from booklist successfully!');
+        onBookRemoved();
       } else {
         console.error(
           'Error removing book from booklist:',

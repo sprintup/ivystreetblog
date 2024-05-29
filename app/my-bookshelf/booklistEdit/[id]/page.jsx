@@ -5,16 +5,17 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import AccordionWrapper from '@/app/(components)/AccordionWrapper';
-import Accordion from '@/app/(components)/Accordion';
+import AccordionWrapper from '@components/AccordionWrapper';
+import Accordion from '@components/Accordion';
 import {
   privateBooklistContent as privateBooklistContent,
   makeBooklistPublicContent,
   whatIsABooklistContent,
   whatIsACollectionContent,
 } from '@/app/faqs/accordionContent';
-import UserBookCollectionWrapper from './UserBookCollectionWrapper';
 import BookRemoveFromCollectionComponent from './BookRemoveFromCollectionComponent';
+import UserBookCollectionComponent from '@components/UserBookCollectionComponent';
+import AddToBooklistButtonComponent from './AddToBooklistButtonComponent';
 
 export default function EditBooklistPage({ params }) {
   const router = useRouter();
@@ -27,29 +28,33 @@ export default function EditBooklistPage({ params }) {
   const [booklistId, setBooklistId] = useState(params.id);
   const [booklist, setBooklist] = useState(null);
 
-  useEffect(() => {
-    const fetchBooklist = async () => {
-      try {
-        const response = await fetch(`/api/booklist/${params.id}/edit`);
-        if (response.ok) {
-          const data = await response.json();
-          setTitle(data.title);
-          setDescription(data.description);
-          setVisibility(data.visibility);
-          setOpenForRecommendations(data.openToRecommendations);
-          setBooklist(data);
-        } else {
-          console.error('Error fetching booklist:', response.statusText);
-          setErrorMessage('Failed to fetch booklist. Please try again.');
-        }
-      } catch (error) {
-        console.error('Error fetching booklist:', error);
-        setErrorMessage('An error occurred. Please try again.');
+  const fetchBooklist = async () => {
+    try {
+      const response = await fetch(`/api/booklist/${params.id}/edit`);
+      if (response.ok) {
+        const data = await response.json();
+        setTitle(data.title);
+        setDescription(data.description);
+        setVisibility(data.visibility);
+        setOpenForRecommendations(data.openToRecommendations);
+        setBooklist(data);
+      } else {
+        console.error('Error fetching booklist:', response.statusText);
+        setErrorMessage('Failed to fetch booklist. Please try again.');
       }
-    };
+    } catch (error) {
+      console.error('Error fetching booklist:', error);
+      setErrorMessage('An error occurred. Please try again.');
+    }
+  };
 
+  useEffect(() => {
     fetchBooklist();
   }, [params.id]);
+
+  const handleBookChange = () => {
+    fetchBooklist();
+  };
 
   const handleSubmitOfUpdateBooklistForm = async e => {
     e.preventDefault();
@@ -210,11 +215,20 @@ export default function EditBooklistPage({ params }) {
             <BookRemoveFromCollectionComponent
               bookId={book._id}
               booklistId={booklistId}
+              onBookRemoved={handleBookChange}
             />
           </div>
         ))}
         <hr />
-        <UserBookCollectionWrapper booklistId={booklistId} />
+        <UserBookCollectionComponent session={session}>
+          {({ book }) => (
+            <AddToBooklistButtonComponent
+              book={book}
+              booklistId={booklistId}
+              onBookAdded={handleBookChange}
+            />
+          )}
+        </UserBookCollectionComponent>
       </div>
     </div>
   );

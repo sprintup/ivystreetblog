@@ -85,3 +85,6 @@ VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=rodrigo
 - https://console.developers.google.com/
 - The [NEXTAUTH_SECRET](https://next-auth.js.org/configuration/options#nextauth_secret) is set set to encrypt traffic
 
+# Misc
+- [Here is some good caching documentation](https://github.com/vercel/next.js/discussions/54075)
+- [Next.js App Router Caching: Explained!](https://www.youtube.com/watch?v=VBlSe8tvg4U)

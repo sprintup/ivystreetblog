@@ -3,8 +3,13 @@
 'use client';
 
 import React, { useState } from 'react';
+import { BOOKLISTS_TAG } from '@domain/commons';
 
-export default function AddToBooklistButtonComponent({ book, booklistId }) {
+export default function AddToBooklistButtonComponent({
+  book,
+  booklistId,
+  onBookAdded,
+}) {
   const [isAdding, setIsAdding] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
 
@@ -18,10 +23,12 @@ export default function AddToBooklistButtonComponent({ book, booklistId }) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ bookId: book._id }),
+        next: { tags: [BOOKLISTS_TAG] },
       });
 
       if (response.ok) {
         setIsAdded(true);
+        onBookAdded();
       } else {
         console.error('Error adding book to booklist:', response.statusText);
       }

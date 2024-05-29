@@ -1,5 +1,7 @@
 import { AddBookFromCollectionToBooklistInteractor } from "@interactors/booklists/AddBookFromCollectionToBooklistInteractor";
 import { RemoveBookFromBooklistInteractor } from "@interactors/booklists/RemoveBookFromBooklistInteractor";
+import { revalidateTag } from 'next/cache';
+import { BOOKLISTS_TAG } from '@domain/commons';
 
 export async function POST(request, { params }) {
     try {
@@ -10,6 +12,7 @@ export async function POST(request, { params }) {
         const updatedBooklist = await addBookFromCollectionToBooklistInteractor.execute(booklistId, bookId);
 
         if (updatedBooklist) {
+            revalidateTag(BOOKLISTS_TAG);
             return new Response(JSON.stringify(updatedBooklist), { status: 200 });
         } else {
             return new Response(JSON.stringify({ error: "Failed to add book to booklist" }), { status: 400 });
