@@ -1,15 +1,10 @@
 // app/my-bookshelf/page.jsx
-
 import React, { Suspense } from 'react';
-import { CreateUserInteractor } from '@interactors/user/CreateUserInteractor';
-import { ReadMyBookShelfInteractor } from '@/interactors/booklists/private/ReadMyBookShelfInteractor';
 import { getServerSession } from 'next-auth/next';
 import { options } from '@auth/options';
 import Link from 'next/link';
 import styles from './page.module.css';
 import { redirect } from 'next/navigation';
-import { revalidateTag } from 'next/cache';
-import { BOOKLISTS_TAG } from '@domain/commons';
 import AccordionWrapper from '@/app/(components)/AccordionWrapper';
 import Accordion from '@/app/(components)/Accordion';
 import {
@@ -20,27 +15,30 @@ import {
   whatIsRecommendationContent,
 } from '@/app/faqs/accordionContent';
 
-async function BookshelfData() {
+async function fetchBooklists(userEmail) {
+  const response = await fetch(`${process.env.NEXTAUTH_URL}/api/my-bookshelf`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ userEmail }),
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch booklists');
+  }
+  return response.json();
+}
+
+export default async function MyBookshelf() {
   const session = await getServerSession(options);
   if (!session) {
     redirect('/');
   }
 
-  const createUserInteractor = await CreateUserInteractor.create();
-  const user = await createUserInteractor.findOrCreateUser(
-    session.user.login,
-    session.user.name,
-    session.user.email
-  );
-
-  const readBooklistsInteractor = await ReadMyBookShelfInteractor.create();
-  const booklists = await readBooklistsInteractor.execute(user.email);
-  revalidateTag(BOOKLISTS_TAG);
-  return { session, booklists };
-}
-
-export default async function MyBookshelf() {
-  const { session, booklists } = await BookshelfData();
+  const userEmail = session.user.email;
+  const booklists = await fetchBooklists(userEmail);
 
   return (
     <>

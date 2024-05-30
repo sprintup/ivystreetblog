@@ -23,7 +23,6 @@ export default function AddToBooklistButtonComponent({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ bookId: book._id }),
-        next: { tags: [BOOKLISTS_TAG] },
       });
 
       if (response.ok) {
