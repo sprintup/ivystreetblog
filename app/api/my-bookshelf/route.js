@@ -1,18 +1,18 @@
 import { ReadMyBookShelfInteractor } from '@/interactors/booklists/private/ReadMyBookShelfInteractor';
 
 export async function POST(request) {
-    const { userEmail } = await request.json();
-    console.log('userEmail in api: ', userEmail)
-    if (!userEmail) {
-        return new Response(JSON.stringify({ error: 'User email is required' }), {
-            status: 400,
-        });
-    }
-
     try {
+        const { userEmail } = await request.json();
+        console.log('Received userEmail:', userEmail);
+
+        if (!userEmail) {
+            return new Response(JSON.stringify({ error: 'User email is required' }), {
+                status: 400,
+            });
+        }
+
         const readBooklistsInteractor = await ReadMyBookShelfInteractor.create();
         const booklists = await readBooklistsInteractor.execute(userEmail);
-
 
         if (booklists) {
             return new Response(JSON.stringify(booklists), {
