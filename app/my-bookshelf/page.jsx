@@ -15,28 +15,19 @@ import {
   whatIsRecommendationContent,
 } from '@/app/faqs/accordionContent';
 import { revalidatePath } from 'next/cache';
+import { ReadMyBookShelfInteractor } from '@/interactors/booklists/private/ReadMyBookShelfInteractor';
 
 async function fetchBooklists(userEmail) {
   'use server';
   try {
-    const response = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/my-bookshelf`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userEmail }),
-        cache: 'no-cache',
-      }
-    );
+    const readBooklistsInteractor = await ReadMyBookShelfInteractor.create();
+    const booklists = await readBooklistsInteractor.execute(userEmail);
 
-    if (response.ok) {
+    if (booklists) {
       revalidatePath('/api/my-bookshelf');
-      return response.json();
+      return booklists;
     } else {
-      const errorData = await response.json();
-      console.error('Failed to fetch booklists:', errorData);
+      console.error('No booklists found for the provided email:', userEmail);
       throw new Error('Failed to fetch booklists');
     }
   } catch (error) {
