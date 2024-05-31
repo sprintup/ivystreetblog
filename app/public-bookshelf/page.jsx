@@ -12,7 +12,6 @@ import {
 } from '@/app/faqs/accordionContent';
 import ShareButton from '@components/ShareButton';
 import { revalidatePath } from 'next/cache';
-import { ReadPublicBookshelfInteractor } from '@interactors/booklists/public/ReadPublicBookshelfInteractor';
 
 async function fetchPublicBooklists() {
   'use server';
