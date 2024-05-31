@@ -15,6 +15,7 @@ import {
 } from '@/app/faqs/accordionContent';
 import RecommendBookToBooklistComponent from './RecommendBookToBooklistComponent';
 import { revalidatePath } from 'next/cache';
+import { ReadPublicBooklistInteractor } from '@interactors/booklists/public/ReadPublicBooklistInteractor';
 
 async function fetchPublicBooklist(id) {
   'use server';
