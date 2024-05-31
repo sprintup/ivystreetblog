@@ -18,12 +18,14 @@ import { revalidatePath } from 'next/cache';
 
 async function fetchBooklists(userEmail) {
   'use server';
+  const jsonEmail = JSON.stringify({ userEmail });
+  console.log('jsonEmail:', jsonEmail);
   const response = await fetch(`${process.env.NEXTAUTH_URL}/api/my-bookshelf`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ userEmail }),
+    body: jsonEmail,
     cache: 'no-cache',
   });
   if (response.ok) {
