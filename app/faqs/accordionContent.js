@@ -309,6 +309,9 @@ export const whatIsABooklistContent = (
         <p className="text-accent mt-4">
             A booklist is a collection of these books that are united by some theme, event, or idea. Use the booklist description to describe who the booklist is for generally (remember, no personally identifiable information), like anyone interested in learning about poetry or a certain theory or genre.
         </p>
+        <p className="text-accent mt-4">
+            You may also use the description field to give more information on recommendations you are seeking in this booklist. For instance, you might say, "I'm looking for books that are similar to this one, but with a different perspective." This will help others understand what you're looking for and provide better recommendations.
+        </p>
     </>
 );
 
@@ -346,7 +349,7 @@ export const makeBooklistPublicContent = (
             A few things happen when you have a public booklist.
         </p>
         <p className="text-accent mt-4">
-            First, when a user navigates to your public booklist page (at a URL that looks something like baseUrl/booklist/66385c63205c1f4ab1c9f3e2), they will be able to see all of the books you've added to that booklist and will be able to add those books to their reading list or their booklists. Your public booklist will be accessible to anyone, including those without an account.
+            First, when a user navigates to your public booklist page (at a URL that looks something like baseUrl/public-bookshelf/public-booklist/66385c63205c1f4ab1c9f3e2), they will be able to see all of the books you've added to that booklist and will be able to add those books to their reading list or their booklists. Your public booklist will be accessible to anyone, including those without an account.
         </p>
         <p className="text-accent mt-4">
             Second, your public profile name becomes part of the URL that people can use to view all of your public booklists. Users are able to browse your other public booklists by pressing your public profile name on the public booklist page.
@@ -418,17 +421,17 @@ export const whatIsProfileContent = (
 export const thisIsPublicBooklistContent = (
     <>
         <p className="text-accent">
-            This is a public booklist. A public booklist is a curated list of books that the owner has chosen to share with the world. Anyone can view the books in a public booklist, but you need to log in to be able to add them to your reading list or add them to your own booklists. Sign up is fast, free, and easy.
+            This is a public booklist. A public booklist is a curated list of books that the owner has chosen to share with the world. Anyone can view the books in a public booklist, but you need to log in to be able to add them to your reading list, booklists or give recommendations. Sign up is fast, free, and easy.
         </p>
         <p className="text-accent mt-4">
             Public booklists are a great way to discover new books and get recommendations from others who share your interests. You can{' '}
             <Link href="/public-bookshelf" className="text-yellow hover:text-orange">
                 browse the public bookshelf
             </Link>{' '}
-            or even the curator's public profile name.
+            or even the curator's public bookshelf.
         </p>
         <p className="text-accent mt-4">
-            Once you're logged in, simply click the "Add to Reading List" button to save it for later. You can also click the "Add to Booklist" button to add the book to one of your own booklists, making it easy to organize and share your own curated booklist.
+            Once you're logged in, simply click the "Add to Reading List" button to save it for later. You can also click the "Add to Booklist" button to add the book to one of your own booklists, making it easy to organize and share your own curated booklist. To give a recommendation, the booklist must be open to recommendation and then you can recommend books from your collection to the booklist.
         </p>
         <p className="text-accent mt-4">
             You can use the share button to share this booklist several ways, including by text, email, or a QR code that can be made into a sticker or something.
@@ -467,6 +470,42 @@ export const whatIsPublicBookshelfContent = (
         </p>
         <p className="text-accent mt-4">
             Once you find a booklist that catches your eye, you can explore the individual books it contains. If a book piques your interest, you can easily add it to your reading list or one of your own booklists with just a few clicks, making it a seamless experience to discover and organize your next literary adventure.
+        </p>
+    </>
+);
+
+export const whatIsRecommendationContent = (
+    <>
+        <p className="text-accent">
+            The owner of a booklist has the ability to open their booklist to recommendations. This means other users can recommend books from their collection to the booklist. Then the user who owns the booklist that received the recommendation can either accept or reject that recommendation.
+        </p>
+        <p className="text-accent mt-4">
+            When you open the booklist to recommendations, a new tile appears below the list of books on the public booklist page, where anyone might submit recommendations to your booklist. You'll be able to see that your booklist is open for recommendations on the 'My Bookshelf' page, and when someone submits a recommendation, you'll see a link to a page where you can view the recommendation and either accept it or reject it.
+        </p>
+    </>
+);
+
+export const acceptingRecommendationContent = (
+    <>
+        <p className="text-accent mt-4">
+            When you accept a recommendation, you'll have to decide if you want to add their book to your booklist or create a duplicate book from their recommendation in your own collection to add to your booklist. If you just add their recommended book to your booklist, then if they decide to delete that book from their collection, you'll lose that book in your booklist as well. However, if you decide to create a duplicate book in your collection and add it to your booklist, then even if they decide to delete their book, you'll still have a copy of that information.
+        </p>
+        <p className="text-accent mt-4">
+            It's much easier to just add their book to your booklist, as it's not likely people will decide to delete books from their collection over just archiving the books. The downside is that you'll not be able to edit the details of that book, and they will be able to edit the details of the book included in your booklist, giving them a little control over what content is included in your booklist.
+        </p>
+    </>
+);
+
+export const howToRecommendContent = (
+    <>
+        <p className="text-accent">
+            To leave a recommendation, find a booklist that is open to recommendations using the public bookshelf located in the footer. On the public booklist page, scroll to the bottom, and there should be a tile available for you to select a book from your collection to recommend to the booklist.
+        </p>
+        <p className="text-accent mt-4">
+            If the book you want to recommend is not in your collection yet, add it to your collection first, and then select it and add your reason for recommending it to the booklist.
+        </p>
+        <p className="text-accent mt-4">
+            To review your recommendations, go to the "My Bookshelf" page, and if there are any recommendations people have left, a yellow link will appear on your booklist. Click that link, and you can approve or reject the recommendations.
         </p>
     </>
 );

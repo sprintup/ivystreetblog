@@ -119,12 +119,12 @@ export class BookRepository extends BaseRepository {
     }
   }
 
-  async getBooklistsByBookId(bookId: string) {
-    return this.Booklist.find({ books: bookId });
+  async getBooklistsByBookId(bookId: string): Promise<IBooklist[]> {
+    return this.Booklist.find({ bookIds: bookId }).populate('booklistOwnerId');
   }
 
   async getBookById(bookId: string): Promise<IBook | null> {
-    return this.Book.findById(bookId);
+    return this.Book.findById(bookId).populate('BookOwner');
   }
 
   async getBooksByIds(bookIds: string[]): Promise<IBook[]> {
@@ -219,6 +219,34 @@ export class BookRepository extends BaseRepository {
     } catch (error) {
       console.error('Error toggling book archive:', error);
       throw new Error('Failed to toggle book archive');
+    }
+  }
+
+  async updateRecommendationStatus(
+    recommendationId: string,
+    status: 'accepted' | 'rejected'
+  ): Promise<IBooklist | null> {
+    try {
+      const updatedBooklist = await this.Booklist.findOneAndUpdate(
+        { 'bookRecommendations._id': recommendationId },
+        { $set: { 'bookRecommendations.$.status': status } },
+        { new: true }
+      )
+        .populate('bookRecommendations.bookId')
+        .populate('bookRecommendations.recommendedBy', 'publicProfileName');
+
+      if (!updatedBooklist) {
+        console.error(
+          'No booklist found with the provided recommendation ID:',
+          recommendationId
+        );
+        return null;
+      }
+
+      return updatedBooklist;
+    } catch (error) {
+      console.error('Error updating recommendation status:', error);
+      throw error;
     }
   }
 }

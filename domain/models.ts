@@ -1,5 +1,5 @@
 import dbConnect from '@/repositories/dbConnect';
-import mongoose, { Document, Model } from 'mongoose';
+import mongoose, { Document, Model, Types } from 'mongoose';
 
 export interface IUser extends Document {
   login: string;
@@ -25,8 +25,17 @@ export interface IBooklist extends Document {
   title: string;
   description: string;
   visibility: string;
-  booklistOwnerId: string;
+  booklistOwnerId: mongoose.Types.ObjectId;
   bookIds: mongoose.Types.ObjectId[];
+  openToRecommendations: boolean;
+  bookRecommendations: IBookRecommendation[];
+}
+
+export interface IBookRecommendation {
+  bookId: mongoose.Types.ObjectId;
+  recommendedBy: mongoose.Types.ObjectId;
+  status: 'accepted' | 'rejected' | 'offered';
+  recommendationReason: string;
 }
 
 export interface IBook extends Document {
@@ -119,6 +128,28 @@ const BooklistSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Book',
+      },
+    ],
+    openToRecommendations: {
+      type: Boolean,
+      default: false,
+    },
+    bookRecommendations: [
+      {
+        bookId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Book',
+        },
+        recommendedBy: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+        status: {
+          type: String,
+          enum: ['accepted', 'rejected', 'offered'],
+          default: 'offered',
+        },
+        recommendationReason: String,
       },
     ],
   },

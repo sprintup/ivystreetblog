@@ -1,9 +1,9 @@
-// app/booklist/[id]/BookDetailsPublicComponent.js
+// app\(components)\BookDetailsPublicComponent.jsx
 
 import React from 'react';
 import Link from 'next/link';
 
-export default function BookDetailsPublicComponent({ book, buttons }) {
+export default function BookDetailsPublicComponent({ book, children }) {
   if (!book) {
     return null;
   }
@@ -77,7 +77,7 @@ export default function BookDetailsPublicComponent({ book, buttons }) {
           </a>
         </p>
       )}
-      {buttons && <div className='mt-4'>{buttons}</div>}
+      {children}
     </div>
   );
 }

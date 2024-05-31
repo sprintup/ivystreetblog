@@ -2,10 +2,16 @@
 
 import React from 'react';
 import { ReadBookForBookDetailsInteractor } from '@/interactors/book/ReadBookForBookDetailsInteractor';
+import { ReadUserBooklistsInteractor } from '@interactors/user/ReadUserBooklistsInteractor';
 import { Suspense } from 'react';
 import AddToReadingListButton from '@components/AddToReadingListButton';
+import AddToBooklistButton from '@components/AddToBooklistButton';
 import BookImage from './BookImage';
 import Link from 'next/link';
+import { getServerSession } from 'next-auth/next';
+import { options } from '@auth/options';
+import { FaExternalLinkAlt } from 'react-icons/fa';
+import ShareButton from '@components/ShareButton';
 
 const ImagePlaceholder = () => (
   <div className='w-48 h-64 bg-gray-200 animate-pulse'></div>
@@ -21,18 +27,49 @@ export default async function BookPage({ params }) {
     return <div>Book not found.</div>;
   }
 
+  const session = await getServerSession(options);
+  let userBooklistsForDropdown = [];
+  if (session) {
+    const interactor = await ReadUserBooklistsInteractor.create();
+    userBooklistsForDropdown = await interactor.execute(session?.user?.email);
+  }
+
+  const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(
+    book.Name
+  )}+by+${encodeURIComponent(book.Author)}`;
+
   return (
     <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
       <div className='flex flex-col sm:flex-row'>
         <div className='sm:w-1/3 sm:pr-8'>
           <Suspense fallback={<ImagePlaceholder />}>
-            {book.Link && book.Link.includes('amazon') && (
+            {book.Link && book.Link.includes('amazon') ? (
               <BookImage link={book.Link} />
+            ) : (
+              <div className='w-48 h-64 flex items-center justify-center border-2 border-dashed border-gray-400 rounded-lg'>
+                <p className='text-center'>Add Amazon link for image</p>
+              </div>
             )}
           </Suspense>
         </div>
         <div className='sm:w-2/3'>
-          <h1 className='text-3xl font-bold text-yellow mb-4'>{book.Name}</h1>
+          <div className='flex justify-between items-center mb-4'>
+            <h1 className='text-3xl font-bold text-yellow mb-4'>
+              <a
+                href={googleSearchUrl}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='hover:underline'
+              >
+                {book.Name} <FaExternalLinkAlt className='inline-block ml-1' />
+              </a>
+            </h1>
+
+            <ShareButton url={`${process.env.NEXTAUTH_URL}/book/${book._id}`} />
+          </div>
+          <p className='text-sm text-gray-400 mb-2'>
+            Click to view Google search for book
+          </p>
           {book.Author && (
             <p className='text-lg mb-2'>
               <span className='font-bold'>Author:</span> {book.Author}
@@ -87,8 +124,39 @@ export default async function BookPage({ params }) {
               </a>
             </p>
           )}
+          <div className='flex items-center justify-between mb-2'>
+            {book.BookOwner && (
+              <div className='flex items-center justify-between mb-2'>
+                <div className='flex items-center'>
+                  <span className='font-bold mr-2'>Book Owner:</span>
+                  <Link
+                    href={`/profile/${book.BookOwner.publicProfileName}`}
+                    className='text-yellow hover:text-orange text-base hover:underline'
+                  >
+                    {book.BookOwner.publicProfileName}
+                  </Link>
+                </div>
+              </div>
+            )}
+            {session && session.user.email === book.BookOwner.email && (
+              <Link
+                href={`/my-collection/bookEdit/${book._id}`}
+                className='px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300'
+              >
+                Edit Book
+              </Link>
+            )}
+          </div>
           <div className='mt-8'>
-            <AddToReadingListButton book={book} />
+            {session && (
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <AddToReadingListButton book={book} />
+                <AddToBooklistButton
+                  book={book}
+                  signedInUserBooklists={userBooklistsForDropdown}
+                />
+              </div>
+            )}
           </div>
           {booklists.length > 0 && (
             <div className='mt-8'>
@@ -99,7 +167,7 @@ export default async function BookPage({ params }) {
                 {booklists.map(booklist => (
                   <li key={booklist._id} className='mb-2'>
                     <Link
-                      href={`/booklist/${booklist._id}`}
+                      href={`/public-bookshelf/public-booklist/${booklist._id}`}
                       className='text-yellow hover:text-orange'
                     >
                       {booklist.title}

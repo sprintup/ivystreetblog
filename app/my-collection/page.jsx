@@ -1,6 +1,6 @@
 // app/my-collection/page.jsx
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { getServerSession } from 'next-auth/next';
 import { options } from '@auth/options';
 import { ReadBooksFromUserCollectionInteractor } from '@interactors/book/ReadBooksFromUserCollectionInteractor';
@@ -17,6 +17,13 @@ import {
   whatIsReadingListContent,
 } from '@/app/faqs/accordionContent';
 
+async function CollectionData({ userEmail }) {
+  const readBooksInteractor =
+    await ReadBooksFromUserCollectionInteractor.create();
+  const booksData = await readBooksInteractor.execute(userEmail);
+  return booksData;
+}
+
 export default async function UserCollectionPage({ searchParams }) {
   const session = await getServerSession(options);
 
@@ -24,16 +31,21 @@ export default async function UserCollectionPage({ searchParams }) {
     return <div>Please log in to view your collection.</div>;
   }
 
-  const readBooksInteractor =
-    await ReadBooksFromUserCollectionInteractor.create();
-  const booksData = await readBooksInteractor.execute(session.user.email);
+  const booksData = await CollectionData({ userEmail: session.user.email });
 
+  return (
+    <Suspense fallback={<div>Loading collection...</div>}>
+      <CollectionContent booksData={booksData} searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+function CollectionContent({ booksData, searchParams }) {
   if (!booksData) {
     return <div>No books found in your collection.</div>;
   }
 
   const showArchived = searchParams.show === 'archived';
-
   const filteredBooks = booksData.filter(
     book => book.IsArchived === showArchived
   );
@@ -68,8 +80,7 @@ export default async function UserCollectionPage({ searchParams }) {
           />
         </AccordionWrapper>
       </div>
-      <div className='flex mb-4 items-center space-x-4'>
-        <AddBookForm />
+      <div className='flex mb-4 items-start space-x-4'>
         <div className='bg-secondary text-yellow mb-2 px-4 py-2 rounded'>
           <Link
             href={`/my-collection?show=${showArchived ? 'active' : 'archived'}`}
@@ -78,6 +89,7 @@ export default async function UserCollectionPage({ searchParams }) {
             {showArchived ? 'Show Active Books' : 'Show Archived Books'}
           </Link>
         </div>
+        <AddBookForm />
       </div>
       <UserCollectionMasonry books={filteredBooks} />
     </div>

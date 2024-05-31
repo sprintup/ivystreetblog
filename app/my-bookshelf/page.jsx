@@ -1,15 +1,10 @@
 // app/my-bookshelf/page.jsx
-
 import React, { Suspense } from 'react';
-import { CreateUserInteractor } from '@interactors/user/CreateUserInteractor';
-import { ReadMyBookshelfInteractor } from '@/interactors/booklists/ReadMyBookshelfInteractor';
 import { getServerSession } from 'next-auth/next';
 import { options } from '@auth/options';
 import Link from 'next/link';
 import styles from './page.module.css';
 import { redirect } from 'next/navigation';
-import { revalidateTag } from 'next/cache';
-import { BOOKLISTS_TAG } from '@domain/commons';
 import AccordionWrapper from '@/app/(components)/AccordionWrapper';
 import Accordion from '@/app/(components)/Accordion';
 import {
@@ -17,29 +12,36 @@ import {
   whatIsBookshelfContent,
   whatIsABooklistContent,
   makeBooklistPublicContent,
+  whatIsRecommendationContent,
 } from '@/app/faqs/accordionContent';
+import { revalidatePath } from 'next/cache';
 
-async function BookshelfData() {
+async function fetchBooklists(userEmail) {
+  'use server';
+  const response = await fetch(`${process.env.NEXTAUTH_URL}/api/my-bookshelf`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ userEmail }),
+    cache: 'no-cache',
+  });
+  revalidatePath('/api/my-bookshelf');
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch booklists');
+  }
+  return response.json();
+}
+
+export default async function MyBookshelf() {
   const session = await getServerSession(options);
   if (!session) {
     redirect('/');
   }
 
-  const createUserInteractor = await CreateUserInteractor.create();
-  const user = await createUserInteractor.findOrCreateUser(
-    session.user.login,
-    session.user.name,
-    session.user.email
-  );
-
-  const readBooklistsInteractor = await ReadMyBookshelfInteractor.create();
-  const booklists = await readBooklistsInteractor.execute(user.email);
-  revalidateTag(BOOKLISTS_TAG);
-  return { session, booklists };
-}
-
-export default async function MyBookshelf() {
-  const { session, booklists } = await BookshelfData();
+  const userEmail = session.user.email;
+  const booklists = await fetchBooklists(userEmail);
 
   return (
     <>
@@ -62,6 +64,10 @@ export default async function MyBookshelf() {
           title='What does it mean to make a booklist public?'
           content={makeBooklistPublicContent}
         />
+        <Accordion
+          title='What is a book recommendation?'
+          content={whatIsRecommendationContent}
+        />
       </AccordionWrapper>
       <Suspense fallback={<div>Loading booklists...</div>}>
         <BookshelfContent session={session} booklists={booklists} />
@@ -79,7 +85,7 @@ function BookshelfContent({ session, booklists }) {
             {session?.user?.name} has {booklists.length || 0} booklists
           </h3>
           <Link
-            href='/booklistAdd'
+            href='/my-bookshelf/booklistAdd'
             className='px-4 py-2 bg-yellow text-primary font-bold rounded-lg hover:bg-orange transition duration-300 no-underline'
           >
             Add Booklist
@@ -110,7 +116,11 @@ function BookshelfContent({ session, booklists }) {
               key={booklist._id}
               className={`${styles.booklistCard} bg-secondary p-4 rounded-lg shadow-md relative`}
             >
-              <h4 className='text-xl font-bold mb-1 mr-2'>{booklist.title}</h4>
+              <Link href={`/public-bookshelf/public-booklist/${booklist._id}`}>
+                <h2 className='text-xl text-yellow mb-2 hover:underline cursor-pointer'>
+                  {booklist.title}
+                </h2>
+              </Link>
               <div className={styles.descriptionContainer}>
                 <p
                   className={`${styles.descriptionText} text-sm mb-2 mr-2 border-l-2 border-solid border-dotted px-1`}
@@ -118,20 +128,45 @@ function BookshelfContent({ session, booklists }) {
                   {booklist.description}
                 </p>
               </div>
-              <p className='text-xs mb-2'>Visibility: {booklist.visibility}</p>
-              <p className='text-xs'>Books: {booklist.bookIds.length}</p>
+              <p className='text-xs my-2'>Books: {booklist.bookIds.length}</p>
+              <p
+                className={`text-xs mb-2 ${
+                  booklist.visibility === 'public'
+                    ? 'text-green-500'
+                    : 'text-red-500'
+                }`}
+              >
+                Visibility: {booklist.visibility}
+              </p>
+              {booklist.bookRecommendations.length > 0 ? (
+                <p className='text-xs mb-2'>
+                  <Link
+                    href={`/my-bookshelf/booklistEdit/recommendations/${booklist._id}`}
+                  >
+                    <span className='text-yellow hover:text-orange'>
+                      Recommendations: {booklist.bookRecommendations.length}
+                    </span>
+                  </Link>
+                </p>
+              ) : (
+                <p
+                  className={`text-xs mb-2 ${
+                    booklist.openToRecommendations
+                      ? 'text-green-500'
+                      : 'text-red-500'
+                  }`}
+                >
+                  {booklist.openToRecommendations
+                    ? 'Open to recommendations'
+                    : 'Closed to recommendations'}
+                </p>
+              )}
               <div className='absolute bottom-4 right-4 space-x-2'>
                 <Link
-                  href={`/booklistEdit/${booklist._id}`}
+                  href={`/my-bookshelf/booklistEdit/${booklist._id}`}
                   className='px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300 no-underline'
                 >
                   Edit
-                </Link>
-                <Link
-                  href={`/booklist/${booklist._id}`}
-                  className='px-4 py-2 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition duration-300 no-underline'
-                >
-                  View
                 </Link>
               </div>
             </div>

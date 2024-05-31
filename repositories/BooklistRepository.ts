@@ -1,7 +1,8 @@
 // BooklistRepository.ts
-import { IBooklist, IUser } from '@/domain/models';
+import { IBooklist, IBookRecommendation, IUser } from '@/domain/models';
 import { BaseRepository } from '@/repositories/BaseRepository';
 import mongoose from 'mongoose';
+import { RecommendBookData } from '@/domain/interfaces';
 
 export class BooklistRepository extends BaseRepository {
   async getBooklistsByUserEmail(userEmail: string): Promise<IBooklist[]> {
@@ -27,7 +28,12 @@ export class BooklistRepository extends BaseRepository {
 
   async createBooklist(
     userEmail: string,
-    booklist: { title: string; description?: string; visibility: string }
+    booklist: {
+      title: string;
+      description?: string;
+      visibility: string;
+      openToRecommendations: boolean;
+    }
   ): Promise<IUser | null> {
     try {
       // Find the user by their email
@@ -36,13 +42,14 @@ export class BooklistRepository extends BaseRepository {
         console.error('No user found with the provided email:', userEmail);
         return null;
       }
-
+      console.log('open for recommendations: ', booklist.openToRecommendations);
       // Create a new booklist with the provided details and the user's id
       const newBooklist = new this.Booklist({
         title: booklist.title,
         description: booklist.description,
         visibility: booklist.visibility,
         booklistOwnerId: user._id,
+        openToRecommendations: booklist.openToRecommendations,
       });
       await newBooklist.save();
 
@@ -88,11 +95,14 @@ export class BooklistRepository extends BaseRepository {
     }
   }
 
-  async getBooklistByIdWithUserAndUserBooklistsAndBooks(
+  async getPublicBooklistByIdWithUserAndUserBooklistsAndBooks(
     booklistId: string
   ): Promise<IBooklist | null> {
     try {
-      const booklist = await this.Booklist.findById(booklistId)
+      const booklist = await this.Booklist.findOne({
+        _id: booklistId,
+        visibility: 'public',
+      })
         .populate({
           path: 'booklistOwnerId',
           model: 'User',
@@ -105,7 +115,7 @@ export class BooklistRepository extends BaseRepository {
 
       if (!booklist) {
         console.error(
-          'No booklist found with the provided booklistId:',
+          'No public booklist found with the provided booklistId:',
           booklistId
         );
         return null;
@@ -157,7 +167,12 @@ export class BooklistRepository extends BaseRepository {
 
   async updateBooklist(
     booklistId: string,
-    updatedData: { title?: string; description?: string; visibility?: string }
+    updatedData: {
+      title?: string;
+      description?: string;
+      visibility?: string;
+      openToRecommendations?: boolean;
+    }
   ): Promise<IBooklist | null> {
     try {
       const booklist = await this.Booklist.findByIdAndUpdate(
@@ -167,6 +182,7 @@ export class BooklistRepository extends BaseRepository {
             title: updatedData.title,
             description: updatedData.description,
             visibility: updatedData.visibility,
+            openToRecommendations: updatedData.openToRecommendations,
             updatedAt: new Date(),
           },
         },
@@ -211,5 +227,141 @@ export class BooklistRepository extends BaseRepository {
       console.error('Error getting booklists by user ID:', error);
       throw error;
     }
+  }
+
+  async recommendBookToBooklist(
+    booklistId: string,
+    recommendationData: RecommendBookData
+  ): Promise<IBooklist | null> {
+    const { bookId, recommendedBy, recommendationReason } = recommendationData;
+    const recommendedByUser = await this.findUser(recommendedBy);
+    if (!recommendedByUser) {
+      throw new Error('User not found');
+    }
+    try {
+      const booklist = await this.Booklist.findById(booklistId);
+      if (!booklist) {
+        console.error('No booklist found with the provided ID:', booklistId);
+        return null;
+      }
+
+      const recommendedBook = await this.Book.findById(bookId);
+      if (!recommendedBook) {
+        console.error(
+          'No recommended book found with the provided ID:',
+          bookId
+        );
+        return null;
+      }
+
+      const recommendation: IBookRecommendation = {
+        bookId: recommendedBook._id,
+        recommendedBy: recommendedByUser._id,
+        status: 'offered',
+        recommendationReason,
+      };
+
+      booklist.bookRecommendations.push(recommendation);
+      await booklist.save();
+
+      return booklist;
+    } catch (error) {
+      console.error('Error recommending book to booklist:', error);
+      throw error;
+    }
+  }
+
+  async getBooklistRecommendations(booklistId: string): Promise<{
+    booklist: IBooklist | null;
+    recommendations: IBookRecommendation[];
+  }> {
+    try {
+      const booklist = await this.Booklist.findById(booklistId)
+        .populate('bookIds')
+        .populate({
+          path: 'bookRecommendations.bookId',
+          model: 'Book',
+        })
+        .populate({
+          path: 'bookRecommendations.recommendedBy',
+          model: 'User',
+          select: 'publicProfileName',
+        });
+
+      if (!booklist) {
+        console.error('No booklist found with the provided ID:', booklistId);
+        return { booklist: null, recommendations: [] };
+      }
+
+      return { booklist, recommendations: booklist.bookRecommendations };
+    } catch (error) {
+      console.error('Error getting booklist recommendations:', error);
+      throw error;
+    }
+  }
+
+  async rejectRecommendationStatus(
+    recommendationId: string
+  ): Promise<IBooklist | null> {
+    try {
+      const updatedBooklist = await this.Booklist.findOneAndUpdate(
+        { 'bookRecommendations._id': recommendationId },
+        { $set: { 'bookRecommendations.$.status': 'rejected' } },
+        { new: true }
+      )
+        .populate('bookRecommendations.bookId')
+        .populate('bookRecommendations.recommendedBy', 'publicProfileName');
+
+      if (!updatedBooklist) {
+        console.error(
+          'No booklist found with the provided recommendation ID:',
+          recommendationId
+        );
+        return null;
+      }
+
+      return updatedBooklist;
+    } catch (error) {
+      console.error('Error updating recommendation status:', error);
+      throw error;
+    }
+  }
+
+  async acceptRecommendation(
+    recommendationId: string
+  ): Promise<IBooklist | null> {
+    try {
+      const updatedBooklist = await this.Booklist.findOneAndUpdate(
+        { 'bookRecommendations._id': recommendationId },
+        { $set: { 'bookRecommendations.$.status': 'accepted' } },
+        { new: true }
+      )
+        .populate('bookRecommendations.bookId')
+        .populate('bookRecommendations.recommendedBy', 'publicProfileName');
+
+      if (!updatedBooklist) {
+        console.error(
+          'No booklist found with the provided recommendation ID:',
+          recommendationId
+        );
+        return null;
+      }
+
+      return updatedBooklist;
+    } catch (error) {
+      console.error('Error accepting recommendation:', error);
+      throw error;
+    }
+  }
+
+  async deleteRecommendation(
+    recommendationId: string
+  ): Promise<IBooklist | null> {
+    const updatedBooklist = await this.Booklist.findOneAndUpdate(
+      { 'bookRecommendations._id': recommendationId },
+      { $pull: { bookRecommendations: { _id: recommendationId } } },
+      { new: true }
+    );
+    return updatedBooklist;
   }
 }

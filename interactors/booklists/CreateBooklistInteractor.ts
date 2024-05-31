@@ -1,13 +1,14 @@
 // CreateBooklistInteractor.ts
 
-import { BooklistRepository } from "@/repositories/BooklistRepository";
-import { BaseInteractor } from "../BaseInteractor";
-import { IUser, IBooklist } from "@/domain/models";
+import { BooklistRepository } from '@/repositories/BooklistRepository';
+import { BaseInteractor } from '../BaseInteractor';
+import { IUser, IBooklist } from '@/domain/models';
 
 interface BooklistInput {
   title: string;
   description?: string;
   visibility: string;
+  openToRecommendations: boolean;
 }
 
 /**
@@ -25,11 +26,15 @@ export class CreateBooklistInteractor extends BaseInteractor {
   static async create() {
     const booklistRepo = new BooklistRepository();
     await booklistRepo.initializeModels();
-    const interactor = new CreateBooklistInteractor({booklistRepo});
+    const interactor = new CreateBooklistInteractor({ booklistRepo });
     return interactor;
   }
 
-  async execute(userEmail: string, booklist: BooklistInput): Promise<IUser | null> {
-    return this.booklistRepo.createBooklist(userEmail, booklist);
+  async execute(
+    userEmail: string,
+    booklist: BooklistInput
+  ): Promise<IUser | null> {
+    const result = await this.booklistRepo.createBooklist(userEmail, booklist);
+    return this.convertToPlainObject(result) as IUser | null;
   }
 }

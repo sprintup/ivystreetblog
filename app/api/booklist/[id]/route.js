@@ -1,13 +1,13 @@
 
-import { ReadPublicBooklistInteractor } from "@/interactors/booklists/ReadPublicBooklistInteractor";
-import { UpdateBooklistInteractor } from "@interactors/booklists/UpdateBooklistInteractor";
+import { ReadPublicBooklistInteractor } from "@/interactors/booklists/public/ReadPublicBooklistInteractor";
+import { UpdateBookListInteractor } from "@interactors/booklists/private/UpdateBookListInteractor";
 import { DeleteBooklistInteractor } from "@interactors/booklists/DeleteBooklistInteractor";
 
 export async function GET(request, { params }) {
   try {
     const booklistId = params.id;
-    const readBooklistInteractor = await ReadPublicBooklistInteractor.create();
-    const booklist = await readBooklistInteractor.execute(booklistId);
+    const readPublicBooklistInteractor = await ReadPublicBooklistInteractor.create();
+    const booklist = await readPublicBooklistInteractor.execute(booklistId);
     if (booklist) {
       return new Response(JSON.stringify(booklist), { status: 200 });
     } else {
@@ -21,9 +21,9 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const booklistId = params.id;
-    const { title, description, visibility } = await request.json();
-    const updateBooklistInteractor = await UpdateBooklistInteractor.create();
-    const updatedBooklist = await updateBooklistInteractor.execute(booklistId, { title, description, visibility });
+    const { title, description, visibility, openToRecommendations } = await request.json();
+    const updateBooklistInteractor = await UpdateBookListInteractor.create();
+    const updatedBooklist = await updateBooklistInteractor.execute(booklistId, { title, description, visibility, openToRecommendations });
     if (updatedBooklist) {
       return new Response(JSON.stringify(updatedBooklist), { status: 200 });
     } else {

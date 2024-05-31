@@ -4,6 +4,7 @@ import React from 'react';
 import { ReadUserPublicProfileInteractor } from '@/interactors/profile/ReadUserPublicProfileInteractor';
 import Link from 'next/link';
 import styles from './page.module.css';
+import ShareButton from '@components/ShareButton';
 
 export default async function PublicBookshelfPage({ params }) {
   const { publicProfileName } = params;
@@ -21,9 +22,14 @@ export default async function PublicBookshelfPage({ params }) {
 
     return (
       <div className='bg-primary text-accent p-4 rounded-lg max-w-4xl mx-auto'>
-        <h1 className='text-2xl text-yellow mb-4'>
-          {publicProfileName}'s Public Bookshelf
-        </h1>
+        <div className='flex justify-between items-center mb-4'>
+          <h1 className='text-2xl mb-4'>
+            {publicProfileName}'s Public Bookshelf
+          </h1>
+          <ShareButton
+            url={`${process.env.NEXTAUTH_URL}/profile/${publicProfileName}`}
+          />
+        </div>
         {publicBooklists.length === 0 ? (
           <p>No public booklists found.</p>
         ) : (
@@ -33,7 +39,9 @@ export default async function PublicBookshelfPage({ params }) {
                 key={booklist._id}
                 className='bg-secondary p-4 rounded-lg shadow-md'
               >
-                <Link href={`/booklist/${booklist._id}`}>
+                <Link
+                  href={`/public-bookshelf/public-booklist/${booklist._id}`}
+                >
                   <h2 className='text-xl text-yellow mb-2'>{booklist.title}</h2>
                 </Link>
                 <div className={styles.descriptionContainer}>

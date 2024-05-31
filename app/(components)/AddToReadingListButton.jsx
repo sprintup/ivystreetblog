@@ -35,7 +35,7 @@ export default function AddToReadingListButton({ book }) {
     <div>
       <button
         onClick={handleAddToReadingList}
-        className='bg-yellow text-primary px-3 py-1 rounded-lg text-sm w-full'
+        className='bg-yellow text-primary px-2 py-1 rounded-lg text-sm w-full'
       >
         Add to Reading List
       </button>

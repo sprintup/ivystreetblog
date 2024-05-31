@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function BookAddToCollectionComponent({ onBookAdded }) {
   const [bookName, setBookName] = useState('');
@@ -8,6 +9,7 @@ export default function BookAddToCollectionComponent({ onBookAdded }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const { data: session } = useSession({
     required: true,
@@ -44,6 +46,7 @@ export default function BookAddToCollectionComponent({ onBookAdded }) {
         const newBook = await response.json();
         setBookName('');
         setBookAuthor('');
+        router.refresh();
         setSuccessMessage('Book added to your collection successfully!');
         onBookAdded(newBook);
       } else {

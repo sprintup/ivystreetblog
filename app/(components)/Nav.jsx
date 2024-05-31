@@ -99,7 +99,7 @@ const Nav = () => {
                     My Bookshelf
                   </NavLink>
                   <NavLink
-                    href='/reading-list'
+                    href='/my-reading-list'
                     isActive={isActive}
                     onClick={closeMenu}
                   >
@@ -214,7 +214,7 @@ const Nav = () => {
                 My Bookshelf
               </MobileNavLink>
               <MobileNavLink
-                href='/reading-list'
+                href='/my-reading-list'
                 isActive={isActive}
                 onClick={closeMenu}
               >

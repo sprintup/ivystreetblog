@@ -23,6 +23,7 @@ export class ReadUserBooklistsInteractor extends BaseInteractor {
   }
 
   async execute(userEmail: string): Promise<IBooklist[]> {
-    return this.userRepo.getUserBooklistsByEmail(userEmail);
+    const result = await this.userRepo.getUserBooklistsByEmail(userEmail);
+    return this.convertToPlainObject(result) as IBooklist[];
   }
 }
