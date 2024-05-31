@@ -21,10 +21,11 @@ import {
   whatIsRecommendationContent,
   howToRecommendContent,
 } from './accordionContent';
+import { version } from '@/app/utils/version';
 
 export default function FAQPage() {
   return (
-    <div className='flex items-start justify-center bg-primary py-8'>
+    <div className='flex flex-col items-center justify-center bg-primary py-8'>
       <div className='bg-secondary p-8 rounded-lg shadow-md w-full max-w-4xl mx-4'>
         <h2 className='text-3xl text-accent mb-6'>
           Frequently Asked Questions
@@ -93,6 +94,7 @@ export default function FAQPage() {
           />
         </div>
       </div>
+      <div className='text-sm text-right mt-4'>V: {version}</div>
     </div>
   );
 }
