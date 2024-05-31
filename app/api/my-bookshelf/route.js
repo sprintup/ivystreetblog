@@ -2,7 +2,7 @@ import { ReadMyBookShelfInteractor } from '@/interactors/booklists/private/ReadM
 
 export async function POST(request) {
     const { userEmail } = await request.json();
-
+    console.log('userEmail in api: ', userEmail)
     if (!userEmail) {
         return new Response(JSON.stringify({ error: 'User email is required' }), {
             status: 400,
