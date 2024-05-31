@@ -2,9 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaChevronDown } from 'react-icons/fa';
-
-const buildTimestamp = Date.now();
-const formattedDateTime = new Date(buildTimestamp).toLocaleString();
+import { buildTimestamp, formattedDateTime } from '@app/utils/buildtimestamp';
 
 const Footer = () => {
   const [isVisible, setIsVisible] = useState(true);
