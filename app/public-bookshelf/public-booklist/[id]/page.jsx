@@ -1,7 +1,6 @@
 // app/public-bookshelf/public-booklist/[id]/page.jsx
 
 import React from 'react';
-import { ReadPublicBooklistInteractor } from '@/interactors/booklists/public/ReadPublicBooklistInteractor';
 import { getServerSession } from 'next-auth/next';
 import { options } from '@auth/options';
 import ShareButton from '@/app/(components)/ShareButton';
@@ -15,12 +14,37 @@ import {
   howToRecommendContent,
 } from '@/app/faqs/accordionContent';
 import RecommendBookToBooklistComponent from './RecommendBookToBooklistComponent';
+import { revalidatePath } from 'next/cache';
+
+async function fetchPublicBooklist(id) {
+  'use server';
+  try {
+    const response = await fetch(
+      `${process.env.NEXTAUTH_URL}/api/public-bookshelf/public-booklist`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+        cache: 'no-store',
+      }
+    );
+    if (!response.ok) {
+      throw new Error('Failed to fetch public booklist');
+    }
+    revalidatePath('/api/public-bookshelf/public-booklist');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching public booklist:', error);
+    return null;
+  }
+}
 
 export default async function BooklistPage({ params }) {
   const { id } = params;
-  const readPublicBooklistInteractor =
-    await ReadPublicBooklistInteractor.create();
-  let booklist = await readPublicBooklistInteractor.execute(id);
+  const booklist = await fetchPublicBooklist(id);
 
   if (!booklist) {
     return <div>Booklist not found.</div>;

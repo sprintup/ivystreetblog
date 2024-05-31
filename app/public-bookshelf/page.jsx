@@ -11,11 +11,32 @@ import {
   whatIsRecommendationContent,
 } from '@/app/faqs/accordionContent';
 import ShareButton from '@components/ShareButton';
+import { revalidatePath } from 'next/cache';
+
+async function fetchPublicBooklists() {
+  'use server';
+  try {
+    const response = await fetch(
+      `${process.env.NEXTAUTH_URL}/api/public-bookshelf`,
+      {
+        method: 'POST',
+        cache: 'no-store',
+      }
+    );
+    if (!response.ok) {
+      throw new Error('Failed to fetch public booklists');
+    }
+    revalidatePath('/public-bookshelf');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching public booklists:', error);
+    return [];
+  }
+}
 
 export default async function PublicBooklistsPage() {
-  const readPublicBookshelfInteractor =
-    await ReadPublicBookshelfInteractor.create();
-  const publicBooklists = await readPublicBookshelfInteractor.execute();
+  const publicBooklists = await fetchPublicBooklists();
 
   return (
     <div>
