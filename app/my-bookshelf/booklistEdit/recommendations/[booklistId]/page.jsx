@@ -86,58 +86,18 @@ export default async function BooklistRecommendationsPage({ params }) {
       <div className='space-y-8'>
         <div>
           <h3 className='text-2xl font-bold mb-4'>Offered Recommendations</h3>
-          {offeredRecommendations.length === 0 ? (
-            <p>No offered recommendations.</p>
-          ) : (
-            <ul className='space-y-4'>
-              {offeredRecommendations.map(recommendation => (
-                <OfferedRecommendation
-                  key={recommendation._id}
-                  recommendation={recommendation}
-                />
-              ))}
-            </ul>
-          )}
+          <OfferedRecommendation
+            recommendations={offeredRecommendations}
+            booklistId={booklistId}
+          />
         </div>
         <div>
           <h3 className='text-2xl font-bold mb-4'>Accepted Recommendations</h3>
-          {acceptedRecommendations.length === 0 ? (
-            <p>No accepted recommendations.</p>
-          ) : (
-            <div>
-              <p className='mb-4'>
-                The following recommendations have been accepted. To include the
-                book in the booklist, please click the book link and add it to
-                your booklist. Alternatively, you can copy the book details into
-                your collection and then add it to your booklist, which would
-                preserve the book if the book owner ever decides to delete the
-                book.
-              </p>
-              <ul className='space-y-4'>
-                {acceptedRecommendations.map(recommendation => (
-                  <AcceptedRecommendation
-                    key={recommendation._id}
-                    recommendation={recommendation}
-                  />
-                ))}
-              </ul>
-            </div>
-          )}
+          <AcceptedRecommendation recommendations={acceptedRecommendations} />
         </div>
         <div>
           <h3 className='text-2xl font-bold mb-4'>Rejected Recommendations</h3>
-          {rejectedRecommendations.length === 0 ? (
-            <p>No rejected recommendations.</p>
-          ) : (
-            <ul className='space-y-4'>
-              {rejectedRecommendations.map(recommendation => (
-                <RejectedRecommendation
-                  key={recommendation._id}
-                  recommendation={recommendation}
-                />
-              ))}
-            </ul>
-          )}
+          <RejectedRecommendation recommendations={rejectedRecommendations} />
         </div>
       </div>
     </div>
