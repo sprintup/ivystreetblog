@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaChevronDown } from 'react-icons/fa';
+import { buildTimestamp, formattedDateTime } from '../utils/buildTimestamp';
 
 const buildTimestamp = Date.now();
 const formattedDateTime = new Date(buildTimestamp).toLocaleString();

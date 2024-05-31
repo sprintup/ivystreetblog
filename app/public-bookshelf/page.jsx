@@ -16,19 +16,15 @@ import { revalidatePath } from 'next/cache';
 async function fetchPublicBooklists() {
   'use server';
   try {
-    const response = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/public-bookshelf`,
-      {
-        method: 'POST',
-        cache: 'no-store',
-      }
-    );
-    if (!response.ok) {
+    const readPublicBookshelfInteractor =
+      await ReadPublicBookshelfInteractor.create();
+    const publicBooklists = await readPublicBookshelfInteractor.execute();
+    if (publicBooklists) {
+      revalidatePath('/public-bookshelf');
+    } else {
       throw new Error('Failed to fetch public booklists');
     }
-    revalidatePath('/public-bookshelf');
-    const data = await response.json();
-    return data;
+    return publicBooklists;
   } catch (error) {
     console.error('Error fetching public booklists:', error);
     return [];
