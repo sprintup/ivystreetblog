@@ -14,16 +14,19 @@ import {
   makeBooklistPublicContent,
   whatIsRecommendationContent,
 } from '@/app/faqs/accordionContent';
+import { revalidatePath } from 'next/cache';
 
 async function fetchBooklists(userEmail) {
+  'use server';
   const response = await fetch(`${process.env.NEXTAUTH_URL}/api/my-bookshelf`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ userEmail }),
-    cache: 'no-store',
+    cache: 'no-cache',
   });
+  revalidatePath('/api/my-bookshelf');
 
   if (!response.ok) {
     throw new Error('Failed to fetch booklists');
@@ -113,7 +116,11 @@ function BookshelfContent({ session, booklists }) {
               key={booklist._id}
               className={`${styles.booklistCard} bg-secondary p-4 rounded-lg shadow-md relative`}
             >
-              <h4 className='text-xl font-bold mb-1 mr-2'>{booklist.title}</h4>
+              <Link href={`/public-bookshelf/public-booklist/${booklist._id}`}>
+                <h2 className='text-xl text-yellow mb-2 hover:underline cursor-pointer'>
+                  {booklist.title}
+                </h2>
+              </Link>
               <div className={styles.descriptionContainer}>
                 <p
                   className={`${styles.descriptionText} text-sm mb-2 mr-2 border-l-2 border-solid border-dotted px-1`}
@@ -160,12 +167,6 @@ function BookshelfContent({ session, booklists }) {
                   className='px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300 no-underline'
                 >
                   Edit
-                </Link>
-                <Link
-                  href={`/public-bookshelf/public-booklist/${booklist._id}`}
-                  className='px-4 py-2 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 transition duration-300 no-underline'
-                >
-                  View
                 </Link>
               </div>
             </div>

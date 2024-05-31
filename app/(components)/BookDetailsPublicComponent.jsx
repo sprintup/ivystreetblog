@@ -1,4 +1,4 @@
-// app/booklist/[id]/BookDetailsPublicComponent.js
+// app\(components)\BookDetailsPublicComponent.jsx
 
 import React from 'react';
 import Link from 'next/link';

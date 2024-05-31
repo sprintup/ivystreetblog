@@ -37,6 +37,8 @@ export default async function BooklistPage({ params }) {
   const userBooklists =
     session && booklistOwner ? booklistOwner.bookListIds : [];
 
+  const isOwner = session && session.user.email === booklistOwner.email;
+
   return (
     <div className='bg-primary text-accent p-4 rounded-lg'>
       <div className='mb-4'>
@@ -61,9 +63,18 @@ export default async function BooklistPage({ params }) {
             <span className='text-accent mr-2'>Booklist Title:</span>
             <h2 className='text-2xl'>{booklist.title}</h2>
           </div>
-          <ShareButton
-            url={`${process.env.NEXTAUTH_URL}/public-booklist/${id}`}
-          />
+          <div className='flex items-center'>
+            {isOwner && (
+              <Link href={`/my-bookshelf/booklistEdit/${id}`} className='mr-4'>
+                <button className='px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300'>
+                  Edit
+                </button>
+              </Link>
+            )}
+            <ShareButton
+              url={`${process.env.NEXTAUTH_URL}/public-booklist/${id}`}
+            />
+          </div>
         </div>
       </div>
       <div className='flex items-start mb-4'>

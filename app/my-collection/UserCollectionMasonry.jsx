@@ -121,32 +121,29 @@ export default function UserCollectionMasonry({ books }) {
       >
         {books.map(book => (
           <div key={book._id}>
-            <BookDetailsPublic
-              book={book}
-              buttons={
-                <div className='flex flex-wrap justify-end'>
-                  <Link href={`/my-collection/bookEdit/${book._id}`}>
-                    <button className='bg-yellow text-primary px-2 py-1 rounded mr-2 mb-2 text-sm md:text-base'>
-                      Edit
-                    </button>
-                  </Link>
-                  <button
-                    className='bg-red-500 text-white px-2 py-1 rounded mr-2 mb-2 text-sm md:text-base'
-                    onClick={() => openPopup(book)}
-                  >
-                    Delete
+            <BookDetailsPublic book={book}>
+              <div className='flex flex-wrap justify-end'>
+                <Link href={`/my-collection/bookEdit/${book._id}`}>
+                  <button className='bg-yellow text-primary px-2 py-1 rounded mr-2 mb-2 text-sm md:text-base'>
+                    Edit
                   </button>
-                  <button
-                    className={`${
-                      book.IsArchived ? 'bg-blue-500' : 'bg-gray-500'
-                    } text-white px-2 py-1 rounded mb-2 text-sm md:text-base`}
-                    onClick={() => handleToggleArchiveBook(book._id)}
-                  >
-                    {book.IsArchived ? 'Unarchive' : 'Archive'}
-                  </button>
-                </div>
-              }
-            />
+                </Link>
+                <button
+                  className='bg-red-500 text-white px-2 py-1 rounded mr-2 mb-2 text-sm md:text-base'
+                  onClick={() => openPopup(book)}
+                >
+                  Delete
+                </button>
+                <button
+                  className={`${
+                    book.IsArchived ? 'bg-blue-500' : 'bg-gray-500'
+                  } text-white px-2 py-1 rounded mb-2 text-sm md:text-base`}
+                  onClick={() => handleToggleArchiveBook(book._id)}
+                >
+                  {book.IsArchived ? 'Unarchive' : 'Archive'}
+                </button>
+              </div>
+            </BookDetailsPublic>
           </div>
         ))}
       </Masonry>

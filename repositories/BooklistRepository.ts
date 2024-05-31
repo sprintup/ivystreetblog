@@ -353,4 +353,15 @@ export class BooklistRepository extends BaseRepository {
       throw error;
     }
   }
+
+  async deleteRecommendation(
+    recommendationId: string
+  ): Promise<IBooklist | null> {
+    const updatedBooklist = await this.Booklist.findOneAndUpdate(
+      { 'bookRecommendations._id': recommendationId },
+      { $pull: { bookRecommendations: { _id: recommendationId } } },
+      { new: true }
+    );
+    return updatedBooklist;
+  }
 }
