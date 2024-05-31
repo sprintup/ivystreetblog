@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaChevronDown } from 'react-icons/fa';
-import { buildTimestamp, formattedDateTime } from '@app/utils/buildtimestamp';
+import { version } from '@/app/utils/version';
 
 const Footer = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -94,9 +94,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className='text-yellow text-sm text-right mt-2'>
-          Last Updated: {formattedDateTime}
-        </div>
+        <div className='text-yellow text-sm text-right mt-2'>V: {version}</div>
       </div>
     </footer>
   );
