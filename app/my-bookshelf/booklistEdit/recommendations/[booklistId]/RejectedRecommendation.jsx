@@ -64,30 +64,32 @@ export default function RejectedRecommendation({ recommendations }) {
               className='bg-secondary text-accent p-4 rounded-lg shadow-md'
             >
               <Link
-                href={`/book/${recommendation.bookId._id}`}
+                href={`/book/${recommendation?.bookId?._id}`}
                 className='text-yellow hover:text-orange'
               >
-                {recommendation.bookId.Name}
+                {recommendation?.bookId?.Name}
               </Link>
               <div className='flex justify-between items-center mb-2'>
                 <span className='text-sm font-bold'>
                   Recommended by:{' '}
-                  {recommendation.recommendedBy.publicProfileName}
+                  {recommendation?.recommendedBy?.publicProfileName}
                 </span>
                 <span className='text-red-500 font-bold'>Rejected</span>
               </div>
               <p className='text-accent mb-2'>
-                {recommendation.recommendationReason}
+                {recommendation?.recommendationReason}
               </p>
               <div>
                 <button
-                  onClick={() => handleAccept(recommendation._id)}
+                  onClick={() => handleAccept(recommendation?._id)}
                   className='px-2 py-1 bg-green-500 text-white rounded mr-2 hover:bg-green-600'
                 >
                   Accept
                 </button>
                 <button
-                  onClick={() => handleDeleteRecommendation(recommendation._id)}
+                  onClick={() =>
+                    handleDeleteRecommendation(recommendation?._id)
+                  }
                   className='px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600'
                 >
                   Delete

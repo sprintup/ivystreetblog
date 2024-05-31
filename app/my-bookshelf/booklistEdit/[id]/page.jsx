@@ -159,6 +159,13 @@ export default function EditBooklistPage({ params }) {
               onChange={e => setDescription(e.target.value)}
               className='w-full px-3 py-2 bg-secondary text-accent rounded-md focus:outline-none focus:ring-2 focus:ring-yellow'
             />
+            <p className='text-sm text-gray-500'>
+              Use the booklist description to describe who the booklist is for
+              generally (remember, no personally identifiable information), like
+              anyone interested in learning about poetry or a certain theory or
+              genre. You can also use this field to describe recommendations
+              you're seeking in this booklist.
+            </p>
           </label>
         </div>
         <div className='mb-4'>
@@ -174,8 +181,8 @@ export default function EditBooklistPage({ params }) {
             </select>
           </label>
         </div>
-        <div className='mb-4'>
-          <label className='flex items-center text-lg'>
+        <div className='mb-4 flex items-center'>
+          <label className='flex items-center text-lg mr-4'>
             <input
               type='checkbox'
               checked={openToRecommendations}
@@ -184,6 +191,29 @@ export default function EditBooklistPage({ params }) {
             />
             Open for recommendations
           </label>
+          {booklist.bookRecommendations.length > 0 ? (
+            <div className='text-md'>
+              <Link
+                href={`/my-bookshelf/booklistEdit/recommendations/${booklist._id}`}
+              >
+                <span className='text-yellow hover:text-orange'>
+                  Recommendations: {booklist.bookRecommendations.length}
+                </span>
+              </Link>
+            </div>
+          ) : (
+            <p
+              className={`text-md ${
+                booklist.openToRecommendations
+                  ? 'text-green-500'
+                  : 'text-red-500'
+              }`}
+            >
+              {booklist.openToRecommendations
+                ? 'Open to recommendations'
+                : 'Closed to recommendations'}
+            </p>
+          )}
         </div>
         <div className='flex justify-between'>
           <button
@@ -193,12 +223,19 @@ export default function EditBooklistPage({ params }) {
           >
             Delete Booklist
           </button>
-          <button
-            type='submit'
-            className='px-4 py-2 bg-yellow text-primary font-bold rounded-lg hover:bg-orange transition duration-300'
-          >
-            Update Booklist
-          </button>
+          <div className='flex space-x-4'>
+            <Link href={`/my-bookshelf`}>
+              <button className='px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300'>
+                Cancel
+              </button>
+            </Link>
+            <button
+              type='submit'
+              className='px-4 py-2 bg-yellow text-primary font-bold rounded-lg hover:bg-orange transition duration-300'
+            >
+              Update Booklist
+            </button>
+          </div>
         </div>
       </form>
       <div className='mt-8'>

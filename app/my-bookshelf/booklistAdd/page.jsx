@@ -110,6 +110,13 @@ export default function BooklistPage() {
             onChange={e => setDescription(e.target.value)}
             className='w-full px-3 py-2 bg-secondary text-accent rounded-md focus:outline-none focus:ring-2 focus:ring-yellow'
           />
+          <p className='text-sm text-gray-500'>
+            Use the booklist description to describe who the booklist is for
+            generally (remember, no personally identifiable information), like
+            anyone interested in learning about poetry or a certain theory or
+            genre. You can also use this field to describe recommendations
+            you're seeking in this booklist.
+          </p>
         </label>
       </div>
       <div className='mb-4'>

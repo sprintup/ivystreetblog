@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { getServerSession } from 'next-auth/next';
 import { options } from '@auth/options';
 import { FaExternalLinkAlt } from 'react-icons/fa';
+import ShareButton from '@components/ShareButton';
 
 const ImagePlaceholder = () => (
   <div className='w-48 h-64 bg-gray-200 animate-pulse'></div>
@@ -52,16 +53,20 @@ export default async function BookPage({ params }) {
           </Suspense>
         </div>
         <div className='sm:w-2/3'>
-          <h1 className='text-3xl font-bold text-yellow mb-4'>
-            <a
-              href={googleSearchUrl}
-              target='_blank'
-              rel='noopener noreferrer'
-              className='hover:underline'
-            >
-              {book.Name} <FaExternalLinkAlt className='inline-block ml-1' />
-            </a>
-          </h1>
+          <div className='flex justify-between items-center mb-4'>
+            <h1 className='text-3xl font-bold text-yellow mb-4'>
+              <a
+                href={googleSearchUrl}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='hover:underline'
+              >
+                {book.Name} <FaExternalLinkAlt className='inline-block ml-1' />
+              </a>
+            </h1>
+
+            <ShareButton url={`${process.env.NEXTAUTH_URL}/book/${book._id}`} />
+          </div>
           <p className='text-sm text-gray-400 mb-2'>
             Click to view Google search for book
           </p>

@@ -309,6 +309,9 @@ export const whatIsABooklistContent = (
         <p className="text-accent mt-4">
             A booklist is a collection of these books that are united by some theme, event, or idea. Use the booklist description to describe who the booklist is for generally (remember, no personally identifiable information), like anyone interested in learning about poetry or a certain theory or genre.
         </p>
+        <p className="text-accent mt-4">
+            You may also use the description field to give more information on recommendations you are seeking in this booklist. For instance, you might say, "I'm looking for books that are similar to this one, but with a different perspective." This will help others understand what you're looking for and provide better recommendations.
+        </p>
     </>
 );
 

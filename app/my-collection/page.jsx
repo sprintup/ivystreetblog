@@ -80,8 +80,7 @@ function CollectionContent({ booksData, searchParams }) {
           />
         </AccordionWrapper>
       </div>
-      <div className='flex mb-4 items-center space-x-4'>
-        <AddBookForm />
+      <div className='flex mb-4 items-start space-x-4'>
         <div className='bg-secondary text-yellow mb-2 px-4 py-2 rounded'>
           <Link
             href={`/my-collection?show=${showArchived ? 'active' : 'archived'}`}
@@ -90,6 +89,7 @@ function CollectionContent({ booksData, searchParams }) {
             {showArchived ? 'Show Active Books' : 'Show Archived Books'}
           </Link>
         </div>
+        <AddBookForm />
       </div>
       <UserCollectionMasonry books={filteredBooks} />
     </div>

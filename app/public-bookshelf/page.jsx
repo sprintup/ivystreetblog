@@ -10,6 +10,7 @@ import {
   whatIsPublicBookshelfContent,
   whatIsRecommendationContent,
 } from '@/app/faqs/accordionContent';
+import ShareButton from '@components/ShareButton';
 
 export default async function PublicBooklistsPage() {
   const readPublicBookshelfInteractor =
@@ -18,7 +19,10 @@ export default async function PublicBooklistsPage() {
 
   return (
     <div>
-      <h1 className='text-2xl mb-4'>Public Bookshelf</h1>
+      <div className='flex justify-between items-center mb-4'>
+        <h1 className='text-2xl mb-4'>Public Bookshelf</h1>
+        <ShareButton url={`${process.env.NEXTAUTH_URL}/public-bookshelf`} />
+      </div>
       <AccordionWrapper title='Show More Information'>
         <Accordion
           title='What is the public bookshelf?'
