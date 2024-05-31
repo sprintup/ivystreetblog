@@ -24,6 +24,7 @@ export class ReadMyBookShelfInteractor extends BaseInteractor {
   }
 
   async execute(userEmail: string): Promise<IBooklist[]> {
-    return this.booklistRepo.getBooklistsByUserEmail(userEmail);
+    const result = await this.booklistRepo.getBooklistsByUserEmail(userEmail);
+    return this.convertToPlainObject(result) as IBooklist[];
   }
 }
