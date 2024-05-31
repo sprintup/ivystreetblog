@@ -31,7 +31,8 @@ async function fetchBooklists(userEmail) {
   } else {
     throw new Error('Failed to fetch booklists');
   }
-  return response.json();
+  const data = await response.json();
+  return data;
 }
 
 export default async function MyBookshelf() {
