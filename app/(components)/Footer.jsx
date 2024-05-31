@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FaChevronDown } from 'react-icons/fa';
-import { version } from '@/app/utils/version';
 
 const Footer = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -52,49 +51,48 @@ const Footer = () => {
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='flex justify-center items-center'>
           <div className='flex'>
-            <div className='flex flex-col items-end border-r border-accent pr-4'>
+            <div className='flex flex-col items-end border-r border-accent pr-3'>
               <Link
                 href='/faqs'
-                className='text-yellow hover:text-orange focus:text-orange block px-2 rounded-md text-base font-medium'
+                className='text-yellow hover:text-orange focus:text-orange block px-1 rounded-md text-base font-medium'
               >
                 FAQs
               </Link>
               <Link
                 href='/terms'
-                className='text-yellow hover:text-orange focus:text-orange block px-2 rounded-md text-base font-medium'
+                className='text-yellow hover:text-orange focus:text-orange block px-1 rounded-md text-base font-medium'
               >
-                Terms of service (5.23.2024)
+                Terms of use (5.23.2024)
               </Link>
               <Link
                 href={process.env.NEXT_PUBLIC_GITHUB_REPO_URL}
-                className='text-yellow hover:text-orange focus:text-orange block px-2 rounded-md text-base font-medium'
+                className='text-yellow hover:text-orange focus:text-orange block px-1 rounded-md text-base font-medium'
               >
                 Edit on Github
               </Link>
             </div>
-            <div className='flex flex-col items-start pl-4'>
+            <div className='flex flex-col items-start pl-3'>
               <Link
                 href='/public-bookshelf'
-                className='text-yellow hover:text-orange focus:text-orange block px-2 rounded-md text-base font-medium'
+                className='text-yellow hover:text-orange focus:text-orange block px-1 rounded-md text-base font-medium'
               >
                 Public Bookshelf
               </Link>
               <Link
                 href='/'
-                className='text-yellow hover:text-orange focus:text-orange block px-2 rounded-md text-base font-medium'
+                className='text-yellow hover:text-orange focus:text-orange block px-1 rounded-md text-base font-medium'
               >
                 About
               </Link>
               <Link
                 href='/resources'
-                className='text-yellow hover:text-orange focus:text-orange block px-2 rounded-md text-base font-medium'
+                className='text-yellow hover:text-orange focus:text-orange block px-1 rounded-md text-base font-medium'
               >
                 Resources
               </Link>
             </div>
           </div>
         </div>
-        <div className='text-yellow text-sm text-right mt-2'>V: {version}</div>
       </div>
     </footer>
   );

@@ -216,14 +216,14 @@ export default function EditBooklistPage({ params }) {
           )}
         </div>
         <div className='flex justify-between'>
-          <button
-            type='button'
-            onClick={handleDeleteBooklist}
-            className='px-4 py-2 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition duration-300'
-          >
-            Delete Booklist
-          </button>
-          <div className='flex space-x-4'>
+          <div className='flex space-x-2'>
+            <button
+              type='button'
+              onClick={handleDeleteBooklist}
+              className='px-4 py-2 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition duration-300'
+            >
+              Delete Booklist
+            </button>
             <Link href={`/my-bookshelf`}>
               <button className='px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300'>
                 Cancel
