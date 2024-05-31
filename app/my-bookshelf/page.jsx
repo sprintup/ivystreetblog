@@ -26,9 +26,9 @@ async function fetchBooklists(userEmail) {
     body: JSON.stringify({ userEmail }),
     cache: 'no-cache',
   });
-  revalidatePath('/api/my-bookshelf');
-
-  if (!response.ok) {
+  if (response.ok) {
+    revalidatePath('/api/my-bookshelf');
+  } else {
     throw new Error('Failed to fetch booklists');
   }
   return response.json();
