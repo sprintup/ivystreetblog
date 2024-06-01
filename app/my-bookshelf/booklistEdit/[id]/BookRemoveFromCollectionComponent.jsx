@@ -46,7 +46,7 @@ export default function BookRemoveFromCollectionComponent({
     <div>
       <button
         onClick={handleRemoveBookFromBooklist}
-        className='px-4 py-2 mx-1 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition duration-300'
+        className='px-4 py-2 mx-1 bg-red-500 text-white text-xs font-bold rounded-lg hover:bg-red-600 transition duration-300'
         disabled={isLoading}
       >
         {isLoading ? 'Removing...' : 'Remove from Booklist'}

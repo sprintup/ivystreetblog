@@ -20,7 +20,7 @@ interface BooklistInput {
  *
  * @param {string} userId - The ID of the user creating the booklist.
  * @param {BooklistInput} booklist - The details of the booklist to create.
- * @returns {Promise<IUser | null>} A promise that resolves to the updated user or null if not found.
+ * @returns {Promise<IBooklist | null>} A promise that resolves to the newly created booklist or null if not created.
  */
 export class CreateBooklistInteractor extends BaseInteractor {
   static async create() {
@@ -33,8 +33,8 @@ export class CreateBooklistInteractor extends BaseInteractor {
   async execute(
     userEmail: string,
     booklist: BooklistInput
-  ): Promise<IUser | null> {
+  ): Promise<IBooklist | null> {
     const result = await this.booklistRepo.createBooklist(userEmail, booklist);
-    return this.convertToPlainObject(result) as IUser | null;
+    return this.convertToPlainObject(result) as IBooklist | null;
   }
 }

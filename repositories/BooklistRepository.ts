@@ -34,7 +34,7 @@ export class BooklistRepository extends BaseRepository {
       visibility: string;
       openToRecommendations: boolean;
     }
-  ): Promise<IUser | null> {
+  ): Promise<IBooklist | null> {
     try {
       // Find the user by their email
       const user = await this.User.findOne({ email: userEmail });
@@ -62,7 +62,7 @@ export class BooklistRepository extends BaseRepository {
       }
       await user.save();
 
-      return user;
+      return newBooklist;
     } catch (error) {
       console.error('Error creating booklist:', error);
       throw error;
@@ -135,7 +135,12 @@ export class BooklistRepository extends BaseRepository {
         path: 'bookIds',
         model: 'Book',
         select:
-          'Name Author Description Age Series Publication_Date Publisher ISBN Link Source',
+          'Name Author Description Age Series Publication_Date Publisher ISBN Link Source BookOwner',
+        populate: {
+          path: 'BookOwner',
+          model: 'User',
+          select: 'email',
+        },
       });
 
       if (!booklist) {
