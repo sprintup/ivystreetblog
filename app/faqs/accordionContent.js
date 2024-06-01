@@ -385,7 +385,7 @@ export const whatIsBookshelfContent = (
             A bookshelf is a collection of booklists. There is a 'public bookshelf', which is comprised of all the public booklists of all the users, and 'my bookshelf'. The public bookshelf can be accessed through the link in the footer, while 'my bookshelf' is only accessible to the authorized user after logging in.
         </p>
         <p className="text-accent mt-4">
-            'My Bookshelf' is a place to create and maintain both public and private booklists.
+            'My Bookshelf' is a place to create and maintain both public and private booklists. The 'Public Bookshelf' is a place to browse and discover public booklists created by other users. You can add books from the public bookshelf to your reading list or any of your booklists. It is organized with the booklist that was most recently updated first.
         </p>
     </>
 );

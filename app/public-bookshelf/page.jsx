@@ -24,6 +24,10 @@ async function fetchPublicBooklists() {
     } else {
       throw new Error('Failed to fetch public booklists');
     }
+
+    // Sort the booklists based on the updatedAt timestamp in descending order
+    publicBooklists.sort((a, b) => b.updatedAt - a.updatedAt);
+
     return publicBooklists;
   } catch (error) {
     console.error('Error fetching public booklists:', error);
