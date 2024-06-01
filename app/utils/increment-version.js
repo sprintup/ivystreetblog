@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+console.log('Incrementing version...');
 
 const versionFilePath = path.join(__dirname, 'version.js');
 const versionFileContent = fs.readFileSync(versionFilePath, 'utf-8');
