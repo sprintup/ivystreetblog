@@ -76,13 +76,13 @@ export default async function BooklistPage({ params }) {
           />
         </AccordionWrapper>
         <div className='flex justify-between items-center'>
-          <div className='flex items-center mb-4'>
-            <span className='text-accent mr-2'>Booklist Title:</span>
-            <h2 className='text-2xl'>{booklist.title}</h2>
-          </div>
-          <div className='flex items-center'>
+          <h2 className='text-2xl'>{booklist.title}</h2>
+          <div className='flex flex-col sm:flex-row items-center justify-end'>
             {isOwner && (
-              <Link href={`/my-bookshelf/booklistEdit/${id}`} className='mr-4'>
+              <Link
+                href={`/my-bookshelf/booklistEdit/${id}`}
+                className='mb-4 sm:mb-0'
+              >
                 <button className='px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300'>
                   Edit
                 </button>
@@ -95,7 +95,6 @@ export default async function BooklistPage({ params }) {
         </div>
       </div>
       <div className='flex items-start mb-4'>
-        <span className='text-accent mr-2'>Description:</span>
         <p className='text-lg'>{booklist.description}</p>
       </div>
       {booklistOwner && (
