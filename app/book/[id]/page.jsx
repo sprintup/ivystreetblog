@@ -129,7 +129,7 @@ export default async function BookPage({ params }) {
                 </div>
               )}
               <div className='flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2'>
-                {session && session.user.email === book.BookOwner.email && (
+                {session && session.user.email === book?.BookOwner?.email && (
                   <Link
                     href={`/my-collection/bookEdit/${book._id}`}
                     className='px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300'
