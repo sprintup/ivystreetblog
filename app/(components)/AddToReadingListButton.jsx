@@ -10,7 +10,7 @@ export default function AddToReadingListButton({ book }) {
 
   const handleAddToReadingList = async () => {
     try {
-      const response = await fetch('/api/user/tracked', {
+      const response = await fetch('/api/reading-list', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
