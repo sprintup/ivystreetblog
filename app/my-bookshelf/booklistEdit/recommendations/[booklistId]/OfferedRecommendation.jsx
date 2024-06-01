@@ -69,25 +69,11 @@ export default function OfferedRecommendation({ recommendations, booklistId }) {
               >
                 {recommendation?.bookId?.Name}
               </Link>
-              <div className='flex justify-between items-center mb-2'>
-                <span className='text-sm font-bold'>
+              <div className='flex flex-col md:flex-row md:justify-between items-start md:items-center mb-2'>
+                <span className='text-sm font-bold mb-2 md:mb-0'>
                   Recommended by:{' '}
                   {recommendation?.recommendedBy?.publicProfileName}
                 </span>
-                <div>
-                  <button
-                    onClick={() => handleAccept(recommendation?._id)}
-                    className='px-2 py-1 bg-green-500 text-white rounded mr-2 hover:bg-green-600'
-                  >
-                    Accept
-                  </button>
-                  <button
-                    onClick={() => handleReject(recommendation?._id)}
-                    className='px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600'
-                  >
-                    Reject
-                  </button>
-                </div>
               </div>
               <div className='flex justify-between items-center mb-2'>
                 <span className='text-sm font-bold'>
@@ -95,6 +81,20 @@ export default function OfferedRecommendation({ recommendations, booklistId }) {
                     Reason: {recommendation?.recommendationReason}
                   </p>
                 </span>
+              </div>
+              <div className='flex flex-col md:flex-row md:justify-end items-center space-y-2 md:space-y-0 md:space-x-2'>
+                <button
+                  onClick={() => handleAccept(recommendation?._id)}
+                  className='px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 w-full md:w-auto'
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => handleReject(recommendation?._id)}
+                  className='px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 w-full md:w-auto'
+                >
+                  Reject
+                </button>
               </div>
             </li>
           ))}

@@ -35,7 +35,7 @@ export default function BooklistPage() {
       visibility,
       openToRecommendations,
     };
-    console.log('Adding booklist:', booklist);
+
     try {
       const response = await fetch('/api/booklist', {
         method: 'POST',
@@ -46,15 +46,16 @@ export default function BooklistPage() {
       });
 
       if (response.ok) {
-        console.log('Booklist added');
+        const data = await response.json(); // Parse the response as JSON
+        const booklistId = data._id; // Access the _id property from the parsed JSON
+        console.log('Booklist added:', booklistId);
         // Reset the form fields after successful addition
         setTitle('');
         setDescription('');
         setVisibility('public');
         setOpenForRecommendations(false);
-        // Redirect to the /my-bookshelf page and reload it
-        router.push('/my-bookshelf');
-        router.refresh();
+        // Redirect to the /my-bookshelf/booklistEdit/[id] page with the new booklist ID
+        router.push(`/my-bookshelf/booklistEdit/${booklistId}`);
       } else {
         console.error('Error adding booklist');
         setErrorMessage('Failed to add booklist. Please try again.');

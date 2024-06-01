@@ -81,7 +81,7 @@ export default async function BooklistPage({ params }) {
             {isOwner && (
               <Link
                 href={`/my-bookshelf/booklistEdit/${id}`}
-                className='mb-4 sm:mb-0'
+                className='mb-4 sm:mb-0 sm:mr-4'
               >
                 <button className='px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300'>
                   Edit

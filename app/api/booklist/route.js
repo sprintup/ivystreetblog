@@ -44,7 +44,8 @@ export async function POST(request) {
   try {
     const result = await createBooklistInteractor.execute(userEmail, booklist);
     if (result) {
-      return new Response(JSON.stringify(result), { status: 200 });
+      // Return the _id property as JSON
+      return new Response(JSON.stringify({ _id: result._id }), { status: 200 });
     } else {
       console.error("No user found with the provided email:", userEmail);
       return new Response(
