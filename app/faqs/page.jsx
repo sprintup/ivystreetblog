@@ -1,7 +1,7 @@
 // app/faq/page.jsx
 
 import React from 'react';
-import Accordion from '@components/Accordion';
+import AccordionFaqs from '@components/AccordionFaqs';
 import {
   passkeysContent,
   homeScreenContent,
@@ -20,6 +20,7 @@ import {
   whatIsIvyStreetBlogContent,
   whatIsRecommendationContent,
   howToRecommendContent,
+  getStartedContent,
 } from './accordionContent';
 import { version } from '@/app/utils/version';
 
@@ -31,64 +32,74 @@ export default function FAQPage() {
           Frequently Asked Questions
         </h2>
         <div className='space-y-4'>
-          <Accordion
+          <AccordionFaqs
             title='Welcome to Ivy Street Blog! What is this?'
             content={whatIsIvyStreetBlogContent}
             isOpenByDefault={true}
           />
-          <Accordion title='Why GitHub?' content={whyGithubContent} />
-          <Accordion
+          <AccordionFaqs
+            title='How do I get started?'
+            content={getStartedContent}
+          />
+          <AccordionFaqs title='Why GitHub?' content={whyGithubContent} />
+          <AccordionFaqs
             title='Parental approval is required'
             content={parentalContent}
           />
-          <Accordion
+          <AccordionFaqs
             title='What is a booklist?'
             content={whatIsABooklistContent}
           />
-          <Accordion
+          <AccordionFaqs
             title='What is a collection?'
             content={whatIsACollectionContent}
           />
-          <Accordion
+          <AccordionFaqs
             title='What is a private booklist?'
             content={privateBooklistContent}
           />
-          <Accordion
+          <AccordionFaqs
             title='What does it mean to make a booklist public?'
             content={makeBooklistPublicContent}
           />
-          <Accordion
+          <AccordionFaqs
             title='What is a bookshelf?'
             content={whatIsBookshelfContent}
           />
-          <Accordion
+          <AccordionFaqs
             title='What is a reading list?'
             content={whatIsReadingListContent}
           />
-          <Accordion
+          <AccordionFaqs
             title='What is a public profile name?'
             content={whatIsProfileContent}
           />
-          <Accordion
+          <AccordionFaqs
             title='What is a book recommendation?'
             content={whatIsRecommendationContent}
           />
-          <Accordion
+          <AccordionFaqs
             title='How do I recommend a book to a booklist?'
             content={howToRecommendContent}
           />
-          <Accordion title='Setting up Passkeys' content={passkeysContent} />
-          <Accordion title='Add to Home Screen' content={homeScreenContent} />
-          <Accordion
+          <AccordionFaqs
+            title='Setting up Passkeys'
+            content={passkeysContent}
+          />
+          <AccordionFaqs
+            title='Add to Home Screen'
+            content={homeScreenContent}
+          />
+          <AccordionFaqs
             title='Submitting bugs or feature requests'
             content={submitIssuesContent}
           />
 
-          <Accordion
+          <AccordionFaqs
             title='How to collaborate on GitHub?'
             content={collaborateOnGitHubContent}
           />
-          <Accordion
+          <AccordionFaqs
             title='How to use this type of website for your own little free library?'
             content={useForOwnLibraryContent}
           />

@@ -509,3 +509,17 @@ export const howToRecommendContent = (
         </p>
     </>
 );
+
+export const getStartedContent = (
+    <>
+        <p className="text-accent">
+            To get started, create a GitHub account and log into this website. Then, set your public profile name under the "My Profile" section.
+        </p>
+        <p className="text-accent mt-4">
+            You can always find page-specific instructions under the "Show More Information" dropdowns located at the top of most pages or on the FAQs page in the footer.
+        </p>
+        <p className="text-accent mt-4">
+            Next, create a booklist on the "My Bookshelf" page, and try adding some books to it. You can add books from your collection or search for new books to add.
+        </p>
+    </>
+);
