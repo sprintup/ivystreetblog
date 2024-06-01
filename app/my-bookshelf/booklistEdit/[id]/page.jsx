@@ -160,8 +160,18 @@ export default function EditBooklistPage({ params }) {
               type='text'
               value={description}
               onChange={e => setDescription(e.target.value)}
-              className='w-full px-3 py-2 bg-secondary text-accent rounded-md focus:outline-none focus:ring-2 focus:ring-yellow'
+              className='w-full px-3 py-2 bg-secondary text-accent rounded-md focus:outline-none focus:ring-2 focus:ring-yellow textarea-mobile'
+              style={{ minHeight: '120px' }}
             />
+            <style jsx>
+              {`
+                @media (max-width: 640px) {
+                  .textarea-mobile {
+                    min-height: 120px;
+                  }
+                }
+              `}
+            </style>
             <p className='text-sm text-gray-500'>
               Use the booklist description to describe who the booklist is for
               generally (remember, no personally identifiable information), like

@@ -67,7 +67,12 @@ export default function BookDetailsPublicComponent({ book, children }) {
         <p className='text-sm mb-1 break-all'>
           <span className='font-bold'>Link:</span>{' '}
           <a
-            href={book.Link}
+            href={
+              book.Link.startsWith('http://') ||
+              book.Link.startsWith('https://')
+                ? book.Link
+                : `http://${book.Link}`
+            }
             target='_blank'
             rel='noopener noreferrer'
             className='text-yellow hover:underline'

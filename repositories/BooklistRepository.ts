@@ -87,7 +87,7 @@ export class BooklistRepository extends BaseRepository {
         { $pull: { bookListIds: booklistId } }
       );
 
-      console.log('Booklist removed:', removedBooklist);
+      // console.log('Booklist removed:', removedBooklist);
       return removedBooklist;
     } catch (error) {
       console.error('Error removing booklist:', error);
