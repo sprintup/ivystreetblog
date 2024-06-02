@@ -16,6 +16,7 @@ import {
 } from '@/app/faqs/accordionContent';
 import { revalidatePath } from 'next/cache';
 import { ReadMyBookShelfInteractor } from '@/interactors/booklists/private/ReadMyBookShelfInteractor';
+import { CreateUserInteractor } from '@interactors/user/CreateUserInteractor';
 
 async function fetchBooklists(userEmail) {
   'use server';
@@ -41,9 +42,15 @@ export default async function MyBookshelf() {
   if (!session) {
     redirect('/');
   }
+  const createUserInteractor = await CreateUserInteractor.create();
+  const user = await createUserInteractor.findOrCreateUser(
+    session.user.login,
+    session.user.name,
+    session.user.email
+  );
 
   const userEmail = session.user.email;
-  const booklists = await fetchBooklists(userEmail);
+  const booklists = await fetchBooklists(user.email);
 
   return (
     <>
