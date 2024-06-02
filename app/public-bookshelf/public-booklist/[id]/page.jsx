@@ -89,7 +89,7 @@ export default async function BooklistPage({ params }) {
               </Link>
             )}
             <ShareButton
-              url={`${process.env.NEXTAUTH_URL}/public-booklist/${id}`}
+              url={`${process.env.NEXTAUTH_URL}/public-bookshelf/public-booklist/${id}`}
             />
           </div>
         </div>
