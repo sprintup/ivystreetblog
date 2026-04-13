@@ -16,6 +16,8 @@ export class UserRepository extends BaseRepository {
       publicProfileName: email.split('@')[0],
       bookListIds: [],
       trackedBooks: [],
+      favoriteBooklistIds: [],
+      acIds: [],
     });
 
     await newUser.save();

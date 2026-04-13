@@ -1,7 +1,10 @@
-const fs = require("fs");
+const fs = require('fs');
+const path = require('path');
+const data = require('./output.js');
 
-// load your phoneme-enriched dataset
-const data = JSON.parse(fs.readFileSync("output.json", "utf-8"));
+function normalizeArpabetSymbol(symbol) {
+  return String(symbol || '').replace(/[0-9]/g, '');
+}
 
 const arpabetMap = {};
 const ipaMap = {};
@@ -9,26 +12,29 @@ const ipaMap = {};
 for (const item of data) {
   const word = item.word;
 
-  // --- ARPAbet ---
   if (Array.isArray(item.arpabet)) {
     for (const phoneme of item.arpabet) {
-      if (phoneme === "?") continue;
+      const normalizedPhoneme = normalizeArpabetSymbol(phoneme);
 
-      if (!arpabetMap[phoneme]) {
-        arpabetMap[phoneme] = [];
+      if (!normalizedPhoneme || normalizedPhoneme === '?') {
+        continue;
       }
 
-      // avoid duplicates
-      if (!arpabetMap[phoneme].includes(word)) {
-        arpabetMap[phoneme].push(word);
+      if (!arpabetMap[normalizedPhoneme]) {
+        arpabetMap[normalizedPhoneme] = [];
+      }
+
+      if (!arpabetMap[normalizedPhoneme].includes(word)) {
+        arpabetMap[normalizedPhoneme].push(word);
       }
     }
   }
 
-  // --- IPA ---
   if (Array.isArray(item.ipa)) {
     for (const phoneme of item.ipa) {
-      if (phoneme === "?") continue;
+      if (!phoneme || phoneme === '?') {
+        continue;
+      }
 
       if (!ipaMap[phoneme]) {
         ipaMap[phoneme] = [];
@@ -41,26 +47,24 @@ for (const item of data) {
   }
 }
 
-// optional: sort for consistency
-for (const key in arpabetMap) {
-  arpabetMap[key].sort();
+for (const key of Object.keys(arpabetMap)) {
+  arpabetMap[key].sort((leftWord, rightWord) => leftWord.localeCompare(rightWord));
 }
 
-for (const key in ipaMap) {
-  ipaMap[key].sort();
+for (const key of Object.keys(ipaMap)) {
+  ipaMap[key].sort((leftWord, rightWord) => leftWord.localeCompare(rightWord));
 }
 
-// write output
 fs.writeFileSync(
-  "phoneme-map.json",
-  JSON.stringify(
+  path.join(__dirname, 'phoneme-map.js'),
+  `module.exports = ${JSON.stringify(
     {
       arpabet: arpabetMap,
-      ipa: ipaMap
+      ipa: ipaMap,
     },
     null,
     2
-  )
+  )};\n`
 );
 
-console.log("✅ Phoneme map created");
+console.log('Phoneme map created');

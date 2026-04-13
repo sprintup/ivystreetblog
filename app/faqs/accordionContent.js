@@ -1,6 +1,9 @@
 // app/accordionContent.js
 import Link from 'next/link';
 
+const githubRepoUrl = process.env.NEXT_PUBLIC_GITHUB_REPO_URL;
+const githubIssuesUrl = githubRepoUrl ? `${githubRepoUrl}/issues` : null;
+
 export const githubContent = (
     <>
         <p className="text-accent">
@@ -53,14 +56,18 @@ export const whyGithubContent = (
             GitHub that will let us make this website better, such as issue tracking.
             So if you have any problems with this site or suggestions, feel free to
             submit your bug report or feature request in the form of an issue located{" "}
-            <a
-                href={`${process.env.NEXT_PUBLIC_GITHUB_REPO_URL}/issues`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-yellow hover:text-orange"
-            >
-                here
-            </a>
+            {githubIssuesUrl ? (
+                <a
+                    href={githubIssuesUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-yellow hover:text-orange"
+                >
+                    here
+                </a>
+            ) : (
+                "on our GitHub issues page"
+            )}
             . Please include relevant details to help us understand and resolve the
             issue or implement the feature request.
         </p>
@@ -85,14 +92,18 @@ export const submitIssuesContent = (
             <li>
                 To submit a bug report or feature request, visit our GitHub repository
                 at{" "}
-                <a
-                    href={process.env.NEXT_PUBLIC_GITHUB_REPO_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-yellow hover:text-orange"
-                >
-                    {process.env.NEXT_PUBLIC_GITHUB_REPO_URL}
-                </a>
+                {githubRepoUrl ? (
+                    <a
+                        href={githubRepoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-yellow hover:text-orange"
+                    >
+                        {githubRepoUrl}
+                    </a>
+                ) : (
+                    "our GitHub repository"
+                )}
                 .
             </li>
             <li>
@@ -133,14 +144,18 @@ export const collaborateOnGitHubContent = (
         <ol className="text-accent list-decimal list-inside mt-4">
             <li>
                 Fork the{" "}
-                <a
-                    href={process.env.NEXT_PUBLIC_GITHUB_REPO_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-yellow hover:text-orange"
-                >
-                    IvyStreetBlog repository
-                </a>{" "}
+                {githubRepoUrl ? (
+                    <a
+                        href={githubRepoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-yellow hover:text-orange"
+                    >
+                        IvyStreetBlog repository
+                    </a>
+                ) : (
+                    "IvyStreetBlog repository"
+                )}{" "}
                 to your own GitHub account.
             </li>
             <li>
@@ -187,14 +202,18 @@ export const useForOwnLibraryContent = (
         <ol className="text-accent list-decimal list-inside mt-4">
             <li>
                 Fork the{" "}
-                <a
-                    href={process.env.NEXT_PUBLIC_GITHUB_REPO_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-yellow hover:text-orange"
-                >
-                    IvyStreetBlog repository
-                </a>{" "}
+                {githubRepoUrl ? (
+                    <a
+                        href={githubRepoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-yellow hover:text-orange"
+                    >
+                        IvyStreetBlog repository
+                    </a>
+                ) : (
+                    "IvyStreetBlog repository"
+                )}{" "}
                 to your own GitHub account.
             </li>
             <li>

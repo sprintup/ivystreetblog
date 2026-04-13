@@ -1,2466 +1,8122 @@
-[
+module.exports = [
   {
     word: 'above',
     definition: 'in a higher place than something else',
     category: 'mathematics',
-    arpabet: ['AH0', 'B', 'AH1', 'V'],
-    ipa: ['ʌ', 'b', 'ʌ', 'v'],
+    arpabet: [
+      'AH0',
+      'B',
+      'AH1',
+      'V'
+    ],
+    ipa: [
+      'ʌ',
+      'b',
+      'ʌ',
+      'v'
+    ],
+    drawPrompt: 'Draw something that reminds you of above.'
   },
   {
     word: 'addition',
     definition: 'putting numbers together to make a total',
     category: 'mathematics',
-    arpabet: ['AH0', 'D', 'IH1', 'SH', 'AH0', 'N'],
-    ipa: ['ʌ', 'd', 'ɪ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'AH0',
+      'D',
+      'IH1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'ʌ',
+      'd',
+      'ɪ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of addition.'
   },
   {
     word: 'analyze',
     definition: 'to look closely at something to understand it',
     category: 'mathematics',
-    arpabet: ['AE1', 'N', 'AH0', 'L', 'AY2', 'Z'],
-    ipa: ['æ', 'n', 'ʌ', 'l', 'aɪ', 'z'],
+    arpabet: [
+      'AE1',
+      'N',
+      'AH0',
+      'L',
+      'AY2',
+      'Z'
+    ],
+    ipa: [
+      'æ',
+      'n',
+      'ʌ',
+      'l',
+      'aɪ',
+      'z'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to analyze.'
   },
   {
     word: 'behind',
     definition: 'at the back of something',
     category: 'mathematics',
-    arpabet: ['B', 'IH0', 'HH', 'AY1', 'N', 'D'],
-    ipa: ['b', 'ɪ', 'h', 'aɪ', 'n', 'd'],
+    arpabet: [
+      'B',
+      'IH0',
+      'HH',
+      'AY1',
+      'N',
+      'D'
+    ],
+    ipa: [
+      'b',
+      'ɪ',
+      'h',
+      'aɪ',
+      'n',
+      'd'
+    ],
+    drawPrompt: 'Draw something that reminds you of behind.'
   },
   {
     word: 'below',
     definition: 'in a lower place than something else',
     category: 'mathematics',
-    arpabet: ['B', 'IH0', 'L', 'OW1'],
-    ipa: ['b', 'ɪ', 'l', 'oʊ'],
+    arpabet: [
+      'B',
+      'IH0',
+      'L',
+      'OW1'
+    ],
+    ipa: [
+      'b',
+      'ɪ',
+      'l',
+      'oʊ'
+    ],
+    drawPrompt: 'Draw something that reminds you of below.'
   },
   {
     word: 'between',
     definition: 'in the middle of two things',
     category: 'mathematics',
-    arpabet: ['B', 'IH0', 'T', 'W', 'IY1', 'N'],
-    ipa: ['b', 'ɪ', 't', 'w', 'i', 'n'],
+    arpabet: [
+      'B',
+      'IH0',
+      'T',
+      'W',
+      'IY1',
+      'N'
+    ],
+    ipa: [
+      'b',
+      'ɪ',
+      't',
+      'w',
+      'i',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of between.'
   },
   {
     word: 'calendar',
     definition: 'a chart that shows days, weeks, and months',
     category: 'mathematics',
-    arpabet: ['K', 'AE1', 'L', 'AH0', 'N', 'D', 'ER0'],
-    ipa: ['k', 'æ', 'l', 'ʌ', 'n', 'd', 'ɝ'],
+    arpabet: [
+      'K',
+      'AE1',
+      'L',
+      'AH0',
+      'N',
+      'D',
+      'ER0'
+    ],
+    ipa: [
+      'k',
+      'æ',
+      'l',
+      'ʌ',
+      'n',
+      'd',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw a calendar.'
   },
   {
     word: 'category',
     definition: 'a group of things that are alike',
     category: 'mathematics',
-    arpabet: ['K', 'AE1', 'T', 'AH0', 'G', 'AO2', 'R', 'IY0'],
-    ipa: ['k', 'æ', 't', 'ʌ', 'ɡ', 'ɔ', 'r', 'i'],
+    arpabet: [
+      'K',
+      'AE1',
+      'T',
+      'AH0',
+      'G',
+      'AO2',
+      'R',
+      'IY0'
+    ],
+    ipa: [
+      'k',
+      'æ',
+      't',
+      'ʌ',
+      'ɡ',
+      'ɔ',
+      'r',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of category.'
   },
   {
     word: 'circle',
     definition: 'a round shape with no corners',
     category: 'mathematics',
-    arpabet: ['S', 'ER1', 'K', 'AH0', 'L'],
-    ipa: ['s', 'ɝ', 'k', 'ʌ', 'l'],
+    arpabet: [
+      'S',
+      'ER1',
+      'K',
+      'AH0',
+      'L'
+    ],
+    ipa: [
+      's',
+      'ɝ',
+      'k',
+      'ʌ',
+      'l'
+    ],
+    drawPrompt: 'Draw a circle.'
   },
   {
     word: 'classify',
     definition: 'to put things into groups',
     category: 'mathematics',
-    arpabet: ['K', 'L', 'AE1', 'S', 'AH0', 'F', 'AY2'],
-    ipa: ['k', 'l', 'æ', 's', 'ʌ', 'f', 'aɪ'],
+    arpabet: [
+      'K',
+      'L',
+      'AE1',
+      'S',
+      'AH0',
+      'F',
+      'AY2'
+    ],
+    ipa: [
+      'k',
+      'l',
+      'æ',
+      's',
+      'ʌ',
+      'f',
+      'aɪ'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to classify.'
   },
   {
     word: 'compare',
     definition: 'to see how things are the same or different',
     category: 'mathematics',
-    arpabet: ['K', 'AH0', 'M', 'P', 'EH1', 'R'],
-    ipa: ['k', 'ʌ', 'm', 'p', 'ɛ', 'r'],
+    arpabet: [
+      'K',
+      'AH0',
+      'M',
+      'P',
+      'EH1',
+      'R'
+    ],
+    ipa: [
+      'k',
+      'ʌ',
+      'm',
+      'p',
+      'ɛ',
+      'r'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to compare.'
   },
   {
     word: 'contrast',
     definition: 'to see how things are different',
     category: 'mathematics',
-    arpabet: ['K', 'AA1', 'N', 'T', 'R', 'AE0', 'S', 'T'],
-    ipa: ['k', 'ɑ', 'n', 't', 'r', 'æ', 's', 't'],
+    arpabet: [
+      'K',
+      'AA1',
+      'N',
+      'T',
+      'R',
+      'AE0',
+      'S',
+      'T'
+    ],
+    ipa: [
+      'k',
+      'ɑ',
+      'n',
+      't',
+      'r',
+      'æ',
+      's',
+      't'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to contrast.'
   },
   {
     word: 'compose',
     definition: 'to make or build something from parts',
     category: 'mathematics',
-    arpabet: ['K', 'AH0', 'M', 'P', 'OW1', 'Z'],
-    ipa: ['k', 'ʌ', 'm', 'p', 'oʊ', 'z'],
+    arpabet: [
+      'K',
+      'AH0',
+      'M',
+      'P',
+      'OW1',
+      'Z'
+    ],
+    ipa: [
+      'k',
+      'ʌ',
+      'm',
+      'p',
+      'oʊ',
+      'z'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to compose.'
   },
   {
     word: 'cone',
     definition: 'a shape with a round base and a point at the top',
     category: 'mathematics',
-    arpabet: ['K', 'OW1', 'N'],
-    ipa: ['k', 'oʊ', 'n'],
+    arpabet: [
+      'K',
+      'OW1',
+      'N'
+    ],
+    ipa: [
+      'k',
+      'oʊ',
+      'n'
+    ],
+    drawPrompt: 'Draw a cone.'
   },
   {
     word: 'create',
     definition: 'to make something new',
     category: 'mathematics',
-    arpabet: ['K', 'R', 'IY0', 'EY1', 'T'],
-    ipa: ['k', 'r', 'i', 'eɪ', 't'],
+    arpabet: [
+      'K',
+      'R',
+      'IY0',
+      'EY1',
+      'T'
+    ],
+    ipa: [
+      'k',
+      'r',
+      'i',
+      'eɪ',
+      't'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to create.'
   },
   {
     word: 'cube',
     definition: 'a shape with 6 equal square faces',
     category: 'mathematics',
-    arpabet: ['K', 'Y', 'UW1', 'B'],
-    ipa: ['k', 'j', 'u', 'b'],
+    arpabet: [
+      'K',
+      'Y',
+      'UW1',
+      'B'
+    ],
+    ipa: [
+      'k',
+      'j',
+      'u',
+      'b'
+    ],
+    drawPrompt: 'Draw a cube.'
   },
   {
     word: 'cylinder',
     definition: 'a shape with two round ends and straight sides',
     category: 'mathematics',
-    arpabet: ['S', 'IH1', 'L', 'AH0', 'N', 'D', 'ER0'],
-    ipa: ['s', 'ɪ', 'l', 'ʌ', 'n', 'd', 'ɝ'],
+    arpabet: [
+      'S',
+      'IH1',
+      'L',
+      'AH0',
+      'N',
+      'D',
+      'ER0'
+    ],
+    ipa: [
+      's',
+      'ɪ',
+      'l',
+      'ʌ',
+      'n',
+      'd',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw a cylinder.'
   },
   {
     word: 'data',
     definition: 'information that can be collected and used',
     category: 'mathematics',
-    arpabet: ['D', 'EY1', 'T', 'AH0'],
-    ipa: ['d', 'eɪ', 't', 'ʌ'],
+    arpabet: [
+      'D',
+      'EY1',
+      'T',
+      'AH0'
+    ],
+    ipa: [
+      'd',
+      'eɪ',
+      't',
+      'ʌ'
+    ],
+    drawPrompt: 'Draw something that reminds you of data.'
   },
   {
     word: 'describe',
     definition: 'to tell about something using words',
     category: 'mathematics',
-    arpabet: ['D', 'IH0', 'S', 'K', 'R', 'AY1', 'B'],
-    ipa: ['d', 'ɪ', 's', 'k', 'r', 'aɪ', 'b'],
+    arpabet: [
+      'D',
+      'IH0',
+      'S',
+      'K',
+      'R',
+      'AY1',
+      'B'
+    ],
+    ipa: [
+      'd',
+      'ɪ',
+      's',
+      'k',
+      'r',
+      'aɪ',
+      'b'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to describe.'
   },
   {
     word: 'difference',
     definition: 'how things are not the same; in math, the answer to subtraction',
     category: 'mathematics',
-    arpabet: ['D', 'IH1', 'F', 'ER0', 'AH0', 'N', 'S'],
-    ipa: ['d', 'ɪ', 'f', 'ɝ', 'ʌ', 'n', 's'],
+    arpabet: [
+      'D',
+      'IH1',
+      'F',
+      'ER0',
+      'AH0',
+      'N',
+      'S'
+    ],
+    ipa: [
+      'd',
+      'ɪ',
+      'f',
+      'ɝ',
+      'ʌ',
+      'n',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of difference.'
   },
   {
     word: 'division',
     definition: 'splitting into equal parts',
     category: 'mathematics',
-    arpabet: ['D', 'IH0', 'V', 'IH1', 'ZH', 'AH0', 'N'],
-    ipa: ['d', 'ɪ', 'v', 'ɪ', 'ʒ', 'ʌ', 'n'],
+    arpabet: [
+      'D',
+      'IH0',
+      'V',
+      'IH1',
+      'ZH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'd',
+      'ɪ',
+      'v',
+      'ɪ',
+      'ʒ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of division.'
   },
   {
     word: 'equation',
     definition: 'a math sentence with an equals sign',
     category: 'mathematics',
-    arpabet: ['IH0', 'K', 'W', 'EY1', 'ZH', 'AH0', 'N'],
-    ipa: ['ɪ', 'k', 'w', 'eɪ', 'ʒ', 'ʌ', 'n'],
+    arpabet: [
+      'IH0',
+      'K',
+      'W',
+      'EY1',
+      'ZH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'ɪ',
+      'k',
+      'w',
+      'eɪ',
+      'ʒ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of equation.'
   },
   {
     word: 'estimate',
     definition: 'a close guess',
     category: 'mathematics',
-    arpabet: ['EH1', 'S', 'T', 'AH0', 'M', 'AH0', 'T'],
-    ipa: ['ɛ', 's', 't', 'ʌ', 'm', 'ʌ', 't'],
+    arpabet: [
+      'EH1',
+      'S',
+      'T',
+      'AH0',
+      'M',
+      'AH0',
+      'T'
+    ],
+    ipa: [
+      'ɛ',
+      's',
+      't',
+      'ʌ',
+      'm',
+      'ʌ',
+      't'
+    ],
+    drawPrompt: 'Draw an estimate.'
   },
   {
     word: 'explain',
     definition: 'to tell how or why something happens',
     category: 'mathematics',
-    arpabet: ['IH0', 'K', 'S', 'P', 'L', 'EY1', 'N'],
-    ipa: ['ɪ', 'k', 's', 'p', 'l', 'eɪ', 'n'],
+    arpabet: [
+      'IH0',
+      'K',
+      'S',
+      'P',
+      'L',
+      'EY1',
+      'N'
+    ],
+    ipa: [
+      'ɪ',
+      'k',
+      's',
+      'p',
+      'l',
+      'eɪ',
+      'n'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to explain.'
   },
   {
     word: 'feet',
     definition: 'a unit used to measure length',
     category: 'mathematics',
-    arpabet: ['F', 'IY1', 'T'],
-    ipa: ['f', 'i', 't'],
+    arpabet: [
+      'F',
+      'IY1',
+      'T'
+    ],
+    ipa: [
+      'f',
+      'i',
+      't'
+    ],
+    drawPrompt: 'Draw a feet.'
   },
   {
     word: 'height',
     definition: 'how tall something is',
     category: 'mathematics',
-    arpabet: ['HH', 'AY1', 'T'],
-    ipa: ['h', 'aɪ', 't'],
+    arpabet: [
+      'HH',
+      'AY1',
+      'T'
+    ],
+    ipa: [
+      'h',
+      'aɪ',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of height.'
   },
   {
     word: 'hexagon',
     definition: 'a shape with 6 sides',
     category: 'mathematics',
-    arpabet: ['HH', 'EH1', 'K', 'S', 'AH0', 'G', 'AA2', 'N'],
-    ipa: ['h', 'ɛ', 'k', 's', 'ʌ', 'ɡ', 'ɑ', 'n'],
+    arpabet: [
+      'HH',
+      'EH1',
+      'K',
+      'S',
+      'AH0',
+      'G',
+      'AA2',
+      'N'
+    ],
+    ipa: [
+      'h',
+      'ɛ',
+      'k',
+      's',
+      'ʌ',
+      'ɡ',
+      'ɑ',
+      'n'
+    ],
+    drawPrompt: 'Draw a hexagon.'
   },
   {
     word: 'higher',
     definition: 'more up or above something else',
     category: 'mathematics',
-    arpabet: ['HH', 'AY1', 'ER0'],
-    ipa: ['h', 'aɪ', 'ɝ'],
+    arpabet: [
+      'HH',
+      'AY1',
+      'ER0'
+    ],
+    ipa: [
+      'h',
+      'aɪ',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of higher.'
   },
   {
     word: 'identify',
     definition: 'to name or recognize something',
     category: 'mathematics',
-    arpabet: ['AY0', 'D', 'EH1', 'N', 'T', 'AH0', 'F', 'AY2'],
-    ipa: ['aɪ', 'd', 'ɛ', 'n', 't', 'ʌ', 'f', 'aɪ'],
+    arpabet: [
+      'AY0',
+      'D',
+      'EH1',
+      'N',
+      'T',
+      'AH0',
+      'F',
+      'AY2'
+    ],
+    ipa: [
+      'aɪ',
+      'd',
+      'ɛ',
+      'n',
+      't',
+      'ʌ',
+      'f',
+      'aɪ'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to identify.'
   },
   {
     word: 'inch',
     definition: 'a small unit used to measure length',
     category: 'mathematics',
-    arpabet: ['IH1', 'N', 'CH'],
-    ipa: ['ɪ', 'n', 'tʃ'],
+    arpabet: [
+      'IH1',
+      'N',
+      'CH'
+    ],
+    ipa: [
+      'ɪ',
+      'n',
+      'tʃ'
+    ],
+    drawPrompt: 'Draw an inch.'
   },
   {
     word: 'length',
     definition: 'how long something is',
     category: 'mathematics',
-    arpabet: ['L', 'EH1', 'NG', 'K', 'TH'],
-    ipa: ['l', 'ɛ', 'ŋ', 'k', 'θ'],
+    arpabet: [
+      'L',
+      'EH1',
+      'NG',
+      'K',
+      'TH'
+    ],
+    ipa: [
+      'l',
+      'ɛ',
+      'ŋ',
+      'k',
+      'θ'
+    ],
+    drawPrompt: 'Draw something that reminds you of length.'
   },
   {
     word: 'lower',
     definition: 'more down or below something else',
     category: 'mathematics',
-    arpabet: ['L', 'OW1', 'ER0'],
-    ipa: ['l', 'oʊ', 'ɝ'],
+    arpabet: [
+      'L',
+      'OW1',
+      'ER0'
+    ],
+    ipa: [
+      'l',
+      'oʊ',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of lower.'
   },
   {
     word: 'mile',
     definition: 'a long unit used to measure distance',
     category: 'mathematics',
-    arpabet: ['M', 'AY1', 'L'],
-    ipa: ['m', 'aɪ', 'l'],
+    arpabet: [
+      'M',
+      'AY1',
+      'L'
+    ],
+    ipa: [
+      'm',
+      'aɪ',
+      'l'
+    ],
+    drawPrompt: 'Draw a mile.'
   },
   {
     word: 'multiplication',
     definition: 'adding the same number again and again',
     category: 'mathematics',
-    arpabet: ['M', 'AH2', 'L', 'T', 'AH0', 'P', 'L', 'AH0', 'K', 'EY1', 'SH', 'AH0', 'N'],
-    ipa: ['m', 'ʌ', 'l', 't', 'ʌ', 'p', 'l', 'ʌ', 'k', 'eɪ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'M',
+      'AH2',
+      'L',
+      'T',
+      'AH0',
+      'P',
+      'L',
+      'AH0',
+      'K',
+      'EY1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'm',
+      'ʌ',
+      'l',
+      't',
+      'ʌ',
+      'p',
+      'l',
+      'ʌ',
+      'k',
+      'eɪ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of multiplication.'
   },
   {
     word: 'next to',
     definition: 'very close beside something',
     category: 'mathematics',
-    arpabet: ['N', 'EH1', 'K', 'S', 'T', 'T', 'UW1'],
-    ipa: ['n', 'ɛ', 'k', 's', 't', 't', 'u'],
+    arpabet: [
+      'N',
+      'EH1',
+      'K',
+      'S',
+      'T',
+      'T',
+      'UW1'
+    ],
+    ipa: [
+      'n',
+      'ɛ',
+      'k',
+      's',
+      't',
+      't',
+      'u'
+    ],
+    drawPrompt: 'Draw something that reminds you of next to.'
   },
   {
     word: 'number',
     definition: 'a symbol used to count or measure',
     category: 'mathematics',
-    arpabet: ['N', 'AH1', 'M', 'B', 'ER0'],
-    ipa: ['n', 'ʌ', 'm', 'b', 'ɝ'],
+    arpabet: [
+      'N',
+      'AH1',
+      'M',
+      'B',
+      'ER0'
+    ],
+    ipa: [
+      'n',
+      'ʌ',
+      'm',
+      'b',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw a number.'
   },
   {
     word: 'number words',
     definition: 'numbers written using words, like one, two, three',
     category: 'mathematics',
-    arpabet: ['N', 'AH1', 'M', 'B', 'ER0', 'W', 'ER1', 'D', 'Z'],
-    ipa: ['n', 'ʌ', 'm', 'b', 'ɝ', 'w', 'ɝ', 'd', 'z'],
+    arpabet: [
+      'N',
+      'AH1',
+      'M',
+      'B',
+      'ER0',
+      'W',
+      'ER1',
+      'D',
+      'Z'
+    ],
+    ipa: [
+      'n',
+      'ʌ',
+      'm',
+      'b',
+      'ɝ',
+      'w',
+      'ɝ',
+      'd',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of number words.'
   },
   {
     word: 'operations',
     definition: 'math actions like adding, subtracting, multiplying, and dividing',
     category: 'mathematics',
-    arpabet: ['AA2', 'P', 'ER0', 'EY1', 'SH', 'AH0', 'N', 'Z'],
-    ipa: ['ɑ', 'p', 'ɝ', 'eɪ', 'ʃ', 'ʌ', 'n', 'z'],
+    arpabet: [
+      'AA2',
+      'P',
+      'ER0',
+      'EY1',
+      'SH',
+      'AH0',
+      'N',
+      'Z'
+    ],
+    ipa: [
+      'ɑ',
+      'p',
+      'ɝ',
+      'eɪ',
+      'ʃ',
+      'ʌ',
+      'n',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of operations.'
   },
   {
     word: 'outcome',
     definition: 'the result of something',
     category: 'mathematics',
-    arpabet: ['AW1', 'T', 'K', 'AH2', 'M'],
-    ipa: ['aʊ', 't', 'k', 'ʌ', 'm'],
+    arpabet: [
+      'AW1',
+      'T',
+      'K',
+      'AH2',
+      'M'
+    ],
+    ipa: [
+      'aʊ',
+      't',
+      'k',
+      'ʌ',
+      'm'
+    ],
+    drawPrompt: 'Draw an outcome.'
   },
   {
     word: 'over',
     definition: 'above or across something',
     category: 'mathematics',
-    arpabet: ['OW1', 'V', 'ER0'],
-    ipa: ['oʊ', 'v', 'ɝ'],
+    arpabet: [
+      'OW1',
+      'V',
+      'ER0'
+    ],
+    ipa: [
+      'oʊ',
+      'v',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of over.'
   },
   {
     word: 'pattern',
     definition: 'something that repeats in a rule or order',
     category: 'mathematics',
-    arpabet: ['P', 'AE1', 'T', 'ER0', 'N'],
-    ipa: ['p', 'æ', 't', 'ɝ', 'n'],
+    arpabet: [
+      'P',
+      'AE1',
+      'T',
+      'ER0',
+      'N'
+    ],
+    ipa: [
+      'p',
+      'æ',
+      't',
+      'ɝ',
+      'n'
+    ],
+    drawPrompt: 'Draw a pattern.'
   },
   {
     word: 'predict',
     definition: 'to make a smart guess about what will happen',
     category: 'mathematics',
-    arpabet: ['P', 'R', 'IH0', 'D', 'IH1', 'K', 'T'],
-    ipa: ['p', 'r', 'ɪ', 'd', 'ɪ', 'k', 't'],
+    arpabet: [
+      'P',
+      'R',
+      'IH0',
+      'D',
+      'IH1',
+      'K',
+      'T'
+    ],
+    ipa: [
+      'p',
+      'r',
+      'ɪ',
+      'd',
+      'ɪ',
+      'k',
+      't'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to predict.'
   },
   {
     word: 'proportion',
     definition: 'how parts compare to each other in size or amount',
     category: 'mathematics',
-    arpabet: ['P', 'R', 'AH0', 'P', 'AO1', 'R', 'SH', 'AH0', 'N'],
-    ipa: ['p', 'r', 'ʌ', 'p', 'ɔ', 'r', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'P',
+      'R',
+      'AH0',
+      'P',
+      'AO1',
+      'R',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'p',
+      'r',
+      'ʌ',
+      'p',
+      'ɔ',
+      'r',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of proportion.'
   },
   {
     word: 'rectangle',
     definition: 'a shape with 4 sides and 4 right angles',
     category: 'mathematics',
-    arpabet: ['R', 'EH1', 'K', 'T', 'AE0', 'NG', 'G', 'AH0', 'L'],
-    ipa: ['r', 'ɛ', 'k', 't', 'æ', 'ŋ', 'ɡ', 'ʌ', 'l'],
+    arpabet: [
+      'R',
+      'EH1',
+      'K',
+      'T',
+      'AE0',
+      'NG',
+      'G',
+      'AH0',
+      'L'
+    ],
+    ipa: [
+      'r',
+      'ɛ',
+      'k',
+      't',
+      'æ',
+      'ŋ',
+      'ɡ',
+      'ʌ',
+      'l'
+    ],
+    drawPrompt: 'Draw a rectangle.'
   },
   {
     word: 'ruler',
     definition: 'a tool used to measure length',
     category: 'mathematics',
-    arpabet: ['R', 'UW1', 'L', 'ER0'],
-    ipa: ['r', 'u', 'l', 'ɝ'],
+    arpabet: [
+      'R',
+      'UW1',
+      'L',
+      'ER0'
+    ],
+    ipa: [
+      'r',
+      'u',
+      'l',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw a ruler.'
   },
   {
     word: 'season',
     definition: 'a part of the year like winter, spring, summer, or fall',
     category: 'mathematics',
-    arpabet: ['S', 'IY1', 'Z', 'AH0', 'N'],
-    ipa: ['s', 'i', 'z', 'ʌ', 'n'],
+    arpabet: [
+      'S',
+      'IY1',
+      'Z',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      's',
+      'i',
+      'z',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw a season.'
   },
   {
     word: 'sequence',
     definition: 'things in a certain order',
     category: 'mathematics',
-    arpabet: ['S', 'IY1', 'K', 'W', 'AH0', 'N', 'S'],
-    ipa: ['s', 'i', 'k', 'w', 'ʌ', 'n', 's'],
+    arpabet: [
+      'S',
+      'IY1',
+      'K',
+      'W',
+      'AH0',
+      'N',
+      'S'
+    ],
+    ipa: [
+      's',
+      'i',
+      'k',
+      'w',
+      'ʌ',
+      'n',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of sequence.'
   },
   {
     word: 'shape',
     definition: 'the form of something, like circle or square',
     category: 'mathematics',
-    arpabet: ['SH', 'EY1', 'P'],
-    ipa: ['ʃ', 'eɪ', 'p'],
+    arpabet: [
+      'SH',
+      'EY1',
+      'P'
+    ],
+    ipa: [
+      'ʃ',
+      'eɪ',
+      'p'
+    ],
+    drawPrompt: 'Draw a shape.'
   },
   {
     word: 'similar',
     definition: 'almost the same',
     category: 'mathematics',
-    arpabet: ['S', 'IH1', 'M', 'AH0', 'L', 'ER0'],
-    ipa: ['s', 'ɪ', 'm', 'ʌ', 'l', 'ɝ'],
+    arpabet: [
+      'S',
+      'IH1',
+      'M',
+      'AH0',
+      'L',
+      'ER0'
+    ],
+    ipa: [
+      's',
+      'ɪ',
+      'm',
+      'ʌ',
+      'l',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of similar.'
   },
   {
     word: 'sphere',
     definition: 'a round 3D shape like a ball',
     category: 'mathematics',
-    arpabet: ['S', 'F', 'IH1', 'R'],
-    ipa: ['s', 'f', 'ɪ', 'r'],
+    arpabet: [
+      'S',
+      'F',
+      'IH1',
+      'R'
+    ],
+    ipa: [
+      's',
+      'f',
+      'ɪ',
+      'r'
+    ],
+    drawPrompt: 'Draw a sphere.'
   },
   {
     word: 'square',
     definition: 'a shape with 4 equal sides and 4 corners',
     category: 'mathematics',
-    arpabet: ['S', 'K', 'W', 'EH1', 'R'],
-    ipa: ['s', 'k', 'w', 'ɛ', 'r'],
+    arpabet: [
+      'S',
+      'K',
+      'W',
+      'EH1',
+      'R'
+    ],
+    ipa: [
+      's',
+      'k',
+      'w',
+      'ɛ',
+      'r'
+    ],
+    drawPrompt: 'Draw a square.'
   },
   {
     word: 'subtraction',
     definition: 'taking one number away from another',
     category: 'mathematics',
-    arpabet: ['S', 'AH0', 'B', 'T', 'R', 'AE1', 'K', 'SH', 'AH0', 'N'],
-    ipa: ['s', 'ʌ', 'b', 't', 'r', 'æ', 'k', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'S',
+      'AH0',
+      'B',
+      'T',
+      'R',
+      'AE1',
+      'K',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      's',
+      'ʌ',
+      'b',
+      't',
+      'r',
+      'æ',
+      'k',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of subtraction.'
   },
   {
     word: 'temperature',
     definition: 'how hot or cold something is',
     category: 'mathematics',
-    arpabet: ['T', 'EH1', 'M', 'P', 'R', 'AH0', 'CH', 'ER0'],
-    ipa: ['t', 'ɛ', 'm', 'p', 'r', 'ʌ', 'tʃ', 'ɝ'],
+    arpabet: [
+      'T',
+      'EH1',
+      'M',
+      'P',
+      'R',
+      'AH0',
+      'CH',
+      'ER0'
+    ],
+    ipa: [
+      't',
+      'ɛ',
+      'm',
+      'p',
+      'r',
+      'ʌ',
+      'tʃ',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of temperature.'
   },
   {
     word: 'weather',
     definition: 'what the air is like outside, such as sunny or rainy',
     category: 'mathematics',
-    arpabet: ['W', 'EH1', 'DH', 'ER0'],
-    ipa: ['w', 'ɛ', 'ð', 'ɝ'],
+    arpabet: [
+      'W',
+      'EH1',
+      'DH',
+      'ER0'
+    ],
+    ipa: [
+      'w',
+      'ɛ',
+      'ð',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of weather.'
   },
   {
     word: 'adapt',
     definition: 'to change to fit new conditions',
     category: 'science',
-    arpabet: ['AH0', 'D', 'AE1', 'P', 'T'],
-    ipa: ['ʌ', 'd', 'æ', 'p', 't'],
+    arpabet: [
+      'AH0',
+      'D',
+      'AE1',
+      'P',
+      'T'
+    ],
+    ipa: [
+      'ʌ',
+      'd',
+      'æ',
+      'p',
+      't'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to adapt.'
   },
   {
     word: 'animal',
     definition: 'a living thing that can move and needs food',
     category: 'science',
-    arpabet: ['AE1', 'N', 'AH0', 'M', 'AH0', 'L'],
-    ipa: ['æ', 'n', 'ʌ', 'm', 'ʌ', 'l'],
+    arpabet: [
+      'AE1',
+      'N',
+      'AH0',
+      'M',
+      'AH0',
+      'L'
+    ],
+    ipa: [
+      'æ',
+      'n',
+      'ʌ',
+      'm',
+      'ʌ',
+      'l'
+    ],
+    drawPrompt: 'Draw an animal.'
   },
   {
     word: 'brain',
     definition: 'the part of the body that controls thinking and movement',
     category: 'science',
-    arpabet: ['B', 'R', 'EY1', 'N'],
-    ipa: ['b', 'r', 'eɪ', 'n'],
+    arpabet: [
+      'B',
+      'R',
+      'EY1',
+      'N'
+    ],
+    ipa: [
+      'b',
+      'r',
+      'eɪ',
+      'n'
+    ],
+    drawPrompt: 'Draw a brain.'
   },
   {
     word: 'breathe',
     definition: 'to take air in and out of the body',
     category: 'science',
-    arpabet: ['B', 'R', 'IY1', 'DH'],
-    ipa: ['b', 'r', 'i', 'ð'],
+    arpabet: [
+      'B',
+      'R',
+      'IY1',
+      'DH'
+    ],
+    ipa: [
+      'b',
+      'r',
+      'i',
+      'ð'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to breathe.'
   },
   {
     word: 'carbon dioxide',
     definition: 'a gas we breathe out that plants use',
     category: 'science',
-    arpabet: ['K', 'AA1', 'R', 'B', 'AH0', 'N', 'D', 'AY0', 'AA1', 'K', 'S', 'AY2', 'D'],
-    ipa: ['k', 'ɑ', 'r', 'b', 'ʌ', 'n', 'd', 'aɪ', 'ɑ', 'k', 's', 'aɪ', 'd'],
+    arpabet: [
+      'K',
+      'AA1',
+      'R',
+      'B',
+      'AH0',
+      'N',
+      'D',
+      'AY0',
+      'AA1',
+      'K',
+      'S',
+      'AY2',
+      'D'
+    ],
+    ipa: [
+      'k',
+      'ɑ',
+      'r',
+      'b',
+      'ʌ',
+      'n',
+      'd',
+      'aɪ',
+      'ɑ',
+      'k',
+      's',
+      'aɪ',
+      'd'
+    ],
+    drawPrompt: 'Draw something that reminds you of carbon dioxide.'
   },
   {
     word: 'characteristic',
     definition: 'a feature or trait of something',
     category: 'science',
-    arpabet: ['K', 'EH2', 'R', 'AH0', 'K', 'T', 'ER0', 'IH1', 'S', 'T', 'IH0', 'K'],
-    ipa: ['k', 'ɛ', 'r', 'ʌ', 'k', 't', 'ɝ', 'ɪ', 's', 't', 'ɪ', 'k'],
+    arpabet: [
+      'K',
+      'EH2',
+      'R',
+      'AH0',
+      'K',
+      'T',
+      'ER0',
+      'IH1',
+      'S',
+      'T',
+      'IH0',
+      'K'
+    ],
+    ipa: [
+      'k',
+      'ɛ',
+      'r',
+      'ʌ',
+      'k',
+      't',
+      'ɝ',
+      'ɪ',
+      's',
+      't',
+      'ɪ',
+      'k'
+    ],
+    drawPrompt: 'Draw a characteristic.'
   },
   {
     word: 'classify',
     definition: 'to group things by shared traits',
     category: 'science',
-    arpabet: ['K', 'L', 'AE1', 'S', 'AH0', 'F', 'AY2'],
-    ipa: ['k', 'l', 'æ', 's', 'ʌ', 'f', 'aɪ'],
+    arpabet: [
+      'K',
+      'L',
+      'AE1',
+      'S',
+      'AH0',
+      'F',
+      'AY2'
+    ],
+    ipa: [
+      'k',
+      'l',
+      'æ',
+      's',
+      'ʌ',
+      'f',
+      'aɪ'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to classify.'
   },
   {
     word: 'climate',
     definition: 'the usual weather in a place over time',
     category: 'science',
-    arpabet: ['K', 'L', 'AY1', 'M', 'AH0', 'T'],
-    ipa: ['k', 'l', 'aɪ', 'm', 'ʌ', 't'],
+    arpabet: [
+      'K',
+      'L',
+      'AY1',
+      'M',
+      'AH0',
+      'T'
+    ],
+    ipa: [
+      'k',
+      'l',
+      'aɪ',
+      'm',
+      'ʌ',
+      't'
+    ],
+    drawPrompt: 'Draw a climate.'
   },
   {
     word: 'color',
     definition: 'how something looks based on light',
     category: 'science',
-    arpabet: ['K', 'AH1', 'L', 'ER0'],
-    ipa: ['k', 'ʌ', 'l', 'ɝ'],
+    arpabet: [
+      'K',
+      'AH1',
+      'L',
+      'ER0'
+    ],
+    ipa: [
+      'k',
+      'ʌ',
+      'l',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of color.'
   },
   {
     word: 'conclude',
     definition: 'to decide something based on information',
     category: 'science',
-    arpabet: ['K', 'AH0', 'N', 'K', 'L', 'UW1', 'D'],
-    ipa: ['k', 'ʌ', 'n', 'k', 'l', 'u', 'd'],
+    arpabet: [
+      'K',
+      'AH0',
+      'N',
+      'K',
+      'L',
+      'UW1',
+      'D'
+    ],
+    ipa: [
+      'k',
+      'ʌ',
+      'n',
+      'k',
+      'l',
+      'u',
+      'd'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to conclude.'
   },
   {
     word: 'cooperate',
     definition: 'to work together',
     category: 'science',
-    arpabet: ['K', 'OW0', 'AA1', 'P', 'ER0', 'EY2', 'T'],
-    ipa: ['k', 'oʊ', 'ɑ', 'p', 'ɝ', 'eɪ', 't'],
+    arpabet: [
+      'K',
+      'OW0',
+      'AA1',
+      'P',
+      'ER0',
+      'EY2',
+      'T'
+    ],
+    ipa: [
+      'k',
+      'oʊ',
+      'ɑ',
+      'p',
+      'ɝ',
+      'eɪ',
+      't'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to cooperate.'
   },
   {
     word: 'creature',
     definition: 'a living animal',
     category: 'science',
-    arpabet: ['K', 'R', 'IY1', 'CH', 'ER0'],
-    ipa: ['k', 'r', 'i', 'tʃ', 'ɝ'],
+    arpabet: [
+      'K',
+      'R',
+      'IY1',
+      'CH',
+      'ER0'
+    ],
+    ipa: [
+      'k',
+      'r',
+      'i',
+      'tʃ',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of creature.'
   },
   {
     word: 'density',
     definition: 'how packed together something is',
     category: 'science',
-    arpabet: ['D', 'EH1', 'N', 'S', 'AH0', 'T', 'IY0'],
-    ipa: ['d', 'ɛ', 'n', 's', 'ʌ', 't', 'i'],
+    arpabet: [
+      'D',
+      'EH1',
+      'N',
+      'S',
+      'AH0',
+      'T',
+      'IY0'
+    ],
+    ipa: [
+      'd',
+      'ɛ',
+      'n',
+      's',
+      'ʌ',
+      't',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of density.'
   },
   {
     word: 'discover',
     definition: 'to find something new',
     category: 'science',
-    arpabet: ['D', 'IH0', 'S', 'K', 'AH1', 'V', 'ER0'],
-    ipa: ['d', 'ɪ', 's', 'k', 'ʌ', 'v', 'ɝ'],
+    arpabet: [
+      'D',
+      'IH0',
+      'S',
+      'K',
+      'AH1',
+      'V',
+      'ER0'
+    ],
+    ipa: [
+      'd',
+      'ɪ',
+      's',
+      'k',
+      'ʌ',
+      'v',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to discover.'
   },
   {
     word: 'distance',
     definition: 'how far apart things are',
     category: 'science',
-    arpabet: ['D', 'IH1', 'S', 'T', 'AH0', 'N', 'S'],
-    ipa: ['d', 'ɪ', 's', 't', 'ʌ', 'n', 's'],
+    arpabet: [
+      'D',
+      'IH1',
+      'S',
+      'T',
+      'AH0',
+      'N',
+      'S'
+    ],
+    ipa: [
+      'd',
+      'ɪ',
+      's',
+      't',
+      'ʌ',
+      'n',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of distance.'
   },
   {
     word: 'duration',
     definition: 'how long something lasts',
     category: 'science',
-    arpabet: ['D', 'UH1', 'R', 'EY1', 'SH', 'AH0', 'N'],
-    ipa: ['d', 'ʊ', 'r', 'eɪ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'D',
+      'UH1',
+      'R',
+      'EY1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'd',
+      'ʊ',
+      'r',
+      'eɪ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of duration.'
   },
   {
     word: 'earth',
     definition: 'the planet we live on',
     category: 'science',
-    arpabet: ['ER1', 'TH'],
-    ipa: ['ɝ', 'θ'],
+    arpabet: [
+      'ER1',
+      'TH'
+    ],
+    ipa: [
+      'ɝ',
+      'θ'
+    ],
+    drawPrompt: 'Draw an earth.'
   },
   {
     word: 'electricity',
     definition: 'energy that powers lights and devices',
     category: 'science',
-    arpabet: ['IH0', 'L', 'EH2', 'K', 'T', 'R', 'IH1', 'S', 'AH0', 'T', 'IY0'],
-    ipa: ['ɪ', 'l', 'ɛ', 'k', 't', 'r', 'ɪ', 's', 'ʌ', 't', 'i'],
+    arpabet: [
+      'IH0',
+      'L',
+      'EH2',
+      'K',
+      'T',
+      'R',
+      'IH1',
+      'S',
+      'AH0',
+      'T',
+      'IY0'
+    ],
+    ipa: [
+      'ɪ',
+      'l',
+      'ɛ',
+      'k',
+      't',
+      'r',
+      'ɪ',
+      's',
+      'ʌ',
+      't',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of electricity.'
   },
   {
     word: 'energy',
     definition: 'the ability to do work or cause change',
     category: 'science',
-    arpabet: ['EH1', 'N', 'ER0', 'JH', 'IY0'],
-    ipa: ['ɛ', 'n', 'ɝ', 'dʒ', 'i'],
+    arpabet: [
+      'EH1',
+      'N',
+      'ER0',
+      'JH',
+      'IY0'
+    ],
+    ipa: [
+      'ɛ',
+      'n',
+      'ɝ',
+      'dʒ',
+      'i'
+    ],
+    drawPrompt: 'Draw an energy.'
   },
   {
     word: 'environment',
     definition: 'the surroundings where living things exist',
     category: 'science',
-    arpabet: ['IH0', 'N', 'V', 'AY1', 'R', 'AH0', 'N', 'M', 'AH0', 'N', 'T'],
-    ipa: ['ɪ', 'n', 'v', 'aɪ', 'r', 'ʌ', 'n', 'm', 'ʌ', 'n', 't'],
+    arpabet: [
+      'IH0',
+      'N',
+      'V',
+      'AY1',
+      'R',
+      'AH0',
+      'N',
+      'M',
+      'AH0',
+      'N',
+      'T'
+    ],
+    ipa: [
+      'ɪ',
+      'n',
+      'v',
+      'aɪ',
+      'r',
+      'ʌ',
+      'n',
+      'm',
+      'ʌ',
+      'n',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of environment.'
   },
   {
     word: 'evaluate',
     definition: 'to judge or decide the value of something',
     category: 'science',
-    arpabet: ['IH0', 'V', 'AE1', 'L', 'Y', 'UW0', 'EY2', 'T'],
-    ipa: ['ɪ', 'v', 'æ', 'l', 'j', 'u', 'eɪ', 't'],
+    arpabet: [
+      'IH0',
+      'V',
+      'AE1',
+      'L',
+      'Y',
+      'UW0',
+      'EY2',
+      'T'
+    ],
+    ipa: [
+      'ɪ',
+      'v',
+      'æ',
+      'l',
+      'j',
+      'u',
+      'eɪ',
+      't'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to evaluate.'
   },
   {
     word: 'evaporation',
     definition: 'when liquid turns into gas',
     category: 'science',
-    arpabet: ['IH0', 'V', 'AE2', 'P', 'ER0', 'EY1', 'SH', 'AH0', 'N'],
-    ipa: ['ɪ', 'v', 'æ', 'p', 'ɝ', 'eɪ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'IH0',
+      'V',
+      'AE2',
+      'P',
+      'ER0',
+      'EY1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'ɪ',
+      'v',
+      'æ',
+      'p',
+      'ɝ',
+      'eɪ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of evaporation.'
   },
   {
     word: 'explore',
     definition: 'to learn about something by looking closely',
     category: 'science',
-    arpabet: ['IH0', 'K', 'S', 'P', 'L', 'AO1', 'R'],
-    ipa: ['ɪ', 'k', 's', 'p', 'l', 'ɔ', 'r'],
+    arpabet: [
+      'IH0',
+      'K',
+      'S',
+      'P',
+      'L',
+      'AO1',
+      'R'
+    ],
+    ipa: [
+      'ɪ',
+      'k',
+      's',
+      'p',
+      'l',
+      'ɔ',
+      'r'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to explore.'
   },
   {
     word: 'extinct',
     definition: 'when a kind of living thing no longer exists',
     category: 'science',
-    arpabet: ['IH0', 'K', 'S', 'T', 'IH1', 'NG', 'K', 'T'],
-    ipa: ['ɪ', 'k', 's', 't', 'ɪ', 'ŋ', 'k', 't'],
+    arpabet: [
+      'IH0',
+      'K',
+      'S',
+      'T',
+      'IH1',
+      'NG',
+      'K',
+      'T'
+    ],
+    ipa: [
+      'ɪ',
+      'k',
+      's',
+      't',
+      'ɪ',
+      'ŋ',
+      'k',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of extinct.'
   },
   {
     word: 'graph',
     definition: 'a chart used to show information',
     category: 'science',
-    arpabet: ['G', 'R', 'AE1', 'F'],
-    ipa: ['ɡ', 'r', 'æ', 'f'],
+    arpabet: [
+      'G',
+      'R',
+      'AE1',
+      'F'
+    ],
+    ipa: [
+      'ɡ',
+      'r',
+      'æ',
+      'f'
+    ],
+    drawPrompt: 'Draw a graph.'
   },
   {
     word: 'gravity',
     definition: 'the force that pulls things toward Earth',
     category: 'science',
-    arpabet: ['G', 'R', 'AE1', 'V', 'AH0', 'T', 'IY0'],
-    ipa: ['ɡ', 'r', 'æ', 'v', 'ʌ', 't', 'i'],
+    arpabet: [
+      'G',
+      'R',
+      'AE1',
+      'V',
+      'AH0',
+      'T',
+      'IY0'
+    ],
+    ipa: [
+      'ɡ',
+      'r',
+      'æ',
+      'v',
+      'ʌ',
+      't',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of gravity.'
   },
   {
     word: 'habitat',
     definition: 'the natural home of a plant or animal',
     category: 'science',
-    arpabet: ['HH', 'AE1', 'B', 'AH0', 'T', 'AE2', 'T'],
-    ipa: ['h', 'æ', 'b', 'ʌ', 't', 'æ', 't'],
+    arpabet: [
+      'HH',
+      'AE1',
+      'B',
+      'AH0',
+      'T',
+      'AE2',
+      'T'
+    ],
+    ipa: [
+      'h',
+      'æ',
+      'b',
+      'ʌ',
+      't',
+      'æ',
+      't'
+    ],
+    drawPrompt: 'Draw a habitat.'
   },
   {
     word: 'heart',
     definition: 'an organ that pumps blood',
     category: 'science',
-    arpabet: ['HH', 'AA1', 'R', 'T'],
-    ipa: ['h', 'ɑ', 'r', 't'],
+    arpabet: [
+      'HH',
+      'AA1',
+      'R',
+      'T'
+    ],
+    ipa: [
+      'h',
+      'ɑ',
+      'r',
+      't'
+    ],
+    drawPrompt: 'Draw a heart.'
   },
   {
     word: 'inquiry',
     definition: 'asking questions to learn more',
     category: 'science',
-    arpabet: ['IH2', 'N', 'K', 'W', 'AY1', 'R', 'IY2'],
-    ipa: ['ɪ', 'n', 'k', 'w', 'aɪ', 'r', 'i'],
+    arpabet: [
+      'IH2',
+      'N',
+      'K',
+      'W',
+      'AY1',
+      'R',
+      'IY2'
+    ],
+    ipa: [
+      'ɪ',
+      'n',
+      'k',
+      'w',
+      'aɪ',
+      'r',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of inquiry.'
   },
   {
     word: 'insect',
     definition: 'a small animal with six legs and a body in parts',
     category: 'science',
-    arpabet: ['IH1', 'N', 'S', 'EH2', 'K', 'T'],
-    ipa: ['ɪ', 'n', 's', 'ɛ', 'k', 't'],
+    arpabet: [
+      'IH1',
+      'N',
+      'S',
+      'EH2',
+      'K',
+      'T'
+    ],
+    ipa: [
+      'ɪ',
+      'n',
+      's',
+      'ɛ',
+      'k',
+      't'
+    ],
+    drawPrompt: 'Draw an insect.'
   },
   {
     word: 'investigate',
     definition: 'to study something carefully',
     category: 'science',
-    arpabet: ['IH2', 'N', 'V', 'EH1', 'S', 'T', 'AH0', 'G', 'EY2', 'T'],
-    ipa: ['ɪ', 'n', 'v', 'ɛ', 's', 't', 'ʌ', 'ɡ', 'eɪ', 't'],
+    arpabet: [
+      'IH2',
+      'N',
+      'V',
+      'EH1',
+      'S',
+      'T',
+      'AH0',
+      'G',
+      'EY2',
+      'T'
+    ],
+    ipa: [
+      'ɪ',
+      'n',
+      'v',
+      'ɛ',
+      's',
+      't',
+      'ʌ',
+      'ɡ',
+      'eɪ',
+      't'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to investigate.'
   },
   {
     word: 'life cycle',
     definition: 'the stages a living thing goes through',
     category: 'science',
-    arpabet: ['L', 'AY1', 'F', 'S', 'AY1', 'K', 'AH0', 'L'],
-    ipa: ['l', 'aɪ', 'f', 's', 'aɪ', 'k', 'ʌ', 'l'],
+    arpabet: [
+      'L',
+      'AY1',
+      'F',
+      'S',
+      'AY1',
+      'K',
+      'AH0',
+      'L'
+    ],
+    ipa: [
+      'l',
+      'aɪ',
+      'f',
+      's',
+      'aɪ',
+      'k',
+      'ʌ',
+      'l'
+    ],
+    drawPrompt: 'Draw something that reminds you of life cycle.'
   },
   {
     word: 'light',
     definition: 'energy that lets us see',
     category: 'science',
-    arpabet: ['L', 'AY1', 'T'],
-    ipa: ['l', 'aɪ', 't'],
+    arpabet: [
+      'L',
+      'AY1',
+      'T'
+    ],
+    ipa: [
+      'l',
+      'aɪ',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of light.'
   },
   {
     word: 'liquid',
     definition: 'a substance that flows and takes shape of its container',
     category: 'science',
-    arpabet: ['L', 'IH1', 'K', 'W', 'AH0', 'D'],
-    ipa: ['l', 'ɪ', 'k', 'w', 'ʌ', 'd'],
+    arpabet: [
+      'L',
+      'IH1',
+      'K',
+      'W',
+      'AH0',
+      'D'
+    ],
+    ipa: [
+      'l',
+      'ɪ',
+      'k',
+      'w',
+      'ʌ',
+      'd'
+    ],
+    drawPrompt: 'Draw a liquid.'
   },
   {
     word: 'location',
     definition: 'a place where something is',
     category: 'science',
-    arpabet: ['L', 'OW0', 'K', 'EY1', 'SH', 'AH0', 'N'],
-    ipa: ['l', 'oʊ', 'k', 'eɪ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'L',
+      'OW0',
+      'K',
+      'EY1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'l',
+      'oʊ',
+      'k',
+      'eɪ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of location.'
   },
   {
     word: 'lungs',
     definition: 'organs used for breathing',
     category: 'science',
-    arpabet: ['L', 'AH1', 'NG', 'Z'],
-    ipa: ['l', 'ʌ', 'ŋ', 'z'],
+    arpabet: [
+      'L',
+      'AH1',
+      'NG',
+      'Z'
+    ],
+    ipa: [
+      'l',
+      'ʌ',
+      'ŋ',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of lungs.'
   },
   {
     word: 'machine',
     definition: 'a tool that helps do work',
     category: 'science',
-    arpabet: ['M', 'AH0', 'SH', 'IY1', 'N'],
-    ipa: ['m', 'ʌ', 'ʃ', 'i', 'n'],
+    arpabet: [
+      'M',
+      'AH0',
+      'SH',
+      'IY1',
+      'N'
+    ],
+    ipa: [
+      'm',
+      'ʌ',
+      'ʃ',
+      'i',
+      'n'
+    ],
+    drawPrompt: 'Draw a machine.'
   },
   {
     word: 'magnet',
     definition: 'an object that pulls certain metals',
     category: 'science',
-    arpabet: ['M', 'AE1', 'G', 'N', 'AH0', 'T'],
-    ipa: ['m', 'æ', 'ɡ', 'n', 'ʌ', 't'],
+    arpabet: [
+      'M',
+      'AE1',
+      'G',
+      'N',
+      'AH0',
+      'T'
+    ],
+    ipa: [
+      'm',
+      'æ',
+      'ɡ',
+      'n',
+      'ʌ',
+      't'
+    ],
+    drawPrompt: 'Draw a magnet.'
   },
   {
     word: 'magnify',
     definition: 'to make something look bigger',
     category: 'science',
-    arpabet: ['M', 'AE1', 'G', 'N', 'AH0', 'F', 'AY2'],
-    ipa: ['m', 'æ', 'ɡ', 'n', 'ʌ', 'f', 'aɪ'],
+    arpabet: [
+      'M',
+      'AE1',
+      'G',
+      'N',
+      'AH0',
+      'F',
+      'AY2'
+    ],
+    ipa: [
+      'm',
+      'æ',
+      'ɡ',
+      'n',
+      'ʌ',
+      'f',
+      'aɪ'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to magnify.'
   },
   {
     word: 'mammal',
     definition: 'an animal that has hair and feeds milk to its young',
     category: 'science',
-    arpabet: ['M', 'AE1', 'M', 'AH0', 'L'],
-    ipa: ['m', 'æ', 'm', 'ʌ', 'l'],
+    arpabet: [
+      'M',
+      'AE1',
+      'M',
+      'AH0',
+      'L'
+    ],
+    ipa: [
+      'm',
+      'æ',
+      'm',
+      'ʌ',
+      'l'
+    ],
+    drawPrompt: 'Draw a mammal.'
   },
   {
     word: 'marine',
     definition: 'related to the ocean',
     category: 'science',
-    arpabet: ['M', 'ER0', 'IY1', 'N'],
-    ipa: ['m', 'ɝ', 'i', 'n'],
+    arpabet: [
+      'M',
+      'ER0',
+      'IY1',
+      'N'
+    ],
+    ipa: [
+      'm',
+      'ɝ',
+      'i',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of marine.'
   },
   {
     word: 'movement',
     definition: 'a change in position',
     category: 'science',
-    arpabet: ['M', 'UW1', 'V', 'M', 'AH0', 'N', 'T'],
-    ipa: ['m', 'u', 'v', 'm', 'ʌ', 'n', 't'],
+    arpabet: [
+      'M',
+      'UW1',
+      'V',
+      'M',
+      'AH0',
+      'N',
+      'T'
+    ],
+    ipa: [
+      'm',
+      'u',
+      'v',
+      'm',
+      'ʌ',
+      'n',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of movement.'
   },
   {
     word: 'nourish',
     definition: 'to provide food needed for growth',
     category: 'science',
-    arpabet: ['N', 'ER1', 'IH0', 'SH'],
-    ipa: ['n', 'ɝ', 'ɪ', 'ʃ'],
+    arpabet: [
+      'N',
+      'ER1',
+      'IH0',
+      'SH'
+    ],
+    ipa: [
+      'n',
+      'ɝ',
+      'ɪ',
+      'ʃ'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to nourish.'
   },
   {
     word: 'nutrition',
     definition: 'the process of getting and using food',
     category: 'science',
-    arpabet: ['N', 'UW0', 'T', 'R', 'IH1', 'SH', 'AH0', 'N'],
-    ipa: ['n', 'u', 't', 'r', 'ɪ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'N',
+      'UW0',
+      'T',
+      'R',
+      'IH1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'n',
+      'u',
+      't',
+      'r',
+      'ɪ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of nutrition.'
   },
   {
     word: 'observe',
     definition: 'to watch carefully',
     category: 'science',
-    arpabet: ['AH0', 'B', 'Z', 'ER1', 'V'],
-    ipa: ['ʌ', 'b', 'z', 'ɝ', 'v'],
+    arpabet: [
+      'AH0',
+      'B',
+      'Z',
+      'ER1',
+      'V'
+    ],
+    ipa: [
+      'ʌ',
+      'b',
+      'z',
+      'ɝ',
+      'v'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to observe.'
   },
   {
     word: 'ocean',
     definition: 'a large body of salt water',
     category: 'science',
-    arpabet: ['OW1', 'SH', 'AH0', 'N'],
-    ipa: ['oʊ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'OW1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'oʊ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw an ocean.'
   },
   {
     word: 'organism',
     definition: 'a living thing',
     category: 'science',
-    arpabet: ['AO1', 'R', 'G', 'AH0', 'N', 'IH2', 'Z', 'AH0', 'M'],
-    ipa: ['ɔ', 'r', 'ɡ', 'ʌ', 'n', 'ɪ', 'z', 'ʌ', 'm'],
+    arpabet: [
+      'AO1',
+      'R',
+      'G',
+      'AH0',
+      'N',
+      'IH2',
+      'Z',
+      'AH0',
+      'M'
+    ],
+    ipa: [
+      'ɔ',
+      'r',
+      'ɡ',
+      'ʌ',
+      'n',
+      'ɪ',
+      'z',
+      'ʌ',
+      'm'
+    ],
+    drawPrompt: 'Draw something that reminds you of organism.'
   },
   {
     word: 'organs',
     definition: 'parts of the body that do specific jobs',
     category: 'science',
-    arpabet: ['AO1', 'R', 'G', 'AH0', 'N', 'Z'],
-    ipa: ['ɔ', 'r', 'ɡ', 'ʌ', 'n', 'z'],
+    arpabet: [
+      'AO1',
+      'R',
+      'G',
+      'AH0',
+      'N',
+      'Z'
+    ],
+    ipa: [
+      'ɔ',
+      'r',
+      'ɡ',
+      'ʌ',
+      'n',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of organs.'
   },
   {
     word: 'oxygen',
     definition: 'a gas needed for breathing',
     category: 'science',
-    arpabet: ['AA1', 'K', 'S', 'AH0', 'JH', 'AH0', 'N'],
-    ipa: ['ɑ', 'k', 's', 'ʌ', 'dʒ', 'ʌ', 'n'],
+    arpabet: [
+      'AA1',
+      'K',
+      'S',
+      'AH0',
+      'JH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'ɑ',
+      'k',
+      's',
+      'ʌ',
+      'dʒ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw an oxygen.'
   },
   {
     word: 'photosynthesis',
     definition: 'how plants use sunlight to make food',
     category: 'science',
-    arpabet: ['F', 'OW2', 'T', 'OW0', 'S', 'IH1', 'N', 'TH', 'AH0', 'S', 'IH0', 'S'],
-    ipa: ['f', 'oʊ', 't', 'oʊ', 's', 'ɪ', 'n', 'θ', 'ʌ', 's', 'ɪ', 's'],
+    arpabet: [
+      'F',
+      'OW2',
+      'T',
+      'OW0',
+      'S',
+      'IH1',
+      'N',
+      'TH',
+      'AH0',
+      'S',
+      'IH0',
+      'S'
+    ],
+    ipa: [
+      'f',
+      'oʊ',
+      't',
+      'oʊ',
+      's',
+      'ɪ',
+      'n',
+      'θ',
+      'ʌ',
+      's',
+      'ɪ',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of photosynthesis.'
   },
   {
     word: 'plant',
     definition: 'a living thing that grows in soil and makes its own food',
     category: 'science',
-    arpabet: ['P', 'L', 'AE1', 'N', 'T'],
-    ipa: ['p', 'l', 'æ', 'n', 't'],
+    arpabet: [
+      'P',
+      'L',
+      'AE1',
+      'N',
+      'T'
+    ],
+    ipa: [
+      'p',
+      'l',
+      'æ',
+      'n',
+      't'
+    ],
+    drawPrompt: 'Draw a plant.'
   },
   {
     word: 'predator',
     definition: 'an animal that hunts other animals',
     category: 'science',
-    arpabet: ['P', 'R', 'EH1', 'D', 'AH0', 'T', 'ER0'],
-    ipa: ['p', 'r', 'ɛ', 'd', 'ʌ', 't', 'ɝ'],
+    arpabet: [
+      'P',
+      'R',
+      'EH1',
+      'D',
+      'AH0',
+      'T',
+      'ER0'
+    ],
+    ipa: [
+      'p',
+      'r',
+      'ɛ',
+      'd',
+      'ʌ',
+      't',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw a predator.'
   },
   {
     word: 'protection',
     definition: 'keeping something safe',
     category: 'science',
-    arpabet: ['P', 'R', 'AH0', 'T', 'EH1', 'K', 'SH', 'AH0', 'N'],
-    ipa: ['p', 'r', 'ʌ', 't', 'ɛ', 'k', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'P',
+      'R',
+      'AH0',
+      'T',
+      'EH1',
+      'K',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'p',
+      'r',
+      'ʌ',
+      't',
+      'ɛ',
+      'k',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of protection.'
   },
   {
     word: 'question',
     definition: 'something you ask to learn',
     category: 'science',
-    arpabet: ['K', 'W', 'EH1', 'S', 'CH', 'AH0', 'N'],
-    ipa: ['k', 'w', 'ɛ', 's', 'tʃ', 'ʌ', 'n'],
+    arpabet: [
+      'K',
+      'W',
+      'EH1',
+      'S',
+      'CH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'k',
+      'w',
+      'ɛ',
+      's',
+      'tʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of question.'
   },
   {
     word: 'reason',
     definition: 'a cause or explanation',
     category: 'science',
-    arpabet: ['R', 'IY1', 'Z', 'AH0', 'N'],
-    ipa: ['r', 'i', 'z', 'ʌ', 'n'],
+    arpabet: [
+      'R',
+      'IY1',
+      'Z',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'r',
+      'i',
+      'z',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw a reason.'
   },
   {
     word: 'reflect',
     definition: 'to bounce back light or heat',
     category: 'science',
-    arpabet: ['R', 'IH0', 'F', 'L', 'EH1', 'K', 'T'],
-    ipa: ['r', 'ɪ', 'f', 'l', 'ɛ', 'k', 't'],
+    arpabet: [
+      'R',
+      'IH0',
+      'F',
+      'L',
+      'EH1',
+      'K',
+      'T'
+    ],
+    ipa: [
+      'r',
+      'ɪ',
+      'f',
+      'l',
+      'ɛ',
+      'k',
+      't'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to reflect.'
   },
   {
     word: 'reproduction',
     definition: 'how living things make more of their kind',
     category: 'science',
-    arpabet: ['R', 'IY2', 'P', 'R', 'AH0', 'D', 'AH1', 'K', 'SH', 'AH0', 'N'],
-    ipa: ['r', 'i', 'p', 'r', 'ʌ', 'd', 'ʌ', 'k', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'R',
+      'IY2',
+      'P',
+      'R',
+      'AH0',
+      'D',
+      'AH1',
+      'K',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'r',
+      'i',
+      'p',
+      'r',
+      'ʌ',
+      'd',
+      'ʌ',
+      'k',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of reproduction.'
   },
   {
     word: 'root',
     definition: 'the part of a plant that grows underground',
     category: 'science',
-    arpabet: ['R', 'UW1', 'T'],
-    ipa: ['r', 'u', 't'],
+    arpabet: [
+      'R',
+      'UW1',
+      'T'
+    ],
+    ipa: [
+      'r',
+      'u',
+      't'
+    ],
+    drawPrompt: 'Draw a root.'
   },
   {
     word: 'science',
     definition: 'the study of the natural world',
     category: 'science',
-    arpabet: ['S', 'AY1', 'AH0', 'N', 'S'],
-    ipa: ['s', 'aɪ', 'ʌ', 'n', 's'],
+    arpabet: [
+      'S',
+      'AY1',
+      'AH0',
+      'N',
+      'S'
+    ],
+    ipa: [
+      's',
+      'aɪ',
+      'ʌ',
+      'n',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of science.'
   },
   {
     word: 'scientist',
     definition: 'a person who studies science',
     category: 'science',
-    arpabet: ['S', 'AY1', 'AH0', 'N', 'T', 'IH0', 'S', 'T'],
-    ipa: ['s', 'aɪ', 'ʌ', 'n', 't', 'ɪ', 's', 't'],
+    arpabet: [
+      'S',
+      'AY1',
+      'AH0',
+      'N',
+      'T',
+      'IH0',
+      'S',
+      'T'
+    ],
+    ipa: [
+      's',
+      'aɪ',
+      'ʌ',
+      'n',
+      't',
+      'ɪ',
+      's',
+      't'
+    ],
+    drawPrompt: 'Draw a scientist.'
   },
   {
     word: 'senses',
     definition: 'ways we experience the world, like sight and smell',
     category: 'science',
-    arpabet: ['S', 'EH1', 'N', 'S', 'IH0', 'Z'],
-    ipa: ['s', 'ɛ', 'n', 's', 'ɪ', 'z'],
+    arpabet: [
+      'S',
+      'EH1',
+      'N',
+      'S',
+      'IH0',
+      'Z'
+    ],
+    ipa: [
+      's',
+      'ɛ',
+      'n',
+      's',
+      'ɪ',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of senses.'
   },
   {
     word: 'shadow',
     definition: 'a dark shape made when light is blocked',
     category: 'science',
-    arpabet: ['SH', 'AE1', 'D', 'OW2'],
-    ipa: ['ʃ', 'æ', 'd', 'oʊ'],
+    arpabet: [
+      'SH',
+      'AE1',
+      'D',
+      'OW2'
+    ],
+    ipa: [
+      'ʃ',
+      'æ',
+      'd',
+      'oʊ'
+    ],
+    drawPrompt: 'Draw a shadow.'
   },
   {
     word: 'shape',
     definition: 'the form of something',
     category: 'science',
-    arpabet: ['SH', 'EY1', 'P'],
-    ipa: ['ʃ', 'eɪ', 'p'],
+    arpabet: [
+      'SH',
+      'EY1',
+      'P'
+    ],
+    ipa: [
+      'ʃ',
+      'eɪ',
+      'p'
+    ],
+    drawPrompt: 'Draw a shape.'
   },
   {
     word: 'solution',
     definition: 'an answer to a problem or a mixture of substances',
     category: 'science',
-    arpabet: ['S', 'AH0', 'L', 'UW1', 'SH', 'AH0', 'N'],
-    ipa: ['s', 'ʌ', 'l', 'u', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'S',
+      'AH0',
+      'L',
+      'UW1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      's',
+      'ʌ',
+      'l',
+      'u',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of solution.'
   },
   {
     word: 'sort',
     definition: 'to put into groups',
     category: 'science',
-    arpabet: ['S', 'AO1', 'R', 'T'],
-    ipa: ['s', 'ɔ', 'r', 't'],
+    arpabet: [
+      'S',
+      'AO1',
+      'R',
+      'T'
+    ],
+    ipa: [
+      's',
+      'ɔ',
+      'r',
+      't'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to sort.'
   },
   {
     word: 'sound',
     definition: 'what we hear',
     category: 'science',
-    arpabet: ['S', 'AW1', 'N', 'D'],
-    ipa: ['s', 'aʊ', 'n', 'd'],
+    arpabet: [
+      'S',
+      'AW1',
+      'N',
+      'D'
+    ],
+    ipa: [
+      's',
+      'aʊ',
+      'n',
+      'd'
+    ],
+    drawPrompt: 'Draw something that reminds you of sound.'
   },
   {
     word: 'stem',
     definition: 'the part of a plant that holds it up',
     category: 'science',
-    arpabet: ['S', 'T', 'EH1', 'M'],
-    ipa: ['s', 't', 'ɛ', 'm'],
+    arpabet: [
+      'S',
+      'T',
+      'EH1',
+      'M'
+    ],
+    ipa: [
+      's',
+      't',
+      'ɛ',
+      'm'
+    ],
+    drawPrompt: 'Draw a stem.'
   },
   {
     word: 'survival',
     definition: 'staying alive',
     category: 'science',
-    arpabet: ['S', 'ER0', 'V', 'AY1', 'V', 'AH0', 'L'],
-    ipa: ['s', 'ɝ', 'v', 'aɪ', 'v', 'ʌ', 'l'],
+    arpabet: [
+      'S',
+      'ER0',
+      'V',
+      'AY1',
+      'V',
+      'AH0',
+      'L'
+    ],
+    ipa: [
+      's',
+      'ɝ',
+      'v',
+      'aɪ',
+      'v',
+      'ʌ',
+      'l'
+    ],
+    drawPrompt: 'Draw something that reminds you of survival.'
   },
   {
     word: 'temperature',
     definition: 'how hot or cold something is',
     category: 'science',
-    arpabet: ['T', 'EH1', 'M', 'P', 'R', 'AH0', 'CH', 'ER0'],
-    ipa: ['t', 'ɛ', 'm', 'p', 'r', 'ʌ', 'tʃ', 'ɝ'],
+    arpabet: [
+      'T',
+      'EH1',
+      'M',
+      'P',
+      'R',
+      'AH0',
+      'CH',
+      'ER0'
+    ],
+    ipa: [
+      't',
+      'ɛ',
+      'm',
+      'p',
+      'r',
+      'ʌ',
+      'tʃ',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of temperature.'
   },
   {
     word: 'test',
     definition: 'to try something to see what happens',
     category: 'science',
-    arpabet: ['T', 'EH1', 'S', 'T'],
-    ipa: ['t', 'ɛ', 's', 't'],
+    arpabet: [
+      'T',
+      'EH1',
+      'S',
+      'T'
+    ],
+    ipa: [
+      't',
+      'ɛ',
+      's',
+      't'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to test.'
   },
   {
     word: 'tide',
     definition: 'the rise and fall of ocean water',
     category: 'science',
-    arpabet: ['T', 'AY1', 'D'],
-    ipa: ['t', 'aɪ', 'd'],
+    arpabet: [
+      'T',
+      'AY1',
+      'D'
+    ],
+    ipa: [
+      't',
+      'aɪ',
+      'd'
+    ],
+    drawPrompt: 'Draw a tide.'
   },
   {
     word: 'warm-blooded',
     definition: 'having a body that stays at a steady temperature',
     category: 'science',
-    arpabet: ['?'],
-    ipa: ['?'],
+    arpabet: [
+      '?'
+    ],
+    ipa: [
+      '?'
+    ],
+    drawPrompt: 'Draw something that reminds you of warm-blooded.'
   },
   {
     word: 'weather',
     definition: 'what the air is like outside',
     category: 'science',
-    arpabet: ['W', 'EH1', 'DH', 'ER0'],
-    ipa: ['w', 'ɛ', 'ð', 'ɝ'],
+    arpabet: [
+      'W',
+      'EH1',
+      'DH',
+      'ER0'
+    ],
+    ipa: [
+      'w',
+      'ɛ',
+      'ð',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of weather.'
   },
   {
     word: 'weight',
     definition: 'how heavy something is',
     category: 'science',
-    arpabet: ['W', 'EY1', 'T'],
-    ipa: ['w', 'eɪ', 't'],
+    arpabet: [
+      'W',
+      'EY1',
+      'T'
+    ],
+    ipa: [
+      'w',
+      'eɪ',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of weight.'
   },
   {
     word: 'antonym',
     definition: 'a word that means the opposite of another word',
     category: 'literature and language arts',
-    arpabet: ['?'],
-    ipa: ['?'],
+    arpabet: [
+      '?'
+    ],
+    ipa: [
+      '?'
+    ],
+    drawPrompt: 'Draw something that reminds you of antonym.'
   },
   {
     word: 'appendix',
     definition: 'extra information added at the end of a book',
     category: 'literature and language arts',
-    arpabet: ['AH0', 'P', 'EH1', 'N', 'D', 'IH0', 'K', 'S'],
-    ipa: ['ʌ', 'p', 'ɛ', 'n', 'd', 'ɪ', 'k', 's'],
+    arpabet: [
+      'AH0',
+      'P',
+      'EH1',
+      'N',
+      'D',
+      'IH0',
+      'K',
+      'S'
+    ],
+    ipa: [
+      'ʌ',
+      'p',
+      'ɛ',
+      'n',
+      'd',
+      'ɪ',
+      'k',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of appendix.'
   },
   {
     word: 'argument',
     definition: 'a reason or set of reasons to support an idea',
     category: 'literature and language arts',
-    arpabet: ['AA1', 'R', 'G', 'Y', 'AH0', 'M', 'AH0', 'N', 'T'],
-    ipa: ['ɑ', 'r', 'ɡ', 'j', 'ʌ', 'm', 'ʌ', 'n', 't'],
+    arpabet: [
+      'AA1',
+      'R',
+      'G',
+      'Y',
+      'AH0',
+      'M',
+      'AH0',
+      'N',
+      'T'
+    ],
+    ipa: [
+      'ɑ',
+      'r',
+      'ɡ',
+      'j',
+      'ʌ',
+      'm',
+      'ʌ',
+      'n',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of argument.'
   },
   {
     word: 'audience',
     definition: 'the people who read or listen to something',
     category: 'literature and language arts',
-    arpabet: ['AA1', 'D', 'IY0', 'AH0', 'N', 'S'],
-    ipa: ['ɑ', 'd', 'i', 'ʌ', 'n', 's'],
+    arpabet: [
+      'AA1',
+      'D',
+      'IY0',
+      'AH0',
+      'N',
+      'S'
+    ],
+    ipa: [
+      'ɑ',
+      'd',
+      'i',
+      'ʌ',
+      'n',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of audience.'
   },
   {
     word: 'author',
     definition: 'the person who writes a book or text',
     category: 'literature and language arts',
-    arpabet: ['AO1', 'TH', 'ER0'],
-    ipa: ['ɔ', 'θ', 'ɝ'],
+    arpabet: [
+      'AO1',
+      'TH',
+      'ER0'
+    ],
+    ipa: [
+      'ɔ',
+      'θ',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw an author.'
   },
   {
     word: 'autobiography',
     definition: 'a story a person writes about their own life',
     category: 'literature and language arts',
-    arpabet: ['AO2', 'T', 'AH0', 'B', 'AY0', 'AA1', 'G', 'R', 'AH0', 'F', 'IY0'],
-    ipa: ['ɔ', 't', 'ʌ', 'b', 'aɪ', 'ɑ', 'ɡ', 'r', 'ʌ', 'f', 'i'],
+    arpabet: [
+      'AO2',
+      'T',
+      'AH0',
+      'B',
+      'AY0',
+      'AA1',
+      'G',
+      'R',
+      'AH0',
+      'F',
+      'IY0'
+    ],
+    ipa: [
+      'ɔ',
+      't',
+      'ʌ',
+      'b',
+      'aɪ',
+      'ɑ',
+      'ɡ',
+      'r',
+      'ʌ',
+      'f',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of autobiography.'
   },
   {
     word: 'biography',
     definition: 'a story about a person’s life written by someone else',
     category: 'literature and language arts',
-    arpabet: ['B', 'AY0', 'AA1', 'G', 'R', 'AH0', 'F', 'IY0'],
-    ipa: ['b', 'aɪ', 'ɑ', 'ɡ', 'r', 'ʌ', 'f', 'i'],
+    arpabet: [
+      'B',
+      'AY0',
+      'AA1',
+      'G',
+      'R',
+      'AH0',
+      'F',
+      'IY0'
+    ],
+    ipa: [
+      'b',
+      'aɪ',
+      'ɑ',
+      'ɡ',
+      'r',
+      'ʌ',
+      'f',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of biography.'
   },
   {
     word: 'capital letter',
     definition: 'a large letter used at the start of a sentence or name',
     category: 'literature and language arts',
-    arpabet: ['K', 'AE1', 'P', 'AH0', 'T', 'AH0', 'L', 'L', 'EH1', 'T', 'ER0'],
-    ipa: ['k', 'æ', 'p', 'ʌ', 't', 'ʌ', 'l', 'l', 'ɛ', 't', 'ɝ'],
+    arpabet: [
+      'K',
+      'AE1',
+      'P',
+      'AH0',
+      'T',
+      'AH0',
+      'L',
+      'L',
+      'EH1',
+      'T',
+      'ER0'
+    ],
+    ipa: [
+      'k',
+      'æ',
+      'p',
+      'ʌ',
+      't',
+      'ʌ',
+      'l',
+      'l',
+      'ɛ',
+      't',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of capital letter.'
   },
   {
     word: 'chapter',
     definition: 'a section of a book',
     category: 'literature and language arts',
-    arpabet: ['CH', 'AE1', 'P', 'T', 'ER0'],
-    ipa: ['tʃ', 'æ', 'p', 't', 'ɝ'],
+    arpabet: [
+      'CH',
+      'AE1',
+      'P',
+      'T',
+      'ER0'
+    ],
+    ipa: [
+      'tʃ',
+      'æ',
+      'p',
+      't',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw a chapter.'
   },
   {
     word: 'chapter book',
     definition: 'a book divided into chapters, usually for longer stories',
     category: 'literature and language arts',
-    arpabet: ['CH', 'AE1', 'P', 'T', 'ER0', 'B', 'UH1', 'K'],
-    ipa: ['tʃ', 'æ', 'p', 't', 'ɝ', 'b', 'ʊ', 'k'],
+    arpabet: [
+      'CH',
+      'AE1',
+      'P',
+      'T',
+      'ER0',
+      'B',
+      'UH1',
+      'K'
+    ],
+    ipa: [
+      'tʃ',
+      'æ',
+      'p',
+      't',
+      'ɝ',
+      'b',
+      'ʊ',
+      'k'
+    ],
+    drawPrompt: 'Draw something that reminds you of chapter book.'
   },
   {
     word: 'characters',
     definition: 'the people or animals in a story',
     category: 'literature and language arts',
-    arpabet: ['K', 'AE1', 'R', 'AH0', 'K', 'T', 'ER0', 'Z'],
-    ipa: ['k', 'æ', 'r', 'ʌ', 'k', 't', 'ɝ', 'z'],
+    arpabet: [
+      'K',
+      'AE1',
+      'R',
+      'AH0',
+      'K',
+      'T',
+      'ER0',
+      'Z'
+    ],
+    ipa: [
+      'k',
+      'æ',
+      'r',
+      'ʌ',
+      'k',
+      't',
+      'ɝ',
+      'z'
+    ],
+    drawPrompt: 'Draw some characters.'
   },
   {
     word: 'comma',
     definition: 'a punctuation mark used to separate ideas or items',
     category: 'literature and language arts',
-    arpabet: ['K', 'AA1', 'M', 'AH0'],
-    ipa: ['k', 'ɑ', 'm', 'ʌ'],
+    arpabet: [
+      'K',
+      'AA1',
+      'M',
+      'AH0'
+    ],
+    ipa: [
+      'k',
+      'ɑ',
+      'm',
+      'ʌ'
+    ],
+    drawPrompt: 'Draw a comma.'
   },
   {
     word: 'comprehension',
     definition: 'understanding what you read or hear',
     category: 'literature and language arts',
-    arpabet: ['K', 'AA2', 'M', 'P', 'R', 'IY0', 'HH', 'EH1', 'N', 'SH', 'AH0', 'N'],
-    ipa: ['k', 'ɑ', 'm', 'p', 'r', 'i', 'h', 'ɛ', 'n', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'K',
+      'AA2',
+      'M',
+      'P',
+      'R',
+      'IY0',
+      'HH',
+      'EH1',
+      'N',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'k',
+      'ɑ',
+      'm',
+      'p',
+      'r',
+      'i',
+      'h',
+      'ɛ',
+      'n',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of comprehension.'
   },
   {
     word: 'conclusion',
     definition: 'the ending of a story or text',
     category: 'literature and language arts',
-    arpabet: ['K', 'AH0', 'N', 'K', 'L', 'UW1', 'ZH', 'AH0', 'N'],
-    ipa: ['k', 'ʌ', 'n', 'k', 'l', 'u', 'ʒ', 'ʌ', 'n'],
+    arpabet: [
+      'K',
+      'AH0',
+      'N',
+      'K',
+      'L',
+      'UW1',
+      'ZH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'k',
+      'ʌ',
+      'n',
+      'k',
+      'l',
+      'u',
+      'ʒ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of conclusion.'
   },
   {
     word: 'copyright',
     definition: 'a rule that protects an author’s work from being copied',
     category: 'literature and language arts',
-    arpabet: ['K', 'AA1', 'P', 'IY0', 'R', 'AY2', 'T'],
-    ipa: ['k', 'ɑ', 'p', 'i', 'r', 'aɪ', 't'],
+    arpabet: [
+      'K',
+      'AA1',
+      'P',
+      'IY0',
+      'R',
+      'AY2',
+      'T'
+    ],
+    ipa: [
+      'k',
+      'ɑ',
+      'p',
+      'i',
+      'r',
+      'aɪ',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of copyright.'
   },
   {
     word: 'definition',
     definition: 'the meaning of a word',
     category: 'literature and language arts',
-    arpabet: ['D', 'EH2', 'F', 'AH0', 'N', 'IH1', 'SH', 'AH0', 'N'],
-    ipa: ['d', 'ɛ', 'f', 'ʌ', 'n', 'ɪ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'D',
+      'EH2',
+      'F',
+      'AH0',
+      'N',
+      'IH1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'd',
+      'ɛ',
+      'f',
+      'ʌ',
+      'n',
+      'ɪ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of definition.'
   },
   {
     word: 'description',
     definition: 'words that tell what something is like',
     category: 'literature and language arts',
-    arpabet: ['D', 'IH0', 'S', 'K', 'R', 'IH1', 'P', 'SH', 'AH0', 'N'],
-    ipa: ['d', 'ɪ', 's', 'k', 'r', 'ɪ', 'p', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'D',
+      'IH0',
+      'S',
+      'K',
+      'R',
+      'IH1',
+      'P',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'd',
+      'ɪ',
+      's',
+      'k',
+      'r',
+      'ɪ',
+      'p',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of description.'
   },
   {
     word: 'diagram',
     definition: 'a drawing that shows how something works or is organized',
     category: 'literature and language arts',
-    arpabet: ['D', 'AY1', 'AH0', 'G', 'R', 'AE2', 'M'],
-    ipa: ['d', 'aɪ', 'ʌ', 'ɡ', 'r', 'æ', 'm'],
+    arpabet: [
+      'D',
+      'AY1',
+      'AH0',
+      'G',
+      'R',
+      'AE2',
+      'M'
+    ],
+    ipa: [
+      'd',
+      'aɪ',
+      'ʌ',
+      'ɡ',
+      'r',
+      'æ',
+      'm'
+    ],
+    drawPrompt: 'Draw a diagram.'
   },
   {
     word: 'dialogue',
     definition: 'a conversation between characters in a story',
     category: 'literature and language arts',
-    arpabet: ['D', 'AY1', 'AH0', 'L', 'AO2', 'G'],
-    ipa: ['d', 'aɪ', 'ʌ', 'l', 'ɔ', 'ɡ'],
+    arpabet: [
+      'D',
+      'AY1',
+      'AH0',
+      'L',
+      'AO2',
+      'G'
+    ],
+    ipa: [
+      'd',
+      'aɪ',
+      'ʌ',
+      'l',
+      'ɔ',
+      'ɡ'
+    ],
+    drawPrompt: 'Draw a dialogue.'
   },
   {
     word: 'dictionary',
     definition: 'a book that lists words and their meanings',
     category: 'literature and language arts',
-    arpabet: ['D', 'IH1', 'K', 'SH', 'AH0', 'N', 'EH2', 'R', 'IY0'],
-    ipa: ['d', 'ɪ', 'k', 'ʃ', 'ʌ', 'n', 'ɛ', 'r', 'i'],
+    arpabet: [
+      'D',
+      'IH1',
+      'K',
+      'SH',
+      'AH0',
+      'N',
+      'EH2',
+      'R',
+      'IY0'
+    ],
+    ipa: [
+      'd',
+      'ɪ',
+      'k',
+      'ʃ',
+      'ʌ',
+      'n',
+      'ɛ',
+      'r',
+      'i'
+    ],
+    drawPrompt: 'Draw a dictionary.'
   },
   {
     word: 'discussion',
     definition: 'talking about something with others',
     category: 'literature and language arts',
-    arpabet: ['D', 'IH0', 'S', 'K', 'AH1', 'SH', 'AH0', 'N'],
-    ipa: ['d', 'ɪ', 's', 'k', 'ʌ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'D',
+      'IH0',
+      'S',
+      'K',
+      'AH1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'd',
+      'ɪ',
+      's',
+      'k',
+      'ʌ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of discussion.'
   },
   {
     word: 'elaborate',
     definition: 'to add more details',
     category: 'literature and language arts',
-    arpabet: ['IH0', 'L', 'AE1', 'B', 'R', 'AH0', 'T'],
-    ipa: ['ɪ', 'l', 'æ', 'b', 'r', 'ʌ', 't'],
+    arpabet: [
+      'IH0',
+      'L',
+      'AE1',
+      'B',
+      'R',
+      'AH0',
+      'T'
+    ],
+    ipa: [
+      'ɪ',
+      'l',
+      'æ',
+      'b',
+      'r',
+      'ʌ',
+      't'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to elaborate.'
   },
   {
     word: 'emotion',
     definition: 'a feeling like happy, sad, or angry',
     category: 'literature and language arts',
-    arpabet: ['IH0', 'M', 'OW1', 'SH', 'AH0', 'N'],
-    ipa: ['ɪ', 'm', 'oʊ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'IH0',
+      'M',
+      'OW1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'ɪ',
+      'm',
+      'oʊ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of emotion.'
   },
   {
     word: 'episode',
     definition: 'one part of a longer story',
     category: 'literature and language arts',
-    arpabet: ['EH1', 'P', 'AH0', 'S', 'OW2', 'D'],
-    ipa: ['ɛ', 'p', 'ʌ', 's', 'oʊ', 'd'],
+    arpabet: [
+      'EH1',
+      'P',
+      'AH0',
+      'S',
+      'OW2',
+      'D'
+    ],
+    ipa: [
+      'ɛ',
+      'p',
+      'ʌ',
+      's',
+      'oʊ',
+      'd'
+    ],
+    drawPrompt: 'Draw something that reminds you of episode.'
   },
   {
     word: 'evidence',
     definition: 'information that helps prove something',
     category: 'literature and language arts',
-    arpabet: ['EH1', 'V', 'AH0', 'D', 'AH0', 'N', 'S'],
-    ipa: ['ɛ', 'v', 'ʌ', 'd', 'ʌ', 'n', 's'],
+    arpabet: [
+      'EH1',
+      'V',
+      'AH0',
+      'D',
+      'AH0',
+      'N',
+      'S'
+    ],
+    ipa: [
+      'ɛ',
+      'v',
+      'ʌ',
+      'd',
+      'ʌ',
+      'n',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of evidence.'
   },
   {
     word: 'exclamation mark',
     definition: 'a punctuation mark used to show strong feeling',
     category: 'literature and language arts',
-    arpabet: ['EH2', 'K', 'S', 'K', 'L', 'AH0', 'M', 'EY1', 'SH', 'AH0', 'N', 'M', 'AA1', 'R', 'K'],
-    ipa: ['ɛ', 'k', 's', 'k', 'l', 'ʌ', 'm', 'eɪ', 'ʃ', 'ʌ', 'n', 'm', 'ɑ', 'r', 'k'],
+    arpabet: [
+      'EH2',
+      'K',
+      'S',
+      'K',
+      'L',
+      'AH0',
+      'M',
+      'EY1',
+      'SH',
+      'AH0',
+      'N',
+      'M',
+      'AA1',
+      'R',
+      'K'
+    ],
+    ipa: [
+      'ɛ',
+      'k',
+      's',
+      'k',
+      'l',
+      'ʌ',
+      'm',
+      'eɪ',
+      'ʃ',
+      'ʌ',
+      'n',
+      'm',
+      'ɑ',
+      'r',
+      'k'
+    ],
+    drawPrompt: 'Draw something that reminds you of exclamation mark.'
   },
   {
     word: 'mark',
     definition: 'a symbol used in writing or punctuation',
     category: 'literature and language arts',
-    arpabet: ['M', 'AA1', 'R', 'K'],
-    ipa: ['m', 'ɑ', 'r', 'k'],
+    arpabet: [
+      'M',
+      'AA1',
+      'R',
+      'K'
+    ],
+    ipa: [
+      'm',
+      'ɑ',
+      'r',
+      'k'
+    ],
+    drawPrompt: 'Draw a mark.'
   },
   {
     word: 'extension',
     definition: 'an added part that gives more information',
     category: 'literature and language arts',
-    arpabet: ['IH0', 'K', 'S', 'T', 'EH1', 'N', 'SH', 'AH0', 'N'],
-    ipa: ['ɪ', 'k', 's', 't', 'ɛ', 'n', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'IH0',
+      'K',
+      'S',
+      'T',
+      'EH1',
+      'N',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'ɪ',
+      'k',
+      's',
+      't',
+      'ɛ',
+      'n',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of extension.'
   },
   {
     word: 'fairy tale',
     definition: 'a story with magic or make-believe characters',
     category: 'literature and language arts',
-    arpabet: ['F', 'EH1', 'R', 'IY0', 'T', 'EY1', 'L'],
-    ipa: ['f', 'ɛ', 'r', 'i', 't', 'eɪ', 'l'],
+    arpabet: [
+      'F',
+      'EH1',
+      'R',
+      'IY0',
+      'T',
+      'EY1',
+      'L'
+    ],
+    ipa: [
+      'f',
+      'ɛ',
+      'r',
+      'i',
+      't',
+      'eɪ',
+      'l'
+    ],
+    drawPrompt: 'Draw something that reminds you of fairy tale.'
   },
   {
     word: 'folk tale',
     definition: 'a traditional story told by people over time',
     category: 'literature and language arts',
-    arpabet: ['F', 'OW1', 'K', 'T', 'EY1', 'L'],
-    ipa: ['f', 'oʊ', 'k', 't', 'eɪ', 'l'],
+    arpabet: [
+      'F',
+      'OW1',
+      'K',
+      'T',
+      'EY1',
+      'L'
+    ],
+    ipa: [
+      'f',
+      'oʊ',
+      'k',
+      't',
+      'eɪ',
+      'l'
+    ],
+    drawPrompt: 'Draw something that reminds you of folk tale.'
   },
   {
     word: 'fiction',
     definition: 'a story that is made up',
     category: 'literature and language arts',
-    arpabet: ['F', 'IH1', 'K', 'SH', 'AH0', 'N'],
-    ipa: ['f', 'ɪ', 'k', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'F',
+      'IH1',
+      'K',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'f',
+      'ɪ',
+      'k',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of fiction.'
   },
   {
     word: 'generalization',
     definition: 'a broad statement based on examples',
     category: 'literature and language arts',
-    arpabet: ['JH', 'EH2', 'N', 'ER0', 'AH0', 'L', 'IH0', 'Z', 'EY1', 'SH', 'AH0', 'N'],
-    ipa: ['dʒ', 'ɛ', 'n', 'ɝ', 'ʌ', 'l', 'ɪ', 'z', 'eɪ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'JH',
+      'EH2',
+      'N',
+      'ER0',
+      'AH0',
+      'L',
+      'IH0',
+      'Z',
+      'EY1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'dʒ',
+      'ɛ',
+      'n',
+      'ɝ',
+      'ʌ',
+      'l',
+      'ɪ',
+      'z',
+      'eɪ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of generalization.'
   },
   {
     word: 'genre',
     definition: 'a type or category of writing',
     category: 'literature and language arts',
-    arpabet: ['ZH', 'AA1', 'N', 'R', 'AH0'],
-    ipa: ['ʒ', 'ɑ', 'n', 'r', 'ʌ'],
+    arpabet: [
+      'ZH',
+      'AA1',
+      'N',
+      'R',
+      'AH0'
+    ],
+    ipa: [
+      'ʒ',
+      'ɑ',
+      'n',
+      'r',
+      'ʌ'
+    ],
+    drawPrompt: 'Draw something that reminds you of genre.'
   },
   {
     word: 'glossary',
     definition: 'a list of words with meanings at the end of a book',
     category: 'literature and language arts',
-    arpabet: ['G', 'L', 'AO1', 'S', 'ER0', 'IY0'],
-    ipa: ['ɡ', 'l', 'ɔ', 's', 'ɝ', 'i'],
+    arpabet: [
+      'G',
+      'L',
+      'AO1',
+      'S',
+      'ER0',
+      'IY0'
+    ],
+    ipa: [
+      'ɡ',
+      'l',
+      'ɔ',
+      's',
+      'ɝ',
+      'i'
+    ],
+    drawPrompt: 'Draw a glossary.'
   },
   {
     word: 'graph',
     definition: 'a chart used to show information',
     category: 'literature and language arts',
-    arpabet: ['G', 'R', 'AE1', 'F'],
-    ipa: ['ɡ', 'r', 'æ', 'f'],
+    arpabet: [
+      'G',
+      'R',
+      'AE1',
+      'F'
+    ],
+    ipa: [
+      'ɡ',
+      'r',
+      'æ',
+      'f'
+    ],
+    drawPrompt: 'Draw a graph.'
   },
   {
     word: 'illustrations',
     definition: 'pictures that help tell a story',
     category: 'literature and language arts',
-    arpabet: ['IH2', 'L', 'AH0', 'S', 'T', 'R', 'EY1', 'SH', 'AH0', 'N', 'Z'],
-    ipa: ['ɪ', 'l', 'ʌ', 's', 't', 'r', 'eɪ', 'ʃ', 'ʌ', 'n', 'z'],
+    arpabet: [
+      'IH2',
+      'L',
+      'AH0',
+      'S',
+      'T',
+      'R',
+      'EY1',
+      'SH',
+      'AH0',
+      'N',
+      'Z'
+    ],
+    ipa: [
+      'ɪ',
+      'l',
+      'ʌ',
+      's',
+      't',
+      'r',
+      'eɪ',
+      'ʃ',
+      'ʌ',
+      'n',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of illustrations.'
   },
   {
     word: 'illustrator',
     definition: 'a person who draws pictures for a book',
     category: 'literature and language arts',
-    arpabet: ['IH1', 'L', 'AH0', 'S', 'T', 'R', 'EY2', 'T', 'ER0'],
-    ipa: ['ɪ', 'l', 'ʌ', 's', 't', 'r', 'eɪ', 't', 'ɝ'],
+    arpabet: [
+      'IH1',
+      'L',
+      'AH0',
+      'S',
+      'T',
+      'R',
+      'EY2',
+      'T',
+      'ER0'
+    ],
+    ipa: [
+      'ɪ',
+      'l',
+      'ʌ',
+      's',
+      't',
+      'r',
+      'eɪ',
+      't',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw an illustrator.'
   },
   {
     word: 'imagination',
     definition: 'the ability to think of ideas or pictures in your mind',
     category: 'literature and language arts',
-    arpabet: ['IH2', 'M', 'AE2', 'JH', 'AH0', 'N', 'EY1', 'SH', 'AH0', 'N'],
-    ipa: ['ɪ', 'm', 'æ', 'dʒ', 'ʌ', 'n', 'eɪ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'IH2',
+      'M',
+      'AE2',
+      'JH',
+      'AH0',
+      'N',
+      'EY1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'ɪ',
+      'm',
+      'æ',
+      'dʒ',
+      'ʌ',
+      'n',
+      'eɪ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of imagination.'
   },
   {
     word: 'index',
     definition: 'a list at the back of a book that helps you find topics',
     category: 'literature and language arts',
-    arpabet: ['IH1', 'N', 'D', 'EH0', 'K', 'S'],
-    ipa: ['ɪ', 'n', 'd', 'ɛ', 'k', 's'],
+    arpabet: [
+      'IH1',
+      'N',
+      'D',
+      'EH0',
+      'K',
+      'S'
+    ],
+    ipa: [
+      'ɪ',
+      'n',
+      'd',
+      'ɛ',
+      'k',
+      's'
+    ],
+    drawPrompt: 'Draw an index.'
   },
   {
     word: 'inference',
     definition: 'a guess based on clues and what you know',
     category: 'literature and language arts',
-    arpabet: ['IH1', 'N', 'F', 'ER0', 'AH0', 'N', 'S'],
-    ipa: ['ɪ', 'n', 'f', 'ɝ', 'ʌ', 'n', 's'],
+    arpabet: [
+      'IH1',
+      'N',
+      'F',
+      'ER0',
+      'AH0',
+      'N',
+      'S'
+    ],
+    ipa: [
+      'ɪ',
+      'n',
+      'f',
+      'ɝ',
+      'ʌ',
+      'n',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of inference.'
   },
   {
     word: 'information',
     definition: 'facts or details about something',
     category: 'literature and language arts',
-    arpabet: ['IH2', 'N', 'F', 'ER0', 'M', 'EY1', 'SH', 'AH0', 'N'],
-    ipa: ['ɪ', 'n', 'f', 'ɝ', 'm', 'eɪ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'IH2',
+      'N',
+      'F',
+      'ER0',
+      'M',
+      'EY1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'ɪ',
+      'n',
+      'f',
+      'ɝ',
+      'm',
+      'eɪ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of information.'
   },
   {
     word: 'book',
     definition: 'a set of written or printed pages bound together',
     category: 'literature and language arts',
-    arpabet: ['B', 'UH1', 'K'],
-    ipa: ['b', 'ʊ', 'k'],
+    arpabet: [
+      'B',
+      'UH1',
+      'K'
+    ],
+    ipa: [
+      'b',
+      'ʊ',
+      'k'
+    ],
+    drawPrompt: 'Draw something that reminds you of book.'
   },
   {
     word: 'interpretation',
     definition: 'how someone understands or explains something',
     category: 'literature and language arts',
-    arpabet: ['IH2', 'N', 'T', 'ER2', 'P', 'R', 'IH0', 'T', 'EY1', 'SH', 'AH0', 'N'],
-    ipa: ['ɪ', 'n', 't', 'ɝ', 'p', 'r', 'ɪ', 't', 'eɪ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'IH2',
+      'N',
+      'T',
+      'ER2',
+      'P',
+      'R',
+      'IH0',
+      'T',
+      'EY1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'ɪ',
+      'n',
+      't',
+      'ɝ',
+      'p',
+      'r',
+      'ɪ',
+      't',
+      'eɪ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of interpretation.'
   },
   {
     word: 'introduction',
     definition: 'the beginning part of a text',
     category: 'literature and language arts',
-    arpabet: ['IH2', 'N', 'T', 'R', 'AH0', 'D', 'AH1', 'K', 'SH', 'AH0', 'N'],
-    ipa: ['ɪ', 'n', 't', 'r', 'ʌ', 'd', 'ʌ', 'k', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'IH2',
+      'N',
+      'T',
+      'R',
+      'AH0',
+      'D',
+      'AH1',
+      'K',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'ɪ',
+      'n',
+      't',
+      'r',
+      'ʌ',
+      'd',
+      'ʌ',
+      'k',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of introduction.'
   },
   {
     word: 'main idea',
     definition: 'the most important point in a text',
     category: 'literature and language arts',
-    arpabet: ['M', 'EY1', 'N', 'AY0', 'D', 'IY1', 'AH0'],
-    ipa: ['m', 'eɪ', 'n', 'aɪ', 'd', 'i', 'ʌ'],
+    arpabet: [
+      'M',
+      'EY1',
+      'N',
+      'AY0',
+      'D',
+      'IY1',
+      'AH0'
+    ],
+    ipa: [
+      'm',
+      'eɪ',
+      'n',
+      'aɪ',
+      'd',
+      'i',
+      'ʌ'
+    ],
+    drawPrompt: 'Draw something that reminds you of main idea.'
   },
   {
     word: 'mystery',
     definition: 'a story about solving a problem or crime',
     category: 'literature and language arts',
-    arpabet: ['M', 'IH1', 'S', 'T', 'ER0', 'IY0'],
-    ipa: ['m', 'ɪ', 's', 't', 'ɝ', 'i'],
+    arpabet: [
+      'M',
+      'IH1',
+      'S',
+      'T',
+      'ER0',
+      'IY0'
+    ],
+    ipa: [
+      'm',
+      'ɪ',
+      's',
+      't',
+      'ɝ',
+      'i'
+    ],
+    drawPrompt: 'Draw a mystery.'
   },
   {
     word: 'nonfiction',
     definition: 'writing that is based on real facts',
     category: 'literature and language arts',
-    arpabet: ['N', 'AA0', 'N', 'F', 'IH1', 'K', 'SH', 'AH0', 'N'],
-    ipa: ['n', 'ɑ', 'n', 'f', 'ɪ', 'k', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'N',
+      'AA0',
+      'N',
+      'F',
+      'IH1',
+      'K',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'n',
+      'ɑ',
+      'n',
+      'f',
+      'ɪ',
+      'k',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of nonfiction.'
   },
   {
     word: 'paragraph',
     definition: 'a group of sentences about one idea',
     category: 'literature and language arts',
-    arpabet: ['P', 'AE1', 'R', 'AH0', 'G', 'R', 'AE2', 'F'],
-    ipa: ['p', 'æ', 'r', 'ʌ', 'ɡ', 'r', 'æ', 'f'],
+    arpabet: [
+      'P',
+      'AE1',
+      'R',
+      'AH0',
+      'G',
+      'R',
+      'AE2',
+      'F'
+    ],
+    ipa: [
+      'p',
+      'æ',
+      'r',
+      'ʌ',
+      'ɡ',
+      'r',
+      'æ',
+      'f'
+    ],
+    drawPrompt: 'Draw something that reminds you of paragraph.'
   },
   {
     word: 'period',
     definition: 'a punctuation mark that ends a sentence',
     category: 'literature and language arts',
-    arpabet: ['P', 'IH1', 'R', 'IY0', 'AH0', 'D'],
-    ipa: ['p', 'ɪ', 'r', 'i', 'ʌ', 'd'],
+    arpabet: [
+      'P',
+      'IH1',
+      'R',
+      'IY0',
+      'AH0',
+      'D'
+    ],
+    ipa: [
+      'p',
+      'ɪ',
+      'r',
+      'i',
+      'ʌ',
+      'd'
+    ],
+    drawPrompt: 'Draw a period.'
   },
   {
     word: 'plot',
     definition: 'what happens in a story',
     category: 'literature and language arts',
-    arpabet: ['P', 'L', 'AA1', 'T'],
-    ipa: ['p', 'l', 'ɑ', 't'],
+    arpabet: [
+      'P',
+      'L',
+      'AA1',
+      'T'
+    ],
+    ipa: [
+      'p',
+      'l',
+      'ɑ',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of plot.'
   },
   {
     word: 'poem',
     definition: 'a piece of writing that often has rhythm or rhyme',
     category: 'literature and language arts',
-    arpabet: ['P', 'OW1', 'AH0', 'M'],
-    ipa: ['p', 'oʊ', 'ʌ', 'm'],
+    arpabet: [
+      'P',
+      'OW1',
+      'AH0',
+      'M'
+    ],
+    ipa: [
+      'p',
+      'oʊ',
+      'ʌ',
+      'm'
+    ],
+    drawPrompt: 'Draw a poem.'
   },
   {
     word: 'predictable book',
     definition: 'a book with repeating patterns that make it easy to guess what comes next',
     category: 'literature and language arts',
-    arpabet: ['P', 'R', 'IH0', 'D', 'IH1', 'K', 'T', 'AH0', 'B', 'AH0', 'L', 'B', 'UH1', 'K'],
-    ipa: ['p', 'r', 'ɪ', 'd', 'ɪ', 'k', 't', 'ʌ', 'b', 'ʌ', 'l', 'b', 'ʊ', 'k'],
+    arpabet: [
+      'P',
+      'R',
+      'IH0',
+      'D',
+      'IH1',
+      'K',
+      'T',
+      'AH0',
+      'B',
+      'AH0',
+      'L',
+      'B',
+      'UH1',
+      'K'
+    ],
+    ipa: [
+      'p',
+      'r',
+      'ɪ',
+      'd',
+      'ɪ',
+      'k',
+      't',
+      'ʌ',
+      'b',
+      'ʌ',
+      'l',
+      'b',
+      'ʊ',
+      'k'
+    ],
+    drawPrompt: 'Draw something that reminds you of predictable book.'
   },
   {
     word: 'prediction',
     definition: 'a guess about what will happen next',
     category: 'literature and language arts',
-    arpabet: ['P', 'R', 'IY0', 'D', 'IH1', 'K', 'SH', 'AH0', 'N'],
-    ipa: ['p', 'r', 'i', 'd', 'ɪ', 'k', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'P',
+      'R',
+      'IY0',
+      'D',
+      'IH1',
+      'K',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'p',
+      'r',
+      'i',
+      'd',
+      'ɪ',
+      'k',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of prediction.'
   },
   {
     word: 'question',
     definition: 'something you ask to learn more',
     category: 'literature and language arts',
-    arpabet: ['K', 'W', 'EH1', 'S', 'CH', 'AH0', 'N'],
-    ipa: ['k', 'w', 'ɛ', 's', 'tʃ', 'ʌ', 'n'],
+    arpabet: [
+      'K',
+      'W',
+      'EH1',
+      'S',
+      'CH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'k',
+      'w',
+      'ɛ',
+      's',
+      'tʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of question.'
   },
   {
     word: 'quotation marks',
     definition: 'punctuation marks used to show someone’s exact words',
     category: 'literature and language arts',
-    arpabet: ['K', 'W', 'OW0', 'T', 'EY1', 'SH', 'AH0', 'N', 'M', 'AA1', 'R', 'K', 'S'],
-    ipa: ['k', 'w', 'oʊ', 't', 'eɪ', 'ʃ', 'ʌ', 'n', 'm', 'ɑ', 'r', 'k', 's'],
+    arpabet: [
+      'K',
+      'W',
+      'OW0',
+      'T',
+      'EY1',
+      'SH',
+      'AH0',
+      'N',
+      'M',
+      'AA1',
+      'R',
+      'K',
+      'S'
+    ],
+    ipa: [
+      'k',
+      'w',
+      'oʊ',
+      't',
+      'eɪ',
+      'ʃ',
+      'ʌ',
+      'n',
+      'm',
+      'ɑ',
+      'r',
+      'k',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of quotation marks.'
   },
   {
     word: 'resolution',
     definition: 'how a story problem is solved',
     category: 'literature and language arts',
-    arpabet: ['R', 'EH2', 'Z', 'AH0', 'L', 'UW1', 'SH', 'AH0', 'N'],
-    ipa: ['r', 'ɛ', 'z', 'ʌ', 'l', 'u', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'R',
+      'EH2',
+      'Z',
+      'AH0',
+      'L',
+      'UW1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'r',
+      'ɛ',
+      'z',
+      'ʌ',
+      'l',
+      'u',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of resolution.'
   },
   {
     word: 'response',
     definition: 'a reaction or answer to something read or heard',
     category: 'literature and language arts',
-    arpabet: ['R', 'IH0', 'S', 'P', 'AA1', 'N', 'S'],
-    ipa: ['r', 'ɪ', 's', 'p', 'ɑ', 'n', 's'],
+    arpabet: [
+      'R',
+      'IH0',
+      'S',
+      'P',
+      'AA1',
+      'N',
+      'S'
+    ],
+    ipa: [
+      'r',
+      'ɪ',
+      's',
+      'p',
+      'ɑ',
+      'n',
+      's'
+    ],
+    drawPrompt: 'Draw a response.'
   },
   {
     word: 'retelling',
     definition: 'telling a story again in your own words',
     category: 'literature and language arts',
-    arpabet: ['R', 'IY0', 'T', 'EH1', 'L', 'IH0', 'NG'],
-    ipa: ['r', 'i', 't', 'ɛ', 'l', 'ɪ', 'ŋ'],
+    arpabet: [
+      'R',
+      'IY0',
+      'T',
+      'EH1',
+      'L',
+      'IH0',
+      'NG'
+    ],
+    ipa: [
+      'r',
+      'i',
+      't',
+      'ɛ',
+      'l',
+      'ɪ',
+      'ŋ'
+    ],
+    drawPrompt: 'Draw something that reminds you of retelling.'
   },
   {
     word: 'rhyme',
     definition: 'words that sound the same at the end',
     category: 'literature and language arts',
-    arpabet: ['R', 'AY1', 'M'],
-    ipa: ['r', 'aɪ', 'm'],
+    arpabet: [
+      'R',
+      'AY1',
+      'M'
+    ],
+    ipa: [
+      'r',
+      'aɪ',
+      'm'
+    ],
+    drawPrompt: 'Draw something that reminds you of rhyme.'
   },
   {
     word: 'setting',
     definition: 'where and when a story takes place',
     category: 'literature and language arts',
-    arpabet: ['S', 'EH1', 'T', 'IH0', 'NG'],
-    ipa: ['s', 'ɛ', 't', 'ɪ', 'ŋ'],
+    arpabet: [
+      'S',
+      'EH1',
+      'T',
+      'IH0',
+      'NG'
+    ],
+    ipa: [
+      's',
+      'ɛ',
+      't',
+      'ɪ',
+      'ŋ'
+    ],
+    drawPrompt: 'Draw something that reminds you of setting.'
   },
   {
     word: 'shared reading',
     definition: 'reading together with others',
     category: 'literature and language arts',
-    arpabet: ['SH', 'EH1', 'R', 'D', 'R', 'IY1', 'D', 'IH0', 'NG'],
-    ipa: ['ʃ', 'ɛ', 'r', 'd', 'r', 'i', 'd', 'ɪ', 'ŋ'],
+    arpabet: [
+      'SH',
+      'EH1',
+      'R',
+      'D',
+      'R',
+      'IY1',
+      'D',
+      'IH0',
+      'NG'
+    ],
+    ipa: [
+      'ʃ',
+      'ɛ',
+      'r',
+      'd',
+      'r',
+      'i',
+      'd',
+      'ɪ',
+      'ŋ'
+    ],
+    drawPrompt: 'Draw something that reminds you of shared reading.'
   },
   {
     word: 'storybook',
     definition: 'a book that tells a story',
     category: 'literature and language arts',
-    arpabet: ['S', 'T', 'AO1', 'R', 'IY0', 'B', 'UH2', 'K'],
-    ipa: ['s', 't', 'ɔ', 'r', 'i', 'b', 'ʊ', 'k'],
+    arpabet: [
+      'S',
+      'T',
+      'AO1',
+      'R',
+      'IY0',
+      'B',
+      'UH2',
+      'K'
+    ],
+    ipa: [
+      's',
+      't',
+      'ɔ',
+      'r',
+      'i',
+      'b',
+      'ʊ',
+      'k'
+    ],
+    drawPrompt: 'Draw a storybook.'
   },
   {
     word: 'strategy',
     definition: 'a plan for reading or understanding text',
     category: 'literature and language arts',
-    arpabet: ['S', 'T', 'R', 'AE1', 'T', 'AH0', 'JH', 'IY0'],
-    ipa: ['s', 't', 'r', 'æ', 't', 'ʌ', 'dʒ', 'i'],
+    arpabet: [
+      'S',
+      'T',
+      'R',
+      'AE1',
+      'T',
+      'AH0',
+      'JH',
+      'IY0'
+    ],
+    ipa: [
+      's',
+      't',
+      'r',
+      'æ',
+      't',
+      'ʌ',
+      'dʒ',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of strategy.'
   },
   {
     word: 'summarize',
     definition: 'to tell the main points in a shorter way',
     category: 'literature and language arts',
-    arpabet: ['S', 'AH1', 'M', 'ER0', 'AY2', 'Z'],
-    ipa: ['s', 'ʌ', 'm', 'ɝ', 'aɪ', 'z'],
+    arpabet: [
+      'S',
+      'AH1',
+      'M',
+      'ER0',
+      'AY2',
+      'Z'
+    ],
+    ipa: [
+      's',
+      'ʌ',
+      'm',
+      'ɝ',
+      'aɪ',
+      'z'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to summarize.'
   },
   {
     word: 'synonym',
     definition: 'a word that means the same as another word',
     category: 'literature and language arts',
-    arpabet: ['S', 'IH1', 'N', 'AH0', 'N', 'IH2', 'M'],
-    ipa: ['s', 'ɪ', 'n', 'ʌ', 'n', 'ɪ', 'm'],
+    arpabet: [
+      'S',
+      'IH1',
+      'N',
+      'AH0',
+      'N',
+      'IH2',
+      'M'
+    ],
+    ipa: [
+      's',
+      'ɪ',
+      'n',
+      'ʌ',
+      'n',
+      'ɪ',
+      'm'
+    ],
+    drawPrompt: 'Draw something that reminds you of synonym.'
   },
   {
     word: 'table of contents',
     definition: 'a list of chapters or sections at the beginning of a book',
     category: 'literature and language arts',
-    arpabet: ['T', 'EY1', 'B', 'AH0', 'L', 'AH1', 'V', 'K', 'AA1', 'N', 'T', 'EH0', 'N', 'T', 'S'],
-    ipa: ['t', 'eɪ', 'b', 'ʌ', 'l', 'ʌ', 'v', 'k', 'ɑ', 'n', 't', 'ɛ', 'n', 't', 's'],
+    arpabet: [
+      'T',
+      'EY1',
+      'B',
+      'AH0',
+      'L',
+      'AH1',
+      'V',
+      'K',
+      'AA1',
+      'N',
+      'T',
+      'EH0',
+      'N',
+      'T',
+      'S'
+    ],
+    ipa: [
+      't',
+      'eɪ',
+      'b',
+      'ʌ',
+      'l',
+      'ʌ',
+      'v',
+      'k',
+      'ɑ',
+      'n',
+      't',
+      'ɛ',
+      'n',
+      't',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of table of contents.'
   },
   {
     word: 'title',
     definition: 'the name of a book or text',
     category: 'literature and language arts',
-    arpabet: ['T', 'AY1', 'T', 'AH0', 'L'],
-    ipa: ['t', 'aɪ', 't', 'ʌ', 'l'],
+    arpabet: [
+      'T',
+      'AY1',
+      'T',
+      'AH0',
+      'L'
+    ],
+    ipa: [
+      't',
+      'aɪ',
+      't',
+      'ʌ',
+      'l'
+    ],
+    drawPrompt: 'Draw a title.'
   },
   {
     word: 'title page',
     definition: 'a page that shows the book’s title and author',
     category: 'literature and language arts',
-    arpabet: ['T', 'AY1', 'T', 'AH0', 'L', 'P', 'EY1', 'JH'],
-    ipa: ['t', 'aɪ', 't', 'ʌ', 'l', 'p', 'eɪ', 'dʒ'],
+    arpabet: [
+      'T',
+      'AY1',
+      'T',
+      'AH0',
+      'L',
+      'P',
+      'EY1',
+      'JH'
+    ],
+    ipa: [
+      't',
+      'aɪ',
+      't',
+      'ʌ',
+      'l',
+      'p',
+      'eɪ',
+      'dʒ'
+    ],
+    drawPrompt: 'Draw something that reminds you of title page.'
   },
   {
     word: 'topic sentence',
     definition: 'a sentence that tells the main idea of a paragraph',
     category: 'literature and language arts',
-    arpabet: ['T', 'AA1', 'P', 'IH0', 'K', 'S', 'EH1', 'N', 'T', 'AH0', 'N', 'S'],
-    ipa: ['t', 'ɑ', 'p', 'ɪ', 'k', 's', 'ɛ', 'n', 't', 'ʌ', 'n', 's'],
+    arpabet: [
+      'T',
+      'AA1',
+      'P',
+      'IH0',
+      'K',
+      'S',
+      'EH1',
+      'N',
+      'T',
+      'AH0',
+      'N',
+      'S'
+    ],
+    ipa: [
+      't',
+      'ɑ',
+      'p',
+      'ɪ',
+      'k',
+      's',
+      'ɛ',
+      'n',
+      't',
+      'ʌ',
+      'n',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of topic sentence.'
   },
   {
     word: 'vocabulary',
     definition: 'the words a person knows and uses',
     category: 'literature and language arts',
-    arpabet: ['V', 'OW0', 'K', 'AE1', 'B', 'Y', 'AH0', 'L', 'EH2', 'R', 'IY0'],
-    ipa: ['v', 'oʊ', 'k', 'æ', 'b', 'j', 'ʌ', 'l', 'ɛ', 'r', 'i'],
+    arpabet: [
+      'V',
+      'OW0',
+      'K',
+      'AE1',
+      'B',
+      'Y',
+      'AH0',
+      'L',
+      'EH2',
+      'R',
+      'IY0'
+    ],
+    ipa: [
+      'v',
+      'oʊ',
+      'k',
+      'æ',
+      'b',
+      'j',
+      'ʌ',
+      'l',
+      'ɛ',
+      'r',
+      'i'
+    ],
+    drawPrompt: 'Draw a vocabulary.'
   },
   {
     word: 'voice',
     definition: 'the way an author’s personality shows in writing',
     category: 'literature and language arts',
-    arpabet: ['V', 'OY1', 'S'],
-    ipa: ['v', 'ɔɪ', 's'],
+    arpabet: [
+      'V',
+      'OY1',
+      'S'
+    ],
+    ipa: [
+      'v',
+      'ɔɪ',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of voice.'
   },
   {
     word: 'Abraham Lincoln',
     definition: 'a U.S. president who helped end slavery',
     category: 'social studies',
-    arpabet: ['EY1', 'B', 'R', 'AH0', 'HH', 'AE2', 'M', 'L', 'IH1', 'NG', 'K', 'AH0', 'N'],
-    ipa: ['eɪ', 'b', 'r', 'ʌ', 'h', 'æ', 'm', 'l', 'ɪ', 'ŋ', 'k', 'ʌ', 'n'],
+    arpabet: [
+      'EY1',
+      'B',
+      'R',
+      'AH0',
+      'HH',
+      'AE2',
+      'M',
+      'L',
+      'IH1',
+      'NG',
+      'K',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'eɪ',
+      'b',
+      'r',
+      'ʌ',
+      'h',
+      'æ',
+      'm',
+      'l',
+      'ɪ',
+      'ŋ',
+      'k',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of abraham lincoln.'
   },
   {
     word: 'Americans',
     definition: 'people who live in the United States',
     category: 'social studies',
-    arpabet: ['AH0', 'M', 'EH1', 'R', 'AH0', 'K', 'AH0', 'N', 'Z'],
-    ipa: ['ʌ', 'm', 'ɛ', 'r', 'ʌ', 'k', 'ʌ', 'n', 'z'],
+    arpabet: [
+      'AH0',
+      'M',
+      'EH1',
+      'R',
+      'AH0',
+      'K',
+      'AH0',
+      'N',
+      'Z'
+    ],
+    ipa: [
+      'ʌ',
+      'm',
+      'ɛ',
+      'r',
+      'ʌ',
+      'k',
+      'ʌ',
+      'n',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of americans.'
   },
   {
     word: 'Indian',
     definition: 'a person who lived in America before Europeans arrived; also refers to people from India',
     category: 'social studies',
-    arpabet: ['IH1', 'N', 'D', 'IY0', 'AH0', 'N'],
-    ipa: ['ɪ', 'n', 'd', 'i', 'ʌ', 'n'],
+    arpabet: [
+      'IH1',
+      'N',
+      'D',
+      'IY0',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'ɪ',
+      'n',
+      'd',
+      'i',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw an indian.'
   },
   {
     word: 'ballot',
     definition: 'a paper or method used to vote',
     category: 'social studies',
-    arpabet: ['B', 'AE1', 'L', 'AH0', 'T'],
-    ipa: ['b', 'æ', 'l', 'ʌ', 't'],
+    arpabet: [
+      'B',
+      'AE1',
+      'L',
+      'AH0',
+      'T'
+    ],
+    ipa: [
+      'b',
+      'æ',
+      'l',
+      'ʌ',
+      't'
+    ],
+    drawPrompt: 'Draw a ballot.'
   },
   {
     word: 'Benjamin Franklin',
     definition: 'a founding father who helped create the United States',
     category: 'social studies',
-    arpabet: ['B', 'EH1', 'N', 'JH', 'AH0', 'M', 'AH0', 'N', 'F', 'R', 'AE1', 'NG', 'K', 'L', 'IH0', 'N'],
-    ipa: ['b', 'ɛ', 'n', 'dʒ', 'ʌ', 'm', 'ʌ', 'n', 'f', 'r', 'æ', 'ŋ', 'k', 'l', 'ɪ', 'n'],
+    arpabet: [
+      'B',
+      'EH1',
+      'N',
+      'JH',
+      'AH0',
+      'M',
+      'AH0',
+      'N',
+      'F',
+      'R',
+      'AE1',
+      'NG',
+      'K',
+      'L',
+      'IH0',
+      'N'
+    ],
+    ipa: [
+      'b',
+      'ɛ',
+      'n',
+      'dʒ',
+      'ʌ',
+      'm',
+      'ʌ',
+      'n',
+      'f',
+      'r',
+      'æ',
+      'ŋ',
+      'k',
+      'l',
+      'ɪ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of benjamin franklin.'
   },
   {
     word: 'calendar',
     definition: 'a chart that shows days, weeks, and months',
     category: 'social studies',
-    arpabet: ['K', 'AE1', 'L', 'AH0', 'N', 'D', 'ER0'],
-    ipa: ['k', 'æ', 'l', 'ʌ', 'n', 'd', 'ɝ'],
+    arpabet: [
+      'K',
+      'AE1',
+      'L',
+      'AH0',
+      'N',
+      'D',
+      'ER0'
+    ],
+    ipa: [
+      'k',
+      'æ',
+      'l',
+      'ʌ',
+      'n',
+      'd',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw a calendar.'
   },
   {
     word: 'cause',
     definition: 'something that makes something else happen',
     category: 'social studies',
-    arpabet: ['K', 'AA1', 'Z'],
-    ipa: ['k', 'ɑ', 'z'],
+    arpabet: [
+      'K',
+      'AA1',
+      'Z'
+    ],
+    ipa: [
+      'k',
+      'ɑ',
+      'z'
+    ],
+    drawPrompt: 'Draw a cause.'
   },
   {
     word: 'celebrate',
     definition: 'to do something special to honor an event or person',
     category: 'social studies',
-    arpabet: ['S', 'EH1', 'L', 'AH0', 'B', 'R', 'EY2', 'T'],
-    ipa: ['s', 'ɛ', 'l', 'ʌ', 'b', 'r', 'eɪ', 't'],
+    arpabet: [
+      'S',
+      'EH1',
+      'L',
+      'AH0',
+      'B',
+      'R',
+      'EY2',
+      'T'
+    ],
+    ipa: [
+      's',
+      'ɛ',
+      'l',
+      'ʌ',
+      'b',
+      'r',
+      'eɪ',
+      't'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to celebrate.'
   },
   {
     word: 'ceremony',
     definition: 'a special event or celebration',
     category: 'social studies',
-    arpabet: ['S', 'EH1', 'R', 'AH0', 'M', 'OW2', 'N', 'IY0'],
-    ipa: ['s', 'ɛ', 'r', 'ʌ', 'm', 'oʊ', 'n', 'i'],
+    arpabet: [
+      'S',
+      'EH1',
+      'R',
+      'AH0',
+      'M',
+      'OW2',
+      'N',
+      'IY0'
+    ],
+    ipa: [
+      's',
+      'ɛ',
+      'r',
+      'ʌ',
+      'm',
+      'oʊ',
+      'n',
+      'i'
+    ],
+    drawPrompt: 'Draw a ceremony.'
   },
   {
     word: 'Christopher Columbus',
     definition: 'an explorer who traveled to the Americas in 1492',
     category: 'social studies',
-    arpabet: ['K', 'R', 'IH1', 'S', 'T', 'AH0', 'F', 'ER0', 'K', 'AH0', 'L', 'AH1', 'M', 'B', 'AH0', 'S'],
-    ipa: ['k', 'r', 'ɪ', 's', 't', 'ʌ', 'f', 'ɝ', 'k', 'ʌ', 'l', 'ʌ', 'm', 'b', 'ʌ', 's'],
+    arpabet: [
+      'K',
+      'R',
+      'IH1',
+      'S',
+      'T',
+      'AH0',
+      'F',
+      'ER0',
+      'K',
+      'AH0',
+      'L',
+      'AH1',
+      'M',
+      'B',
+      'AH0',
+      'S'
+    ],
+    ipa: [
+      'k',
+      'r',
+      'ɪ',
+      's',
+      't',
+      'ʌ',
+      'f',
+      'ɝ',
+      'k',
+      'ʌ',
+      'l',
+      'ʌ',
+      'm',
+      'b',
+      'ʌ',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of christopher columbus.'
   },
   {
     word: 'city',
     definition: 'a large place where many people live',
     category: 'social studies',
-    arpabet: ['S', 'IH1', 'T', 'IY0'],
-    ipa: ['s', 'ɪ', 't', 'i'],
+    arpabet: [
+      'S',
+      'IH1',
+      'T',
+      'IY0'
+    ],
+    ipa: [
+      's',
+      'ɪ',
+      't',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of city.'
   },
   {
     word: 'community',
     definition: 'a group of people living in the same area',
     category: 'social studies',
-    arpabet: ['K', 'AH0', 'M', 'Y', 'UW1', 'N', 'AH0', 'T', 'IY0'],
-    ipa: ['k', 'ʌ', 'm', 'j', 'u', 'n', 'ʌ', 't', 'i'],
+    arpabet: [
+      'K',
+      'AH0',
+      'M',
+      'Y',
+      'UW1',
+      'N',
+      'AH0',
+      'T',
+      'IY0'
+    ],
+    ipa: [
+      'k',
+      'ʌ',
+      'm',
+      'j',
+      'u',
+      'n',
+      'ʌ',
+      't',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of community.'
   },
   {
     word: 'Congress',
     definition: 'the lawmaking group in the United States government',
     category: 'social studies',
-    arpabet: ['K', 'AA1', 'NG', 'G', 'R', 'AH0', 'S'],
-    ipa: ['k', 'ɑ', 'ŋ', 'ɡ', 'r', 'ʌ', 's'],
+    arpabet: [
+      'K',
+      'AA1',
+      'NG',
+      'G',
+      'R',
+      'AH0',
+      'S'
+    ],
+    ipa: [
+      'k',
+      'ɑ',
+      'ŋ',
+      'ɡ',
+      'r',
+      'ʌ',
+      's'
+    ],
+    drawPrompt: 'Draw a congress.'
   },
   {
     word: 'constitution',
     definition: 'a set of rules that guide a government',
     category: 'social studies',
-    arpabet: ['K', 'AA2', 'N', 'S', 'T', 'AH0', 'T', 'UW1', 'SH', 'AH0', 'N'],
-    ipa: ['k', 'ɑ', 'n', 's', 't', 'ʌ', 't', 'u', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'K',
+      'AA2',
+      'N',
+      'S',
+      'T',
+      'AH0',
+      'T',
+      'UW1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'k',
+      'ɑ',
+      'n',
+      's',
+      't',
+      'ʌ',
+      't',
+      'u',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of constitution.'
   },
   {
     word: 'country',
     definition: 'a nation with its own government',
     category: 'social studies',
-    arpabet: ['K', 'AH1', 'N', 'T', 'R', 'IY0'],
-    ipa: ['k', 'ʌ', 'n', 't', 'r', 'i'],
+    arpabet: [
+      'K',
+      'AH1',
+      'N',
+      'T',
+      'R',
+      'IY0'
+    ],
+    ipa: [
+      'k',
+      'ʌ',
+      'n',
+      't',
+      'r',
+      'i'
+    ],
+    drawPrompt: 'Draw a country.'
   },
   {
     word: 'courage',
     definition: 'being brave even when something is hard',
     category: 'social studies',
-    arpabet: ['K', 'ER1', 'AH0', 'JH'],
-    ipa: ['k', 'ɝ', 'ʌ', 'dʒ'],
+    arpabet: [
+      'K',
+      'ER1',
+      'AH0',
+      'JH'
+    ],
+    ipa: [
+      'k',
+      'ɝ',
+      'ʌ',
+      'dʒ'
+    ],
+    drawPrompt: 'Draw something that reminds you of courage.'
   },
   {
     word: 'culture',
     definition: 'the beliefs and traditions of a group of people',
     category: 'social studies',
-    arpabet: ['K', 'AH1', 'L', 'CH', 'ER0'],
-    ipa: ['k', 'ʌ', 'l', 'tʃ', 'ɝ'],
+    arpabet: [
+      'K',
+      'AH1',
+      'L',
+      'CH',
+      'ER0'
+    ],
+    ipa: [
+      'k',
+      'ʌ',
+      'l',
+      'tʃ',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of culture.'
   },
   {
     word: 'customs',
     definition: 'ways of doing things that are common in a group',
     category: 'social studies',
-    arpabet: ['K', 'AH1', 'S', 'T', 'AH0', 'M', 'Z'],
-    ipa: ['k', 'ʌ', 's', 't', 'ʌ', 'm', 'z'],
+    arpabet: [
+      'K',
+      'AH1',
+      'S',
+      'T',
+      'AH0',
+      'M',
+      'Z'
+    ],
+    ipa: [
+      'k',
+      'ʌ',
+      's',
+      't',
+      'ʌ',
+      'm',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of customs.'
   },
   {
     word: 'decade',
     definition: 'a period of ten years',
     category: 'social studies',
-    arpabet: ['D', 'EH0', 'K', 'EY1', 'D'],
-    ipa: ['d', 'ɛ', 'k', 'eɪ', 'd'],
+    arpabet: [
+      'D',
+      'EH0',
+      'K',
+      'EY1',
+      'D'
+    ],
+    ipa: [
+      'd',
+      'ɛ',
+      'k',
+      'eɪ',
+      'd'
+    ],
+    drawPrompt: 'Draw a decade.'
   },
   {
     word: 'Declaration of Independence',
     definition: 'a document saying the U.S. is free from Britain',
     category: 'social studies',
-    arpabet: ['D', 'EH2', 'K', 'L', 'ER0', 'EY1', 'SH', 'AH0', 'N', 'AH1', 'V', 'IH2', 'N', 'D', 'IH0', 'P', 'EH1', 'N', 'D', 'AH0', 'N', 'S'],
-    ipa: ['d', 'ɛ', 'k', 'l', 'ɝ', 'eɪ', 'ʃ', 'ʌ', 'n', 'ʌ', 'v', 'ɪ', 'n', 'd', 'ɪ', 'p', 'ɛ', 'n', 'd', 'ʌ', 'n', 's'],
+    arpabet: [
+      'D',
+      'EH2',
+      'K',
+      'L',
+      'ER0',
+      'EY1',
+      'SH',
+      'AH0',
+      'N',
+      'AH1',
+      'V',
+      'IH2',
+      'N',
+      'D',
+      'IH0',
+      'P',
+      'EH1',
+      'N',
+      'D',
+      'AH0',
+      'N',
+      'S'
+    ],
+    ipa: [
+      'd',
+      'ɛ',
+      'k',
+      'l',
+      'ɝ',
+      'eɪ',
+      'ʃ',
+      'ʌ',
+      'n',
+      'ʌ',
+      'v',
+      'ɪ',
+      'n',
+      'd',
+      'ɪ',
+      'p',
+      'ɛ',
+      'n',
+      'd',
+      'ʌ',
+      'n',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of declaration of independence.'
   },
   {
     word: 'democracy',
     definition: 'a system where people vote to choose leaders',
     category: 'social studies',
-    arpabet: ['D', 'IH0', 'M', 'AA1', 'K', 'R', 'AH0', 'S', 'IY0'],
-    ipa: ['d', 'ɪ', 'm', 'ɑ', 'k', 'r', 'ʌ', 's', 'i'],
+    arpabet: [
+      'D',
+      'IH0',
+      'M',
+      'AA1',
+      'K',
+      'R',
+      'AH0',
+      'S',
+      'IY0'
+    ],
+    ipa: [
+      'd',
+      'ɪ',
+      'm',
+      'ɑ',
+      'k',
+      'r',
+      'ʌ',
+      's',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of democracy.'
   },
   {
     word: 'east',
     definition: 'a direction where the sun rises',
     category: 'social studies',
-    arpabet: ['IY1', 'S', 'T'],
-    ipa: ['i', 's', 't'],
+    arpabet: [
+      'IY1',
+      'S',
+      'T'
+    ],
+    ipa: [
+      'i',
+      's',
+      't'
+    ],
+    drawPrompt: 'Draw an east.'
   },
   {
     word: 'effect',
     definition: 'what happens because of something else',
     category: 'social studies',
-    arpabet: ['IH0', 'F', 'EH1', 'K', 'T'],
-    ipa: ['ɪ', 'f', 'ɛ', 'k', 't'],
+    arpabet: [
+      'IH0',
+      'F',
+      'EH1',
+      'K',
+      'T'
+    ],
+    ipa: [
+      'ɪ',
+      'f',
+      'ɛ',
+      'k',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of effect.'
   },
   {
     word: 'fire fighter',
     definition: 'a person who puts out fires and helps people stay safe',
     category: 'social studies',
-    arpabet: ['F', 'AY1', 'ER0', 'F', 'AY1', 'T', 'ER0'],
-    ipa: ['f', 'aɪ', 'ɝ', 'f', 'aɪ', 't', 'ɝ'],
+    arpabet: [
+      'F',
+      'AY1',
+      'ER0',
+      'F',
+      'AY1',
+      'T',
+      'ER0'
+    ],
+    ipa: [
+      'f',
+      'aɪ',
+      'ɝ',
+      'f',
+      'aɪ',
+      't',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of fire fighter.'
   },
   {
     word: 'flag',
     definition: 'a symbol that represents a country',
     category: 'social studies',
-    arpabet: ['F', 'L', 'AE1', 'G'],
-    ipa: ['f', 'l', 'æ', 'ɡ'],
+    arpabet: [
+      'F',
+      'L',
+      'AE1',
+      'G'
+    ],
+    ipa: [
+      'f',
+      'l',
+      'æ',
+      'ɡ'
+    ],
+    drawPrompt: 'Draw a flag.'
   },
   {
     word: 'future',
     definition: 'time that has not happened yet',
     category: 'social studies',
-    arpabet: ['F', 'Y', 'UW1', 'CH', 'ER0'],
-    ipa: ['f', 'j', 'u', 'tʃ', 'ɝ'],
+    arpabet: [
+      'F',
+      'Y',
+      'UW1',
+      'CH',
+      'ER0'
+    ],
+    ipa: [
+      'f',
+      'j',
+      'u',
+      'tʃ',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of future.'
   },
   {
     word: 'geography',
     definition: 'the study of places and the Earth',
     category: 'social studies',
-    arpabet: ['JH', 'IY0', 'AA1', 'G', 'R', 'AH0', 'F', 'IY0'],
-    ipa: ['dʒ', 'i', 'ɑ', 'ɡ', 'r', 'ʌ', 'f', 'i'],
+    arpabet: [
+      'JH',
+      'IY0',
+      'AA1',
+      'G',
+      'R',
+      'AH0',
+      'F',
+      'IY0'
+    ],
+    ipa: [
+      'dʒ',
+      'i',
+      'ɑ',
+      'ɡ',
+      'r',
+      'ʌ',
+      'f',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of geography.'
   },
   {
     word: 'George Washington',
     definition: 'the first president of the United States',
     category: 'social studies',
-    arpabet: ['JH', 'AO1', 'R', 'JH', 'W', 'AA1', 'SH', 'IH0', 'NG', 'T', 'AH0', 'N'],
-    ipa: ['dʒ', 'ɔ', 'r', 'dʒ', 'w', 'ɑ', 'ʃ', 'ɪ', 'ŋ', 't', 'ʌ', 'n'],
+    arpabet: [
+      'JH',
+      'AO1',
+      'R',
+      'JH',
+      'W',
+      'AA1',
+      'SH',
+      'IH0',
+      'NG',
+      'T',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'dʒ',
+      'ɔ',
+      'r',
+      'dʒ',
+      'w',
+      'ɑ',
+      'ʃ',
+      'ɪ',
+      'ŋ',
+      't',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of george washington.'
   },
   {
     word: 'globe',
     definition: 'a round model of the Earth',
     category: 'social studies',
-    arpabet: ['G', 'L', 'OW1', 'B'],
-    ipa: ['ɡ', 'l', 'oʊ', 'b'],
+    arpabet: [
+      'G',
+      'L',
+      'OW1',
+      'B'
+    ],
+    ipa: [
+      'ɡ',
+      'l',
+      'oʊ',
+      'b'
+    ],
+    drawPrompt: 'Draw a globe.'
   },
   {
     word: 'government',
     definition: 'the group that makes rules for a country',
     category: 'social studies',
-    arpabet: ['G', 'AH1', 'V', 'ER0', 'M', 'AH0', 'N', 'T'],
-    ipa: ['ɡ', 'ʌ', 'v', 'ɝ', 'm', 'ʌ', 'n', 't'],
+    arpabet: [
+      'G',
+      'AH1',
+      'V',
+      'ER0',
+      'M',
+      'AH0',
+      'N',
+      'T'
+    ],
+    ipa: [
+      'ɡ',
+      'ʌ',
+      'v',
+      'ɝ',
+      'm',
+      'ʌ',
+      'n',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of government.'
   },
   {
     word: 'hero',
     definition: 'a person admired for bravery or good actions',
     category: 'social studies',
-    arpabet: ['HH', 'IH1', 'R', 'OW0'],
-    ipa: ['h', 'ɪ', 'r', 'oʊ'],
+    arpabet: [
+      'HH',
+      'IH1',
+      'R',
+      'OW0'
+    ],
+    ipa: [
+      'h',
+      'ɪ',
+      'r',
+      'oʊ'
+    ],
+    drawPrompt: 'Draw a hero.'
   },
   {
     word: 'history',
     definition: 'the study of past events',
     category: 'social studies',
-    arpabet: ['HH', 'IH1', 'S', 'T', 'ER0', 'IY0'],
-    ipa: ['h', 'ɪ', 's', 't', 'ɝ', 'i'],
+    arpabet: [
+      'HH',
+      'IH1',
+      'S',
+      'T',
+      'ER0',
+      'IY0'
+    ],
+    ipa: [
+      'h',
+      'ɪ',
+      's',
+      't',
+      'ɝ',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of history.'
   },
   {
     word: 'holiday',
     definition: 'a special day of celebration',
     category: 'social studies',
-    arpabet: ['HH', 'AA1', 'L', 'AH0', 'D', 'EY2'],
-    ipa: ['h', 'ɑ', 'l', 'ʌ', 'd', 'eɪ'],
+    arpabet: [
+      'HH',
+      'AA1',
+      'L',
+      'AH0',
+      'D',
+      'EY2'
+    ],
+    ipa: [
+      'h',
+      'ɑ',
+      'l',
+      'ʌ',
+      'd',
+      'eɪ'
+    ],
+    drawPrompt: 'Draw a holiday.'
   },
   {
     word: 'honesty',
     definition: 'telling the truth',
     category: 'social studies',
-    arpabet: ['AA1', 'N', 'AH0', 'S', 'T', 'IY0'],
-    ipa: ['ɑ', 'n', 'ʌ', 's', 't', 'i'],
+    arpabet: [
+      'AA1',
+      'N',
+      'AH0',
+      'S',
+      'T',
+      'IY0'
+    ],
+    ipa: [
+      'ɑ',
+      'n',
+      'ʌ',
+      's',
+      't',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of honesty.'
   },
   {
     word: 'independence',
     definition: 'freedom to make your own choices',
     category: 'social studies',
-    arpabet: ['IH2', 'N', 'D', 'IH0', 'P', 'EH1', 'N', 'D', 'AH0', 'N', 'S'],
-    ipa: ['ɪ', 'n', 'd', 'ɪ', 'p', 'ɛ', 'n', 'd', 'ʌ', 'n', 's'],
+    arpabet: [
+      'IH2',
+      'N',
+      'D',
+      'IH0',
+      'P',
+      'EH1',
+      'N',
+      'D',
+      'AH0',
+      'N',
+      'S'
+    ],
+    ipa: [
+      'ɪ',
+      'n',
+      'd',
+      'ɪ',
+      'p',
+      'ɛ',
+      'n',
+      'd',
+      'ʌ',
+      'n',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of independence.'
   },
   {
     word: 'justice',
     definition: 'fairness and following the law',
     category: 'social studies',
-    arpabet: ['JH', 'AH1', 'S', 'T', 'AH0', 'S'],
-    ipa: ['dʒ', 'ʌ', 's', 't', 'ʌ', 's'],
+    arpabet: [
+      'JH',
+      'AH1',
+      'S',
+      'T',
+      'AH0',
+      'S'
+    ],
+    ipa: [
+      'dʒ',
+      'ʌ',
+      's',
+      't',
+      'ʌ',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of justice.'
   },
   {
     word: 'law',
     definition: 'a rule that people must follow',
     category: 'social studies',
-    arpabet: ['L', 'AO1'],
-    ipa: ['l', 'ɔ'],
+    arpabet: [
+      'L',
+      'AO1'
+    ],
+    ipa: [
+      'l',
+      'ɔ'
+    ],
+    drawPrompt: 'Draw something that reminds you of law.'
   },
   {
     word: 'leader',
     definition: 'a person who guides others',
     category: 'social studies',
-    arpabet: ['L', 'IY1', 'D', 'ER0'],
-    ipa: ['l', 'i', 'd', 'ɝ'],
+    arpabet: [
+      'L',
+      'IY1',
+      'D',
+      'ER0'
+    ],
+    ipa: [
+      'l',
+      'i',
+      'd',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw a leader.'
   },
   {
     word: 'left',
     definition: 'a direction opposite of right',
     category: 'social studies',
-    arpabet: ['L', 'EH1', 'F', 'T'],
-    ipa: ['l', 'ɛ', 'f', 't'],
+    arpabet: [
+      'L',
+      'EH1',
+      'F',
+      'T'
+    ],
+    ipa: [
+      'l',
+      'ɛ',
+      'f',
+      't'
+    ],
+    drawPrompt: 'Draw a left.'
   },
   {
     word: 'legend',
     definition: 'a traditional story that may not be true',
     category: 'social studies',
-    arpabet: ['L', 'EH1', 'JH', 'AH0', 'N', 'D'],
-    ipa: ['l', 'ɛ', 'dʒ', 'ʌ', 'n', 'd'],
+    arpabet: [
+      'L',
+      'EH1',
+      'JH',
+      'AH0',
+      'N',
+      'D'
+    ],
+    ipa: [
+      'l',
+      'ɛ',
+      'dʒ',
+      'ʌ',
+      'n',
+      'd'
+    ],
+    drawPrompt: 'Draw a legend.'
   },
   {
     word: 'library',
     definition: 'a place where books can be borrowed',
     category: 'social studies',
-    arpabet: ['L', 'AY1', 'B', 'R', 'EH0', 'R', 'IY2'],
-    ipa: ['l', 'aɪ', 'b', 'r', 'ɛ', 'r', 'i'],
+    arpabet: [
+      'L',
+      'AY1',
+      'B',
+      'R',
+      'EH0',
+      'R',
+      'IY2'
+    ],
+    ipa: [
+      'l',
+      'aɪ',
+      'b',
+      'r',
+      'ɛ',
+      'r',
+      'i'
+    ],
+    drawPrompt: 'Draw a library.'
   },
   {
     word: 'location',
     definition: 'a place where something is',
     category: 'social studies',
-    arpabet: ['L', 'OW0', 'K', 'EY1', 'SH', 'AH0', 'N'],
-    ipa: ['l', 'oʊ', 'k', 'eɪ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'L',
+      'OW0',
+      'K',
+      'EY1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'l',
+      'oʊ',
+      'k',
+      'eɪ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of location.'
   },
   {
     word: 'map',
     definition: 'a drawing that shows places and locations',
     category: 'social studies',
-    arpabet: ['M', 'AE1', 'P'],
-    ipa: ['m', 'æ', 'p'],
+    arpabet: [
+      'M',
+      'AE1',
+      'P'
+    ],
+    ipa: [
+      'm',
+      'æ',
+      'p'
+    ],
+    drawPrompt: 'Draw a map.'
   },
   {
     word: 'Martin Luther King Jr.',
     definition: 'a leader who worked for equal rights',
     category: 'social studies',
-    arpabet: ['M', 'AA1', 'R', 'T', 'AH0', 'N', 'L', 'UW1', 'TH', 'ER0', 'K', 'IH1', 'NG', 'JH', 'UW1', 'N', 'Y', 'ER0'],
-    ipa: ['m', 'ɑ', 'r', 't', 'ʌ', 'n', 'l', 'u', 'θ', 'ɝ', 'k', 'ɪ', 'ŋ', 'dʒ', 'u', 'n', 'j', 'ɝ'],
+    arpabet: [
+      'M',
+      'AA1',
+      'R',
+      'T',
+      'AH0',
+      'N',
+      'L',
+      'UW1',
+      'TH',
+      'ER0',
+      'K',
+      'IH1',
+      'NG',
+      'JH',
+      'UW1',
+      'N',
+      'Y',
+      'ER0'
+    ],
+    ipa: [
+      'm',
+      'ɑ',
+      'r',
+      't',
+      'ʌ',
+      'n',
+      'l',
+      'u',
+      'θ',
+      'ɝ',
+      'k',
+      'ɪ',
+      'ŋ',
+      'dʒ',
+      'u',
+      'n',
+      'j',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of martin luther king jr.'
   },
   {
     word: 'month',
     definition: 'one of the twelve parts of a year',
     category: 'social studies',
-    arpabet: ['M', 'AH1', 'N', 'TH'],
-    ipa: ['m', 'ʌ', 'n', 'θ'],
+    arpabet: [
+      'M',
+      'AH1',
+      'N',
+      'TH'
+    ],
+    ipa: [
+      'm',
+      'ʌ',
+      'n',
+      'θ'
+    ],
+    drawPrompt: 'Draw something that reminds you of month.'
   },
   {
     word: 'mountain',
     definition: 'a large natural rise of land',
     category: 'social studies',
-    arpabet: ['M', 'AW1', 'N', 'T', 'AH0', 'N'],
-    ipa: ['m', 'aʊ', 'n', 't', 'ʌ', 'n'],
+    arpabet: [
+      'M',
+      'AW1',
+      'N',
+      'T',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'm',
+      'aʊ',
+      'n',
+      't',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw a mountain.'
   },
   {
     word: 'north',
     definition: 'a direction opposite of south',
     category: 'social studies',
-    arpabet: ['N', 'AO1', 'R', 'TH'],
-    ipa: ['n', 'ɔ', 'r', 'θ'],
+    arpabet: [
+      'N',
+      'AO1',
+      'R',
+      'TH'
+    ],
+    ipa: [
+      'n',
+      'ɔ',
+      'r',
+      'θ'
+    ],
+    drawPrompt: 'Draw a north.'
   },
   {
     word: 'ocean',
     definition: 'a large body of salt water',
     category: 'social studies',
-    arpabet: ['OW1', 'SH', 'AH0', 'N'],
-    ipa: ['oʊ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'OW1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'oʊ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw an ocean.'
   },
   {
     word: 'past',
     definition: 'time that has already happened',
     category: 'social studies',
-    arpabet: ['P', 'AE1', 'S', 'T'],
-    ipa: ['p', 'æ', 's', 't'],
+    arpabet: [
+      'P',
+      'AE1',
+      'S',
+      'T'
+    ],
+    ipa: [
+      'p',
+      'æ',
+      's',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of past.'
   },
   {
     word: 'patriotism',
     definition: 'love for one’s country',
     category: 'social studies',
-    arpabet: ['P', 'EY1', 'T', 'R', 'IY0', 'AH0', 'T', 'IH2', 'Z', 'AH0', 'M'],
-    ipa: ['p', 'eɪ', 't', 'r', 'i', 'ʌ', 't', 'ɪ', 'z', 'ʌ', 'm'],
+    arpabet: [
+      'P',
+      'EY1',
+      'T',
+      'R',
+      'IY0',
+      'AH0',
+      'T',
+      'IH2',
+      'Z',
+      'AH0',
+      'M'
+    ],
+    ipa: [
+      'p',
+      'eɪ',
+      't',
+      'r',
+      'i',
+      'ʌ',
+      't',
+      'ɪ',
+      'z',
+      'ʌ',
+      'm'
+    ],
+    drawPrompt: 'Draw something that reminds you of patriotism.'
   },
   {
     word: 'Pledge of Allegiance',
     definition: 'a promise of loyalty to the United States',
     category: 'social studies',
-    arpabet: ['P', 'L', 'EH1', 'JH', 'AH1', 'V', 'AH0', 'L', 'IY1', 'JH', 'AH0', 'N', 'S'],
-    ipa: ['p', 'l', 'ɛ', 'dʒ', 'ʌ', 'v', 'ʌ', 'l', 'i', 'dʒ', 'ʌ', 'n', 's'],
+    arpabet: [
+      'P',
+      'L',
+      'EH1',
+      'JH',
+      'AH1',
+      'V',
+      'AH0',
+      'L',
+      'IY1',
+      'JH',
+      'AH0',
+      'N',
+      'S'
+    ],
+    ipa: [
+      'p',
+      'l',
+      'ɛ',
+      'dʒ',
+      'ʌ',
+      'v',
+      'ʌ',
+      'l',
+      'i',
+      'dʒ',
+      'ʌ',
+      'n',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of pledge of allegiance.'
   },
   {
     word: 'police officer',
     definition: 'a person who enforces laws and keeps people safe',
     category: 'social studies',
-    arpabet: ['P', 'AH0', 'L', 'IY1', 'S', 'AO1', 'F', 'AH0', 'S', 'ER0'],
-    ipa: ['p', 'ʌ', 'l', 'i', 's', 'ɔ', 'f', 'ʌ', 's', 'ɝ'],
+    arpabet: [
+      'P',
+      'AH0',
+      'L',
+      'IY1',
+      'S',
+      'AO1',
+      'F',
+      'AH0',
+      'S',
+      'ER0'
+    ],
+    ipa: [
+      'p',
+      'ʌ',
+      'l',
+      'i',
+      's',
+      'ɔ',
+      'f',
+      'ʌ',
+      's',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of police officer.'
   },
   {
     word: 'post officer',
     definition: 'a person who works at the post office and handles mail',
     category: 'social studies',
-    arpabet: ['P', 'OW1', 'S', 'T', 'AO1', 'F', 'AH0', 'S', 'ER0'],
-    ipa: ['p', 'oʊ', 's', 't', 'ɔ', 'f', 'ʌ', 's', 'ɝ'],
+    arpabet: [
+      'P',
+      'OW1',
+      'S',
+      'T',
+      'AO1',
+      'F',
+      'AH0',
+      'S',
+      'ER0'
+    ],
+    ipa: [
+      'p',
+      'oʊ',
+      's',
+      't',
+      'ɔ',
+      'f',
+      'ʌ',
+      's',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of post officer.'
   },
   {
     word: 'present',
     definition: 'the time happening now',
     category: 'social studies',
-    arpabet: ['P', 'R', 'EH1', 'Z', 'AH0', 'N', 'T'],
-    ipa: ['p', 'r', 'ɛ', 'z', 'ʌ', 'n', 't'],
+    arpabet: [
+      'P',
+      'R',
+      'EH1',
+      'Z',
+      'AH0',
+      'N',
+      'T'
+    ],
+    ipa: [
+      'p',
+      'r',
+      'ɛ',
+      'z',
+      'ʌ',
+      'n',
+      't'
+    ],
+    drawPrompt: 'Draw a present.'
   },
   {
     word: 'responsibility',
     definition: 'a duty or job you are expected to do',
     category: 'social studies',
-    arpabet: ['R', 'IY0', 'S', 'P', 'AA2', 'N', 'S', 'AH0', 'B', 'IH1', 'L', 'AH0', 'T', 'IY0'],
-    ipa: ['r', 'i', 's', 'p', 'ɑ', 'n', 's', 'ʌ', 'b', 'ɪ', 'l', 'ʌ', 't', 'i'],
+    arpabet: [
+      'R',
+      'IY0',
+      'S',
+      'P',
+      'AA2',
+      'N',
+      'S',
+      'AH0',
+      'B',
+      'IH1',
+      'L',
+      'AH0',
+      'T',
+      'IY0'
+    ],
+    ipa: [
+      'r',
+      'i',
+      's',
+      'p',
+      'ɑ',
+      'n',
+      's',
+      'ʌ',
+      'b',
+      'ɪ',
+      'l',
+      'ʌ',
+      't',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of responsibility.'
   },
   {
     word: 'revolution',
     definition: 'a big change, often in government',
     category: 'social studies',
-    arpabet: ['R', 'EH2', 'V', 'AH0', 'L', 'UW1', 'SH', 'AH0', 'N'],
-    ipa: ['r', 'ɛ', 'v', 'ʌ', 'l', 'u', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'R',
+      'EH2',
+      'V',
+      'AH0',
+      'L',
+      'UW1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'r',
+      'ɛ',
+      'v',
+      'ʌ',
+      'l',
+      'u',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of revolution.'
   },
   {
     word: 'right',
     definition: 'a direction opposite of left',
     category: 'social studies',
-    arpabet: ['R', 'AY1', 'T'],
-    ipa: ['r', 'aɪ', 't'],
+    arpabet: [
+      'R',
+      'AY1',
+      'T'
+    ],
+    ipa: [
+      'r',
+      'aɪ',
+      't'
+    ],
+    drawPrompt: 'Draw a right.'
   },
   {
     word: 'scale',
     definition: 'a way to show size or distance on a map',
     category: 'social studies',
-    arpabet: ['S', 'K', 'EY1', 'L'],
-    ipa: ['s', 'k', 'eɪ', 'l'],
+    arpabet: [
+      'S',
+      'K',
+      'EY1',
+      'L'
+    ],
+    ipa: [
+      's',
+      'k',
+      'eɪ',
+      'l'
+    ],
+    drawPrompt: 'Draw something that reminds you of scale.'
   },
   {
     word: 'south',
     definition: 'a direction opposite of north',
     category: 'social studies',
-    arpabet: ['S', 'AW1', 'TH'],
-    ipa: ['s', 'aʊ', 'θ'],
+    arpabet: [
+      'S',
+      'AW1',
+      'TH'
+    ],
+    ipa: [
+      's',
+      'aʊ',
+      'θ'
+    ],
+    drawPrompt: 'Draw a south.'
   },
   {
     word: 'state',
     definition: 'a part of a country with its own government',
     category: 'social studies',
-    arpabet: ['S', 'T', 'EY1', 'T'],
-    ipa: ['s', 't', 'eɪ', 't'],
+    arpabet: [
+      'S',
+      'T',
+      'EY1',
+      'T'
+    ],
+    ipa: [
+      's',
+      't',
+      'eɪ',
+      't'
+    ],
+    drawPrompt: 'Draw a state.'
   },
   {
     word: 'Statue of Liberty',
     definition: 'a large statue in the U.S. that stands for freedom',
     category: 'social studies',
-    arpabet: ['S', 'T', 'AE1', 'CH', 'UW2', 'AH1', 'V', 'L', 'IH1', 'B', 'ER0', 'T', 'IY2'],
-    ipa: ['s', 't', 'æ', 'tʃ', 'u', 'ʌ', 'v', 'l', 'ɪ', 'b', 'ɝ', 't', 'i'],
+    arpabet: [
+      'S',
+      'T',
+      'AE1',
+      'CH',
+      'UW2',
+      'AH1',
+      'V',
+      'L',
+      'IH1',
+      'B',
+      'ER0',
+      'T',
+      'IY2'
+    ],
+    ipa: [
+      's',
+      't',
+      'æ',
+      'tʃ',
+      'u',
+      'ʌ',
+      'v',
+      'l',
+      'ɪ',
+      'b',
+      'ɝ',
+      't',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of statue of liberty.'
   },
   {
     word: 'Thanksgiving',
     definition: 'a U.S. holiday for giving thanks',
     category: 'social studies',
-    arpabet: ['TH', 'AE2', 'NG', 'K', 'S', 'G', 'IH1', 'V', 'IH0', 'NG'],
-    ipa: ['θ', 'æ', 'ŋ', 'k', 's', 'ɡ', 'ɪ', 'v', 'ɪ', 'ŋ'],
+    arpabet: [
+      'TH',
+      'AE2',
+      'NG',
+      'K',
+      'S',
+      'G',
+      'IH1',
+      'V',
+      'IH0',
+      'NG'
+    ],
+    ipa: [
+      'θ',
+      'æ',
+      'ŋ',
+      'k',
+      's',
+      'ɡ',
+      'ɪ',
+      'v',
+      'ɪ',
+      'ŋ'
+    ],
+    drawPrompt: 'Draw a thanksgiving.'
   },
   {
     word: 'Thomas Jefferson',
     definition: 'a U.S. president who helped write the Declaration of Independence',
     category: 'social studies',
-    arpabet: ['T', 'AA1', 'M', 'AH0', 'S', 'JH', 'EH1', 'F', 'ER0', 'S', 'AH0', 'N'],
-    ipa: ['t', 'ɑ', 'm', 'ʌ', 's', 'dʒ', 'ɛ', 'f', 'ɝ', 's', 'ʌ', 'n'],
+    arpabet: [
+      'T',
+      'AA1',
+      'M',
+      'AH0',
+      'S',
+      'JH',
+      'EH1',
+      'F',
+      'ER0',
+      'S',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      't',
+      'ɑ',
+      'm',
+      'ʌ',
+      's',
+      'dʒ',
+      'ɛ',
+      'f',
+      'ɝ',
+      's',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of thomas jefferson.'
   },
   {
     word: 'town',
     definition: 'a place where people live, smaller than a city',
     category: 'social studies',
-    arpabet: ['T', 'AW1', 'N'],
-    ipa: ['t', 'aʊ', 'n'],
+    arpabet: [
+      'T',
+      'AW1',
+      'N'
+    ],
+    ipa: [
+      't',
+      'aʊ',
+      'n'
+    ],
+    drawPrompt: 'Draw a town.'
   },
   {
     word: 'traditions',
     definition: 'customs passed down over time',
     category: 'social studies',
-    arpabet: ['T', 'R', 'AH0', 'D', 'IH1', 'SH', 'AH0', 'N', 'Z'],
-    ipa: ['t', 'r', 'ʌ', 'd', 'ɪ', 'ʃ', 'ʌ', 'n', 'z'],
+    arpabet: [
+      'T',
+      'R',
+      'AH0',
+      'D',
+      'IH1',
+      'SH',
+      'AH0',
+      'N',
+      'Z'
+    ],
+    ipa: [
+      't',
+      'r',
+      'ʌ',
+      'd',
+      'ɪ',
+      'ʃ',
+      'ʌ',
+      'n',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of traditions.'
   },
   {
     word: 'traffic',
     definition: 'cars and vehicles moving on roads',
     category: 'social studies',
-    arpabet: ['T', 'R', 'AE1', 'F', 'IH0', 'K'],
-    ipa: ['t', 'r', 'æ', 'f', 'ɪ', 'k'],
+    arpabet: [
+      'T',
+      'R',
+      'AE1',
+      'F',
+      'IH0',
+      'K'
+    ],
+    ipa: [
+      't',
+      'r',
+      'æ',
+      'f',
+      'ɪ',
+      'k'
+    ],
+    drawPrompt: 'Draw something that reminds you of traffic.'
   },
   {
     word: 'United States of America',
     definition: 'a country in North America',
     category: 'social studies',
-    arpabet: ['Y', 'UW0', 'N', 'AY1', 'T', 'IH0', 'D', 'S', 'T', 'EY1', 'T', 'S', 'AH1', 'V', 'AH0', 'M', 'EH1', 'R', 'AH0', 'K', 'AH0'],
-    ipa: ['j', 'u', 'n', 'aɪ', 't', 'ɪ', 'd', 's', 't', 'eɪ', 't', 's', 'ʌ', 'v', 'ʌ', 'm', 'ɛ', 'r', 'ʌ', 'k', 'ʌ'],
+    arpabet: [
+      'Y',
+      'UW0',
+      'N',
+      'AY1',
+      'T',
+      'IH0',
+      'D',
+      'S',
+      'T',
+      'EY1',
+      'T',
+      'S',
+      'AH1',
+      'V',
+      'AH0',
+      'M',
+      'EH1',
+      'R',
+      'AH0',
+      'K',
+      'AH0'
+    ],
+    ipa: [
+      'j',
+      'u',
+      'n',
+      'aɪ',
+      't',
+      'ɪ',
+      'd',
+      's',
+      't',
+      'eɪ',
+      't',
+      's',
+      'ʌ',
+      'v',
+      'ʌ',
+      'm',
+      'ɛ',
+      'r',
+      'ʌ',
+      'k',
+      'ʌ'
+    ],
+    drawPrompt: 'Draw something that reminds you of united states of america.'
   },
   {
     word: 'west',
     definition: 'a direction where the sun sets',
     category: 'social studies',
-    arpabet: ['W', 'EH1', 'S', 'T'],
-    ipa: ['w', 'ɛ', 's', 't'],
+    arpabet: [
+      'W',
+      'EH1',
+      'S',
+      'T'
+    ],
+    ipa: [
+      'w',
+      'ɛ',
+      's',
+      't'
+    ],
+    drawPrompt: 'Draw a west.'
   },
   {
     word: 'year',
     definition: 'a period of twelve months',
     category: 'social studies',
-    arpabet: ['Y', 'IH1', 'R'],
-    ipa: ['j', 'ɪ', 'r'],
+    arpabet: [
+      'Y',
+      'IH1',
+      'R'
+    ],
+    ipa: [
+      'j',
+      'ɪ',
+      'r'
+    ],
+    drawPrompt: 'Draw a year.'
   },
   {
     word: 'beans',
     definition: 'a type of food from plants that is healthy to eat',
     category: 'health',
-    arpabet: ['B', 'IY1', 'N', 'Z'],
-    ipa: ['b', 'i', 'n', 'z'],
+    arpabet: [
+      'B',
+      'IY1',
+      'N',
+      'Z'
+    ],
+    ipa: [
+      'b',
+      'i',
+      'n',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of beans.'
   },
   {
     word: 'blood',
     definition: 'a red liquid in the body that carries oxygen and nutrients',
     category: 'health',
-    arpabet: ['B', 'L', 'AH1', 'D'],
-    ipa: ['b', 'l', 'ʌ', 'd'],
+    arpabet: [
+      'B',
+      'L',
+      'AH1',
+      'D'
+    ],
+    ipa: [
+      'b',
+      'l',
+      'ʌ',
+      'd'
+    ],
+    drawPrompt: 'Draw a blood.'
   },
   {
     word: 'bones',
     definition: 'hard parts inside the body that give it shape and support',
     category: 'health',
-    arpabet: ['B', 'OW1', 'N', 'Z'],
-    ipa: ['b', 'oʊ', 'n', 'z'],
+    arpabet: [
+      'B',
+      'OW1',
+      'N',
+      'Z'
+    ],
+    ipa: [
+      'b',
+      'oʊ',
+      'n',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of bones.'
   },
   {
     word: 'butter',
     definition: 'a food made from milk fat',
     category: 'health',
-    arpabet: ['B', 'AH1', 'T', 'ER0'],
-    ipa: ['b', 'ʌ', 't', 'ɝ'],
+    arpabet: [
+      'B',
+      'AH1',
+      'T',
+      'ER0'
+    ],
+    ipa: [
+      'b',
+      'ʌ',
+      't',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw a butter.'
   },
   {
     word: 'calories',
     definition: 'units that measure energy in food',
     category: 'health',
-    arpabet: ['K', 'AE1', 'L', 'ER0', 'IY0', 'Z'],
-    ipa: ['k', 'æ', 'l', 'ɝ', 'i', 'z'],
+    arpabet: [
+      'K',
+      'AE1',
+      'L',
+      'ER0',
+      'IY0',
+      'Z'
+    ],
+    ipa: [
+      'k',
+      'æ',
+      'l',
+      'ɝ',
+      'i',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of calories.'
   },
   {
     word: 'carbohydrates',
     definition: 'nutrients in food that give the body energy',
     category: 'health',
-    arpabet: ['K', 'AA2', 'R', 'B', 'OW0', 'HH', 'AY1', 'D', 'R', 'EY0', 'T', 'S'],
-    ipa: ['k', 'ɑ', 'r', 'b', 'oʊ', 'h', 'aɪ', 'd', 'r', 'eɪ', 't', 's'],
+    arpabet: [
+      'K',
+      'AA2',
+      'R',
+      'B',
+      'OW0',
+      'HH',
+      'AY1',
+      'D',
+      'R',
+      'EY0',
+      'T',
+      'S'
+    ],
+    ipa: [
+      'k',
+      'ɑ',
+      'r',
+      'b',
+      'oʊ',
+      'h',
+      'aɪ',
+      'd',
+      'r',
+      'eɪ',
+      't',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of carbohydrates.'
   },
   {
     word: 'cereal',
     definition: 'a grain-based food often eaten for breakfast',
     category: 'health',
-    arpabet: ['S', 'IH1', 'R', 'IY0', 'AH0', 'L'],
-    ipa: ['s', 'ɪ', 'r', 'i', 'ʌ', 'l'],
+    arpabet: [
+      'S',
+      'IH1',
+      'R',
+      'IY0',
+      'AH0',
+      'L'
+    ],
+    ipa: [
+      's',
+      'ɪ',
+      'r',
+      'i',
+      'ʌ',
+      'l'
+    ],
+    drawPrompt: 'Draw a cereal.'
   },
   {
     word: 'climbing',
     definition: 'moving up using hands and feet',
     category: 'health',
-    arpabet: ['K', 'L', 'AY1', 'M', 'IH0', 'NG'],
-    ipa: ['k', 'l', 'aɪ', 'm', 'ɪ', 'ŋ'],
+    arpabet: [
+      'K',
+      'L',
+      'AY1',
+      'M',
+      'IH0',
+      'NG'
+    ],
+    ipa: [
+      'k',
+      'l',
+      'aɪ',
+      'm',
+      'ɪ',
+      'ŋ'
+    ],
+    drawPrompt: 'Draw something that reminds you of climbing.'
   },
   {
     word: 'dairy',
     definition: 'foods made from milk',
     category: 'health',
-    arpabet: ['D', 'EH1', 'R', 'IY0'],
-    ipa: ['d', 'ɛ', 'r', 'i'],
+    arpabet: [
+      'D',
+      'EH1',
+      'R',
+      'IY0'
+    ],
+    ipa: [
+      'd',
+      'ɛ',
+      'r',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of dairy.'
   },
   {
     word: 'dentist',
     definition: 'a doctor who takes care of teeth',
     category: 'health',
-    arpabet: ['D', 'EH1', 'N', 'T', 'AH0', 'S', 'T'],
-    ipa: ['d', 'ɛ', 'n', 't', 'ʌ', 's', 't'],
+    arpabet: [
+      'D',
+      'EH1',
+      'N',
+      'T',
+      'AH0',
+      'S',
+      'T'
+    ],
+    ipa: [
+      'd',
+      'ɛ',
+      'n',
+      't',
+      'ʌ',
+      's',
+      't'
+    ],
+    drawPrompt: 'Draw a dentist.'
   },
   {
     word: 'diet',
     definition: 'the kinds of food a person eats',
     category: 'health',
-    arpabet: ['D', 'AY1', 'AH0', 'T'],
-    ipa: ['d', 'aɪ', 'ʌ', 't'],
+    arpabet: [
+      'D',
+      'AY1',
+      'AH0',
+      'T'
+    ],
+    ipa: [
+      'd',
+      'aɪ',
+      'ʌ',
+      't'
+    ],
+    drawPrompt: 'Draw a diet.'
   },
   {
     word: 'doctor',
     definition: 'a person trained to help people stay healthy and treat illness',
     category: 'health',
-    arpabet: ['D', 'AA1', 'K', 'T', 'ER0'],
-    ipa: ['d', 'ɑ', 'k', 't', 'ɝ'],
+    arpabet: [
+      'D',
+      'AA1',
+      'K',
+      'T',
+      'ER0'
+    ],
+    ipa: [
+      'd',
+      'ɑ',
+      'k',
+      't',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw a doctor.'
   },
   {
     word: 'eggs',
     definition: 'a nutritious food that comes from birds',
     category: 'health',
-    arpabet: ['EH1', 'G', 'Z'],
-    ipa: ['ɛ', 'ɡ', 'z'],
+    arpabet: [
+      'EH1',
+      'G',
+      'Z'
+    ],
+    ipa: [
+      'ɛ',
+      'ɡ',
+      'z'
+    ],
+    drawPrompt: 'Draw some eggs.'
   },
   {
     word: 'energy',
     definition: 'the ability to move and do activities',
     category: 'health',
-    arpabet: ['EH1', 'N', 'ER0', 'JH', 'IY0'],
-    ipa: ['ɛ', 'n', 'ɝ', 'dʒ', 'i'],
+    arpabet: [
+      'EH1',
+      'N',
+      'ER0',
+      'JH',
+      'IY0'
+    ],
+    ipa: [
+      'ɛ',
+      'n',
+      'ɝ',
+      'dʒ',
+      'i'
+    ],
+    drawPrompt: 'Draw an energy.'
   },
   {
     word: 'exercise',
     definition: 'physical activity that keeps the body healthy',
     category: 'health',
-    arpabet: ['EH1', 'K', 'S', 'ER0', 'S', 'AY2', 'Z'],
-    ipa: ['ɛ', 'k', 's', 'ɝ', 's', 'aɪ', 'z'],
+    arpabet: [
+      'EH1',
+      'K',
+      'S',
+      'ER0',
+      'S',
+      'AY2',
+      'Z'
+    ],
+    ipa: [
+      'ɛ',
+      'k',
+      's',
+      'ɝ',
+      's',
+      'aɪ',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of exercise.'
   },
   {
     word: 'fats',
     definition: 'nutrients in food that give energy and help the body grow',
     category: 'health',
-    arpabet: ['F', 'AE1', 'T', 'S'],
-    ipa: ['f', 'æ', 't', 's'],
+    arpabet: [
+      'F',
+      'AE1',
+      'T',
+      'S'
+    ],
+    ipa: [
+      'f',
+      'æ',
+      't',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of fats.'
   },
   {
     word: 'fever',
     definition: 'a higher-than-normal body temperature',
     category: 'health',
-    arpabet: ['F', 'IY1', 'V', 'ER0'],
-    ipa: ['f', 'i', 'v', 'ɝ'],
+    arpabet: [
+      'F',
+      'IY1',
+      'V',
+      'ER0'
+    ],
+    ipa: [
+      'f',
+      'i',
+      'v',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw a fever.'
   },
   {
     word: 'fiber',
     definition: 'a part of food that helps digestion',
     category: 'health',
-    arpabet: ['F', 'AY1', 'B', 'ER0'],
-    ipa: ['f', 'aɪ', 'b', 'ɝ'],
+    arpabet: [
+      'F',
+      'AY1',
+      'B',
+      'ER0'
+    ],
+    ipa: [
+      'f',
+      'aɪ',
+      'b',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw a fiber.'
   },
   {
     word: 'fitness',
     definition: 'being healthy and strong',
     category: 'health',
-    arpabet: ['F', 'IH1', 'T', 'N', 'AH0', 'S'],
-    ipa: ['f', 'ɪ', 't', 'n', 'ʌ', 's'],
+    arpabet: [
+      'F',
+      'IH1',
+      'T',
+      'N',
+      'AH0',
+      'S'
+    ],
+    ipa: [
+      'f',
+      'ɪ',
+      't',
+      'n',
+      'ʌ',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of fitness.'
   },
   {
     word: 'fresh',
     definition: 'not old or spoiled, often healthier food',
     category: 'health',
-    arpabet: ['F', 'R', 'EH1', 'SH'],
-    ipa: ['f', 'r', 'ɛ', 'ʃ'],
+    arpabet: [
+      'F',
+      'R',
+      'EH1',
+      'SH'
+    ],
+    ipa: [
+      'f',
+      'r',
+      'ɛ',
+      'ʃ'
+    ],
+    drawPrompt: 'Draw something that reminds you of fresh.'
   },
   {
     word: 'fruit',
     definition: 'a sweet food that grows on plants',
     category: 'health',
-    arpabet: ['F', 'R', 'UW1', 'T'],
-    ipa: ['f', 'r', 'u', 't'],
+    arpabet: [
+      'F',
+      'R',
+      'UW1',
+      'T'
+    ],
+    ipa: [
+      'f',
+      'r',
+      'u',
+      't'
+    ],
+    drawPrompt: 'Draw a fruit.'
   },
   {
     word: 'grains',
     definition: 'foods like wheat, rice, and oats',
     category: 'health',
-    arpabet: ['G', 'R', 'EY1', 'N', 'Z'],
-    ipa: ['ɡ', 'r', 'eɪ', 'n', 'z'],
+    arpabet: [
+      'G',
+      'R',
+      'EY1',
+      'N',
+      'Z'
+    ],
+    ipa: [
+      'ɡ',
+      'r',
+      'eɪ',
+      'n',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of grains.'
   },
   {
     word: 'healthy',
     definition: 'feeling well and having a strong body',
     category: 'health',
-    arpabet: ['HH', 'EH1', 'L', 'TH', 'IY0'],
-    ipa: ['h', 'ɛ', 'l', 'θ', 'i'],
+    arpabet: [
+      'HH',
+      'EH1',
+      'L',
+      'TH',
+      'IY0'
+    ],
+    ipa: [
+      'h',
+      'ɛ',
+      'l',
+      'θ',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of healthy.'
   },
   {
     word: 'heart rate',
     definition: 'how fast the heart beats',
     category: 'health',
-    arpabet: ['HH', 'AA1', 'R', 'T', 'R', 'EY1', 'T'],
-    ipa: ['h', 'ɑ', 'r', 't', 'r', 'eɪ', 't'],
+    arpabet: [
+      'HH',
+      'AA1',
+      'R',
+      'T',
+      'R',
+      'EY1',
+      'T'
+    ],
+    ipa: [
+      'h',
+      'ɑ',
+      'r',
+      't',
+      'r',
+      'eɪ',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of heart rate.'
   },
   {
     word: 'ingredients',
     definition: 'the foods used to make a dish',
     category: 'health',
-    arpabet: ['IH2', 'N', 'G', 'R', 'IY1', 'D', 'IY0', 'AH0', 'N', 'T', 'S'],
-    ipa: ['ɪ', 'n', 'ɡ', 'r', 'i', 'd', 'i', 'ʌ', 'n', 't', 's'],
+    arpabet: [
+      'IH2',
+      'N',
+      'G',
+      'R',
+      'IY1',
+      'D',
+      'IY0',
+      'AH0',
+      'N',
+      'T',
+      'S'
+    ],
+    ipa: [
+      'ɪ',
+      'n',
+      'ɡ',
+      'r',
+      'i',
+      'd',
+      'i',
+      'ʌ',
+      'n',
+      't',
+      's'
+    ],
+    drawPrompt: 'Draw some ingredients.'
   },
   {
     word: 'iron',
     definition: 'a nutrient that helps carry oxygen in the blood',
     category: 'health',
-    arpabet: ['AY1', 'ER0', 'N'],
-    ipa: ['aɪ', 'ɝ', 'n'],
+    arpabet: [
+      'AY1',
+      'ER0',
+      'N'
+    ],
+    ipa: [
+      'aɪ',
+      'ɝ',
+      'n'
+    ],
+    drawPrompt: 'Draw an iron.'
   },
   {
     word: 'jogging',
     definition: 'running slowly for exercise',
     category: 'health',
-    arpabet: ['JH', 'AA1', 'G', 'IH0', 'NG'],
-    ipa: ['dʒ', 'ɑ', 'ɡ', 'ɪ', 'ŋ'],
+    arpabet: [
+      'JH',
+      'AA1',
+      'G',
+      'IH0',
+      'NG'
+    ],
+    ipa: [
+      'dʒ',
+      'ɑ',
+      'ɡ',
+      'ɪ',
+      'ŋ'
+    ],
+    drawPrompt: 'Draw something that reminds you of jogging.'
   },
   {
     word: 'jumping',
     definition: 'pushing off the ground with your feet',
     category: 'health',
-    arpabet: ['JH', 'AH1', 'M', 'P', 'IH0', 'NG'],
-    ipa: ['dʒ', 'ʌ', 'm', 'p', 'ɪ', 'ŋ'],
+    arpabet: [
+      'JH',
+      'AH1',
+      'M',
+      'P',
+      'IH0',
+      'NG'
+    ],
+    ipa: [
+      'dʒ',
+      'ʌ',
+      'm',
+      'p',
+      'ɪ',
+      'ŋ'
+    ],
+    drawPrompt: 'Draw something that reminds you of jumping.'
   },
   {
     word: 'meat',
     definition: 'food that comes from animals',
     category: 'health',
-    arpabet: ['M', 'IY1', 'T'],
-    ipa: ['m', 'i', 't'],
+    arpabet: [
+      'M',
+      'IY1',
+      'T'
+    ],
+    ipa: [
+      'm',
+      'i',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of meat.'
   },
   {
     word: 'minerals',
     definition: 'nutrients the body needs to stay healthy',
     category: 'health',
-    arpabet: ['M', 'IH1', 'N', 'ER0', 'AH0', 'L', 'Z'],
-    ipa: ['m', 'ɪ', 'n', 'ɝ', 'ʌ', 'l', 'z'],
+    arpabet: [
+      'M',
+      'IH1',
+      'N',
+      'ER0',
+      'AH0',
+      'L',
+      'Z'
+    ],
+    ipa: [
+      'm',
+      'ɪ',
+      'n',
+      'ɝ',
+      'ʌ',
+      'l',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of minerals.'
   },
   {
     word: 'muscles',
     definition: 'body parts that help you move',
     category: 'health',
-    arpabet: ['M', 'AH1', 'S', 'AH0', 'L', 'Z'],
-    ipa: ['m', 'ʌ', 's', 'ʌ', 'l', 'z'],
+    arpabet: [
+      'M',
+      'AH1',
+      'S',
+      'AH0',
+      'L',
+      'Z'
+    ],
+    ipa: [
+      'm',
+      'ʌ',
+      's',
+      'ʌ',
+      'l',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of muscles.'
   },
   {
     word: 'nourishment',
     definition: 'food that helps the body grow and stay healthy',
     category: 'health',
-    arpabet: ['N', 'ER1', 'IH0', 'SH', 'M', 'AH0', 'N', 'T'],
-    ipa: ['n', 'ɝ', 'ɪ', 'ʃ', 'm', 'ʌ', 'n', 't'],
+    arpabet: [
+      'N',
+      'ER1',
+      'IH0',
+      'SH',
+      'M',
+      'AH0',
+      'N',
+      'T'
+    ],
+    ipa: [
+      'n',
+      'ɝ',
+      'ɪ',
+      'ʃ',
+      'm',
+      'ʌ',
+      'n',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of nourishment.'
   },
   {
     word: 'nutrition',
     definition: 'how the body uses food to stay healthy',
     category: 'health',
-    arpabet: ['N', 'UW0', 'T', 'R', 'IH1', 'SH', 'AH0', 'N'],
-    ipa: ['n', 'u', 't', 'r', 'ɪ', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'N',
+      'UW0',
+      'T',
+      'R',
+      'IH1',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'n',
+      'u',
+      't',
+      'r',
+      'ɪ',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of nutrition.'
   },
   {
     word: 'nuts',
     definition: 'a type of food that grows on trees and is healthy to eat',
     category: 'health',
-    arpabet: ['N', 'AH1', 'T', 'S'],
-    ipa: ['n', 'ʌ', 't', 's'],
+    arpabet: [
+      'N',
+      'AH1',
+      'T',
+      'S'
+    ],
+    ipa: [
+      'n',
+      'ʌ',
+      't',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of nuts.'
   },
   {
     word: 'oats',
     definition: 'a type of grain often eaten as cereal',
     category: 'health',
-    arpabet: ['OW1', 'T', 'S'],
-    ipa: ['oʊ', 't', 's'],
+    arpabet: [
+      'OW1',
+      'T',
+      'S'
+    ],
+    ipa: [
+      'oʊ',
+      't',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of oats.'
   },
   {
     word: 'physical activity',
     definition: 'movement that uses the body and builds strength',
     category: 'health',
-    arpabet: ['F', 'IH1', 'Z', 'IH0', 'K', 'AH0', 'L', 'AE0', 'K', 'T', 'IH1', 'V', 'AH0', 'T', 'IY0'],
-    ipa: ['f', 'ɪ', 'z', 'ɪ', 'k', 'ʌ', 'l', 'æ', 'k', 't', 'ɪ', 'v', 'ʌ', 't', 'i'],
+    arpabet: [
+      'F',
+      'IH1',
+      'Z',
+      'IH0',
+      'K',
+      'AH0',
+      'L',
+      'AE0',
+      'K',
+      'T',
+      'IH1',
+      'V',
+      'AH0',
+      'T',
+      'IY0'
+    ],
+    ipa: [
+      'f',
+      'ɪ',
+      'z',
+      'ɪ',
+      'k',
+      'ʌ',
+      'l',
+      'æ',
+      'k',
+      't',
+      'ɪ',
+      'v',
+      'ʌ',
+      't',
+      'i'
+    ],
+    drawPrompt: 'Draw something that reminds you of physical activity.'
   },
   {
     word: 'protein',
     definition: 'a nutrient that helps build and repair the body',
     category: 'health',
-    arpabet: ['P', 'R', 'OW1', 'T', 'IY2', 'N'],
-    ipa: ['p', 'r', 'oʊ', 't', 'i', 'n'],
+    arpabet: [
+      'P',
+      'R',
+      'OW1',
+      'T',
+      'IY2',
+      'N'
+    ],
+    ipa: [
+      'p',
+      'r',
+      'oʊ',
+      't',
+      'i',
+      'n'
+    ],
+    drawPrompt: 'Draw a protein.'
   },
   {
     word: 'rice',
     definition: 'a grain used as a food',
     category: 'health',
-    arpabet: ['R', 'AY1', 'S'],
-    ipa: ['r', 'aɪ', 's'],
+    arpabet: [
+      'R',
+      'AY1',
+      'S'
+    ],
+    ipa: [
+      'r',
+      'aɪ',
+      's'
+    ],
+    drawPrompt: 'Draw a rice.'
   },
   {
     word: 'riding',
     definition: 'moving on something like a bike',
     category: 'health',
-    arpabet: ['R', 'AY1', 'D', 'IH0', 'NG'],
-    ipa: ['r', 'aɪ', 'd', 'ɪ', 'ŋ'],
+    arpabet: [
+      'R',
+      'AY1',
+      'D',
+      'IH0',
+      'NG'
+    ],
+    ipa: [
+      'r',
+      'aɪ',
+      'd',
+      'ɪ',
+      'ŋ'
+    ],
+    drawPrompt: 'Draw something that reminds you of riding.'
   },
   {
     word: 'running',
     definition: 'moving quickly using your legs',
     category: 'health',
-    arpabet: ['R', 'AH1', 'N', 'IH0', 'NG'],
-    ipa: ['r', 'ʌ', 'n', 'ɪ', 'ŋ'],
+    arpabet: [
+      'R',
+      'AH1',
+      'N',
+      'IH0',
+      'NG'
+    ],
+    ipa: [
+      'r',
+      'ʌ',
+      'n',
+      'ɪ',
+      'ŋ'
+    ],
+    drawPrompt: 'Draw something that reminds you of running.'
   },
   {
     word: 'skipping',
     definition: 'a movement of stepping and hopping',
     category: 'health',
-    arpabet: ['S', 'K', 'IH1', 'P', 'IH0', 'NG'],
-    ipa: ['s', 'k', 'ɪ', 'p', 'ɪ', 'ŋ'],
+    arpabet: [
+      'S',
+      'K',
+      'IH1',
+      'P',
+      'IH0',
+      'NG'
+    ],
+    ipa: [
+      's',
+      'k',
+      'ɪ',
+      'p',
+      'ɪ',
+      'ŋ'
+    ],
+    drawPrompt: 'Draw a skipping.'
   },
   {
     word: 'spinach',
     definition: 'a leafy green vegetable',
     category: 'health',
-    arpabet: ['S', 'P', 'IH1', 'N', 'AH0', 'CH'],
-    ipa: ['s', 'p', 'ɪ', 'n', 'ʌ', 'tʃ'],
+    arpabet: [
+      'S',
+      'P',
+      'IH1',
+      'N',
+      'AH0',
+      'CH'
+    ],
+    ipa: [
+      's',
+      'p',
+      'ɪ',
+      'n',
+      'ʌ',
+      'tʃ'
+    ],
+    drawPrompt: 'Draw a spinach.'
   },
   {
     word: 'strengthen',
     definition: 'to make something stronger',
     category: 'health',
-    arpabet: ['S', 'T', 'R', 'EH1', 'NG', 'TH', 'AH0', 'N'],
-    ipa: ['s', 't', 'r', 'ɛ', 'ŋ', 'θ', 'ʌ', 'n'],
+    arpabet: [
+      'S',
+      'T',
+      'R',
+      'EH1',
+      'NG',
+      'TH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      's',
+      't',
+      'r',
+      'ɛ',
+      'ŋ',
+      'θ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to strengthen.'
   },
   {
     word: 'stretching',
     definition: 'moving muscles to make them longer and flexible',
     category: 'health',
-    arpabet: ['S', 'T', 'R', 'EH1', 'CH', 'IH0', 'NG'],
-    ipa: ['s', 't', 'r', 'ɛ', 'tʃ', 'ɪ', 'ŋ'],
+    arpabet: [
+      'S',
+      'T',
+      'R',
+      'EH1',
+      'CH',
+      'IH0',
+      'NG'
+    ],
+    ipa: [
+      's',
+      't',
+      'r',
+      'ɛ',
+      'tʃ',
+      'ɪ',
+      'ŋ'
+    ],
+    drawPrompt: 'Draw something that reminds you of stretching.'
   },
   {
     word: 'temperature',
     definition: 'how hot or cold the body is',
     category: 'health',
-    arpabet: ['T', 'EH1', 'M', 'P', 'R', 'AH0', 'CH', 'ER0'],
-    ipa: ['t', 'ɛ', 'm', 'p', 'r', 'ʌ', 'tʃ', 'ɝ'],
+    arpabet: [
+      'T',
+      'EH1',
+      'M',
+      'P',
+      'R',
+      'AH0',
+      'CH',
+      'ER0'
+    ],
+    ipa: [
+      't',
+      'ɛ',
+      'm',
+      'p',
+      'r',
+      'ʌ',
+      'tʃ',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of temperature.'
   },
   {
     word: 'weight',
     definition: 'how heavy something is',
     category: 'health',
-    arpabet: ['W', 'EY1', 'T'],
-    ipa: ['w', 'eɪ', 't'],
+    arpabet: [
+      'W',
+      'EY1',
+      'T'
+    ],
+    ipa: [
+      'w',
+      'eɪ',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of weight.'
   },
   {
     word: 'wheat',
     definition: 'a grain used to make bread and other foods',
     category: 'health',
-    arpabet: ['W', 'IY1', 'T'],
-    ipa: ['w', 'i', 't'],
+    arpabet: [
+      'W',
+      'IY1',
+      'T'
+    ],
+    ipa: [
+      'w',
+      'i',
+      't'
+    ],
+    drawPrompt: 'Draw a wheat.'
   },
   {
     word: 'vegetable',
     definition: 'a plant used as food',
     category: 'health',
-    arpabet: ['V', 'EH1', 'JH', 'T', 'AH0', 'B', 'AH0', 'L'],
-    ipa: ['v', 'ɛ', 'dʒ', 't', 'ʌ', 'b', 'ʌ', 'l'],
+    arpabet: [
+      'V',
+      'EH1',
+      'JH',
+      'T',
+      'AH0',
+      'B',
+      'AH0',
+      'L'
+    ],
+    ipa: [
+      'v',
+      'ɛ',
+      'dʒ',
+      't',
+      'ʌ',
+      'b',
+      'ʌ',
+      'l'
+    ],
+    drawPrompt: 'Draw a vegetable.'
   },
   {
     word: 'yogurt',
     definition: 'a dairy food made from milk',
     category: 'health',
-    arpabet: ['Y', 'OW1', 'G', 'ER0', 'T'],
-    ipa: ['j', 'oʊ', 'ɡ', 'ɝ', 't'],
+    arpabet: [
+      'Y',
+      'OW1',
+      'G',
+      'ER0',
+      'T'
+    ],
+    ipa: [
+      'j',
+      'oʊ',
+      'ɡ',
+      'ɝ',
+      't'
+    ],
+    drawPrompt: 'Draw a yogurt.'
   },
   {
     word: 'actor/actress',
     definition: 'a person who performs in plays, movies, or shows',
     category: 'arts',
-    arpabet: ['?'],
-    ipa: ['?'],
+    arpabet: [
+      '?'
+    ],
+    ipa: [
+      '?'
+    ],
+    drawPrompt: 'Draw an actoractress.'
   },
   {
     word: 'artist',
     definition: 'a person who creates art',
     category: 'arts',
-    arpabet: ['AA1', 'R', 'T', 'AH0', 'S', 'T'],
-    ipa: ['ɑ', 'r', 't', 'ʌ', 's', 't'],
+    arpabet: [
+      'AA1',
+      'R',
+      'T',
+      'AH0',
+      'S',
+      'T'
+    ],
+    ipa: [
+      'ɑ',
+      'r',
+      't',
+      'ʌ',
+      's',
+      't'
+    ],
+    drawPrompt: 'Draw an artist.'
   },
   {
     word: 'audience',
     definition: 'the people who watch or listen to a performance',
     category: 'arts',
-    arpabet: ['AA1', 'D', 'IY0', 'AH0', 'N', 'S'],
-    ipa: ['ɑ', 'd', 'i', 'ʌ', 'n', 's'],
+    arpabet: [
+      'AA1',
+      'D',
+      'IY0',
+      'AH0',
+      'N',
+      'S'
+    ],
+    ipa: [
+      'ɑ',
+      'd',
+      'i',
+      'ʌ',
+      'n',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of audience.'
   },
   {
     word: 'cast',
     definition: 'the group of people who perform in a play or movie',
     category: 'arts',
-    arpabet: ['K', 'AE1', 'S', 'T'],
-    ipa: ['k', 'æ', 's', 't'],
+    arpabet: [
+      'K',
+      'AE1',
+      'S',
+      'T'
+    ],
+    ipa: [
+      'k',
+      'æ',
+      's',
+      't'
+    ],
+    drawPrompt: 'Draw something that reminds you of cast.'
   },
   {
     word: 'comedy',
     definition: 'a funny play, movie, or story',
     category: 'arts',
-    arpabet: ['K', 'AA1', 'M', 'AH0', 'D', 'IY0'],
-    ipa: ['k', 'ɑ', 'm', 'ʌ', 'd', 'i'],
+    arpabet: [
+      'K',
+      'AA1',
+      'M',
+      'AH0',
+      'D',
+      'IY0'
+    ],
+    ipa: [
+      'k',
+      'ɑ',
+      'm',
+      'ʌ',
+      'd',
+      'i'
+    ],
+    drawPrompt: 'Draw a comedy.'
   },
   {
     word: 'costumes',
     definition: 'clothes worn by actors for a performance',
     category: 'arts',
-    arpabet: ['K', 'AA0', 'S', 'T', 'UW1', 'M', 'Z'],
-    ipa: ['k', 'ɑ', 's', 't', 'u', 'm', 'z'],
+    arpabet: [
+      'K',
+      'AA0',
+      'S',
+      'T',
+      'UW1',
+      'M',
+      'Z'
+    ],
+    ipa: [
+      'k',
+      'ɑ',
+      's',
+      't',
+      'u',
+      'm',
+      'z'
+    ],
+    drawPrompt: 'Draw something that reminds you of costumes.'
   },
   {
     word: 'dance',
     definition: 'moving the body to music',
     category: 'arts',
-    arpabet: ['D', 'AE1', 'N', 'S'],
-    ipa: ['d', 'æ', 'n', 's'],
+    arpabet: [
+      'D',
+      'AE1',
+      'N',
+      'S'
+    ],
+    ipa: [
+      'd',
+      'æ',
+      'n',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of dance.'
   },
   {
     word: 'design',
     definition: 'a plan or drawing for how something will look',
     category: 'arts',
-    arpabet: ['D', 'IH0', 'Z', 'AY1', 'N'],
-    ipa: ['d', 'ɪ', 'z', 'aɪ', 'n'],
+    arpabet: [
+      'D',
+      'IH0',
+      'Z',
+      'AY1',
+      'N'
+    ],
+    ipa: [
+      'd',
+      'ɪ',
+      'z',
+      'aɪ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of design.'
   },
   {
     word: 'dialogue',
     definition: 'the spoken words between characters',
     category: 'arts',
-    arpabet: ['D', 'AY1', 'AH0', 'L', 'AO2', 'G'],
-    ipa: ['d', 'aɪ', 'ʌ', 'l', 'ɔ', 'ɡ'],
+    arpabet: [
+      'D',
+      'AY1',
+      'AH0',
+      'L',
+      'AO2',
+      'G'
+    ],
+    ipa: [
+      'd',
+      'aɪ',
+      'ʌ',
+      'l',
+      'ɔ',
+      'ɡ'
+    ],
+    drawPrompt: 'Draw a dialogue.'
   },
   {
     word: 'drama',
     definition: 'a serious play or story',
     category: 'arts',
-    arpabet: ['D', 'R', 'AA1', 'M', 'AH0'],
-    ipa: ['d', 'r', 'ɑ', 'm', 'ʌ'],
+    arpabet: [
+      'D',
+      'R',
+      'AA1',
+      'M',
+      'AH0'
+    ],
+    ipa: [
+      'd',
+      'r',
+      'ɑ',
+      'm',
+      'ʌ'
+    ],
+    drawPrompt: 'Draw a drama.'
   },
   {
     word: 'easel',
     definition: 'a stand that holds a canvas for painting',
     category: 'arts',
-    arpabet: ['IY1', 'Z', 'AH0', 'L'],
-    ipa: ['i', 'z', 'ʌ', 'l'],
+    arpabet: [
+      'IY1',
+      'Z',
+      'AH0',
+      'L'
+    ],
+    ipa: [
+      'i',
+      'z',
+      'ʌ',
+      'l'
+    ],
+    drawPrompt: 'Draw an easel.'
   },
   {
     word: 'entertain',
     definition: 'to amuse or interest an audience',
     category: 'arts',
-    arpabet: ['EH2', 'N', 'T', 'ER0', 'T', 'EY1', 'N'],
-    ipa: ['ɛ', 'n', 't', 'ɝ', 't', 'eɪ', 'n'],
+    arpabet: [
+      'EH2',
+      'N',
+      'T',
+      'ER0',
+      'T',
+      'EY1',
+      'N'
+    ],
+    ipa: [
+      'ɛ',
+      'n',
+      't',
+      'ɝ',
+      't',
+      'eɪ',
+      'n'
+    ],
+    drawPrompt: 'Draw a picture of someone trying to entertain.'
   },
   {
     word: 'film',
     definition: 'a movie',
     category: 'arts',
-    arpabet: ['F', 'IH1', 'L', 'M'],
-    ipa: ['f', 'ɪ', 'l', 'm'],
+    arpabet: [
+      'F',
+      'IH1',
+      'L',
+      'M'
+    ],
+    ipa: [
+      'f',
+      'ɪ',
+      'l',
+      'm'
+    ],
+    drawPrompt: 'Draw a film.'
   },
   {
     word: 'makeup',
     definition: 'products used to change or improve appearance for performance',
     category: 'arts',
-    arpabet: ['M', 'EY1', 'K', 'AH2', 'P'],
-    ipa: ['m', 'eɪ', 'k', 'ʌ', 'p'],
+    arpabet: [
+      'M',
+      'EY1',
+      'K',
+      'AH2',
+      'P'
+    ],
+    ipa: [
+      'm',
+      'eɪ',
+      'k',
+      'ʌ',
+      'p'
+    ],
+    drawPrompt: 'Draw something that reminds you of makeup.'
   },
   {
     word: 'melody',
     definition: 'a sequence of musical notes that form a tune',
     category: 'arts',
-    arpabet: ['M', 'EH1', 'L', 'AH0', 'D', 'IY0'],
-    ipa: ['m', 'ɛ', 'l', 'ʌ', 'd', 'i'],
+    arpabet: [
+      'M',
+      'EH1',
+      'L',
+      'AH0',
+      'D',
+      'IY0'
+    ],
+    ipa: [
+      'm',
+      'ɛ',
+      'l',
+      'ʌ',
+      'd',
+      'i'
+    ],
+    drawPrompt: 'Draw a melody.'
   },
   {
     word: 'movie',
     definition: 'a story shown with moving pictures',
     category: 'arts',
-    arpabet: ['M', 'UW1', 'V', 'IY0'],
-    ipa: ['m', 'u', 'v', 'i'],
+    arpabet: [
+      'M',
+      'UW1',
+      'V',
+      'IY0'
+    ],
+    ipa: [
+      'm',
+      'u',
+      'v',
+      'i'
+    ],
+    drawPrompt: 'Draw a movie.'
   },
   {
     word: 'music',
     definition: 'sounds arranged to be pleasing or expressive',
     category: 'arts',
-    arpabet: ['M', 'Y', 'UW1', 'Z', 'IH0', 'K'],
-    ipa: ['m', 'j', 'u', 'z', 'ɪ', 'k'],
+    arpabet: [
+      'M',
+      'Y',
+      'UW1',
+      'Z',
+      'IH0',
+      'K'
+    ],
+    ipa: [
+      'm',
+      'j',
+      'u',
+      'z',
+      'ɪ',
+      'k'
+    ],
+    drawPrompt: 'Draw something that reminds you of music.'
   },
   {
     word: 'mystery',
     definition: 'a story about solving a problem or unknown event',
     category: 'arts',
-    arpabet: ['M', 'IH1', 'S', 'T', 'ER0', 'IY0'],
-    ipa: ['m', 'ɪ', 's', 't', 'ɝ', 'i'],
+    arpabet: [
+      'M',
+      'IH1',
+      'S',
+      'T',
+      'ER0',
+      'IY0'
+    ],
+    ipa: [
+      'm',
+      'ɪ',
+      's',
+      't',
+      'ɝ',
+      'i'
+    ],
+    drawPrompt: 'Draw a mystery.'
   },
   {
     word: 'performer',
     definition: 'a person who entertains an audience',
     category: 'arts',
-    arpabet: ['P', 'ER0', 'F', 'AO1', 'R', 'M', 'ER0'],
-    ipa: ['p', 'ɝ', 'f', 'ɔ', 'r', 'm', 'ɝ'],
+    arpabet: [
+      'P',
+      'ER0',
+      'F',
+      'AO1',
+      'R',
+      'M',
+      'ER0'
+    ],
+    ipa: [
+      'p',
+      'ɝ',
+      'f',
+      'ɔ',
+      'r',
+      'm',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw a performer.'
   },
   {
     word: 'pitch',
     definition: 'how high or low a sound is',
     category: 'arts',
-    arpabet: ['P', 'IH1', 'CH'],
-    ipa: ['p', 'ɪ', 'tʃ'],
+    arpabet: [
+      'P',
+      'IH1',
+      'CH'
+    ],
+    ipa: [
+      'p',
+      'ɪ',
+      'tʃ'
+    ],
+    drawPrompt: 'Draw something that reminds you of pitch.'
   },
   {
     word: 'production',
     definition: 'a play, show, or performance',
     category: 'arts',
-    arpabet: ['P', 'R', 'AH0', 'D', 'AH1', 'K', 'SH', 'AH0', 'N'],
-    ipa: ['p', 'r', 'ʌ', 'd', 'ʌ', 'k', 'ʃ', 'ʌ', 'n'],
+    arpabet: [
+      'P',
+      'R',
+      'AH0',
+      'D',
+      'AH1',
+      'K',
+      'SH',
+      'AH0',
+      'N'
+    ],
+    ipa: [
+      'p',
+      'r',
+      'ʌ',
+      'd',
+      'ʌ',
+      'k',
+      'ʃ',
+      'ʌ',
+      'n'
+    ],
+    drawPrompt: 'Draw something that reminds you of production.'
   },
   {
     word: 'props',
     definition: 'objects used by actors during a performance',
     category: 'arts',
-    arpabet: ['P', 'R', 'AA1', 'P', 'S'],
-    ipa: ['p', 'r', 'ɑ', 'p', 's'],
+    arpabet: [
+      'P',
+      'R',
+      'AA1',
+      'P',
+      'S'
+    ],
+    ipa: [
+      'p',
+      'r',
+      'ɑ',
+      'p',
+      's'
+    ],
+    drawPrompt: 'Draw something that reminds you of props.'
   },
   {
     word: 'rhythm',
     definition: 'a pattern of beats in music',
     category: 'arts',
-    arpabet: ['R', 'IH1', 'DH', 'AH0', 'M'],
-    ipa: ['r', 'ɪ', 'ð', 'ʌ', 'm'],
+    arpabet: [
+      'R',
+      'IH1',
+      'DH',
+      'AH0',
+      'M'
+    ],
+    ipa: [
+      'r',
+      'ɪ',
+      'ð',
+      'ʌ',
+      'm'
+    ],
+    drawPrompt: 'Draw a rhythm.'
   },
   {
     word: 'role',
     definition: 'the part played by an actor',
     category: 'arts',
-    arpabet: ['R', 'OW1', 'L'],
-    ipa: ['r', 'oʊ', 'l'],
+    arpabet: [
+      'R',
+      'OW1',
+      'L'
+    ],
+    ipa: [
+      'r',
+      'oʊ',
+      'l'
+    ],
+    drawPrompt: 'Draw a role.'
   },
   {
     word: 'scale',
     definition: 'a series of musical notes in order',
     category: 'arts',
-    arpabet: ['S', 'K', 'EY1', 'L'],
-    ipa: ['s', 'k', 'eɪ', 'l'],
+    arpabet: [
+      'S',
+      'K',
+      'EY1',
+      'L'
+    ],
+    ipa: [
+      's',
+      'k',
+      'eɪ',
+      'l'
+    ],
+    drawPrompt: 'Draw a scale.'
   },
   {
     word: 'script',
     definition: 'the written text of a play or show',
     category: 'arts',
-    arpabet: ['S', 'K', 'R', 'IH1', 'P', 'T'],
-    ipa: ['s', 'k', 'r', 'ɪ', 'p', 't'],
+    arpabet: [
+      'S',
+      'K',
+      'R',
+      'IH1',
+      'P',
+      'T'
+    ],
+    ipa: [
+      's',
+      'k',
+      'r',
+      'ɪ',
+      'p',
+      't'
+    ],
+    drawPrompt: 'Draw a script.'
   },
   {
     word: 'setting',
     definition: 'where and when a performance or story takes place',
     category: 'arts',
-    arpabet: ['S', 'EH1', 'T', 'IH0', 'NG'],
-    ipa: ['s', 'ɛ', 't', 'ɪ', 'ŋ'],
+    arpabet: [
+      'S',
+      'EH1',
+      'T',
+      'IH0',
+      'NG'
+    ],
+    ipa: [
+      's',
+      'ɛ',
+      't',
+      'ɪ',
+      'ŋ'
+    ],
+    drawPrompt: 'Draw something that reminds you of setting.'
   },
   {
     word: 'stage',
     definition: 'the place where performers act',
     category: 'arts',
-    arpabet: ['S', 'T', 'EY1', 'JH'],
-    ipa: ['s', 't', 'eɪ', 'dʒ'],
+    arpabet: [
+      'S',
+      'T',
+      'EY1',
+      'JH'
+    ],
+    ipa: [
+      's',
+      't',
+      'eɪ',
+      'dʒ'
+    ],
+    drawPrompt: 'Draw a stage.'
   },
   {
     word: 'story',
     definition: 'a tale with characters and events',
     category: 'arts',
-    arpabet: ['S', 'T', 'AO1', 'R', 'IY0'],
-    ipa: ['s', 't', 'ɔ', 'r', 'i'],
+    arpabet: [
+      'S',
+      'T',
+      'AO1',
+      'R',
+      'IY0'
+    ],
+    ipa: [
+      's',
+      't',
+      'ɔ',
+      'r',
+      'i'
+    ],
+    drawPrompt: 'Draw a story.'
   },
   {
     word: 'superhero',
     definition: 'a character with special powers who helps others',
     category: 'arts',
-    arpabet: ['S', 'UW2', 'P', 'ER0', 'HH', 'IY1', 'R', 'OW0'],
-    ipa: ['s', 'u', 'p', 'ɝ', 'h', 'i', 'r', 'oʊ'],
+    arpabet: [
+      'S',
+      'UW2',
+      'P',
+      'ER0',
+      'HH',
+      'IY1',
+      'R',
+      'OW0'
+    ],
+    ipa: [
+      's',
+      'u',
+      'p',
+      'ɝ',
+      'h',
+      'i',
+      'r',
+      'oʊ'
+    ],
+    drawPrompt: 'Draw a superhero.'
   },
   {
     word: 'texture',
     definition: 'how something feels or looks like it feels',
     category: 'arts',
-    arpabet: ['T', 'EH1', 'K', 'S', 'CH', 'ER0'],
-    ipa: ['t', 'ɛ', 'k', 's', 'tʃ', 'ɝ'],
+    arpabet: [
+      'T',
+      'EH1',
+      'K',
+      'S',
+      'CH',
+      'ER0'
+    ],
+    ipa: [
+      't',
+      'ɛ',
+      'k',
+      's',
+      'tʃ',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw something that reminds you of texture.'
   },
   {
     word: 'theater',
     definition: 'a place where plays are performed',
     category: 'arts',
-    arpabet: ['TH', 'IY1', 'AH0', 'T', 'ER0'],
-    ipa: ['θ', 'i', 'ʌ', 't', 'ɝ'],
+    arpabet: [
+      'TH',
+      'IY1',
+      'AH0',
+      'T',
+      'ER0'
+    ],
+    ipa: [
+      'θ',
+      'i',
+      'ʌ',
+      't',
+      'ɝ'
+    ],
+    drawPrompt: 'Draw a theater.'
   },
   {
     word: 'tragedy',
     definition: 'a serious story with a sad ending',
     category: 'arts',
-    arpabet: ['T', 'R', 'AE1', 'JH', 'AH0', 'D', 'IY0'],
-    ipa: ['t', 'r', 'æ', 'dʒ', 'ʌ', 'd', 'i'],
+    arpabet: [
+      'T',
+      'R',
+      'AE1',
+      'JH',
+      'AH0',
+      'D',
+      'IY0'
+    ],
+    ipa: [
+      't',
+      'r',
+      'æ',
+      'dʒ',
+      'ʌ',
+      'd',
+      'i'
+    ],
+    drawPrompt: 'Draw a tragedy.'
   },
   {
     word: 'video',
     definition: 'moving images recorded and played back',
     category: 'arts',
-    arpabet: ['V', 'IH1', 'D', 'IY0', 'OW0'],
-    ipa: ['v', 'ɪ', 'd', 'i', 'oʊ'],
+    arpabet: [
+      'V',
+      'IH1',
+      'D',
+      'IY0',
+      'OW0'
+    ],
+    ipa: [
+      'v',
+      'ɪ',
+      'd',
+      'i',
+      'oʊ'
+    ],
+    drawPrompt: 'Draw something that reminds you of video.'
   },
   {
     word: 'voice',
     definition: 'the sound produced when speaking or singing',
     category: 'arts',
-    arpabet: ['V', 'OY1', 'S'],
-    ipa: ['v', 'ɔɪ', 's'],
-  },
+    arpabet: [
+      'V',
+      'OY1',
+      'S'
+    ],
+    ipa: [
+      'v',
+      'ɔɪ',
+      's'
+    ],
+    drawPrompt: 'Draw a voice.'
+  }
 ];

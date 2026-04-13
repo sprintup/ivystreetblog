@@ -1,10 +1,18 @@
 // BaseRepository.ts
-import { handler, UserModel, IUser, BookModel, BooklistModel } from "@/domain/models";
+import {
+  handler,
+  UserModel,
+  IUser,
+  BookModel,
+  BooklistModel,
+  AnonymousChildModel,
+} from '@/domain/models';
 
 export class BaseRepository {
   protected User: UserModel;
   protected Book: BookModel;
   protected Booklist: BooklistModel;
+  protected AnonymousChild: AnonymousChildModel;
 
   public constructor() {
     // javascript does not allow async constructors, so make sure to call a static async constructor called .create() that initializes the models when constructing from a subclass interactor. See commented out example below.
@@ -24,10 +32,11 @@ export class BaseRepository {
   }
 
   public async initializeModels() {
-    const { User, Book, Booklist } = await handler();
+    const { User, Book, Booklist, AnonymousChild } = await handler();
     this.User = User;
     this.Book = Book;
     this.Booklist = Booklist;
+    this.AnonymousChild = AnonymousChild;
   }
 
   public async findUser(email: string): Promise<IUser | null> {

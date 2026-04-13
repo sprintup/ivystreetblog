@@ -1,12 +1,19 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { FaChevronDown } from 'react-icons/fa';
 
 const Footer = () => {
+  const { data: session, status } = useSession();
   const [isVisible, setIsVisible] = useState(true);
   const [isScrollPossible, setIsScrollPossible] = useState(false);
   const [isScrolledToTop, setIsScrolledToTop] = useState(true);
+  const githubRepoUrl = process.env.NEXT_PUBLIC_GITHUB_REPO_URL;
+  const wordGardenHref =
+    session || status === 'loading'
+      ? '/word-garden'
+      : '/api/auth/signin?callbackUrl=/word-garden';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,12 +71,16 @@ const Footer = () => {
               >
                 Terms of use (5.23.2024)
               </Link>
-              <Link
-                href={process.env.NEXT_PUBLIC_GITHUB_REPO_URL}
-                className='text-yellow hover:text-orange focus:text-orange block px-1 rounded-md text-base font-medium'
-              >
-                Edit on Github
-              </Link>
+              {githubRepoUrl ? (
+                <a
+                  href={githubRepoUrl}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-yellow hover:text-orange focus:text-orange block px-1 rounded-md text-base font-medium'
+                >
+                  Edit on Github
+                </a>
+              ) : null}
             </div>
             <div className='flex flex-col items-start pl-3'>
               <Link
@@ -89,6 +100,12 @@ const Footer = () => {
                 className='text-yellow hover:text-orange focus:text-orange block px-1 rounded-md text-base font-medium'
               >
                 Resources
+              </Link>
+              <Link
+                href={wordGardenHref}
+                className='text-yellow hover:text-orange focus:text-orange block px-1 rounded-md text-base font-medium'
+              >
+                Word Garden
               </Link>
             </div>
           </div>

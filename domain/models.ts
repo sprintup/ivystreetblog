@@ -9,6 +9,7 @@ export interface IUser extends Document {
   bookListIds: mongoose.Types.ObjectId[];
   trackedBooks: ITrackedBook[];
   favoriteBooklistIds: mongoose.Types.ObjectId[];
+  acIds: mongoose.Types.ObjectId[];
 }
 
 export interface ITrackedBook {
@@ -19,6 +20,23 @@ export interface ITrackedBook {
   ratingPerceivedDifficulty: number | null;
   isWishlistItem: boolean;
   bookPriority: number;
+}
+
+export interface IPracticedWord {
+  word: string;
+  practiceCount: number;
+  completedChecklistCount: number;
+  lastPracticedAt: Date | null;
+}
+
+export interface IAnonymousChild extends Document {
+  acId: string;
+  displayName: string;
+  birthYearMonth: string;
+  waiverAcceptedAt: Date;
+  practicedWords: IPracticedWord[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IBooklist extends Document {
@@ -58,6 +76,33 @@ export interface IBook extends Document {
 export type UserModel = Model<IUser>;
 export type BooklistModel = Model<IBooklist>;
 export type BookModel = Model<IBook>;
+export type AnonymousChildModel = Model<IAnonymousChild>;
+
+const PracticedWordSchema = new mongoose.Schema(
+  {
+    word: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
+    },
+    practiceCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    completedChecklistCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    lastPracticedAt: {
+      type: Date,
+      default: null,
+    },
+  },
+  { _id: false }
+);
 
 const UserSchema = new mongoose.Schema(
   {
@@ -111,6 +156,42 @@ const UserSchema = new mongoose.Schema(
         ref: 'Booklist',
       },
     ],
+    acIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'AnonymousChild',
+      },
+    ],
+  },
+  { timestamps: true }
+);
+
+const AnonymousChildSchema = new mongoose.Schema(
+  {
+    acId: {
+      type: String,
+      unique: true,
+      index: true,
+      trim: true,
+    },
+    displayName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    birthYearMonth: {
+      type: String,
+      required: true,
+      match: /^\d{4}-\d{2}$/,
+    },
+    waiverAcceptedAt: {
+      type: Date,
+      required: true,
+    },
+    practicedWords: {
+      type: [PracticedWordSchema],
+      default: [],
+    },
   },
   { timestamps: true }
 );
@@ -184,6 +265,7 @@ export async function handler(): Promise<{
   User: UserModel;
   Book: BookModel;
   Booklist: BooklistModel;
+  AnonymousChild: AnonymousChildModel;
 }> {
   await dbConnect();
 
@@ -194,6 +276,9 @@ export async function handler(): Promise<{
   const Booklist =
     mongoose.models.Booklist ||
     mongoose.model<IBooklist>('Booklist', BooklistSchema);
+  const AnonymousChild =
+    mongoose.models.AnonymousChild ||
+    mongoose.model<IAnonymousChild>('AnonymousChild', AnonymousChildSchema);
 
-  return { User, Book, Booklist };
+  return { User, Book, Booklist, AnonymousChild };
 }

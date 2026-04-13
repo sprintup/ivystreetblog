@@ -9,6 +9,9 @@
     "lint": "next lint",
     "increment-version": "node app/utils/increment-version.js"
   },
+  "engines": {
+    "node": "24.x"
+  },
   "simple-git-hooks": {
     "pre-push": "npm run increment-version"
   },
