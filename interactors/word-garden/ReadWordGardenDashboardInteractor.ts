@@ -1,5 +1,5 @@
 import { BaseInteractor } from '@/interactors/BaseInteractor';
-import { IAnonymousChild } from '@/domain/models';
+import { IWordGardenDashboardChild } from '@/domain/models';
 import { AnonymousChildRepository } from '@/repositories/AnonymousChildRepository';
 
 export class ReadWordGardenDashboardInteractor extends BaseInteractor {
@@ -10,7 +10,7 @@ export class ReadWordGardenDashboardInteractor extends BaseInteractor {
     return new ReadWordGardenDashboardInteractor({ anonymousChildRepo });
   }
 
-  async execute(userEmail: string): Promise<IAnonymousChild[] | null> {
-    return this.anonymousChildRepo.getAnonymousChildrenForUser(userEmail);
+  async execute(userEmail: string): Promise<IWordGardenDashboardChild[] | null> {
+    return this.anonymousChildRepo.getWordGardenDashboardForUser(userEmail);
   }
 }

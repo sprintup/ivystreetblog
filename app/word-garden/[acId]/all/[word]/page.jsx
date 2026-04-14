@@ -92,10 +92,26 @@ export default async function WordGardenAllWordsDetailPage({ params }) {
               </span>
             </div>
           </div>
-          <div className='rounded-3xl bg-primary/70 px-5 py-4 text-sm text-accent min-w-[220px]'>
-            <p>Lowercase letter: {wordDetail.lowercaseLetter || '-'}</p>
-            <p>Uppercase letter: {wordDetail.uppercaseLetter || '-'}</p>
-            <p>Category: {wordDetail.category}</p>
+          <div className='min-w-[260px] rounded-3xl bg-primary/70 px-5 py-4 text-sm text-accent'>
+            <div className='grid grid-cols-2 gap-3'>
+              <div className='rounded-2xl border border-accent/20 bg-secondary/60 p-3 text-center'>
+                <p className='text-[11px] uppercase tracking-[0.25em] text-accent'>
+                  Lowercase
+                </p>
+                <p className='mt-2 text-4xl font-semibold lowercase text-white'>
+                  {wordDetail.lowercaseLetter || '-'}
+                </p>
+              </div>
+              <div className='rounded-2xl border border-accent/20 bg-secondary/60 p-3 text-center'>
+                <p className='text-[11px] uppercase tracking-[0.25em] text-accent'>
+                  Uppercase
+                </p>
+                <p className='mt-2 text-4xl font-semibold text-white'>
+                  {wordDetail.uppercaseLetter || '-'}
+                </p>
+              </div>
+            </div>
+            <p className='mt-4'>Category: {wordDetail.category}</p>
           </div>
         </div>
       </div>

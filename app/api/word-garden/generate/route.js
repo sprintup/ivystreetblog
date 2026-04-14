@@ -1,6 +1,9 @@
 import { getServerSession } from 'next-auth/next';
 import { options } from '@auth/options';
 
+export const runtime = 'nodejs';
+export const maxDuration = 60;
+
 const OPENAI_BASE_URL = 'https://api.openai.com/v1';
 const DEFINITION_MODEL = 'gpt-4.1-mini';
 const IMAGE_MODEL = 'gpt-image-1-mini';
@@ -103,7 +106,7 @@ export async function POST(request) {
             {
               role: 'system',
               content:
-                'You create printable word-study supports for caregivers and young children. Return only JSON that matches the requested schema. Keep the definition child-friendly, concrete, and under 28 words. Create an image prompt for a black-and-white coloring-page style illustration with thick outlines, a plain white background, and no text. If morphology examples or same-target words are provided, use them only as context. For morphemeSentences, include only real, natural English forms that make semantic sense for the target word. Never mechanically add endings. If a target word does not naturally take an -ing, past-tense, or plural form in normal child-facing use, leave that form out. If no natural morphology examples fit, return an empty array. For relatedWordConnections, prefer 3 to 4 child-friendly words that are similar in meaning or conceptually related to the target word. Do not choose words only because they share a sound, phoneme, or first letter. Book recommendations must be picture-book friendly and concise.',
+                'You create printable word-study supports for caregivers and young children. Return only JSON that matches the requested schema. Keep the definition child-friendly, concrete, and under 28 words. Create an image prompt for a black-and-white coloring-page style illustration with thick outlines, a plain white background, and no text. If morphology examples or same-target words are provided, use them only as context. For morphemeSentences, include only real, natural English forms that make semantic sense for the target word. Never mechanically add endings. If a target word does not naturally take an -ing, past-tense, or plural form in normal child-facing use, leave that form out. If no natural morphology examples fit, return an empty array. For relatedWordConnections, prefer 3 to 4 child-friendly words that are similar in meaning or conceptually related to the target word. Do not choose words only because they share a sound, phoneme, or first letter. For homographMeanings, include short child-friendly meanings only when the target word has a common same-spelling different-meaning match that would be useful to discuss; otherwise return an empty array. Book recommendations must be picture-book friendly and concise.',
             },
             {
               role: 'user',
@@ -172,6 +175,12 @@ export async function POST(request) {
                       required: ['word', 'reason'],
                     },
                   },
+                  homographMeanings: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                    },
+                  },
                   bookRecommendations: {
                     type: 'array',
                     items: {
@@ -197,6 +206,7 @@ export async function POST(request) {
                   'imagePrompt',
                   'morphemeSentences',
                   'relatedWordConnections',
+                  'homographMeanings',
                   'bookRecommendations',
                 ],
               },
@@ -259,6 +269,7 @@ export async function POST(request) {
       childFriendlyDefinition: generatedContent.childFriendlyDefinition,
       morphemeSentences: generatedContent.morphemeSentences || [],
       relatedWordConnections: generatedContent.relatedWordConnections || [],
+      homographMeanings: generatedContent.homographMeanings || [],
       bookRecommendations: generatedContent.bookRecommendations || [],
       imagePrompt: generatedContent.imagePrompt,
       imageDataUrl: `data:image/png;base64,${imageBase64}`,

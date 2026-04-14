@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 function getDefaultConcrete() {
   return true;
@@ -36,7 +36,6 @@ export default function WordCloud({
   selectionType,
   selectionSlug,
   words,
-  ageInMonths = null,
   soundTableSelection = '',
   emptySelectionMessage = 'No words matched this selection yet.',
 }) {
@@ -70,10 +69,6 @@ export default function WordCloud({
     [words]
   );
 
-  useEffect(() => {
-    setShowAbstract(allConcreteWordsLearned);
-  }, [allConcreteWordsLearned]);
-
   const filteredWords = useMemo(
     () =>
       words.filter(wordEntry => {
@@ -104,9 +99,12 @@ export default function WordCloud({
             children can often understand more easily.
           </p>
           <p>
-            Abstract words unlock after all concrete words in this set are learned.
             These words were chosen for their academic nature so they can support
             children as they move into school, where communication becomes more academic.
+          </p>
+          <p>
+            Abstract words start unchecked until the concrete words in this set are
+            learned, but you can turn them on whenever you want.
           </p>
           <p>
             Concrete learned: {concreteLearnedCount} / {concreteCount || 0}
@@ -127,7 +125,6 @@ export default function WordCloud({
               type='checkbox'
               checked={showAbstract}
               onChange={event => setShowAbstract(event.target.checked)}
-              disabled={!allConcreteWordsLearned}
               className='h-4 w-4'
             />
             Abstract ({abstractCount})
@@ -144,7 +141,8 @@ export default function WordCloud({
         </div>
         {!allConcreteWordsLearned ? (
           <p className='mt-3 text-sm text-yellow'>
-            Finish all concrete words in this set to turn on abstract words.
+            Abstract words are still off by default here, but you can choose to turn
+            them on before the concrete set is complete.
           </p>
         ) : null}
       </div>
@@ -154,7 +152,7 @@ export default function WordCloud({
           No words match the current filter settings.
         </div>
       ) : (
-        <div className='rounded-[2rem] bg-primary/40 border border-accent/20 p-6 md:p-10 shadow-lg'>
+        <div className='rounded-[2rem] border border-accent/20 bg-primary/40 p-6 shadow-lg md:p-10'>
           <div className='flex flex-wrap items-center gap-4 leading-loose'>
             {filteredWords.map(wordEntry => (
               <Link
@@ -166,7 +164,7 @@ export default function WordCloud({
                   wordEntry.word,
                   soundTableSelection
                 )}
-                className={`no-underline font-bold text-yellow hover:text-orange transition ${wordEntry.sizeClass}`}
+                className={`no-underline font-bold text-yellow transition hover:text-orange ${wordEntry.sizeClass}`}
               >
                 {wordEntry.word}
                 {(wordEntry.completedChecklistCount || 0) > 0 ? (
@@ -175,7 +173,7 @@ export default function WordCloud({
                     title='Completed'
                     aria-label='Completed'
                   >
-                    ✓
+                    Done
                   </span>
                 ) : wordEntry.practiceCount > 0 ? (
                   <span className='ml-2 align-middle rounded-full bg-secondary/80 px-2 py-1 text-xs text-accent'>

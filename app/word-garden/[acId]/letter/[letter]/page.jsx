@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import LevelTwoIntro from '../../../LevelTwoIntro';
 import WordCloud from '../../../WordCloud';
 import { getAnonymousChildOrNotFound } from '../../../wordGardenServer';
 import {
@@ -46,28 +47,7 @@ export default async function WordGardenLetterLevelTwoPage({ params }) {
         <span>{getLetterLabel(letter)}</span>
       </div>
 
-      <div className='rounded-[2rem] bg-secondary/80 border border-accent/20 p-8 shadow-xl'>
-        <p className='text-sm uppercase tracking-[0.35em] text-yellow mb-3'>
-          Level 2
-        </p>
-        <h1 className='text-4xl text-white mb-3'>Word Cloud For {letter}</h1>
-        <div className='max-w-3xl space-y-4 text-accent'>
-          <p>
-            These words begin with the letter {letter}. Children typically
-            understand concrete words with tangible meanings more easily than
-            abstract words.
-          </p>
-          <p>
-            These words were selected for their academic nature, which supports
-            children as they reach school, where communication is often more academic.
-          </p>
-          <p>
-            Abstract words stay off until all concrete words in this set are learned.
-            Words you have already clicked shrink a little to make room for
-            less-practiced choices.
-          </p>
-        </div>
-      </div>
+      <LevelTwoIntro />
 
       <WordCloud
         acId={params.acId}

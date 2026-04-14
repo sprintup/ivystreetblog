@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import dbConnect from '@/repositories/dbConnect';
 import mongoose, { Document, Model, Types } from 'mongoose';
 
@@ -34,9 +35,32 @@ export interface IAnonymousChild extends Document {
   displayName: string;
   birthYearMonth: string;
   waiverAcceptedAt: Date;
+  originatorUserId?: mongoose.Types.ObjectId | null;
+  shareToken?: string;
   practicedWords: IPracticedWord[];
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface IWordGardenSurrogateSummary {
+  userId: string;
+  name: string;
+  email: string;
+}
+
+export interface IWordGardenDashboardChild {
+  acId: string;
+  displayName: string;
+  birthYearMonth: string;
+  waiverAcceptedAt: Date;
+  practicedWords: IPracticedWord[];
+  createdAt: Date;
+  updatedAt: Date;
+  isOriginator: boolean;
+  shareToken: string | null;
+  surrogateCount: number;
+  surrogates: IWordGardenSurrogateSummary[];
+  originatorName: string;
 }
 
 export interface IBooklist extends Document {
@@ -187,6 +211,18 @@ const AnonymousChildSchema = new mongoose.Schema(
     waiverAcceptedAt: {
       type: Date,
       required: true,
+    },
+    originatorUserId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+    },
+    shareToken: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
+      default: () => randomUUID(),
     },
     practicedWords: {
       type: [PracticedWordSchema],

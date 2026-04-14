@@ -208,7 +208,7 @@ function buildPanes(wordDetail) {
     },
     {
       id: 'optional',
-      title: 'Optional (Over 3)',
+      title: 'Optional (Best for ages over 3)',
       strategyTitle: 'Onset / Rime And Sound Map',
       required: false,
       items: [
@@ -232,7 +232,7 @@ function buildPanes(wordDetail) {
         },
         {
           id: 'optional-sign',
-          label: `Practice a sign for "${wordDetail.word}".`,
+          label: `Practice sign language for "${wordDetail.word}".`,
         },
       ],
     },
@@ -280,8 +280,16 @@ export default function WorksheetChecklist({
   const relatedWords = relatedEntries.slice(0, 4);
   const similarRimeWords = wordDetail.similarRimeWords.slice(0, 4);
   const lookupWords = buildDefinitionLookupWords(wordDetail);
+  const generatedHomographMeanings = Array.isArray(generatedContent?.homographMeanings)
+    ? generatedContent.homographMeanings
+        .map(meaning => String(meaning || '').trim())
+        .filter(Boolean)
+        .slice(0, 4)
+    : [];
   const homographMeanings =
-    HOMOGRAPH_NOTES[String(wordDetail.word || '').trim().toLowerCase()] || [];
+    generatedHomographMeanings.length > 0
+      ? generatedHomographMeanings
+      : HOMOGRAPH_NOTES[String(wordDetail.word || '').trim().toLowerCase()] || [];
   const selectedLetter =
     soundTableSelection ||
     (wordDetail.selectionType === 'letter' ? wordDetail.selectionSlug : '');
@@ -334,7 +342,9 @@ export default function WorksheetChecklist({
     setGenerationError('');
 
     if (!apiKey.trim()) {
-      setGenerationError('Add an OpenAI API key before generating a worksheet.');
+      setGenerationError(
+        'Add an OpenAI API key before generating worksheet content. You do not need a key to print the worksheet.'
+      );
       return;
     }
 
@@ -918,10 +928,54 @@ export default function WorksheetChecklist({
 
             {isGeneratorOpen ? (
               <div className='mt-4 space-y-4'>
-                <p className='text-sm text-slate-600'>
-                  Add an OpenAI API key to generate a child-friendly definition,
-                  stronger morphology support, related-word suggestions, and a coloring-page image.
-                </p>
+                <div className='space-y-3 text-sm text-slate-600'>
+                  <p>
+                    You do not need to generate content to print the worksheet, but
+                    generation will usually make the worksheet better by adding a
+                    child-friendly definition, stronger morphology support,
+                    related-word suggestions, and a coloring-page image.
+                  </p>
+                  <p>
+                    Each generation usually takes about a minute and costs about a
+                    nickel.
+                  </p>
+                  <p>
+                    To do generation, visit the{' '}
+                    <a
+                      href='https://platform.openai.com/settings/organization/billing/overview'
+                      className='text-primary underline decoration-dotted underline-offset-4'
+                    >
+                      Billing page
+                    </a>
+                    , turn auto recharge off, and add a small credit to your
+                    account, such as $5.
+                  </p>
+                  <p>
+                    Then create an API key on the{' '}
+                    <a
+                      href='https://platform.openai.com/settings/organization/api-keys'
+                      className='text-primary underline decoration-dotted underline-offset-4'
+                    >
+                      API keys page
+                    </a>
+                    . Copy the secret key value and store it securely.
+                  </p>
+                  <p>
+                    When you want to generate a worksheet, paste that key into the
+                    box below.
+                  </p>
+                  <p>
+                    Example output:{' '}
+                    <a
+                      href='/investigate.pdf'
+                      className='text-primary underline decoration-dotted underline-offset-4'
+                      target='_blank'
+                      rel='noreferrer'
+                    >
+                      investigate.pdf
+                    </a>
+                  </p>
+                </div>
                 <form onSubmit={handleGenerate} className='space-y-4'>
                   <input type='text' name='username' value='OpenAI Word Garden' readOnly autoComplete='username' className='sr-only' tabIndex={-1} />
                   <label className='block'>
@@ -1023,7 +1077,7 @@ export default function WorksheetChecklist({
 
       <div className='print-only worksheet-sheet'>
         <article className='worksheet-page bg-white text-slate-900'>
-          <div className='worksheet-frame space-y-6'>
+          <div className='worksheet-frame worksheet-front-page-frame'>
             <div className='worksheet-header'>
               <div className='min-w-0'>
                 <p className='worksheet-kicker'>Word Garden Worksheet</p>
@@ -1036,105 +1090,133 @@ export default function WorksheetChecklist({
               </div>
             </div>
 
-            <div className='grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(260px,0.8fr)]'>
-              <section className='worksheet-card'>
-                <p className='worksheet-card-title'>Required Panes</p>
-                <div className='mt-4 space-y-4'>
-                  {panes.filter(pane => pane.required).map(pane => (
-                    <div key={pane.id} className='rounded-2xl border border-slate-200 p-4'>
-                      <div className='flex items-center justify-between gap-4'>
-                        <p className='font-semibold text-slate-900'>{pane.title}</p>
-                        <p className='text-xs uppercase tracking-[0.25em] text-slate-500'>
-                          Check any {REQUIRED_CHECKS_PER_PANE}
-                        </p>
-                      </div>
-                      <ol className='mt-3 space-y-2'>
-                        {pane.items.map(item => (
-                          <li key={item.id} className='worksheet-check-item'>
-                            <span className='worksheet-print-checkbox' />
-                            <span>{item.label}</span>
+            <div className='worksheet-front-body worksheet-front-body-single-page'>
+              <div className='worksheet-front-layout'>
+                <div className='worksheet-front-main'>
+                  <section className='worksheet-card'>
+                    <p className='worksheet-card-title'>Required Panes</p>
+                    <div className='worksheet-pane-grid'>
+                      {panes
+                        .filter(pane => pane.required)
+                        .map(pane => (
+                          <div key={pane.id} className='worksheet-pane-card'>
+                            <div className='flex items-center justify-between gap-3'>
+                              <p className='font-semibold text-slate-900'>{pane.title}</p>
+                              <p className='worksheet-pane-note'>
+                                Check any {REQUIRED_CHECKS_PER_PANE}
+                              </p>
+                            </div>
+                            <ol className='mt-2 space-y-1.5'>
+                              {pane.items.map(item => (
+                                <li key={item.id} className='worksheet-check-item'>
+                                  <span className='worksheet-print-checkbox' />
+                                  <span>{item.label}</span>
+                                </li>
+                              ))}
+                            </ol>
+                          </div>
+                        ))}
+                    </div>
+                  </section>
+
+                  <section className='worksheet-card'>
+                    <p className='worksheet-card-title'>Word Building And Related Words</p>
+                    {morphemeEntries.length === 0 ? (
+                      <p className='worksheet-small-copy'>
+                        Keep this as a whole-word practice target.
+                      </p>
+                    ) : (
+                      <ul className='worksheet-detail-list'>
+                        {morphemeEntries.slice(0, 3).map(entry => (
+                          <li key={`${entry.form}-${entry.sentence}`}>
+                            <strong>{entry.form}</strong>: {entry.sentence}
                           </li>
                         ))}
-                      </ol>
-                    </div>
-                  ))}
+                      </ul>
+                    )}
+                    {relatedWords.length > 0 ? (
+                      <ul className='worksheet-write-in-list'>
+                        {relatedWords.map(entry => (
+                          <li key={entry.word} className='worksheet-write-in-item'>
+                            <strong>{entry.word}</strong>
+                            <span className='worksheet-write-line' />
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className='worksheet-small-copy'>No related words are ready yet.</p>
+                    )}
+                  </section>
                 </div>
-              </section>
 
-              <div className='space-y-6'>
-                <section className='worksheet-card'>
-                  <p className='worksheet-card-title'>Optional (Over 3)</p>
-                  <ol className='space-y-2'>
-                    {panes.find(pane => pane.id === 'optional')?.items.map(item => (
-                      <li key={item.id} className='worksheet-check-item'>
-                        <span className='worksheet-print-checkbox' />
-                        <span>{item.label}</span>
-                      </li>
-                    ))}
-                  </ol>
-                </section>
+                <div className='worksheet-front-sidebar'>
+                  <section className='worksheet-card'>
+                    <p className='worksheet-card-title'>
+                      {panes.find(pane => pane.id === 'optional')?.title}
+                    </p>
+                    <ol className='space-y-1.5'>
+                      {panes.find(pane => pane.id === 'optional')?.items.map(item => (
+                        <li key={item.id} className='worksheet-check-item'>
+                          <span className='worksheet-print-checkbox' />
+                          <span>{item.label}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </section>
 
-                <section className='worksheet-card'>
-                  <p className='worksheet-card-title'>Supports</p>
-                  <ul className='worksheet-detail-list'>
-                    <li>Lookup words: {lookupWords.map(entry => entry.word).join(', ')}</li>
-                    <li>Onset / rime: {wordDetail.onsetAndRime.onset || '-'} / {wordDetail.onsetAndRime.rime || '-'}</li>
-                    <li>Uppercase / lowercase: {wordDetail.uppercaseLetter} / {wordDetail.lowercaseLetter}</li>
-                    <li>{relatedHint}</li>
-                  </ul>
-                </section>
+                  <section className='worksheet-card'>
+                    <p className='worksheet-card-title'>Homographs And Extra Words</p>
+                    {homographMeanings.length > 0 ? (
+                      <ul className='worksheet-detail-list'>
+                        {homographMeanings.map(meaning => (
+                          <li key={meaning}>{meaning}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className='worksheet-small-copy'>
+                        No common homograph note is available for this word yet.
+                      </p>
+                    )}
+                    {similarRimeWords.length > 0 ? (
+                      <ul className='worksheet-detail-list'>
+                        {similarRimeWords.map(entry => (
+                          <li key={entry.normalizedWord}>{entry.word}</li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </section>
+
+                  <section className='worksheet-inline-draw'>
+                    <div className='worksheet-inline-draw-copy'>
+                      <p className='worksheet-card-title'>
+                        {generatedContent?.imageDataUrl ? 'Color Or Trace' : 'Draw Your Own Picture'}
+                      </p>
+                      <p className='worksheet-back-prompt'>
+                        {generatedContent?.imageDataUrl
+                          ? `Color the picture for "${wordDetail.word}" and say the word again while you work.`
+                          : wordDetail.drawPrompt}
+                      </p>
+                      {!generatedContent?.imageDataUrl ? (
+                        <p className='worksheet-small-copy'>
+                          Use the definition above to help the child decide what to draw.
+                        </p>
+                      ) : null}
+                    </div>
+
+                    <div className='worksheet-inline-draw-box'>
+                      {generatedContent?.imageDataUrl ? (
+                        <img
+                          src={generatedContent.imageDataUrl}
+                          alt={`${wordDetail.word} coloring page`}
+                          className='worksheet-drawing-image'
+                        />
+                      ) : (
+                        <div className='worksheet-draw-placeholder' />
+                      )}
+                    </div>
+                  </section>
+                </div>
               </div>
-            </div>
-
-            <div className='grid gap-6 lg:grid-cols-2'>
-              <section className='worksheet-card'>
-                <p className='worksheet-card-title'>Word Building And Related Words</p>
-                {morphemeEntries.length === 0 ? (
-                  <p className='worksheet-small-copy'>Keep this as a whole-word practice target.</p>
-                ) : (
-                  <ul className='worksheet-detail-list'>
-                    {morphemeEntries.slice(0, 4).map(entry => (
-                      <li key={`${entry.form}-${entry.sentence}`}>
-                        <strong>{entry.form}</strong>: {entry.sentence}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                <ul className='worksheet-write-in-list'>
-                  {relatedWords.map(entry => (
-                    <li key={entry.word} className='worksheet-write-in-item'>
-                      <strong>{entry.word}</strong>
-                      <span className='worksheet-write-line' />
-                    </li>
-                  ))}
-                </ul>
-              </section>
-
-              <section className='worksheet-card'>
-                <p className='worksheet-card-title'>Homographs And Extra Words</p>
-                {homographMeanings.length > 0 ? (
-                  <ul className='worksheet-detail-list'>
-                    {homographMeanings.map(meaning => <li key={meaning}>{meaning}</li>)}
-                  </ul>
-                ) : (
-                  <p className='worksheet-small-copy'>
-                    No common homograph note is saved for this word yet.
-                  </p>
-                )}
-                {similarRimeWords.length > 0 ? (
-                  <ul className='worksheet-detail-list'>
-                    {similarRimeWords.map(entry => <li key={entry.normalizedWord}>{entry.word}</li>)}
-                  </ul>
-                ) : null}
-              </section>
-            </div>
-
-            <div className='worksheet-draw-box'>
-              {generatedContent?.imageDataUrl ? (
-                <img src={generatedContent.imageDataUrl} alt={`${wordDetail.word} coloring page`} className='worksheet-drawing-image' />
-              ) : (
-                <div className='worksheet-draw-placeholder' />
-              )}
             </div>
           </div>
         </article>

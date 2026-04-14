@@ -145,13 +145,13 @@
   }
 
   .worksheet-word {
-    font-size: 1.45rem !important;
+    font-size: 1.58rem !important;
     margin-top: 0.02in !important;
   }
 
   .worksheet-definition {
     margin-top: 0.02in !important;
-    font-size: 0.76rem !important;
+    font-size: 0.8rem !important;
     line-height: 1.2 !important;
   }
 
@@ -167,8 +167,13 @@
 
   .worksheet-front-layout,
   .worksheet-front-body,
-  .worksheet-front-sidebar {
+  .worksheet-front-sidebar,
+  .worksheet-front-main {
     gap: 0.1in !important;
+  }
+
+  .worksheet-front-body-single-page {
+    gap: 0.08in !important;
   }
 
   .worksheet-front-body-ungenerated {
@@ -181,6 +186,18 @@
 
   .worksheet-card-title {
     margin-bottom: 0.04in !important;
+  }
+
+  .worksheet-pane-grid {
+    gap: 0.06in !important;
+  }
+
+  .worksheet-pane-card {
+    padding: 0.07in !important;
+  }
+
+  .worksheet-pane-note {
+    font-size: 0.5rem !important;
   }
 
   .worksheet-checklist {
@@ -224,7 +241,7 @@
   }
 
   .worksheet-inline-draw-box {
-    min-height: 2.15in !important;
+    min-height: 1.85in !important;
   }
 }
 
@@ -277,14 +294,14 @@
 }
 
 .worksheet-word {
-  font-size: 1.65rem;
+  font-size: 1.82rem;
   line-height: 1.05;
   margin-top: 0.04in;
 }
 
 .worksheet-definition {
   margin-top: 0.04in;
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   line-height: 1.28;
 }
 
@@ -313,7 +330,7 @@
 
 .worksheet-front-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(2.2in, 1fr);
+  grid-template-columns: minmax(0, 1.35fr) minmax(2.2in, 0.95fr);
   gap: 0.12in;
   align-items: start;
 }
@@ -322,6 +339,16 @@
   display: flex;
   flex-direction: column;
   gap: 0.12in;
+}
+
+.worksheet-front-body-single-page {
+  gap: 0.1in;
+}
+
+.worksheet-front-main {
+  display: grid;
+  gap: 0.12in;
+  align-content: start;
 }
 
 .worksheet-front-body-ungenerated {
@@ -347,6 +374,26 @@
   letter-spacing: 0.14em;
   color: #64748b;
   margin-bottom: 0.06in;
+}
+
+.worksheet-pane-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.08in;
+}
+
+.worksheet-pane-card {
+  border: 1px solid #cbd5e1;
+  border-radius: 0.15in;
+  padding: 0.08in;
+  background: white;
+}
+
+.worksheet-pane-note {
+  font-size: 0.56rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #64748b;
 }
 
 .worksheet-checklist {
@@ -427,7 +474,7 @@
 .worksheet-inline-draw-box {
   border: 2px solid #94a3b8;
   border-radius: 0.18in;
-  min-height: 2.8in;
+  min-height: 2.1in;
   padding: 0.12in;
   background: white;
   overflow: hidden;
