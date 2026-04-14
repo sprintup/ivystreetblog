@@ -340,9 +340,7 @@ export default function WorksheetChecklist({
     }
 
     setHasTriggeredGeneratedPrint(true);
-    setGenerationSuccess(
-      'Worksheet generated. Opening the print dialog so you can download or print it.'
-    );
+    setGenerationSuccess('Worksheet generated, ready to print');
 
     const printTimer = window.setTimeout(() => {
       window.print();
