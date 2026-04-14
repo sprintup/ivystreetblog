@@ -13,24 +13,6 @@ export default async function WordGardenDashboardPage() {
 
   return (
     <section className='space-y-10 pb-40'>
-      <div className='rounded-[2rem] bg-gradient-to-br from-secondary via-primary to-primary border border-accent/20 p-8 shadow-xl'>
-        <p className='text-sm uppercase tracking-[0.35em] text-yellow mb-3'>Word Garden</p>
-        <h1 className='text-4xl md:text-5xl font-bold text-white mb-4'>
-          Grow sound-by-sound practice for the children in your care.
-        </h1>
-        <p className='max-w-3xl text-lg text-accent'>
-          Build a private garden of anonymous child profiles, unlock age-appropriate phonemes, explore word clouds, and print practice worksheets that make it easier to talk about meaning, sounds, and spelling together.
-        </p>
-        <div className='mt-6 flex flex-wrap gap-3 text-sm text-accent'>
-          <span className='rounded-full border border-accent/30 px-4 py-2'>
-            Signed in as {session.user.name}
-          </span>
-          <span className='rounded-full border border-accent/30 px-4 py-2'>
-            Children in garden: {sortedChildren.length}
-          </span>
-        </div>
-      </div>
-
       <div className='grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,420px)]'>
         <div className='space-y-5'>
           <div className='flex items-center justify-between gap-4'>
@@ -39,6 +21,14 @@ export default async function WordGardenDashboardPage() {
               <p className='text-accent mt-1'>
                 Select a child to open Level 1 and review their available sounds.
               </p>
+              <div className='mt-4 flex flex-wrap gap-3 text-sm text-accent'>
+                <span className='rounded-full border border-accent/30 px-4 py-2'>
+                  Signed in as {session.user.name}
+                </span>
+                <span className='rounded-full border border-accent/30 px-4 py-2'>
+                  Children in garden: {sortedChildren.length}
+                </span>
+              </div>
             </div>
           </div>
 

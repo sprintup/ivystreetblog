@@ -15,12 +15,14 @@ export class PracticeAnonymousChildWordInteractor extends BaseInteractor {
     acId: string,
     word: string,
     practiceIncrement = 1,
-    checklistIncrement = 0
+    checklistIncrement = 0,
+    resetChecklist = false
   ): Promise<IAnonymousChild | null> {
     return this.anonymousChildRepo.recordWordPracticeForUser(userEmail, acId, {
       word,
       practiceIncrement,
       checklistIncrement,
+      resetChecklist,
     });
   }
 }

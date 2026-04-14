@@ -13,6 +13,7 @@ export async function POST(request, { params }) {
     word,
     practiceIncrement = 1,
     checklistIncrement = 0,
+    resetChecklist = false,
   } = await request.json();
 
   if (!word || !word.trim()) {
@@ -29,7 +30,8 @@ export async function POST(request, { params }) {
       params.acId,
       word,
       practiceIncrement,
-      checklistIncrement
+      checklistIncrement,
+      resetChecklist
     );
 
     if (!anonymousChild) {

@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import WordCloud from '../../../WordCloud';
 import { getAnonymousChildOrNotFound } from '../../../wordGardenServer';
 import {
+  calculateAgeInMonths,
   getLetterLabel,
   getLetterWordCloudWords,
 } from '@/utils/wordGardenData';
@@ -21,6 +23,7 @@ export default async function WordGardenLetterLevelTwoPage({ params }) {
     params.acId,
     `/word-garden/${params.acId}/letter/${letter}`
   );
+  const ageInMonths = calculateAgeInMonths(anonymousChild.birthYearMonth);
   const wordCloudWords = getLetterWordCloudWords(
     letter,
     anonymousChild.practicedWords
@@ -54,32 +57,14 @@ export default async function WordGardenLetterLevelTwoPage({ params }) {
         </p>
       </div>
 
-      {wordCloudWords.length === 0 ? (
-        <div className='rounded-3xl border border-dashed border-accent/30 bg-primary/40 p-8 text-accent'>
-          No words matched this letter yet.
-        </div>
-      ) : (
-        <div className='rounded-[2rem] bg-primary/40 border border-accent/20 p-6 md:p-10 shadow-lg'>
-          <div className='flex flex-wrap items-center gap-4 leading-loose'>
-            {wordCloudWords.map(wordEntry => (
-              <Link
-                key={wordEntry.normalizedWord}
-                href={`/word-garden/${params.acId}/letter/${letter}/${encodeURIComponent(
-                  wordEntry.word
-                )}`}
-                className={`no-underline font-bold text-yellow hover:text-orange transition ${wordEntry.sizeClass}`}
-              >
-                {wordEntry.word}
-                {wordEntry.practiceCount > 0 ? (
-                  <span className='ml-2 align-middle rounded-full bg-secondary/80 px-2 py-1 text-xs text-accent'>
-                    x{wordEntry.practiceCount}
-                  </span>
-                ) : null}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
+      <WordCloud
+        acId={params.acId}
+        selectionType='letter'
+        selectionSlug={letter}
+        words={wordCloudWords}
+        ageInMonths={ageInMonths}
+        emptySelectionMessage='No words matched this letter yet.'
+      />
     </section>
   );
 }

@@ -12,6 +12,7 @@ interface PracticeWordInput {
   word: string;
   practiceIncrement?: number;
   checklistIncrement?: number;
+  resetChecklist?: boolean;
 }
 
 function normalizeIncrement(value: number | undefined): number {
@@ -156,19 +157,22 @@ export class AnonymousChildRepository extends BaseRepository {
       const checklistIncrement = normalizeIncrement(
         input.checklistIncrement ?? 0
       );
+      const resetChecklist = Boolean(input.resetChecklist);
       const existingWord = anonymousChild.practicedWords.find(
         practicedWord => practicedWord.word === normalizedWord
       );
 
-      if (practiceIncrement === 0 && checklistIncrement === 0) {
+      if (practiceIncrement === 0 && checklistIncrement === 0 && !resetChecklist) {
         return anonymousChild;
       }
 
       if (existingWord) {
         existingWord.practiceCount += practiceIncrement;
-        existingWord.completedChecklistCount += checklistIncrement;
+        existingWord.completedChecklistCount = resetChecklist
+          ? 0
+          : existingWord.completedChecklistCount + checklistIncrement;
         existingWord.lastPracticedAt = new Date();
-      } else {
+      } else if (!resetChecklist) {
         anonymousChild.practicedWords.push({
           word: normalizedWord,
           practiceCount: practiceIncrement,

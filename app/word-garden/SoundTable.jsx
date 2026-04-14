@@ -4,8 +4,7 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const DEFAULT_SORT_RULES = [
-  { column: 'suggestedWordCount', direction: 'desc' },
-  { column: 'difficultyRank', direction: 'asc' },
+  { column: 'letter', direction: 'asc' },
 ];
 
 function getRowHref(acId, row) {
@@ -166,7 +165,7 @@ function HeaderButton({ column, label, sortRules, onSort, align = 'left' }) {
 
 export default function SoundTable({ acId, rows }) {
   const router = useRouter();
-  const [hideLockedRows, setHideLockedRows] = useState(false);
+  const [hideLockedRows, setHideLockedRows] = useState(true);
   const [sortRules, setSortRules] = useState(DEFAULT_SORT_RULES);
   const [pendingUnlockRow, setPendingUnlockRow] = useState(null);
 

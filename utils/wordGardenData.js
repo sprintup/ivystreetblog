@@ -393,12 +393,44 @@ const ABSTRACT_WORD_PATTERN =
 const ABSTRACT_DEFINITION_PATTERN =
   /^(in|on|at|into|from|with|between|behind|below|above|over|under|before|after|during|what|when|where|why|how|more|less|being|putting|making|showing|using)\b/i;
 const ABSTRACT_HEAD_NOUN_PATTERN =
-  /^(a|an|the)\s+(group|way|kind|type|process|idea|act|amount|system|study|quality|state|condition|set|collection|plan|reason|rule|word|language)\b/i;
+  /^(a|an|the)\s+(group|way|kind|type|process|idea|act|amount|system|study|quality|state|condition|set|collection|plan|reason|rule|word|language|direction|duty|job|difference|meaning|time|number|information|data)\b/i;
 const CONCRETE_DEFINITION_PATTERN =
   /^(a|an|the|your|this|that|something|someone)\b/i;
 
 function looksPluralWord(word) {
   return /s$/.test(word) && !/(ss|us|is)$/.test(word);
+}
+
+function getWordConcreteness(word, definition = '') {
+  const normalizedWord = normalizeWord(word);
+  const normalizedDefinition = String(definition || '').trim().toLowerCase();
+
+  if (!normalizedWord) {
+    return 'abstract';
+  }
+
+  if (/^to\s/i.test(normalizedDefinition)) {
+    return 'concrete';
+  }
+
+  if (
+    normalizedWord.includes(' ') ||
+    normalizedWord.includes('-') ||
+    ABSTRACT_WORD_PATTERN.test(normalizedWord) ||
+    ABSTRACT_DEFINITION_PATTERN.test(normalizedDefinition) ||
+    ABSTRACT_HEAD_NOUN_PATTERN.test(normalizedDefinition)
+  ) {
+    return 'abstract';
+  }
+
+  if (
+    CONCRETE_DEFINITION_PATTERN.test(normalizedDefinition) ||
+    /means\s+(to|someone|something)\b/i.test(normalizedDefinition)
+  ) {
+    return 'concrete';
+  }
+
+  return 'concrete';
 }
 
 function buildDrawPrompt(word, definition = '') {
@@ -447,6 +479,7 @@ function buildWordEntry({
   arpabet = [],
   ipa = [],
   drawPrompt,
+  concreteness,
   source = 'dataset',
 }) {
   const normalizedWord = normalizeWord(word);
@@ -459,6 +492,7 @@ function buildWordEntry({
     normalizedWord,
     definition,
     category,
+    concreteness: concreteness || getWordConcreteness(word, definition),
     drawPrompt: drawPrompt || buildDrawPrompt(word, definition),
     source,
     arpabet,
