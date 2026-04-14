@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth/next';
-import { redirect, notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { options } from '@auth/options';
 import { CreateUserInteractor } from '@interactors/user/CreateUserInteractor';
 import { ReadWordGardenDashboardInteractor } from '@/interactors/word-garden/ReadWordGardenDashboardInteractor';
@@ -50,7 +50,7 @@ export async function getAnonymousChildOrNotFound(acId, callbackPath = '/word-ga
   );
 
   if (!anonymousChild) {
-    notFound();
+    redirect('/');
   }
 
   return {

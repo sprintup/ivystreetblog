@@ -252,10 +252,13 @@ export default function WorksheetChecklist({
   const [completionError, setCompletionError] = useState('');
   const [completionSuccess, setCompletionSuccess] = useState('');
   const [generationError, setGenerationError] = useState('');
+  const [generationSuccess, setGenerationSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState(null);
   const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
+  const [hasTriggeredGeneratedPrint, setHasTriggeredGeneratedPrint] =
+    useState(false);
   const [isWordComplete, setIsWordComplete] = useState(
     () => (wordDetail.completedChecklistCount || 0) > 0
   );
@@ -331,6 +334,23 @@ export default function WorksheetChecklist({
     return () => window.clearTimeout(redirectTimer);
   }, [acId, isCompletionSummaryOpen, router]);
 
+  useEffect(() => {
+    if (!generatedContent || hasTriggeredGeneratedPrint) {
+      return undefined;
+    }
+
+    setHasTriggeredGeneratedPrint(true);
+    setGenerationSuccess(
+      'Worksheet generated. Opening the print dialog so you can download or print it.'
+    );
+
+    const printTimer = window.setTimeout(() => {
+      window.print();
+    }, 350);
+
+    return () => window.clearTimeout(printTimer);
+  }, [generatedContent, hasTriggeredGeneratedPrint]);
+
   function toggleItem(itemId) {
     setCheckedItems(current => ({ ...current, [itemId]: !current[itemId] }));
     setCompletionError('');
@@ -340,6 +360,11 @@ export default function WorksheetChecklist({
   async function handleGenerate(event) {
     event.preventDefault();
     setGenerationError('');
+    setGenerationSuccess('');
+
+    if (generatedContent) {
+      return;
+    }
 
     if (!apiKey.trim()) {
       setGenerationError(
@@ -374,6 +399,7 @@ export default function WorksheetChecklist({
         childFriendlyDefinition: data.childFriendlyDefinition || '',
         morphemeSentences: data.morphemeSentences || [],
         relatedWordConnections: data.relatedWordConnections || [],
+        homographMeanings: data.homographMeanings || [],
         imageDataUrl: data.imageDataUrl || '',
       });
     } catch (error) {
@@ -965,6 +991,10 @@ export default function WorksheetChecklist({
                     box below.
                   </p>
                   <p>
+                    After generation finishes, the print dialog will open
+                    automatically so you can download or print the worksheet.
+                  </p>
+                  <p>
                     Example output:{' '}
                     <a
                       href='/investigate.pdf'
@@ -993,10 +1023,14 @@ export default function WorksheetChecklist({
                   <div className='flex flex-wrap gap-3'>
                     <button
                       type='submit'
-                      disabled={isGenerating}
+                      disabled={isGenerating || state === 'generated'}
                       className='rounded-full bg-primary px-4 py-2 font-bold text-white disabled:cursor-not-allowed disabled:opacity-60'
                     >
-                      {isGenerating ? 'Generating...' : 'Generate Worksheet'}
+                      {isGenerating
+                        ? 'Generating...'
+                        : state === 'generated'
+                          ? 'Worksheet Generated'
+                          : 'Generate Worksheet'}
                     </button>
                     <button
                       type='button'
@@ -1008,6 +1042,9 @@ export default function WorksheetChecklist({
                   </div>
                 </form>
                 {generationError ? <p className='text-sm text-red-700'>{generationError}</p> : null}
+                {generationSuccess ? (
+                  <p className='text-sm text-green-700'>{generationSuccess}</p>
+                ) : null}
               </div>
             ) : null}
           </div>
