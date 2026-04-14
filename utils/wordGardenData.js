@@ -617,7 +617,12 @@ function getLetterDifficultyLabel(letter) {
     return 'Hard (Non)';
   }
 
-  return `${difficulty.level} (${difficulty.pattern})`;
+  const patternLabel =
+    /^[AEIOU]$/.test(letter) && difficulty.pattern === 'Non'
+      ? 'Vowel'
+      : difficulty.pattern;
+
+  return `${difficulty.level} (${patternLabel})`;
 }
 
 function getLetterDifficultyRank(letter) {
@@ -691,6 +696,13 @@ function getStarterWordsForPhoneme(requiredArpabet) {
 function getWordsForLetter(letter, practicedWords = []) {
   return getWordEntriesFromWordList(
     [...getStarterWordsForLetter(letter), ...(firstLetterMap[letter] || [])],
+    practicedWords
+  );
+}
+
+function getAllWords(practicedWords = []) {
+  return getWordEntriesFromWordList(
+    COMBINED_WORD_ENTRIES.map(entry => entry.word),
     practicedWords
   );
 }
@@ -830,6 +842,10 @@ function getLetterLabel(letter) {
 }
 
 function getSelectionLabel(selectionType, selectionSlug) {
+  if (selectionType === 'all') {
+    return 'All words';
+  }
+
   return selectionType === 'letter'
     ? getLetterLabel(selectionSlug)
     : getTargetLabel(selectionSlug);
@@ -1073,9 +1089,11 @@ function buildChecklist(entry, selectionType, selectionSlug) {
     symbol => formatPhoneme(symbol) === targetLabel
   );
   const focusPrompt =
-    selectionType === 'letter'
-      ? `What letter does "${entry.word}" start with? Can you point to the ${selectionSlug} at the beginning?`
-      : getPhonemePrompt(entry.word, targetLabel, phonemePosition);
+    selectionType === 'all'
+      ? `What is the first sound in "${entry.word}"? What other sounds do you hear?`
+      : selectionType === 'letter'
+        ? `What letter does "${entry.word}" start with? Can you point to the ${selectionSlug} at the beginning?`
+        : getPhonemePrompt(entry.word, targetLabel, phonemePosition);
 
   return [
     `Ask the child what "${entry.word}" means.`,
@@ -1119,6 +1137,10 @@ function getGlossaryTerm(term) {
 }
 
 function getWordsForSelection(selectionType, selectionSlug, practicedWords = []) {
+  if (selectionType === 'all') {
+    return getAllWords(practicedWords);
+  }
+
   return selectionType === 'letter'
     ? getWordsForLetter(selectionSlug, practicedWords)
     : getWordsForPhonemeSlug(selectionSlug, practicedWords);

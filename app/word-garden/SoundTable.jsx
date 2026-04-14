@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -249,17 +250,26 @@ export default function SoundTable({ acId, rows }) {
   }
 
   return (
-    <div className='space-y-4'>
+    <div className='space-y-4 pb-24 md:pb-28'>
       <div className='flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-accent/20 bg-primary/40 p-4'>
-        <label className='flex items-center gap-2 text-sm text-accent'>
-          <input
-            type='checkbox'
-            checked={hideLockedRows}
-            onChange={event => setHideLockedRows(event.target.checked)}
-            className='h-4 w-4'
-          />
-          Hide locked rows
-        </label>
+        <div className='flex flex-wrap items-center gap-4'>
+          <label className='flex items-center gap-2 text-sm text-accent'>
+            <input
+              type='checkbox'
+              checked={hideLockedRows}
+              onChange={event => setHideLockedRows(event.target.checked)}
+              className='h-4 w-4'
+            />
+            Hide locked rows
+          </label>
+
+          <Link
+            href={`/word-garden/${acId}/all`}
+            className='rounded-full border border-yellow/30 bg-yellow/10 px-4 py-2 text-sm font-semibold text-yellow transition hover:border-yellow/50 hover:text-orange'
+          >
+            All words
+          </Link>
+        </div>
 
         <p className='text-sm text-accent'>
           Click a header to sort. Shift-click another header to add a secondary
@@ -291,7 +301,7 @@ export default function SoundTable({ acId, rows }) {
                 <th className='sticky top-0 z-20 bg-secondary px-4 py-3 text-sm uppercase tracking-wide'>
                   <HeaderButton
                     column='difficultyRank'
-                    label='Difficulty / Sound'
+                    label='Expressive Difficulty'
                     sortRules={sortRules}
                     onSort={updateSort}
                   />

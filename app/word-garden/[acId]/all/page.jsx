@@ -1,31 +1,20 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import WordCloud from '../../../WordCloud';
-import { getAnonymousChildOrNotFound } from '../../../wordGardenServer';
+import WordCloud from '../../WordCloud';
+import { getAnonymousChildOrNotFound } from '../../wordGardenServer';
 import {
   calculateAgeInMonths,
-  getLetterLabel,
-  getLetterWordCloudWords,
+  getSelectionWordCloudWords,
 } from '@/utils/wordGardenData';
 
-function normalizeLetter(letter) {
-  return String(letter || '').trim().charAt(0).toUpperCase();
-}
-
-export default async function WordGardenLetterLevelTwoPage({ params }) {
-  const letter = normalizeLetter(params.letter);
-
-  if (!/^[A-Z]$/.test(letter)) {
-    notFound();
-  }
-
+export default async function WordGardenAllWordsPage({ params }) {
   const { anonymousChild } = await getAnonymousChildOrNotFound(
     params.acId,
-    `/word-garden/${params.acId}/letter/${letter}`
+    `/word-garden/${params.acId}/all`
   );
   const ageInMonths = calculateAgeInMonths(anonymousChild.birthYearMonth);
-  const wordCloudWords = getLetterWordCloudWords(
-    letter,
+  const wordCloudWords = getSelectionWordCloudWords(
+    'all',
+    'all',
     anonymousChild.practicedWords
   );
 
@@ -43,19 +32,17 @@ export default async function WordGardenLetterLevelTwoPage({ params }) {
           Sound Table
         </Link>
         <span>/</span>
-        <span>{getLetterLabel(letter)}</span>
+        <span>All words</span>
       </div>
 
       <div className='rounded-[2rem] bg-secondary/80 border border-accent/20 p-8 shadow-xl'>
-        <p className='text-sm uppercase tracking-[0.35em] text-yellow mb-3'>
-          Level 2
-        </p>
-        <h1 className='text-4xl text-white mb-3'>Word Cloud For {letter}</h1>
+        <p className='text-sm uppercase tracking-[0.35em] text-yellow mb-3'>Level 2</p>
+        <h1 className='text-4xl text-white mb-3'>Word Cloud For All Words</h1>
         <div className='max-w-3xl space-y-4 text-accent'>
           <p>
-            These words begin with the letter {letter}. Children typically
-            understand concrete words with tangible meanings more easily than
-            abstract words.
+            Browse every available Word Garden target in one place. Children
+            typically understand concrete words with tangible meanings more easily
+            than abstract words.
           </p>
           <p>
             These words were selected for their academic nature, which supports
@@ -67,15 +54,27 @@ export default async function WordGardenLetterLevelTwoPage({ params }) {
             less-practiced choices.
           </p>
         </div>
+        <p className='mt-4 max-w-3xl text-sm leading-7 text-accent'>
+          These words were pulled from Appendix B of{' '}
+          <em>All About Words: Increasing Vocabulary in the Common Core Classroom, PreK-2</em>
+          {' '}by Susan B. Neuman. View the source here:{' '}
+          <a
+            href='https://archive.org/details/allaboutwordsinc0000neum_u4h2/page/152/mode/2up'
+            className='text-yellow underline decoration-dotted underline-offset-4 hover:text-orange'
+          >
+            Appendix B on Archive.org
+          </a>
+          .
+        </p>
       </div>
 
       <WordCloud
         acId={params.acId}
-        selectionType='letter'
-        selectionSlug={letter}
+        selectionType='all'
+        selectionSlug='all'
         words={wordCloudWords}
         ageInMonths={ageInMonths}
-        emptySelectionMessage='No words matched this letter yet.'
+        emptySelectionMessage='No words are ready yet.'
       />
     </section>
   );

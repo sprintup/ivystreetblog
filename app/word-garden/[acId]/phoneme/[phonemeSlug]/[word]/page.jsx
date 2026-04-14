@@ -119,8 +119,6 @@ export default async function WordGardenLevelThreePage({ params, searchParams })
                   <a
                     key={`${token.text}-${index}`}
                     href={token.dictionaryUrl}
-                    target='_blank'
-                    rel='noopener noreferrer'
                     className='font-normal text-accent underline decoration-dotted underline-offset-4 decoration-accent/70 hover:text-yellow hover:decoration-yellow'
                   >
                     {token.text}

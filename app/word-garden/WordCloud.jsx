@@ -1,18 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-function getDefaultConcrete(ageInMonths) {
+function getDefaultConcrete() {
   return true;
-}
-
-function getDefaultAbstract(ageInMonths) {
-  if (typeof ageInMonths !== 'number') {
-    return false;
-  }
-
-  return ageInMonths >= 36;
 }
 
 function buildWordHref(
@@ -23,6 +15,10 @@ function buildWordHref(
   soundTableSelection = ''
 ) {
   const encodedWord = encodeURIComponent(word);
+
+  if (selectionType === 'all') {
+    return `/word-garden/${acId}/all/${encodedWord}`;
+  }
 
   if (selectionType === 'letter') {
     return `/word-garden/${acId}/letter/${selectionSlug}/${encodedWord}`;
@@ -44,26 +40,40 @@ export default function WordCloud({
   soundTableSelection = '',
   emptySelectionMessage = 'No words matched this selection yet.',
 }) {
-  const [showConcrete, setShowConcrete] = useState(() =>
-    getDefaultConcrete(ageInMonths)
+  const concreteWords = useMemo(
+    () => words.filter(wordEntry => wordEntry.concreteness === 'concrete'),
+    [words]
   );
-  const [showAbstract, setShowAbstract] = useState(() =>
-    getDefaultAbstract(ageInMonths)
+  const abstractWords = useMemo(
+    () => words.filter(wordEntry => wordEntry.concreteness === 'abstract'),
+    [words]
   );
+  const concreteCount = concreteWords.length;
+  const abstractCount = abstractWords.length;
+  const concreteLearnedCount = useMemo(
+    () =>
+      concreteWords.filter(wordEntry => (wordEntry.completedChecklistCount || 0) > 0)
+        .length,
+    [concreteWords]
+  );
+  const allConcreteWordsLearned = useMemo(
+    () =>
+      concreteWords.length === 0 ||
+      concreteWords.every(wordEntry => (wordEntry.completedChecklistCount || 0) > 0),
+    [concreteWords]
+  );
+  const [showConcrete, setShowConcrete] = useState(() => getDefaultConcrete());
+  const [showAbstract, setShowAbstract] = useState(() => allConcreteWordsLearned);
   const [showCompleted, setShowCompleted] = useState(false);
-
-  const concreteCount = useMemo(
-    () => words.filter(wordEntry => wordEntry.concreteness === 'concrete').length,
-    [words]
-  );
-  const abstractCount = useMemo(
-    () => words.filter(wordEntry => wordEntry.concreteness === 'abstract').length,
-    [words]
-  );
   const completedCount = useMemo(
     () => words.filter(wordEntry => (wordEntry.completedChecklistCount || 0) > 0).length,
     [words]
   );
+
+  useEffect(() => {
+    setShowAbstract(allConcreteWordsLearned);
+  }, [allConcreteWordsLearned]);
+
   const filteredWords = useMemo(
     () =>
       words.filter(wordEntry => {
@@ -88,9 +98,20 @@ export default function WordCloud({
   return (
     <div className='space-y-4'>
       <div className='rounded-3xl border border-accent/20 bg-primary/40 p-4'>
-        <p className='mb-3 text-sm text-accent'>
-          Abstract words are best for ages 3+.
-        </p>
+        <div className='mb-4 space-y-2 text-sm text-accent'>
+          <p>
+            Concrete words usually come first because they have tangible meanings
+            children can often understand more easily.
+          </p>
+          <p>
+            Abstract words unlock after all concrete words in this set are learned.
+            These words were chosen for their academic nature so they can support
+            children as they move into school, where communication becomes more academic.
+          </p>
+          <p>
+            Concrete learned: {concreteLearnedCount} / {concreteCount || 0}
+          </p>
+        </div>
         <div className='flex flex-wrap items-center gap-4'>
           <label className='flex items-center gap-2 text-sm text-accent'>
             <input
@@ -106,6 +127,7 @@ export default function WordCloud({
               type='checkbox'
               checked={showAbstract}
               onChange={event => setShowAbstract(event.target.checked)}
+              disabled={!allConcreteWordsLearned}
               className='h-4 w-4'
             />
             Abstract ({abstractCount})
@@ -120,6 +142,11 @@ export default function WordCloud({
             Completed ({completedCount})
           </label>
         </div>
+        {!allConcreteWordsLearned ? (
+          <p className='mt-3 text-sm text-yellow'>
+            Finish all concrete words in this set to turn on abstract words.
+          </p>
+        ) : null}
       </div>
 
       {filteredWords.length === 0 ? (

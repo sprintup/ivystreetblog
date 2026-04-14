@@ -55,9 +55,22 @@ export default async function WordGardenLevelTwoPage({
         <h1 className='text-4xl text-white mb-3'>
           Word Cloud For {soundTableSelectionLabel || getTargetLabel(params.phonemeSlug)}
         </h1>
-        <p className='text-accent max-w-3xl'>
-          These words include {getTargetLabel(params.phonemeSlug)}. Words you have already clicked shrink a little to make room for less-practiced choices.
-        </p>
+        <div className='max-w-3xl space-y-4 text-accent'>
+          <p>
+            These words include {getTargetLabel(params.phonemeSlug)}. Children
+            typically understand concrete words with tangible meanings more easily
+            than abstract words.
+          </p>
+          <p>
+            These words were selected for their academic nature, which supports
+            children as they reach school, where communication is often more academic.
+          </p>
+          <p>
+            Abstract words stay off until all concrete words in this set are learned.
+            Words you have already clicked shrink a little to make room for
+            less-practiced choices.
+          </p>
+        </div>
       </div>
 
       <WordCloud

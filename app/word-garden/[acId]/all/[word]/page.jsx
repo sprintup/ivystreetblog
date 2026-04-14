@@ -1,43 +1,32 @@
 import Link from 'next/link';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
-import TrackWordVisit from '../../../../TrackWordVisit';
-import WorksheetChecklist from '../../../../WorksheetChecklist';
-import { getAnonymousChildOrNotFound } from '../../../../wordGardenServer';
+import TrackWordVisit from '../../../TrackWordVisit';
+import WorksheetChecklist from '../../../WorksheetChecklist';
+import { getAnonymousChildOrNotFound } from '../../../wordGardenServer';
 import {
   decodeWordParam,
-  getLetterLabel,
   getWordDetailForSelection,
 } from '@/utils/wordGardenData';
 
-function normalizeLetter(letter) {
-  return String(letter || '').trim().charAt(0).toUpperCase();
-}
-
-function getCurrentPageUrl(acId, letter, encodedWord) {
+function getCurrentPageUrl(acId, encodedWord) {
   const headerStore = headers();
   const protocol = headerStore.get('x-forwarded-proto') || 'http';
   const host =
     headerStore.get('x-forwarded-host') || headerStore.get('host') || 'localhost:3000';
 
-  return `${protocol}://${host}/word-garden/${acId}/letter/${letter}/${encodedWord}`;
+  return `${protocol}://${host}/word-garden/${acId}/all/${encodedWord}`;
 }
 
-export default async function WordGardenLetterLevelThreePage({ params }) {
-  const letter = normalizeLetter(params.letter);
-
-  if (!/^[A-Z]$/.test(letter)) {
-    notFound();
-  }
-
+export default async function WordGardenAllWordsDetailPage({ params }) {
   const { anonymousChild } = await getAnonymousChildOrNotFound(
     params.acId,
-    `/word-garden/${params.acId}/letter/${letter}/${params.word}`
+    `/word-garden/${params.acId}/all/${params.word}`
   );
   const decodedWord = decodeWordParam(params.word);
   const wordDetail = getWordDetailForSelection(
-    'letter',
-    letter,
+    'all',
+    'all',
     decodedWord,
     anonymousChild.practicedWords
   );
@@ -46,7 +35,7 @@ export default async function WordGardenLetterLevelThreePage({ params }) {
     notFound();
   }
 
-  const currentPageUrl = getCurrentPageUrl(params.acId, letter, params.word);
+  const currentPageUrl = getCurrentPageUrl(params.acId, params.word);
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(
     currentPageUrl
   )}`;
@@ -68,10 +57,10 @@ export default async function WordGardenLetterLevelThreePage({ params }) {
         </Link>
         <span>/</span>
         <Link
-          href={`/word-garden/${params.acId}/letter/${letter}`}
+          href={`/word-garden/${params.acId}/all`}
           className='text-yellow hover:text-orange'
         >
-          {getLetterLabel(letter)}
+          All words
         </Link>
         <span>/</span>
         <span>{wordDetail.word}</span>
