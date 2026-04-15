@@ -5,7 +5,9 @@ import TrackWordVisit from '../../../TrackWordVisit';
 import WorksheetChecklist from '../../../WorksheetChecklist';
 import { getAnonymousChildOrNotFound } from '../../../wordGardenServer';
 import {
+  calculateAgeInMonths,
   decodeWordParam,
+  getUnlockedArpabetForMonths,
   getWordDetailForSelection,
 } from '@/utils/wordGardenData';
 
@@ -26,6 +28,7 @@ export default async function WordGardenAllWordsDetailPage({ params, searchParam
     `/word-garden/${params.acId}/all/${params.word}`
   );
   const decodedWord = decodeWordParam(params.word);
+  const ageInMonths = calculateAgeInMonths(anonymousChild.birthYearMonth);
   const wordDetail = getWordDetailForSelection(
     'all',
     'all',
@@ -124,6 +127,7 @@ export default async function WordGardenAllWordsDetailPage({ params, searchParam
         acId={params.acId}
         autoCheckFromQr={searchParams?.autocheck === '1'}
         qrCodeUrl={qrCodeUrl}
+        unlockedArpabet={getUnlockedArpabetForMonths(ageInMonths)}
         wordDetail={wordDetail}
       />
     </section>

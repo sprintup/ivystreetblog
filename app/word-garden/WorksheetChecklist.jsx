@@ -268,10 +268,15 @@ export default function WorksheetChecklist({
   autoCheckFromQr = false,
   qrCodeUrl,
   soundTableSelection = '',
+  unlockedArpabet = [],
   wordDetail,
 }) {
   const router = useRouter();
   const panes = useMemo(() => buildPanes(wordDetail), [wordDetail]);
+  const unlockedArpabetSet = useMemo(
+    () => new Set((unlockedArpabet || []).map(symbol => String(symbol || '').trim())),
+    [unlockedArpabet]
+  );
   const generationPolicy = useMemo(
     () => getWorksheetGenerationPolicy(wordDetail.word),
     [wordDetail.word]
@@ -574,36 +579,44 @@ export default function WorksheetChecklist({
     return (
       <div className='overflow-x-auto pb-2'>
         <div className='flex min-w-max gap-3'>
-        {wordDetail.soundMapRows.map((row, index) => {
-          const href = buildPhonemeHref(acId, row.phonemeSlug, selectedLetter);
-          const content = (
-            <>
-              <span className='text-3xl font-semibold lowercase tracking-wide text-white'>
-                {row.grapheme}
-              </span>
-              <span className='mt-3 text-sm text-accent'>
-                {row.phonemeLabel || 'listen closely'}
-              </span>
-            </>
-          );
+          {wordDetail.soundMapRows.map((row, index) => {
+            const isUnlocked =
+              row.phonemeSlug && unlockedArpabetSet.has(row.phonemeSlug);
+            const href = isUnlocked
+              ? buildPhonemeHref(acId, row.phonemeSlug, selectedLetter)
+              : '';
+            const content = (
+              <>
+                <span className='text-3xl font-semibold lowercase tracking-wide text-white'>
+                  {row.grapheme}
+                </span>
+                <span
+                  className={`mt-3 text-sm font-medium ${
+                    isUnlocked ? 'text-yellow' : 'text-accent'
+                  }`}
+                >
+                  {row.phonemeLabel || 'listen closely'}
+                </span>
+              </>
+            );
 
-          return row.phonemeSlug ? (
-            <Link
-              key={`${row.grapheme}-${index}`}
-              href={href}
-              className='flex min-w-[88px] flex-col items-center rounded-2xl border border-accent/20 bg-secondary/80 px-4 py-4 text-center no-underline transition hover:border-yellow/40 hover:bg-secondary'
-            >
-              {content}
-            </Link>
-          ) : (
-            <div
-              key={`${row.grapheme}-${index}`}
-              className='flex min-w-[88px] flex-col items-center rounded-2xl border border-accent/20 bg-secondary/60 px-4 py-4 text-center'
-            >
-              {content}
-            </div>
-          );
-        })}
+            return isUnlocked ? (
+              <Link
+                key={`${row.grapheme}-${index}`}
+                href={href}
+                className='flex min-w-[88px] flex-col items-center rounded-2xl border border-accent/20 bg-secondary/80 px-4 py-4 text-center no-underline transition hover:border-yellow/40 hover:bg-secondary'
+              >
+                {content}
+              </Link>
+            ) : (
+              <div
+                key={`${row.grapheme}-${index}`}
+                className='flex min-w-[88px] flex-col items-center rounded-2xl border border-accent/20 bg-secondary/60 px-4 py-4 text-center'
+              >
+                {content}
+              </div>
+            );
+          })}
         </div>
       </div>
     );
@@ -638,9 +651,7 @@ export default function WorksheetChecklist({
                 }`}
               >
                 <span className='worksheet-pronunciation-grapheme'>{row.grapheme}</span>
-                <span className='worksheet-pronunciation-phoneme'>
-                  {row.phonemeLabel || 'listen'}
-                </span>
+                <span className='worksheet-pronunciation-phoneme'>{row.phonemeLabel || 'listen'}</span>
               </div>
             );
           })}

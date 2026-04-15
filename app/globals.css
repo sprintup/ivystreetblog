@@ -258,7 +258,15 @@
   display: none;
 }
 
+.worksheet-sheet {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .worksheet-page {
+  width: 8.5in;
+  min-width: 8.5in;
   max-width: 8.5in;
   margin: 0 auto;
   box-sizing: border-box;
@@ -548,4 +556,14 @@
   font-size: 0.95rem;
   line-height: 1.45;
   color: #334155;
+}
+
+@media print {
+  .worksheet-sheet {
+    overflow: visible !important;
+  }
+
+  .worksheet-page {
+    min-width: 0 !important;
+  }
 }

@@ -1421,6 +1421,10 @@ function getUnlockedWordCloudWords(months, practicedWords = []) {
   );
 }
 
+function getUnlockedArpabetForMonths(months) {
+  return getAvailableConsonants(months).arpabet;
+}
+
 module.exports = {
   calculateAgeInMonths,
   validateBirthYearMonth,
@@ -1429,6 +1433,7 @@ module.exports = {
   getLetterWordCloudWords,
   getSelectionWordCloudWords,
   getUnlockedWordCloudWords,
+  getUnlockedArpabetForMonths,
   getWordsForPhonemeSlug,
   getWordsForLetter,
   getWordDetail,

@@ -5,8 +5,10 @@ import TrackWordVisit from '../../../../TrackWordVisit';
 import WorksheetChecklist from '../../../../WorksheetChecklist';
 import { getAnonymousChildOrNotFound } from '../../../../wordGardenServer';
 import {
+  calculateAgeInMonths,
   decodeWordParam,
   getLetterLabel,
+  getUnlockedArpabetForMonths,
   getWordDetailForSelection,
 } from '@/utils/wordGardenData';
 
@@ -37,6 +39,7 @@ export default async function WordGardenLetterLevelThreePage({ params, searchPar
     `/word-garden/${params.acId}/letter/${letter}/${params.word}`
   );
   const decodedWord = decodeWordParam(params.word);
+  const ageInMonths = calculateAgeInMonths(anonymousChild.birthYearMonth);
   const wordDetail = getWordDetailForSelection(
     'letter',
     letter,
@@ -135,6 +138,7 @@ export default async function WordGardenLetterLevelThreePage({ params, searchPar
         acId={params.acId}
         autoCheckFromQr={searchParams?.autocheck === '1'}
         qrCodeUrl={qrCodeUrl}
+        unlockedArpabet={getUnlockedArpabetForMonths(ageInMonths)}
         wordDetail={wordDetail}
       />
     </section>

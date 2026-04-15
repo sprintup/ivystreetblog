@@ -5,9 +5,11 @@ import TrackWordVisit from '../../../../TrackWordVisit';
 import WorksheetChecklist from '../../../../WorksheetChecklist';
 import { getAnonymousChildOrNotFound } from '../../../../wordGardenServer';
 import {
+  calculateAgeInMonths,
   decodeWordParam,
   getTargetLabel,
   getWordDetail,
+  getUnlockedArpabetForMonths,
 } from '@/utils/wordGardenData';
 
 function normalizeSelectedLetter(value) {
@@ -66,6 +68,7 @@ export default async function WordGardenLevelThreePage({ params, searchParams })
     `/word-garden/${params.acId}/phoneme/${params.phonemeSlug}/${params.word}`
   );
   const decodedWord = decodeWordParam(params.word);
+  const ageInMonths = calculateAgeInMonths(anonymousChild.birthYearMonth);
   const wordDetail = getWordDetail(
     params.phonemeSlug,
     decodedWord,
@@ -180,6 +183,7 @@ export default async function WordGardenLevelThreePage({ params, searchParams })
         autoCheckFromQr={searchParams?.autocheck === '1'}
         qrCodeUrl={qrCodeUrl}
         soundTableSelection={selectedLetter}
+        unlockedArpabet={getUnlockedArpabetForMonths(ageInMonths)}
         wordDetail={wordDetail}
       />
     </section>
