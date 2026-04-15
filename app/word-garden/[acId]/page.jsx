@@ -4,6 +4,7 @@ import SoundTable from '../../word-garden/SoundTable';
 import {
   buildLevelOneRows,
   calculateAgeInMonths,
+  getWordGardenCompletionSummary,
 } from '@/utils/wordGardenData';
 
 export default async function WordGardenLevelOnePage({ params }) {
@@ -13,6 +14,9 @@ export default async function WordGardenLevelOnePage({ params }) {
   );
   const ageInMonths = calculateAgeInMonths(anonymousChild.birthYearMonth);
   const rows = buildLevelOneRows(ageInMonths, anonymousChild.practicedWords);
+  const completionSummary = getWordGardenCompletionSummary(
+    anonymousChild.practicedWords
+  );
 
   return (
     <section className='space-y-8 pb-28 md:pb-32'>
@@ -27,13 +31,10 @@ export default async function WordGardenLevelOnePage({ params }) {
       <div className='rounded-[2rem] bg-secondary/80 border border-accent/20 p-8 shadow-xl'>
         <div className='grid items-start gap-6 lg:grid-cols-[minmax(0,1.25fr)_minmax(260px,0.75fr)]'>
           <div className='min-w-0'>
-            <p className='text-sm uppercase tracking-[0.35em] text-yellow mb-3'>
-              Level 1
-            </p>
             <h1 className='text-4xl text-white'>Sound Table</h1>
             <details className='mt-5 rounded-3xl border border-accent/20 bg-primary/30 p-5'>
               <summary className='cursor-pointer text-sm font-semibold uppercase tracking-[0.25em] text-yellow'>
-                Sound Table Instructions
+                Instructions
               </summary>
               <div className='mt-4 max-w-4xl space-y-4 text-accent'>
                 <p>
@@ -103,7 +104,10 @@ export default async function WordGardenLevelOnePage({ params }) {
               <p>Child: {anonymousChild.displayName}</p>
               <p>Age: {ageInMonths} months</p>
               <p>Birth month: {anonymousChild.birthYearMonth}</p>
-              <p>Practiced words: {anonymousChild.practicedWords.length}</p>
+              <p>
+                Completed: {completionSummary.completedCount}/
+                {completionSummary.remainingCount}
+              </p>
             </div>
           </aside>
         </div>

@@ -617,6 +617,11 @@ function buildWordEntry({
   const normalizedArpabet = arpabet.map(normalizeArpabetSymbol).filter(Boolean);
   const normalizedIpa = toIpaSequence(arpabet, ipa);
   const initialLetter = getInitialLetter(word);
+  const soundMapRows = buildEntrySoundMapRows({
+    word,
+    normalizedArpabet,
+    normalizedIpa,
+  });
 
   return {
     word,
@@ -631,6 +636,7 @@ function buildWordEntry({
     normalizedArpabet,
     normalizedIpa,
     initialLetter,
+    soundMapRows,
     syllableCount: countSyllables(arpabet),
     letterCount: normalizedWord.replace(/[^a-z]/g, '').length,
     wordCount: normalizedWord ? normalizedWord.split(/\s+/).length : 0,
@@ -1352,6 +1358,72 @@ function splitIntoGraphemes(word) {
   return graphemes;
 }
 
+function splitWordIntoDisplayGraphemes(word, graphemes = []) {
+  const rawWord = String(word || '');
+  const displayGraphemes = [];
+  let rawIndex = 0;
+
+  graphemes.forEach(grapheme => {
+    const segmentStart = rawIndex;
+    let lettersRemaining = grapheme.length;
+
+    while (rawIndex < rawWord.length && lettersRemaining > 0) {
+      if (/[A-Za-z]/.test(rawWord[rawIndex])) {
+        lettersRemaining -= 1;
+      }
+      rawIndex += 1;
+    }
+
+    while (rawIndex < rawWord.length && /[^A-Za-z]/.test(rawWord[rawIndex])) {
+      rawIndex += 1;
+    }
+
+    displayGraphemes.push(rawWord.slice(segmentStart, rawIndex) || grapheme);
+  });
+
+  if (displayGraphemes.length > 0 && rawIndex < rawWord.length) {
+    displayGraphemes[displayGraphemes.length - 1] += rawWord.slice(rawIndex);
+  }
+
+  return displayGraphemes;
+}
+
+function buildEntrySoundMapRows({
+  word,
+  normalizedArpabet = [],
+  normalizedIpa = [],
+}) {
+  const graphemes = splitIntoGraphemes(word);
+  const displayGraphemes = splitWordIntoDisplayGraphemes(word, graphemes);
+  const graphemeAlignment = alignPhonemesToGraphemes(graphemes, normalizedArpabet);
+
+  return graphemes.map((grapheme, index) => {
+    const alignedPhonemeIndex = graphemeAlignment[index];
+    const rawPhonemeSlug =
+      alignedPhonemeIndex === null || alignedPhonemeIndex === undefined
+        ? null
+        : normalizedArpabet[alignedPhonemeIndex];
+    const isApprovedPhoneme =
+      rawPhonemeSlug && APPROVED_SYNTHETIC_PHONEME_SET.has(rawPhonemeSlug);
+
+    return {
+      grapheme,
+      displayGrapheme: displayGraphemes[index] || grapheme,
+      phonemeLabel:
+        isApprovedPhoneme &&
+        alignedPhonemeIndex !== null &&
+        normalizedIpa[alignedPhonemeIndex]
+          ? formatPhoneme(normalizedIpa[alignedPhonemeIndex])
+          : null,
+      phonemeSlug:
+        isApprovedPhoneme &&
+        rawPhonemeSlug
+          ? rawPhonemeSlug
+          : null,
+    };
+  });
+}
+
 function getOnsetAndRime(word) {
   const normalized = normalizeWord(word).replace(/[^a-z]/g, '');
   const vowelMatch = normalized.match(/[aeiouy]+/);
@@ -1525,32 +1597,8 @@ function getWordDetailForSelection(
     .slice(0, 8);
   const onsetAndRime = getOnsetAndRime(entry.word);
   const focusLabel = getSelectionLabel(selectionType, selectionSlug);
-  const graphemes = splitIntoGraphemes(entry.word);
-  const graphemeAlignment = alignPhonemesToGraphemes(graphemes, entry.normalizedArpabet);
-  const soundMapRows = graphemes.map((grapheme, index) => {
-    const alignedPhonemeIndex = graphemeAlignment[index];
-    const rawPhonemeSlug =
-      alignedPhonemeIndex === null || alignedPhonemeIndex === undefined
-        ? null
-        : entry.normalizedArpabet[alignedPhonemeIndex];
-    const isApprovedPhoneme =
-      rawPhonemeSlug && APPROVED_SYNTHETIC_PHONEME_SET.has(rawPhonemeSlug);
-
-    return {
-      grapheme,
-      phonemeLabel:
-        isApprovedPhoneme &&
-        alignedPhonemeIndex !== null &&
-        entry.normalizedIpa[alignedPhonemeIndex]
-          ? formatPhoneme(entry.normalizedIpa[alignedPhonemeIndex])
-          : null,
-      phonemeSlug:
-        isApprovedPhoneme &&
-        rawPhonemeSlug
-          ? rawPhonemeSlug
-          : null,
-    };
-  });
+  const soundMapRows = entry.soundMapRows || buildEntrySoundMapRows(entry);
+  const graphemes = soundMapRows.map(row => row.grapheme);
 
   return {
     ...entry,
@@ -1586,6 +1634,21 @@ function getWordCloudWordsFromEntries(words) {
           ? 'text-3xl md:text-4xl'
           : 'text-2xl md:text-3xl',
   }));
+}
+
+function getWordGardenCompletionSummary(practicedWords = []) {
+  const completedCount = (practicedWords || []).filter(
+    practicedWord =>
+      APPROVED_WORD_SET.has(normalizeWord(practicedWord.word)) &&
+      (practicedWord.completedChecklistCount || 0) > 0
+  ).length;
+  const totalCount = APPROVED_WORD_SET.size;
+
+  return {
+    completedCount,
+    totalCount,
+    remainingCount: Math.max(totalCount - completedCount, 0),
+  };
 }
 
 function getWordCloudWords(phonemeSlug, _months, practicedWords = []) {
@@ -1641,6 +1704,7 @@ module.exports = {
   getSelectionWordCloudWords,
   getUnlockedWordCloudWords,
   getUnlockedArpabetForMonths,
+  getWordGardenCompletionSummary,
   getWordsForPhonemeSlug,
   getWordsForLetter,
   getWordDetail,

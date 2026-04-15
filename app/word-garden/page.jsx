@@ -4,7 +4,10 @@ import DeleteAnonymousChildButton from './DeleteAnonymousChildButton';
 import RemoveSurrogateButton from './RemoveSurrogateButton';
 import ShareAnonymousChildButton from './ShareAnonymousChildButton';
 import { getWordGardenDashboardData } from './wordGardenServer';
-import { calculateAgeInMonths } from '@/utils/wordGardenData';
+import {
+  calculateAgeInMonths,
+  getWordGardenCompletionSummary,
+} from '@/utils/wordGardenData';
 
 function getSingleSearchParamValue(value) {
   if (Array.isArray(value)) {
@@ -58,7 +61,7 @@ export default async function WordGardenDashboardPage({ searchParams }) {
             <div>
               <h2 className='text-3xl font-bold text-white'>Your Garden</h2>
               <p className='text-accent mt-1'>
-                Select a child to open Level 1 and review their available sounds.
+                Select a child to open the sound table and review their available sounds.
               </p>
               <div className='mt-4 flex flex-wrap gap-3 text-sm text-accent'>
                 <span className='rounded-full border border-accent/30 px-4 py-2'>
@@ -87,59 +90,63 @@ export default async function WordGardenDashboardPage({ searchParams }) {
                 const ageInMonths = calculateAgeInMonths(
                   anonymousChild.birthYearMonth
                 );
-                const practicedWordCount = anonymousChild.practicedWords.length;
+                const completionSummary = getWordGardenCompletionSummary(
+                  anonymousChild.practicedWords
+                );
 
                 return (
                   <div
                     key={anonymousChild.acId}
-                    className='h-full rounded-3xl bg-secondary/80 border border-accent/20 p-6 shadow-lg'
+                    className='flex h-full flex-col rounded-3xl bg-secondary/80 border border-accent/20 p-6 shadow-lg'
                   >
+                    <article className='flex-1'>
+                      <div className='flex items-start justify-between gap-4'>
+                        <div>
+                          <p className='text-xs uppercase tracking-[0.3em] text-accent/70'>
+                            Anonymous Child
+                          </p>
+                          <h3 className='text-2xl text-yellow mt-2'>
+                            {anonymousChild.displayName}
+                          </h3>
+                        </div>
+                        <div className='flex flex-col items-end gap-2'>
+                          <span className='rounded-full bg-primary/80 px-3 py-1 text-xs text-accent'>
+                            {ageInMonths} months
+                          </span>
+                          <span className='rounded-full border border-accent/30 px-3 py-1 text-xs text-accent'>
+                            {anonymousChild.isOriginator ? 'Originator' : 'Shared access'}
+                          </span>
+                        </div>
+                      </div>
+                      <dl className='mt-5 space-y-2 text-sm text-accent'>
+                        <div className='flex justify-between gap-4'>
+                          <dt>Birth month</dt>
+                          <dd>{anonymousChild.birthYearMonth}</dd>
+                        </div>
+                        <div className='flex justify-between gap-4'>
+                          <dt>Completed</dt>
+                          <dd>
+                            {completionSummary.completedCount}/
+                            {completionSummary.remainingCount}
+                          </dd>
+                        </div>
+                        <div className='flex justify-between gap-4'>
+                          <dt>Last updated</dt>
+                          <dd>{new Date(anonymousChild.updatedAt).toLocaleDateString()}</dd>
+                        </div>
+                      </dl>
+                      {!anonymousChild.isOriginator ? (
+                        <p className='mt-5 text-sm text-accent'>
+                          Shared by {anonymousChild.originatorName}
+                        </p>
+                      ) : null}
+                    </article>
+
                     <Link
                       href={`/word-garden/${anonymousChild.acId}`}
-                      className='no-underline block transition hover:-translate-y-1 hover:border-yellow/50'
+                      className='mt-6 inline-flex items-center justify-center rounded-full bg-yellow px-4 py-2 font-bold text-primary no-underline transition hover:bg-orange'
                     >
-                      <article>
-                        <div className='flex items-start justify-between gap-4'>
-                          <div>
-                            <p className='text-xs uppercase tracking-[0.3em] text-accent/70'>
-                              Anonymous Child
-                            </p>
-                            <h3 className='text-2xl text-yellow mt-2'>
-                              {anonymousChild.displayName}
-                            </h3>
-                          </div>
-                          <div className='flex flex-col items-end gap-2'>
-                            <span className='rounded-full bg-primary/80 px-3 py-1 text-xs text-accent'>
-                              {ageInMonths} months
-                            </span>
-                            <span className='rounded-full border border-accent/30 px-3 py-1 text-xs text-accent'>
-                              {anonymousChild.isOriginator ? 'Originator' : 'Shared access'}
-                            </span>
-                          </div>
-                        </div>
-                        <dl className='mt-5 space-y-2 text-sm text-accent'>
-                          <div className='flex justify-between gap-4'>
-                            <dt>Birth month</dt>
-                            <dd>{anonymousChild.birthYearMonth}</dd>
-                          </div>
-                          <div className='flex justify-between gap-4'>
-                            <dt>Practiced words</dt>
-                            <dd>{practicedWordCount}</dd>
-                          </div>
-                          <div className='flex justify-between gap-4'>
-                            <dt>Last updated</dt>
-                            <dd>{new Date(anonymousChild.updatedAt).toLocaleDateString()}</dd>
-                          </div>
-                        </dl>
-                        {!anonymousChild.isOriginator ? (
-                          <p className='mt-5 text-sm text-accent'>
-                            Shared by {anonymousChild.originatorName}
-                          </p>
-                        ) : null}
-                        <p className='mt-6 text-sm text-yellow'>
-                          Open Level 1 sound table
-                        </p>
-                      </article>
+                      Open sound table
                     </Link>
 
                     {anonymousChild.isOriginator ? (

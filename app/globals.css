@@ -97,8 +97,6 @@
   }
 
   .worksheet-page {
-    break-after: page;
-    page-break-after: always;
     border: none !important;
     border-radius: 0 !important;
     box-shadow: none !important;
@@ -114,16 +112,11 @@
     background: white !important;
   }
 
-  .worksheet-page:last-child {
-    break-after: auto;
-    page-break-after: auto;
-  }
-
   .worksheet-frame {
     border: none !important;
     border-radius: 0 !important;
     padding: 0 !important;
-    gap: 0.08in !important;
+    gap: 0.06in !important;
     background: white !important;
   }
 
@@ -137,7 +130,7 @@
   }
 
   .worksheet-header {
-    gap: 0.14in !important;
+    gap: 0.12in !important;
   }
 
   .worksheet-kicker {
@@ -169,19 +162,19 @@
   .worksheet-front-body,
   .worksheet-front-sidebar,
   .worksheet-front-main {
-    gap: 0.1in !important;
-  }
-
-  .worksheet-front-body-single-page {
     gap: 0.08in !important;
   }
 
+  .worksheet-front-body-single-page {
+    gap: 0.06in !important;
+  }
+
   .worksheet-front-body-ungenerated {
-    gap: 0.12in !important;
+    gap: 0.08in !important;
   }
 
   .worksheet-card {
-    padding: 0.08in !important;
+    padding: 0.07in !important;
   }
 
   .worksheet-card-title {
@@ -241,7 +234,20 @@
   }
 
   .worksheet-inline-draw-box {
-    min-height: 1.85in !important;
+    min-height: 1.6in !important;
+  }
+
+  .worksheet-pronunciation-tile {
+    min-width: 0.56in !important;
+    padding: 0.06in 0.05in !important;
+  }
+
+  .worksheet-pronunciation-grapheme {
+    font-size: 0.8rem !important;
+  }
+
+  .worksheet-pronunciation-phoneme {
+    font-size: 0.52rem !important;
   }
 }
 

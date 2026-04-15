@@ -7,9 +7,34 @@ const Footer = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [isScrollPossible, setIsScrollPossible] = useState(false);
   const [isScrolledToTop, setIsScrolledToTop] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const githubRepoUrl = process.env.NEXT_PUBLIC_GITHUB_REPO_URL;
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    const updateViewportMode = event => {
+      setIsMobile(event.matches);
+    };
+
+    setIsMobile(mediaQuery.matches);
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', updateViewportMode);
+      return () => mediaQuery.removeEventListener('change', updateViewportMode);
+    }
+
+    mediaQuery.addListener(updateViewportMode);
+    return () => mediaQuery.removeListener(updateViewportMode);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      setIsVisible(true);
+      setIsScrollPossible(false);
+      setIsScrolledToTop(true);
+      return undefined;
+    }
+
     const handleScroll = () => {
       const scrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
@@ -31,16 +56,25 @@ const Footer = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [isMobile]);
 
   const shouldShowDownwardArrow =
-    isVisible && isScrollPossible && isScrolledToTop;
+    !isMobile && isVisible && isScrollPossible && isScrolledToTop;
 
   return (
     <footer
-      className={`py-4 fixed bottom-0 left-0 right-0 transition-opacity duration-300 bg-primary border-t-2 border-solid border-accent-100 ${
-        isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      className={`bg-primary border-t-2 border-solid border-accent-100 ${
+        isMobile
+          ? 'relative mt-10 py-4'
+          : `fixed bottom-0 left-0 right-0 py-4 transition-opacity duration-300 ${
+              isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            }`
       }`}
+      style={{
+        paddingBottom: isMobile
+          ? 'calc(env(safe-area-inset-bottom, 0px) + 1rem)'
+          : undefined,
+      }}
     >
       {shouldShowDownwardArrow && (
         <div className='absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full'>

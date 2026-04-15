@@ -159,6 +159,12 @@ function buildPanes(wordDetail) {
   const syllables = `${wordDetail.syllableCount} syllable${
     wordDetail.syllableCount === 1 ? '' : 's'
   }`;
+  const emphasisTarget =
+    wordDetail.selectionType === 'letter'
+      ? wordDetail.selectionSlug
+      : wordDetail.selectionType === 'phoneme'
+        ? wordDetail.targetPhonemeLabel
+        : 'the first sound';
   const firstSound =
     wordDetail.soundMapRows[0]?.phonemeLabel ||
     wordDetail.targetPhonemeLabel ||
@@ -174,7 +180,10 @@ function buildPanes(wordDetail) {
       strategyTitle: 'Synthetic Approach',
       required: true,
       items: [
-        { id: 'phonological-say', label: `Say "${wordDetail.word}" out loud.` },
+        {
+          id: 'phonological-say',
+          label: `Say "${wordDetail.word}" out loud and emphasize ${emphasisTarget}.`,
+        },
         { id: 'phonological-repeat', label: `Ask the child to say "${wordDetail.word}".` },
         { id: 'phonological-syllables', label: `Count the ${syllables}.` },
       ],
@@ -226,13 +235,13 @@ function buildPanes(wordDetail) {
         },
         {
           id: 'context-related',
-          label: `Talk about related forms and related words for "${wordDetail.word}".`,
+          label: `Name some categories in which "${wordDetail.word}" belongs.`,
         },
       ],
     },
     {
       id: 'optional',
-      title: 'Optional (Best for ages over 3)',
+      title: 'Optional (ages 3+)',
       strategyTitle: 'Onset / Rime And Sound Map',
       required: false,
       items: [
@@ -241,18 +250,18 @@ function buildPanes(wordDetail) {
           label: `Try to have the child say all the sounds in "${wordDetail.word}" one at a time.`,
         },
         {
-          id: 'optional-onset-rime',
-          label: `Model the onset and rime for "${wordDetail.word}": ${
-            wordDetail.onsetAndRime.onset || '-'
-          } / ${wordDetail.onsetAndRime.rime || wordDetail.word}.`,
-        },
-        {
           id: 'optional-remove',
           label: `Say "${wordDetail.word}" again without one sound and discuss what changed.`,
         },
         {
           id: 'optional-build',
           label: `Build a different word from one of the sounds in "${wordDetail.word}".`,
+        },
+        {
+          id: 'optional-onset-rime',
+          label: `Model the onset and rime for "${wordDetail.word}": ${
+            wordDetail.onsetAndRime.onset || '-'
+          } / ${wordDetail.onsetAndRime.rime || wordDetail.word}.`,
         },
         {
           id: 'optional-sign',
@@ -327,7 +336,6 @@ export default function WorksheetChecklist({
     : getFallbackRelatedEntries(wordDetail);
   const relatedHint = getRelatedWordsHint(wordDetail, hasGeneratedRelatedWords);
   const relatedWords = relatedEntries.slice(0, 4);
-  const similarRimeWords = wordDetail.similarRimeWords.slice(0, 4);
   const lookupWords = buildDefinitionLookupWords(wordDetail);
   const generatedHomographMeanings = Array.isArray(generatedContent?.homographMeanings)
     ? generatedContent.homographMeanings
@@ -587,7 +595,7 @@ export default function WorksheetChecklist({
 
   function renderSoundTiles() {
     return (
-      <div className='overflow-x-auto pb-2'>
+      <div className='max-w-full overflow-x-auto pb-2'>
         <div className='flex min-w-max gap-3'>
           {wordDetail.soundMapRows.map((row, index) => {
             const isUnlocked =
@@ -684,11 +692,12 @@ export default function WorksheetChecklist({
   function renderStrategy(paneId) {
     if (paneId === 'phonological') {
       return (
-        <div className='grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)]'>
-          <section className='rounded-2xl bg-primary/40 p-4'>
+        <div className='min-w-0 grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)]'>
+          <section className='min-w-0 rounded-2xl bg-primary/40 p-4'>
             <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Synthetic Approach</p>
             <p className='mt-3 text-3xl font-semibold text-white'>{wordDetail.word}</p>
-            <div className='mt-5'>{renderSoundTiles()}</div>
+            <p className='mt-2 text-sm text-accent'>Click the phonemes for other examples.</p>
+            <div className='mt-5 min-w-0'>{renderSoundTiles()}</div>
           </section>
           <section className='rounded-2xl bg-primary/40 p-4'>
             <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Sound Support</p>
@@ -847,43 +856,24 @@ export default function WorksheetChecklist({
     }
 
     return (
-      <div className='grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(260px,0.9fr)]'>
-        <section className='rounded-2xl bg-primary/40 p-4'>
-          <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Onset / Rime</p>
-          <div className='mt-4 grid gap-3 sm:grid-cols-2'>
-            <div className='rounded-2xl border border-accent/20 bg-secondary/80 p-4'>
-              <p className='text-xs uppercase tracking-[0.25em] text-accent'>Onset</p>
-              <p className='mt-3 text-3xl font-semibold text-white'>{wordDetail.onsetAndRime.onset || '-'}</p>
-            </div>
-            <div className='rounded-2xl border border-accent/20 bg-secondary/80 p-4'>
-              <p className='text-xs uppercase tracking-[0.25em] text-accent'>Rime</p>
-              <p className='mt-3 text-3xl font-semibold text-white'>{wordDetail.onsetAndRime.rime || '-'}</p>
-            </div>
-          </div>
-          <div className='mt-4'>{renderSoundTiles()}</div>
+      <div className='min-w-0 space-y-4'>
+        <section className='min-w-0 rounded-2xl bg-primary/40 p-4'>
+          <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Sound Map</p>
+          <div className='mt-4 min-w-0'>{renderSoundTiles()}</div>
         </section>
-        <section className='rounded-2xl bg-primary/40 p-4'>
-          <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Build Another Word</p>
-          <div className='mt-3 space-y-3'>
-            {similarRimeWords.length === 0 ? (
-              <p className='text-accent'>No close rime matches are ready in this lexicon yet.</p>
-            ) : (
-              similarRimeWords.map(entry => (
-                <Link
-                  key={entry.normalizedWord}
-                  href={buildWordHrefWithContext(
-                    acId,
-                    wordDetail.selectionType,
-                    wordDetail.selectionSlug,
-                    entry.word,
-                    selectedLetter
-                  )}
-                  className='block rounded-2xl bg-secondary/80 p-4 text-yellow hover:text-orange'
-                >
-                  {entry.word}
-                </Link>
-              ))
-            )}
+        <section className='min-w-0 rounded-2xl bg-primary/40 p-4'>
+          <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Onset / Rime</p>
+          <div className='mt-4 max-w-full overflow-x-auto pb-2'>
+            <div className='flex min-w-max gap-3'>
+              <div className='min-w-[180px] rounded-2xl border border-accent/20 bg-secondary/80 p-4'>
+                <p className='text-xs uppercase tracking-[0.25em] text-accent'>Onset</p>
+                <p className='mt-3 text-3xl font-semibold text-white'>{wordDetail.onsetAndRime.onset || '-'}</p>
+              </div>
+              <div className='min-w-[180px] rounded-2xl border border-accent/20 bg-secondary/80 p-4'>
+                <p className='text-xs uppercase tracking-[0.25em] text-accent'>Rime</p>
+                <p className='mt-3 text-3xl font-semibold text-white'>{wordDetail.onsetAndRime.rime || '-'}</p>
+              </div>
+            </div>
           </div>
         </section>
       </div>
@@ -929,34 +919,31 @@ export default function WorksheetChecklist({
             </li>
           ))}
         </ol>
-        <details className='mt-5 rounded-2xl border border-accent/20 bg-secondary/30 p-4'>
+        <details className='mt-5 min-w-0 rounded-2xl border border-accent/20 bg-secondary/30 p-4'>
           <summary className='cursor-pointer text-sm font-semibold text-yellow'>
             {pane.strategyTitle}
           </summary>
-          <div className='mt-4'>{renderStrategy(pane.id)}</div>
+          <div className='mt-4 min-w-0'>{renderStrategy(pane.id)}</div>
         </details>
       </>
     );
 
     if (!pane.required) {
       return (
-        <details key={pane.id} className='rounded-3xl border border-accent/20 bg-primary/50 p-6 shadow-lg'>
-          <summary className='flex cursor-pointer list-none flex-wrap items-start justify-between gap-4'>
+        <details key={pane.id} className='min-w-0 rounded-3xl border border-accent/20 bg-primary/50 p-6 shadow-lg'>
+          <summary className='flex cursor-pointer list-none flex-wrap items-start gap-4'>
             <div>
               <div className='flex flex-wrap items-center gap-3'>
                 <h2 className='text-2xl text-yellow'>{pane.title}</h2>
                 <span className='rounded-full border border-accent/20 bg-primary/40 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-accent'>
                   Optional
                 </span>
+                <span className={`rounded-full border px-3 py-2 text-sm font-semibold ${statusClass}`}>
+                  {status}
+                </span>
               </div>
-              <p className='mt-2 text-sm text-accent'>
-                {pane.description ? `${pane.description} ` : ''}
-                Not required for completion. Open for extra sound practice beyond the core 3-level flow.
-              </p>
+              {pane.description ? <p className='mt-2 text-sm text-accent'>{pane.description}</p> : null}
             </div>
-            <span className={`rounded-full border px-3 py-2 text-sm font-semibold ${statusClass}`}>
-              {status}
-            </span>
           </summary>
           {body}
         </details>
@@ -964,25 +951,20 @@ export default function WorksheetChecklist({
     }
 
     return (
-      <article key={pane.id} className='rounded-3xl border border-accent/20 bg-primary/50 p-6 shadow-lg'>
-        <div className='flex flex-wrap items-start justify-between gap-4'>
+      <article key={pane.id} className='min-w-0 rounded-3xl border border-accent/20 bg-primary/50 p-6 shadow-lg'>
+        <div className='flex flex-wrap items-start gap-4'>
           <div>
             <div className='flex flex-wrap items-center gap-3'>
               <h2 className='text-2xl text-yellow'>{pane.title}</h2>
               <span className='rounded-full border border-yellow/20 bg-yellow/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-yellow'>
                 Required
               </span>
+              <span className={`rounded-full border px-3 py-2 text-sm font-semibold ${statusClass}`}>
+                {status}
+              </span>
             </div>
-            <p className='mt-2 text-sm text-accent'>
-              {pane.description}
-            </p>
-            <p className='mt-1 text-sm text-accent/90'>
-              Choose any {REQUIRED_CHECKS_PER_PANE} of {pane.itemCount} items to complete this pane.
-            </p>
+            {pane.description ? <p className='mt-2 text-sm text-accent'>{pane.description}</p> : null}
           </div>
-          <span className={`rounded-full border px-3 py-2 text-sm font-semibold ${statusClass}`}>
-            {status}
-          </span>
         </div>
         {body}
       </article>
@@ -1010,7 +992,7 @@ export default function WorksheetChecklist({
       ) : null}
 
       <div className='word-garden-worksheet-layout grid gap-8 pb-12 md:pb-16 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]'>
-        <div className='no-print space-y-6'>{paneProgress.map(renderPane)}</div>
+        <div className='no-print min-w-0 space-y-6'>{paneProgress.map(renderPane)}</div>
 
         <aside className='no-print space-y-6 self-start xl:sticky xl:top-24'>
           <div className='rounded-3xl border border-accent/20 bg-primary/50 p-6 shadow-lg'>

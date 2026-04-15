@@ -31,6 +31,66 @@ function buildWordHref(
   }`;
 }
 
+function renderLetterWordLabel(wordEntry, selectionSlug) {
+  const displayWord = String(wordEntry.word || '');
+  const selectedLetter = String(selectionSlug || '')
+    .trim()
+    .charAt(0);
+  const firstLetterIndex = displayWord.search(/[A-Za-z]/);
+
+  if (!selectedLetter || firstLetterIndex === -1) {
+    return <span className='text-white'>{displayWord}</span>;
+  }
+
+  const highlightedCharacter = displayWord[firstLetterIndex];
+
+  if (highlightedCharacter.toUpperCase() !== selectedLetter.toUpperCase()) {
+    return <span className='text-white'>{displayWord}</span>;
+  }
+
+  return (
+    <>
+      {firstLetterIndex > 0 ? (
+        <span className='text-white'>{displayWord.slice(0, firstLetterIndex)}</span>
+      ) : null}
+      <span className='text-yellow'>{highlightedCharacter}</span>
+      <span className='text-white'>{displayWord.slice(firstLetterIndex + 1)}</span>
+    </>
+  );
+}
+
+function renderPhonemeWordLabel(wordEntry, selectionSlug) {
+  const soundMapRows = Array.isArray(wordEntry.soundMapRows) ? wordEntry.soundMapRows : [];
+  const hasHighlightedSegment = soundMapRows.some(
+    row => row.phonemeSlug === selectionSlug
+  );
+
+  if (!hasHighlightedSegment) {
+    return <span className='text-white'>{wordEntry.word}</span>;
+  }
+
+  return soundMapRows.map((row, index) => (
+    <span
+      key={`${wordEntry.normalizedWord}-${row.displayGrapheme || row.grapheme}-${index}`}
+      className={row.phonemeSlug === selectionSlug ? 'text-yellow' : 'text-white'}
+    >
+      {row.displayGrapheme || row.grapheme}
+    </span>
+  ));
+}
+
+function renderWordLabel(wordEntry, selectionType, selectionSlug) {
+  if (selectionType === 'letter') {
+    return renderLetterWordLabel(wordEntry, selectionSlug);
+  }
+
+  if (selectionType === 'phoneme') {
+    return renderPhonemeWordLabel(wordEntry, selectionSlug);
+  }
+
+  return <span className='text-yellow'>{wordEntry.word}</span>;
+}
+
 export default function WordCloud({
   acId,
   selectionType,
@@ -133,9 +193,9 @@ export default function WordCloud({
                   wordEntry.word,
                   soundTableSelection
                 )}
-                className={`no-underline font-bold text-yellow transition hover:text-orange ${wordEntry.sizeClass}`}
+                className={`inline-flex flex-wrap items-center gap-2 no-underline font-bold transition hover:opacity-90 ${wordEntry.sizeClass}`}
               >
-                {wordEntry.word}
+                <span>{renderWordLabel(wordEntry, selectionType, selectionSlug)}</span>
                 {(wordEntry.completedChecklistCount || 0) > 0 ? (
                   <>
                     <span
