@@ -13,7 +13,7 @@
 
 @page {
   size: letter portrait;
-  margin: 0.3in;
+  margin: 0.2in;
 }
 
 @media print {
@@ -28,6 +28,8 @@
     padding: 0 !important;
     background: white !important;
     color: black !important;
+    -webkit-text-size-adjust: 100% !important;
+    text-size-adjust: 100% !important;
   }
 
   body {
@@ -110,13 +112,15 @@
     break-inside: avoid !important;
     page-break-inside: avoid !important;
     background: white !important;
+    -webkit-text-size-adjust: 100% !important;
+    text-size-adjust: 100% !important;
   }
 
   .worksheet-frame {
     border: none !important;
     border-radius: 0 !important;
     padding: 0 !important;
-    gap: 0.06in !important;
+    gap: 0.04in !important;
     background: white !important;
   }
 
@@ -130,7 +134,7 @@
   }
 
   .worksheet-header {
-    gap: 0.12in !important;
+    gap: 0.08in !important;
   }
 
   .worksheet-kicker {
@@ -138,35 +142,35 @@
   }
 
   .worksheet-word {
-    font-size: 1.82rem !important;
+    font-size: 1.72rem !important;
     margin-top: 0.02in !important;
   }
 
   .worksheet-definition {
     margin-top: 0.02in !important;
-    font-size: 0.95rem !important;
-    line-height: 1.2 !important;
+    font-size: 0.9rem !important;
+    line-height: 1.16 !important;
   }
 
   .worksheet-qr {
-    width: 0.92in !important;
-    height: 0.92in !important;
+    width: 0.82in !important;
+    height: 0.82in !important;
   }
 
   .worksheet-qr-caption {
-    max-width: 1.3in !important;
-    font-size: 0.5rem !important;
+    max-width: 1.15in !important;
+    font-size: 0.46rem !important;
   }
 
   .worksheet-front-layout,
   .worksheet-front-body,
   .worksheet-front-sidebar,
   .worksheet-front-main {
-    gap: 0.08in !important;
+    gap: 0.05in !important;
   }
 
   .worksheet-front-body-single-page {
-    gap: 0.06in !important;
+    gap: 0.04in !important;
   }
 
   .worksheet-front-body-ungenerated {
@@ -174,19 +178,19 @@
   }
 
   .worksheet-card {
-    padding: 0.07in !important;
+    padding: 0.06in !important;
   }
 
   .worksheet-card-title {
-    margin-bottom: 0.04in !important;
+    margin-bottom: 0.03in !important;
   }
 
   .worksheet-pane-grid {
-    gap: 0.06in !important;
+    gap: 0.05in !important;
   }
 
   .worksheet-pane-card {
-    padding: 0.07in !important;
+    padding: 0.06in !important;
   }
 
   .worksheet-pane-note {
@@ -205,9 +209,9 @@
 
   .worksheet-detail-list,
   .worksheet-write-in-list {
-    gap: 0.05in !important;
+    gap: 0.04in !important;
     font-size: 0.68rem !important;
-    line-height: 1.16 !important;
+    line-height: 1.14 !important;
   }
 
   .worksheet-write-in-item {
@@ -215,39 +219,50 @@
   }
 
   .worksheet-write-line {
-    min-height: 0.14in !important;
+    min-height: 0.12in !important;
   }
 
   .worksheet-small-copy {
-    font-size: 0.62rem !important;
-    line-height: 1.18 !important;
+    font-size: 0.58rem !important;
+    line-height: 1.14 !important;
   }
 
   .worksheet-inline-draw,
   .worksheet-inline-draw-copy {
-    gap: 0.06in !important;
+    gap: 0.04in !important;
   }
 
   .worksheet-inline-draw-box,
   .worksheet-draw-box {
-    padding: 0.08in !important;
+    padding: 0.06in !important;
   }
 
   .worksheet-inline-draw-box {
-    min-height: 1.6in !important;
+    min-height: 1.35in !important;
   }
 
   .worksheet-pronunciation-tile {
-    min-width: 0.56in !important;
-    padding: 0.06in 0.05in !important;
+    min-width: 0.5in !important;
+    padding: 0.05in 0.04in !important;
   }
 
   .worksheet-pronunciation-grapheme {
-    font-size: 0.8rem !important;
+    font-size: 0.74rem !important;
   }
 
   .worksheet-pronunciation-phoneme {
-    font-size: 0.52rem !important;
+    font-size: 0.48rem !important;
+  }
+
+  .worksheet-print-checklist-grid {
+    display: grid !important;
+    gap: 0.04in 0.07in !important;
+  }
+
+  .worksheet-print-checklist-grid-optional {
+    grid-template-columns: minmax(0, 1fr) !important;
+    font-size: 0.62rem !important;
+    line-height: 1.12 !important;
   }
 }
 
@@ -463,6 +478,17 @@
   line-height: 1.24;
 }
 
+.worksheet-print-checklist-grid {
+  display: grid;
+  gap: 0.06in;
+}
+
+.worksheet-print-checklist-grid-optional {
+  grid-template-columns: minmax(0, 1fr);
+  font-size: 0.68rem;
+  line-height: 1.18;
+}
+
 .worksheet-pronunciation-grid {
   display: flex;
   flex-wrap: wrap;
@@ -524,7 +550,7 @@
 .worksheet-inline-draw-box {
   border: 2px solid #94a3b8;
   border-radius: 0.18in;
-  min-height: 2.1in;
+  min-height: 1.9in;
   padding: 0.12in;
   background: white;
   overflow: hidden;

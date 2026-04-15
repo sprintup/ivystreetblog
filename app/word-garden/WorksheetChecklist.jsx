@@ -1320,16 +1320,12 @@ export default function WorksheetChecklist({
                       <p className='worksheet-small-copy'>No related words are ready yet.</p>
                     )}
                   </section>
-                </div>
-
-                <div className='worksheet-front-sidebar'>
-                  {renderPrintPronunciationHelper()}
 
                   <section className='worksheet-card'>
                     <p className='worksheet-card-title'>
                       {panes.find(pane => pane.id === 'optional')?.title}
                     </p>
-                    <ol className='space-y-1.5'>
+                    <ol className='worksheet-print-checklist-grid worksheet-print-checklist-grid-optional'>
                       {panes.find(pane => pane.id === 'optional')?.items.map(item => (
                         <li key={item.id} className='worksheet-check-item'>
                           <span className='worksheet-print-checkbox' />
@@ -1338,6 +1334,10 @@ export default function WorksheetChecklist({
                       ))}
                     </ol>
                   </section>
+                </div>
+
+                <div className='worksheet-front-sidebar'>
+                  {renderPrintPronunciationHelper()}
 
                   {homographMeanings.length > 0 ? (
                     <section className='worksheet-card'>
