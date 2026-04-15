@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import approvedLetterConstants from '@/data/approved-letter-constant.json';
 import { getWorksheetGenerationPolicy } from '@/utils/wordGardenGenerationPolicy';
 
 const REQUIRED_CHECKS_PER_PANE = 2;
@@ -159,12 +160,18 @@ function buildPanes(wordDetail) {
   const syllables = `${wordDetail.syllableCount} syllable${
     wordDetail.syllableCount === 1 ? '' : 's'
   }`;
+  const targetLetter = String(wordDetail.selectionSlug || '').toUpperCase();
+  const letterConstant = approvedLetterConstants?.[targetLetter] || targetLetter;
   const emphasisTarget =
     wordDetail.selectionType === 'letter'
       ? wordDetail.selectionSlug
       : wordDetail.selectionType === 'phoneme'
         ? wordDetail.targetPhonemeLabel
         : 'the first sound';
+  const phonologicalSayLabel =
+    wordDetail.selectionType === 'letter'
+      ? `Say "${wordDetail.word}" out loud and say it starts with ${targetLetter} like ${letterConstant}.`
+      : `Say "${wordDetail.word}" out loud and emphasize ${emphasisTarget}.`;
   const firstSound =
     wordDetail.soundMapRows[0]?.phonemeLabel ||
     wordDetail.targetPhonemeLabel ||
@@ -182,7 +189,7 @@ function buildPanes(wordDetail) {
       items: [
         {
           id: 'phonological-say',
-          label: `Say "${wordDetail.word}" out loud and emphasize ${emphasisTarget}.`,
+          label: phonologicalSayLabel,
         },
         { id: 'phonological-repeat', label: `Ask the child to say "${wordDetail.word}".` },
         { id: 'phonological-syllables', label: `Count the ${syllables}.` },
