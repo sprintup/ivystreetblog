@@ -4,7 +4,9 @@ import WordCloud from '../../../WordCloud';
 import { getAnonymousChildOrNotFound } from '../../../wordGardenServer';
 import {
   calculateAgeInMonths,
+  getPhonemeTimingLabel,
   getTargetLabel,
+  getValidSoundTableLetterForPhoneme,
   getWordCloudWords,
 } from '@/utils/wordGardenData';
 
@@ -22,11 +24,12 @@ export default async function WordGardenLevelTwoPage({
     ageInMonths,
     anonymousChild.practicedWords
   );
-  const selectedLetter = String(searchParams?.letter || '')
-    .trim()
-    .charAt(0)
-    .toUpperCase();
-  const soundTableSelectionLabel = selectedLetter || '';
+  const soundTableSelectionLabel = getValidSoundTableLetterForPhoneme(
+    params.phonemeSlug,
+    searchParams?.letter,
+    ageInMonths,
+    anonymousChild.practicedWords
+  );
 
   return (
     <section className='space-y-8 pb-24 md:pb-32'>
@@ -51,7 +54,9 @@ export default async function WordGardenLevelTwoPage({
         <span>{getTargetLabel(params.phonemeSlug)}</span>
       </div>
 
-      <LevelTwoIntro />
+      <LevelTwoIntro
+        topNote={`Typically learned: ${getPhonemeTimingLabel(params.phonemeSlug)}`}
+      />
 
       <WordCloud
         acId={params.acId}

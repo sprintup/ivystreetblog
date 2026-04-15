@@ -266,6 +266,7 @@ function buildPanes(wordDetail) {
 export default function WorksheetChecklist({
   acId,
   autoCheckFromQr = false,
+  letterScopedPhonemeSlugs = [],
   qrCodeUrl,
   soundTableSelection = '',
   unlockedArpabet = [],
@@ -276,6 +277,15 @@ export default function WorksheetChecklist({
   const unlockedArpabetSet = useMemo(
     () => new Set((unlockedArpabet || []).map(symbol => String(symbol || '').trim())),
     [unlockedArpabet]
+  );
+  const letterScopedPhonemeSlugSet = useMemo(
+    () =>
+      new Set(
+        (letterScopedPhonemeSlugs || [])
+          .map(slug => String(slug || '').trim())
+          .filter(Boolean)
+      ),
+    [letterScopedPhonemeSlugs]
   );
   const generationPolicy = useMemo(
     () => getWorksheetGenerationPolicy(wordDetail.word),
@@ -582,8 +592,15 @@ export default function WorksheetChecklist({
           {wordDetail.soundMapRows.map((row, index) => {
             const isUnlocked =
               row.phonemeSlug && unlockedArpabetSet.has(row.phonemeSlug);
-            const href = isUnlocked
-              ? buildPhonemeHref(acId, row.phonemeSlug, selectedLetter)
+            const hasSupportedPhoneme = Boolean(row.phonemeSlug);
+            const preservedLetter =
+              hasSupportedPhoneme &&
+              selectedLetter &&
+              letterScopedPhonemeSlugSet.has(row.phonemeSlug)
+                ? selectedLetter
+                : '';
+            const href = hasSupportedPhoneme
+              ? buildPhonemeHref(acId, row.phonemeSlug, preservedLetter)
               : '';
             const content = (
               <>
@@ -591,16 +608,20 @@ export default function WorksheetChecklist({
                   {row.grapheme}
                 </span>
                 <span
-                  className={`mt-3 text-sm font-medium ${
-                    isUnlocked ? 'text-yellow' : 'text-accent'
+                  className={`mt-3 min-h-[1.25rem] text-sm font-medium ${
+                    !hasSupportedPhoneme
+                      ? 'text-accent'
+                      : isUnlocked
+                        ? 'text-yellow'
+                        : 'text-slate-400'
                   }`}
                 >
-                  {row.phonemeLabel || 'listen closely'}
+                  {row.phonemeLabel || ''}
                 </span>
               </>
             );
 
-            return isUnlocked ? (
+            return hasSupportedPhoneme ? (
               <Link
                 key={`${row.grapheme}-${index}`}
                 href={href}
@@ -668,10 +689,6 @@ export default function WorksheetChecklist({
             <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Synthetic Approach</p>
             <p className='mt-3 text-3xl font-semibold text-white'>{wordDetail.word}</p>
             <div className='mt-5'>{renderSoundTiles()}</div>
-            <p className='mt-4 text-sm text-accent'>
-              Keep the word horizontal and let the child match the grapheme to the
-              sound below each box.
-            </p>
           </section>
           <section className='rounded-2xl bg-primary/40 p-4'>
             <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Sound Support</p>

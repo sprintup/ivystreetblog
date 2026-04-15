@@ -7,7 +7,9 @@ import { getAnonymousChildOrNotFound } from '../../../../wordGardenServer';
 import {
   calculateAgeInMonths,
   decodeWordParam,
+  getLetterScopedPhonemeSlugs,
   getTargetLabel,
+  getValidSoundTableLetterForPhoneme,
   getWordDetail,
   getUnlockedArpabetForMonths,
 } from '@/utils/wordGardenData';
@@ -61,6 +63,30 @@ function getCurrentPageUrl(
   return `${protocol}://${host}/word-garden/${acId}/phoneme/${phonemeSlug}/${encodedWord}${query}`;
 }
 
+function renderHighlightedPhonemeWord(wordDetail, phonemeSlug) {
+  const selectedSymbols = new Set(
+    String(phonemeSlug || '')
+      .split('__')
+      .filter(Boolean)
+  );
+  const hasHighlightedSegment = wordDetail.soundMapRows.some(row =>
+    selectedSymbols.has(row.phonemeSlug)
+  );
+
+  if (!hasHighlightedSegment) {
+    return <span className='text-white'>{wordDetail.word}</span>;
+  }
+
+  return wordDetail.soundMapRows.map((row, index) => (
+    <span
+      key={`${row.grapheme}-${index}-highlight`}
+      className={selectedSymbols.has(row.phonemeSlug) ? 'text-yellow' : 'text-white'}
+    >
+      {row.grapheme}
+    </span>
+  ));
+}
+
 export default async function WordGardenLevelThreePage({ params, searchParams }) {
   const headerStore = headers();
   const { anonymousChild } = await getAnonymousChildOrNotFound(
@@ -79,9 +105,22 @@ export default async function WordGardenLevelThreePage({ params, searchParams })
   if (!wordDetail) {
     notFound();
   }
-  const selectedLetter =
+  const requestedSelectedLetter =
     normalizeSelectedLetter(searchParams?.letter) ||
     getSelectedLetterFromReferer(headerStore);
+  const selectedLetter = getValidSoundTableLetterForPhoneme(
+    params.phonemeSlug,
+    requestedSelectedLetter,
+    ageInMonths,
+    anonymousChild.practicedWords
+  );
+  const letterScopedPhonemeSlugs = selectedLetter
+    ? getLetterScopedPhonemeSlugs(
+        ageInMonths,
+        anonymousChild.practicedWords,
+        selectedLetter
+      )
+    : [];
 
   const currentPageUrl = getCurrentPageUrl(
     params.acId,
@@ -155,25 +194,21 @@ export default async function WordGardenLevelThreePage({ params, searchParams })
             </div>
           </div>
           <div className='min-w-[260px] rounded-3xl bg-primary/70 px-5 py-4 text-sm text-accent'>
-            <div className='grid grid-cols-2 gap-3'>
-              <div className='rounded-2xl border border-accent/20 bg-secondary/60 p-3 text-center'>
-                <p className='text-[11px] uppercase tracking-[0.25em] text-accent'>
-                  Lowercase
-                </p>
-                <p className='mt-2 text-4xl font-semibold lowercase text-white'>
-                  {wordDetail.lowercaseLetter || '-'}
-                </p>
-              </div>
-              <div className='rounded-2xl border border-accent/20 bg-secondary/60 p-3 text-center'>
-                <p className='text-[11px] uppercase tracking-[0.25em] text-accent'>
-                  Uppercase
-                </p>
-                <p className='mt-2 text-4xl font-semibold text-white'>
-                  {wordDetail.uppercaseLetter || '-'}
-                </p>
-              </div>
-            </div>
-            <p className='mt-4'>Category: {wordDetail.category}</p>
+            <p className='text-[11px] uppercase tracking-[0.25em] text-accent'>
+              Target Sound
+            </p>
+            <p className='mt-2 text-3xl font-semibold text-yellow'>
+              {getTargetLabel(params.phonemeSlug)}
+            </p>
+            <p className='mt-4 text-[11px] uppercase tracking-[0.25em] text-accent'>
+              Sound In Word
+            </p>
+            <p className='mt-2 text-4xl font-semibold tracking-[0.08em]'>
+              {renderHighlightedPhonemeWord(wordDetail, params.phonemeSlug)}
+            </p>
+            {wordDetail.category ? (
+              <p className='mt-4'>Category: {wordDetail.category}</p>
+            ) : null}
           </div>
         </div>
       </div>
@@ -181,6 +216,7 @@ export default async function WordGardenLevelThreePage({ params, searchParams })
       <WorksheetChecklist
         acId={params.acId}
         autoCheckFromQr={searchParams?.autocheck === '1'}
+        letterScopedPhonemeSlugs={letterScopedPhonemeSlugs}
         qrCodeUrl={qrCodeUrl}
         soundTableSelection={selectedLetter}
         unlockedArpabet={getUnlockedArpabetForMonths(ageInMonths)}

@@ -1,6 +1,8 @@
 const wordEntries = require('../data/output.js');
 const firstLetterMap = require('../data/first-letter-map.js');
 const phonemeMap = require('../data/phoneme-map.js');
+const { approvedWords } = require('../data/approved-words.json');
+const { approvedPhonemes } = require('../data/approved-phonemes.json');
 const {
   getAvailableConsonants,
   getConsonantWindow,
@@ -335,6 +337,23 @@ const SELECTABLE_PHONEME_SLUGS = new Set(
       .filter(Boolean)
   )
 );
+const LETTER_GROUP_BY_LETTER = new Map(
+  LETTER_GROUPS.map(group => [group.letter, group])
+);
+const MANUAL_PHONEME_SLUGS_BY_GRAPHEME = new Map(
+  Object.entries({
+    ch: ['CH'],
+    sh: ['SH'],
+    th: ['TH', 'DH'],
+    ph: ['F'],
+    ng: ['NG'],
+    ck: ['K'],
+    qu: ['K'],
+    wh: ['W'],
+    tch: ['CH'],
+  }).map(([grapheme, phonemeSlugs]) => [grapheme, new Set(phonemeSlugs)])
+);
+const VOWEL_GRAPHEME_PATTERN = /^[aeiouy]+$/;
 
 const VOWEL_ARPABET = new Set([
   'AA',
@@ -363,6 +382,114 @@ function normalizeArpabetSymbol(symbol) {
 
 function normalizeWord(word) {
   return String(word || '').trim().toLowerCase();
+}
+
+function normalizeApprovedPhonemeSymbol(symbol) {
+  const normalized = normalizeArpabetSymbol(symbol);
+
+  if (normalized === 'H') {
+    return 'HH';
+  }
+
+  if (normalized === 'YR') {
+    return 'R';
+  }
+
+  return normalized;
+}
+
+function graphemeSupportsPhoneme(grapheme, arpabetSymbol) {
+  const normalizedGrapheme = normalizeWord(grapheme).replace(/[^a-z]/g, '');
+  const normalizedSymbol = normalizeArpabetSymbol(arpabetSymbol);
+
+  if (!normalizedGrapheme || !normalizedSymbol) {
+    return false;
+  }
+
+  const manualPhonemes = MANUAL_PHONEME_SLUGS_BY_GRAPHEME.get(normalizedGrapheme);
+  if (manualPhonemes?.has(normalizedSymbol)) {
+    return true;
+  }
+
+  if (VOWEL_ARPABET.has(normalizedSymbol)) {
+    return VOWEL_GRAPHEME_PATTERN.test(normalizedGrapheme);
+  }
+
+  if (normalizedGrapheme.length !== 1) {
+    return false;
+  }
+
+  const letterGroup = LETTER_GROUP_BY_LETTER.get(normalizedGrapheme.toUpperCase());
+  return letterGroup
+    ? letterGroup.phonemes.some(phoneme => phoneme.phonemeSlug === normalizedSymbol)
+    : false;
+}
+
+const APPROVED_WORD_SET = new Set(
+  (approvedWords || []).map(word => normalizeWord(word)).filter(Boolean)
+);
+const APPROVED_SYNTHETIC_PHONEME_SET = new Set(
+  (approvedPhonemes || [])
+    .map(symbol => normalizeApprovedPhonemeSymbol(symbol))
+    .filter(Boolean)
+);
+
+function alignPhonemesToGraphemes(graphemes = [], arpabet = []) {
+  const memo = new Map();
+
+  function solve(graphemeIndex, phonemeIndex) {
+    const key = `${graphemeIndex}:${phonemeIndex}`;
+
+    if (memo.has(key)) {
+      return memo.get(key);
+    }
+
+    if (graphemeIndex >= graphemes.length) {
+      const result = {
+        score: -(arpabet.length - phonemeIndex),
+        mapping: [],
+      };
+      memo.set(key, result);
+      return result;
+    }
+
+    const skipGraphemeResult = solve(graphemeIndex + 1, phonemeIndex);
+    let bestResult = {
+      score: skipGraphemeResult.score,
+      mapping: [null, ...skipGraphemeResult.mapping],
+    };
+
+    if (phonemeIndex < arpabet.length) {
+      const normalizedPhoneme = normalizeArpabetSymbol(arpabet[phonemeIndex]);
+
+      if (graphemeSupportsPhoneme(graphemes[graphemeIndex], normalizedPhoneme)) {
+        const matchResult = solve(graphemeIndex + 1, phonemeIndex + 1);
+        const matchCandidate = {
+          score: matchResult.score + 3,
+          mapping: [phonemeIndex, ...matchResult.mapping],
+        };
+
+        if (matchCandidate.score > bestResult.score) {
+          bestResult = matchCandidate;
+        }
+      }
+
+      const skipPhonemeResult = solve(graphemeIndex, phonemeIndex + 1);
+      const skipPhonemeCandidate = {
+        score: skipPhonemeResult.score - 1,
+        mapping: skipPhonemeResult.mapping,
+      };
+
+      if (skipPhonemeCandidate.score > bestResult.score) {
+        bestResult = skipPhonemeCandidate;
+      }
+    }
+
+    memo.set(key, bestResult);
+    return bestResult;
+  }
+
+  return solve(0, 0).mapping;
 }
 
 function countSyllables(arpabet = []) {
@@ -479,7 +606,7 @@ function getInitialLetter(word) {
 function buildWordEntry({
   word,
   definition,
-  category = 'everyday words',
+  category = 'Appendix B lexicon',
   arpabet = [],
   ipa = [],
   drawPrompt,
@@ -527,14 +654,20 @@ const datasetEntries = wordEntries.map(entry =>
     source: 'dataset',
   })
 );
+const approvedStarterEntries = starterEntries.filter(entry =>
+  APPROVED_WORD_SET.has(entry.normalizedWord)
+);
+const approvedDatasetEntries = datasetEntries.filter(entry =>
+  APPROVED_WORD_SET.has(entry.normalizedWord)
+);
 
 const WORD_ENTRY_BY_WORD = new Map();
 
-datasetEntries.forEach(entry => {
+approvedStarterEntries.forEach(entry => {
   WORD_ENTRY_BY_WORD.set(entry.normalizedWord, entry);
 });
 
-starterEntries.forEach(entry => {
+approvedDatasetEntries.forEach(entry => {
   WORD_ENTRY_BY_WORD.set(entry.normalizedWord, entry);
 });
 
@@ -659,6 +792,20 @@ function getLetterDifficultyLabel(letter) {
     difficulty.level === 'Easiest' ? 'Easy' : difficulty.level;
 
   return `${difficultyLabel} (${patternLabel})`;
+}
+
+function getPhonemeTimingLabel(phonemeSlug) {
+  const { startMonth, endMonth } = getPhonemeTimingForSlug(phonemeSlug);
+
+  if (startMonth && endMonth) {
+    return `${startMonth}-${endMonth} months`;
+  }
+
+  if (startMonth) {
+    return `${startMonth} months and later`;
+  }
+
+  return 'Timing unavailable';
 }
 
 function getLetterDifficultyRank(letter) {
@@ -987,6 +1134,51 @@ function buildLevelOneRows(months, practicedWords = []) {
       recommendationWeight: Math.max(1, powerScore),
     };
   });
+}
+
+function normalizeSelectionLetter(value) {
+  return String(value || '')
+    .trim()
+    .charAt(0)
+    .toUpperCase();
+}
+
+function getLetterScopedPhonemeSlugs(months, practicedWords = [], letter = '') {
+  const normalizedLetter = normalizeSelectionLetter(letter);
+
+  if (!normalizedLetter) {
+    return [];
+  }
+
+  return buildLevelOneRows(months, practicedWords)
+    .filter(
+      row =>
+        row.rowType === 'phoneme' &&
+        row.parentLetter === normalizedLetter &&
+        row.selectionSlug
+    )
+    .map(row => row.selectionSlug);
+}
+
+function getValidSoundTableLetterForPhoneme(
+  phonemeSlug,
+  requestedLetter,
+  months,
+  practicedWords = []
+) {
+  const normalizedLetter = normalizeSelectionLetter(requestedLetter);
+
+  if (!phonemeSlug || !normalizedLetter) {
+    return '';
+  }
+
+  return getLetterScopedPhonemeSlugs(
+    months,
+    practicedWords,
+    normalizedLetter
+  ).includes(phonemeSlug)
+    ? normalizedLetter
+    : '';
 }
 
 function getTargetLabel(phonemeSlug) {
@@ -1334,17 +1526,28 @@ function getWordDetailForSelection(
   const onsetAndRime = getOnsetAndRime(entry.word);
   const focusLabel = getSelectionLabel(selectionType, selectionSlug);
   const graphemes = splitIntoGraphemes(entry.word);
+  const graphemeAlignment = alignPhonemesToGraphemes(graphemes, entry.normalizedArpabet);
   const soundMapRows = graphemes.map((grapheme, index) => {
-    const phonemeSlug = entry.normalizedArpabet[index];
+    const alignedPhonemeIndex = graphemeAlignment[index];
+    const rawPhonemeSlug =
+      alignedPhonemeIndex === null || alignedPhonemeIndex === undefined
+        ? null
+        : entry.normalizedArpabet[alignedPhonemeIndex];
+    const isApprovedPhoneme =
+      rawPhonemeSlug && APPROVED_SYNTHETIC_PHONEME_SET.has(rawPhonemeSlug);
 
     return {
       grapheme,
-      phonemeLabel: entry.normalizedIpa[index]
-        ? formatPhoneme(entry.normalizedIpa[index])
-        : null,
+      phonemeLabel:
+        isApprovedPhoneme &&
+        alignedPhonemeIndex !== null &&
+        entry.normalizedIpa[alignedPhonemeIndex]
+          ? formatPhoneme(entry.normalizedIpa[alignedPhonemeIndex])
+          : null,
       phonemeSlug:
-        phonemeSlug && SELECTABLE_PHONEME_SLUGS.has(phonemeSlug)
-          ? phonemeSlug
+        isApprovedPhoneme &&
+        rawPhonemeSlug
+          ? rawPhonemeSlug
           : null,
     };
   });
@@ -1429,6 +1632,10 @@ module.exports = {
   calculateAgeInMonths,
   validateBirthYearMonth,
   buildLevelOneRows,
+  getLetterDifficultyLabel,
+  getLetterScopedPhonemeSlugs,
+  getPhonemeTimingLabel,
+  getValidSoundTableLetterForPhoneme,
   getWordCloudWords,
   getLetterWordCloudWords,
   getSelectionWordCloudWords,

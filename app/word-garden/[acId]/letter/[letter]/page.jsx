@@ -5,6 +5,7 @@ import WordCloud from '../../../WordCloud';
 import { getAnonymousChildOrNotFound } from '../../../wordGardenServer';
 import {
   calculateAgeInMonths,
+  getLetterDifficultyLabel,
   getLetterLabel,
   getLetterWordCloudWords,
 } from '@/utils/wordGardenData';
@@ -47,7 +48,7 @@ export default async function WordGardenLetterLevelTwoPage({ params }) {
         <span>{getLetterLabel(letter)}</span>
       </div>
 
-      <LevelTwoIntro />
+      <LevelTwoIntro topNote={`Expressive difficulty: ${getLetterDifficultyLabel(letter)}`} />
 
       <WordCloud
         acId={params.acId}

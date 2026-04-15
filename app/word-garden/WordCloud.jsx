@@ -49,12 +49,6 @@ export default function WordCloud({
   );
   const concreteCount = concreteWords.length;
   const abstractCount = abstractWords.length;
-  const concreteLearnedCount = useMemo(
-    () =>
-      concreteWords.filter(wordEntry => (wordEntry.completedChecklistCount || 0) > 0)
-        .length,
-    [concreteWords]
-  );
   const allConcreteWordsLearned = useMemo(
     () =>
       concreteWords.length === 0 ||
@@ -92,30 +86,8 @@ export default function WordCloud({
 
   return (
     <div className='space-y-4 pb-24 md:pb-32'>
-      <div className='rounded-3xl border border-accent/20 bg-primary/40 p-4'>
-        <details className='mb-4 rounded-3xl border border-accent/20 bg-secondary/30 p-4 text-accent'>
-          <summary className='cursor-pointer text-sm font-semibold uppercase tracking-[0.3em] text-yellow'>
-            Word Cloud Notes
-          </summary>
-          <div className='mt-4 space-y-2 text-sm text-accent'>
-            <p>
-              Concrete words usually come first because they have tangible meanings
-              children can often understand more easily.
-            </p>
-            <p>
-              These words were chosen for their academic nature so they can support
-              children as they move into school, where communication becomes more academic.
-            </p>
-            <p>
-              Abstract words start unchecked until the concrete words in this set are
-              learned, but you can turn them on whenever you want.
-            </p>
-            <p>
-              Concrete learned: {concreteLearnedCount} / {concreteCount || 0}
-            </p>
-          </div>
-        </details>
-        <div className='flex flex-wrap items-center gap-4'>
+      <div className='rounded-[2rem] border border-accent/20 bg-primary/40 p-6 shadow-lg md:p-10'>
+        <div className='mb-6 flex flex-wrap items-center gap-4'>
           <label className='flex items-center gap-2 text-sm text-accent'>
             <input
               type='checkbox'
@@ -144,20 +116,12 @@ export default function WordCloud({
             Completed ({completedCount})
           </label>
         </div>
-        {!allConcreteWordsLearned ? (
-          <p className='mt-3 text-sm text-yellow'>
-            Abstract words are still off by default here, but you can choose to turn
-            them on before the concrete set is complete.
-          </p>
-        ) : null}
-      </div>
 
-      {filteredWords.length === 0 ? (
-        <div className='rounded-3xl border border-dashed border-accent/30 bg-primary/40 p-8 text-accent'>
-          No words match the current filter settings.
-        </div>
-      ) : (
-        <div className='rounded-[2rem] border border-accent/20 bg-primary/40 p-6 shadow-lg md:p-10'>
+        {filteredWords.length === 0 ? (
+          <div className='rounded-3xl border border-dashed border-accent/30 bg-primary/20 p-8 text-accent'>
+            No words match the current filter settings.
+          </div>
+        ) : (
           <div className='flex flex-wrap items-center gap-4 leading-loose'>
             {filteredWords.map(wordEntry => (
               <Link
@@ -195,8 +159,8 @@ export default function WordCloud({
               </Link>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

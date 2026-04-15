@@ -56,7 +56,7 @@ export async function POST(request) {
   const {
     apiKey,
     word,
-    category = 'everyday words',
+    category = 'Appendix B lexicon',
     focusLabel = 'word study',
     definition = '',
     morphologyExamples = [],
@@ -72,7 +72,7 @@ export async function POST(request) {
   }
 
   const trimmedWord = String(word).trim();
-  const trimmedCategory = String(category).trim() || 'everyday words';
+  const trimmedCategory = String(category).trim() || 'Appendix B lexicon';
   const trimmedFocusLabel = String(focusLabel).trim() || 'word study';
   const trimmedDefinition = String(definition).trim();
   const generationPolicy = getWorksheetGenerationPolicy(trimmedWord);

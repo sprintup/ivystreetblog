@@ -118,7 +118,9 @@ export default async function WordGardenAllWordsDetailPage({ params, searchParam
                 </p>
               </div>
             </div>
-            <p className='mt-4'>Category: {wordDetail.category}</p>
+            {wordDetail.category ? (
+              <p className='mt-4'>Category: {wordDetail.category}</p>
+            ) : null}
           </div>
         </div>
       </div>

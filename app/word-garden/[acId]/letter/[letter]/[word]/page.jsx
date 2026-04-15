@@ -7,6 +7,7 @@ import { getAnonymousChildOrNotFound } from '../../../../wordGardenServer';
 import {
   calculateAgeInMonths,
   decodeWordParam,
+  getLetterScopedPhonemeSlugs,
   getLetterLabel,
   getUnlockedArpabetForMonths,
   getWordDetailForSelection,
@@ -45,6 +46,11 @@ export default async function WordGardenLetterLevelThreePage({ params, searchPar
     letter,
     decodedWord,
     anonymousChild.practicedWords
+  );
+  const letterScopedPhonemeSlugs = getLetterScopedPhonemeSlugs(
+    ageInMonths,
+    anonymousChild.practicedWords,
+    letter
   );
 
   if (!wordDetail) {
@@ -129,7 +135,9 @@ export default async function WordGardenLetterLevelThreePage({ params, searchPar
                 </p>
               </div>
             </div>
-            <p className='mt-4'>Category: {wordDetail.category}</p>
+            {wordDetail.category ? (
+              <p className='mt-4'>Category: {wordDetail.category}</p>
+            ) : null}
           </div>
         </div>
       </div>
@@ -137,6 +145,7 @@ export default async function WordGardenLetterLevelThreePage({ params, searchPar
       <WorksheetChecklist
         acId={params.acId}
         autoCheckFromQr={searchParams?.autocheck === '1'}
+        letterScopedPhonemeSlugs={letterScopedPhonemeSlugs}
         qrCodeUrl={qrCodeUrl}
         unlockedArpabet={getUnlockedArpabetForMonths(ageInMonths)}
         wordDetail={wordDetail}
