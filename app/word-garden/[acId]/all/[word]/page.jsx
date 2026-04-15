@@ -9,16 +9,18 @@ import {
   getWordDetailForSelection,
 } from '@/utils/wordGardenData';
 
-function getCurrentPageUrl(acId, encodedWord) {
+function getCurrentPageUrl(acId, encodedWord, autoCheck = false) {
   const headerStore = headers();
   const protocol = headerStore.get('x-forwarded-proto') || 'http';
   const host =
     headerStore.get('x-forwarded-host') || headerStore.get('host') || 'localhost:3000';
 
-  return `${protocol}://${host}/word-garden/${acId}/all/${encodedWord}`;
+  const query = autoCheck ? '?autocheck=1' : '';
+
+  return `${protocol}://${host}/word-garden/${acId}/all/${encodedWord}${query}`;
 }
 
-export default async function WordGardenAllWordsDetailPage({ params }) {
+export default async function WordGardenAllWordsDetailPage({ params, searchParams }) {
   const { anonymousChild } = await getAnonymousChildOrNotFound(
     params.acId,
     `/word-garden/${params.acId}/all/${params.word}`
@@ -35,7 +37,7 @@ export default async function WordGardenAllWordsDetailPage({ params }) {
     notFound();
   }
 
-  const currentPageUrl = getCurrentPageUrl(params.acId, params.word);
+  const currentPageUrl = getCurrentPageUrl(params.acId, params.word, true);
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(
     currentPageUrl
   )}`;
@@ -118,6 +120,7 @@ export default async function WordGardenAllWordsDetailPage({ params }) {
 
       <WorksheetChecklist
         acId={params.acId}
+        autoCheckFromQr={searchParams?.autocheck === '1'}
         qrCodeUrl={qrCodeUrl}
         wordDetail={wordDetail}
       />

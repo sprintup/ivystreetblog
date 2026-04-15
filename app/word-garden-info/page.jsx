@@ -53,7 +53,8 @@ export default async function WordGardenInfoPage() {
             <p>
               Word clouds surface practice targets quickly, helping adults notice
               easier concrete words, more advanced abstract words, and already
-              completed items at a glance.
+              completed items at a glance instead of trying to think of words and
+              activities on the spot.
             </p>
             <p>
               Level 3 pages combine definition work, sound mapping, onset-rime,

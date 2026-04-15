@@ -1,79 +1,114 @@
 // consonant-acquisition.js
 
-const consonantsByMonth = {
-  24: {
-    arpabet: ["P","M","HH","N","W"],
-    ipa: ["p","m","h","n","w"],
-    inherited: []
+const consonantMilestones = [
+  {
+    month: 24,
+    adds: ['P', 'M', 'HH', 'N', 'W', 'B', 'K', 'G', 'D', 'T', 'NG'],
+    ends: [],
   },
-
-  30: {
-    arpabet: ["P","M","HH","N","W","B","K","G","D","T","NG"],
-    ipa: ["p","m","h","n","w","b","k","ɡ","d","t","ŋ"],
-    inherited: ["P","M","HH","N","W"]
+  {
+    month: 30,
+    adds: ['F', 'Y'],
+    ends: [],
   },
-
-  36: {
-    arpabet: ["P","M","HH","N","W","B","K","G","D","T","NG","F","Y"],
-    ipa: ["p","m","h","n","w","b","k","ɡ","d","t","ŋ","f","j"],
-    inherited: ["P","M","HH","N","W","B","K","G","D","T","NG"]
+  {
+    month: 36,
+    adds: ['R', 'L', 'S'],
+    ends: ['P', 'M', 'HH', 'N', 'W', 'B'],
   },
-
-  42: {
-    arpabet: ["P","M","HH","N","W","B","K","G","D","T","NG","F","Y","R","L","S"],
-    ipa: ["p","m","h","n","w","b","k","ɡ","d","t","ŋ","f","j","r","l","s"],
-    inherited: ["P","M","HH","N","W","B","K","G","D","T","NG","F","Y"]
+  {
+    month: 42,
+    adds: ['CH', 'SH', 'Z'],
+    ends: [],
   },
-
-  48: {
-    arpabet: ["P","M","HH","N","W","B","K","G","D","T","NG","F","Y","R","L","S","CH","JH","Z"],
-    ipa: ["p","m","h","n","w","b","k","ɡ","d","t","ŋ","f","j","r","l","s","tʃ","dʒ","z"],
-    inherited: ["P","M","HH","N","W","B","K","G","D","T","NG","F","Y","R","L","S"]
+  {
+    month: 48,
+    adds: ['JH', 'V'],
+    ends: ['F', 'Y'],
   },
-
-  60: {
-    arpabet: ["P","M","HH","N","W","B","K","G","D","T","NG","F","Y","R","L","S","CH","JH","Z","V","TH"],
-    ipa: ["p","m","h","n","w","b","k","ɡ","d","t","ŋ","f","j","r","l","s","tʃ","dʒ","z","v","θ"],
-    inherited: ["P","M","HH","N","W","B","K","G","D","T","NG","F","Y","R","L","S","CH","JH","Z"]
+  {
+    month: 54,
+    adds: ['TH'],
+    ends: [],
   },
-
-  72: {
-    arpabet: ["P","M","HH","N","W","B","K","G","D","T","NG","F","Y","R","L","S","CH","JH","Z","V","TH","DH"],
-    ipa: ["p","m","h","n","w","b","k","ɡ","d","t","ŋ","f","j","r","l","s","tʃ","dʒ","z","v","θ","ð"],
-    inherited: ["P","M","HH","N","W","B","K","G","D","T","NG","F","Y","R","L","S","CH","JH","Z","V","TH"]
+  {
+    month: 60,
+    adds: ['DH'],
+    ends: [],
   },
-
-  84: {
-    arpabet: ["P","M","HH","N","W","B","K","G","D","T","NG","F","Y","R","L","S","CH","JH","Z","V","TH","DH","SH"],
-    ipa: ["p","m","h","n","w","b","k","ɡ","d","t","ŋ","f","j","r","l","s","tʃ","dʒ","z","v","θ","ð","ʃ"],
-    inherited: ["P","M","HH","N","W","B","K","G","D","T","NG","F","Y","R","L","S","CH","JH","Z","V","TH","DH"]
+  {
+    month: 72,
+    adds: ['ER'],
+    ends: ['T', 'NG', 'R', 'L'],
   },
+  {
+    month: 84,
+    adds: [],
+    ends: ['CH', 'SH', 'JH', 'TH'],
+  },
+  {
+    month: 96,
+    adds: [],
+    ends: ['S', 'Z', 'V', 'DH'],
+  },
+  {
+    month: 102,
+    adds: [],
+    ends: ['ER'],
+  },
+];
 
-  96: {
-    arpabet: ["P","M","HH","N","W","B","K","G","D","T","NG","F","Y","R","L","S","CH","JH","Z","V","TH","DH","SH","ZH"],
-    ipa: ["p","m","h","n","w","b","k","ɡ","d","t","ŋ","f","j","r","l","s","tʃ","dʒ","z","v","θ","ð","ʃ","ʒ"],
-    inherited: ["P","M","HH","N","W","B","K","G","D","T","NG","F","Y","R","L","S","CH","JH","Z","V","TH","DH","SH"]
-  }
-};
+const consonantWindows = consonantMilestones.reduce((windows, milestone) => {
+  milestone.adds.forEach(symbol => {
+    windows[symbol] = {
+      startMonth: milestone.month,
+      endMonth: windows[symbol]?.endMonth || null,
+    };
+  });
 
-// helper
+  milestone.ends.forEach(symbol => {
+    windows[symbol] = {
+      startMonth: windows[symbol]?.startMonth || null,
+      endMonth: milestone.month,
+    };
+  });
+
+  return windows;
+}, {});
+
+function getConsonantWindow(symbol) {
+  return consonantWindows[symbol] || { startMonth: null, endMonth: null };
+}
+
 function getAvailableConsonants(months) {
-  const keys = Object.keys(consonantsByMonth)
-    .map(Number)
-    .sort((a, b) => a - b);
+  const normalizedMonths = Number(months);
+  const active = [];
+  const inherited = [];
 
-  let result = consonantsByMonth[keys[0]];
-
-  for (const key of keys) {
-    if (months >= key) {
-      result = consonantsByMonth[key];
+  Object.entries(consonantWindows).forEach(([symbol, window]) => {
+    if (!window.startMonth || normalizedMonths < window.startMonth) {
+      return;
     }
-  }
 
-  return result;
+    if (window.endMonth && normalizedMonths >= window.endMonth) {
+      inherited.push(symbol);
+      return;
+    }
+
+    active.push(symbol);
+  });
+
+  return {
+    active,
+    inherited,
+    arpabet: [...active, ...inherited],
+    windows: consonantWindows,
+  };
 }
 
 module.exports = {
-  consonantsByMonth,
-  getAvailableConsonants
+  consonantMilestones,
+  consonantWindows,
+  getAvailableConsonants,
+  getConsonantWindow,
 };

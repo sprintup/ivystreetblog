@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 const REQUIRED_CHECKS_PER_PANE = 2;
 const HOMOGRAPH_NOTES = {
@@ -37,6 +37,15 @@ function buildInitialCheckedState(panes) {
   return panes.reduce((state, pane) => {
     pane.items.forEach(item => {
       state[item.id] = false;
+    });
+    return state;
+  }, {});
+}
+
+function buildFullyCheckedState(panes) {
+  return panes.reduce((state, pane) => {
+    pane.items.forEach(item => {
+      state[item.id] = true;
     });
     return state;
   }, {});
@@ -194,7 +203,7 @@ function buildPanes(wordDetail) {
       items: [
         {
           id: 'context-known',
-          label: `Relate "${wordDetail.word}" to something the child already knows.`,
+          label: `Relate "${wordDetail.word}" using a metaphor.`,
         },
         {
           id: 'context-homographs',
@@ -213,14 +222,14 @@ function buildPanes(wordDetail) {
       required: false,
       items: [
         {
+          id: 'optional-sounds',
+          label: `Try to have the child say all the sounds in "${wordDetail.word}" one at a time.`,
+        },
+        {
           id: 'optional-onset-rime',
           label: `Model the onset and rime for "${wordDetail.word}": ${
             wordDetail.onsetAndRime.onset || '-'
           } / ${wordDetail.onsetAndRime.rime || wordDetail.word}.`,
-        },
-        {
-          id: 'optional-sounds',
-          label: `Try to have the child say all the sounds in "${wordDetail.word}" one at a time.`,
         },
         {
           id: 'optional-remove',
@@ -241,6 +250,7 @@ function buildPanes(wordDetail) {
 
 export default function WorksheetChecklist({
   acId,
+  autoCheckFromQr = false,
   qrCodeUrl,
   soundTableSelection = '',
   wordDetail,
@@ -259,6 +269,7 @@ export default function WorksheetChecklist({
   const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
   const [hasTriggeredGeneratedPrint, setHasTriggeredGeneratedPrint] =
     useState(false);
+  const [hasAppliedQrAutoCheck, setHasAppliedQrAutoCheck] = useState(false);
   const [isWordComplete, setIsWordComplete] = useState(
     () => (wordDetail.completedChecklistCount || 0) > 0
   );
@@ -322,6 +333,19 @@ export default function WorksheetChecklist({
   const completionNextSteps =
     'Next, you will return to the sound table to choose another letter, sound, or word to explore.';
 
+  const downloadWorksheet = useCallback(() => {
+    const previousTitle = document.title;
+    const restoreTitle = () => {
+      document.title = previousTitle;
+      window.removeEventListener('afterprint', restoreTitle);
+    };
+
+    document.title = wordDetail.word;
+    window.addEventListener('afterprint', restoreTitle);
+    window.setTimeout(restoreTitle, 15000);
+    window.print();
+  }, [wordDetail.word]);
+
   useEffect(() => {
     if (!isCompletionSummaryOpen) {
       return undefined;
@@ -335,6 +359,18 @@ export default function WorksheetChecklist({
   }, [acId, isCompletionSummaryOpen, router]);
 
   useEffect(() => {
+    if (!autoCheckFromQr || hasAppliedQrAutoCheck || isWordComplete) {
+      return;
+    }
+
+    setCheckedItems(buildFullyCheckedState(panes));
+    setCompletionSuccess(
+      'Checklist pre-filled from the worksheet QR code. Press Complete Checklist when you are ready.'
+    );
+    setHasAppliedQrAutoCheck(true);
+  }, [autoCheckFromQr, hasAppliedQrAutoCheck, isWordComplete, panes]);
+
+  useEffect(() => {
     if (!generatedContent || hasTriggeredGeneratedPrint) {
       return undefined;
     }
@@ -343,11 +379,11 @@ export default function WorksheetChecklist({
     setGenerationSuccess('Worksheet generated, ready to print');
 
     const printTimer = window.setTimeout(() => {
-      window.print();
+      downloadWorksheet();
     }, 350);
 
     return () => window.clearTimeout(printTimer);
-  }, [generatedContent, hasTriggeredGeneratedPrint]);
+  }, [downloadWorksheet, generatedContent, hasTriggeredGeneratedPrint]);
 
   function toggleItem(itemId) {
     setCheckedItems(current => ({ ...current, [itemId]: !current[itemId] }));
@@ -509,7 +545,8 @@ export default function WorksheetChecklist({
 
   function renderSoundTiles() {
     return (
-      <div className='flex gap-3 overflow-x-auto pb-2'>
+      <div className='overflow-x-auto pb-2'>
+        <div className='flex min-w-max gap-3'>
         {wordDetail.soundMapRows.map((row, index) => {
           const href = buildPhonemeHref(acId, row.phonemeSlug, selectedLetter);
           const content = (
@@ -540,7 +577,48 @@ export default function WorksheetChecklist({
             </div>
           );
         })}
+        </div>
       </div>
+    );
+  }
+
+  function isPronunciationTileHighlighted(row, index) {
+    if (wordDetail.selectionType === 'phoneme') {
+      return row.phonemeSlug === wordDetail.selectionSlug;
+    }
+
+    if (wordDetail.selectionType === 'letter') {
+      const selectedLetterValue = String(wordDetail.selectionSlug || '').toUpperCase();
+      return index === 0 || String(row.grapheme || '').toUpperCase().startsWith(selectedLetterValue);
+    }
+
+    return false;
+  }
+
+  function renderPrintPronunciationHelper() {
+    return (
+      <section className='worksheet-card'>
+        <p className='worksheet-card-title'>Pronunciation Helper</p>
+        <div className='worksheet-pronunciation-grid'>
+          {wordDetail.soundMapRows.map((row, index) => {
+            const isHighlighted = isPronunciationTileHighlighted(row, index);
+
+            return (
+              <div
+                key={`${row.grapheme}-${index}-print`}
+                className={`worksheet-pronunciation-tile ${
+                  isHighlighted ? 'worksheet-pronunciation-tile-highlighted' : ''
+                }`}
+              >
+                <span className='worksheet-pronunciation-grapheme'>{row.grapheme}</span>
+                <span className='worksheet-pronunciation-phoneme'>
+                  {row.phonemeLabel || 'listen'}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </section>
     );
   }
 
@@ -920,14 +998,18 @@ export default function WorksheetChecklist({
                 disabled={isSubmitting || isWordComplete || isCompletionSummaryOpen}
                 className='rounded-full bg-yellow px-4 py-2 font-bold text-primary disabled:cursor-not-allowed disabled:opacity-60'
               >
-                {isSubmitting ? 'Saving...' : isWordComplete ? 'Marked Complete' : 'Complete Online'}
+                {isSubmitting
+                  ? 'Saving...'
+                  : isWordComplete
+                    ? 'Marked Complete'
+                    : 'Complete Checklist'}
               </button>
               <button
                 type='button'
-                onClick={() => window.print()}
+                onClick={downloadWorksheet}
                 className='rounded-full bg-secondary px-4 py-2 font-bold text-yellow'
               >
-                Print Worksheet
+                Download Worksheet
               </button>
             </div>
             {completionError ? <p className='mt-4 text-sm text-red-300'>{completionError}</p> : null}
@@ -1032,10 +1114,10 @@ export default function WorksheetChecklist({
                     </button>
                     <button
                       type='button'
-                      onClick={() => window.print()}
+                      onClick={downloadWorksheet}
                       className='rounded-full bg-slate-200 px-4 py-2 font-bold text-slate-900'
                     >
-                      Print Worksheet
+                      Download Worksheet
                     </button>
                   </div>
                 </form>
@@ -1155,7 +1237,7 @@ export default function WorksheetChecklist({
                   </section>
 
                   <section className='worksheet-card'>
-                    <p className='worksheet-card-title'>Word Building And Related Words</p>
+                    <p className='worksheet-card-title'>Word Building</p>
                     {morphemeEntries.length === 0 ? (
                       <p className='worksheet-small-copy'>
                         Keep this as a whole-word practice target.
@@ -1169,8 +1251,10 @@ export default function WorksheetChecklist({
                         ))}
                       </ul>
                     )}
+                    <p className='mt-4 worksheet-card-title'>Related Words</p>
+                    <p className='worksheet-small-copy'>How are these words related?</p>
                     {relatedWords.length > 0 ? (
-                      <ul className='worksheet-write-in-list'>
+                      <ul className='mt-3 worksheet-write-in-list'>
                         {relatedWords.map(entry => (
                           <li key={entry.word} className='worksheet-write-in-item'>
                             <strong>{entry.word}</strong>
@@ -1185,6 +1269,8 @@ export default function WorksheetChecklist({
                 </div>
 
                 <div className='worksheet-front-sidebar'>
+                  {renderPrintPronunciationHelper()}
+
                   <section className='worksheet-card'>
                     <p className='worksheet-card-title'>
                       {panes.find(pane => pane.id === 'optional')?.title}
@@ -1199,27 +1285,16 @@ export default function WorksheetChecklist({
                     </ol>
                   </section>
 
-                  <section className='worksheet-card'>
-                    <p className='worksheet-card-title'>Homographs And Extra Words</p>
-                    {homographMeanings.length > 0 ? (
+                  {homographMeanings.length > 0 ? (
+                    <section className='worksheet-card'>
+                      <p className='worksheet-card-title'>Homographs</p>
                       <ul className='worksheet-detail-list'>
                         {homographMeanings.map(meaning => (
                           <li key={meaning}>{meaning}</li>
                         ))}
                       </ul>
-                    ) : (
-                      <p className='worksheet-small-copy'>
-                        No common homograph note is available for this word yet.
-                      </p>
-                    )}
-                    {similarRimeWords.length > 0 ? (
-                      <ul className='worksheet-detail-list'>
-                        {similarRimeWords.map(entry => (
-                          <li key={entry.normalizedWord}>{entry.word}</li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </section>
+                    </section>
+                  ) : null}
 
                   <section className='worksheet-inline-draw'>
                     <div className='worksheet-inline-draw-copy'>

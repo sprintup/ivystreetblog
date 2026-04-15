@@ -29,7 +29,7 @@ export default async function WordGardenLevelTwoPage({
   const soundTableSelectionLabel = selectedLetter || '';
 
   return (
-    <section className='space-y-8'>
+    <section className='space-y-8 pb-24 md:pb-32'>
       <div className='flex flex-wrap items-center gap-3 text-sm text-accent'>
         <Link href='/word-garden' className='text-yellow hover:text-orange'>
           Word Garden

@@ -91,25 +91,30 @@ export default function WordCloud({
   }
 
   return (
-    <div className='space-y-4'>
+    <div className='space-y-4 pb-24 md:pb-32'>
       <div className='rounded-3xl border border-accent/20 bg-primary/40 p-4'>
-        <div className='mb-4 space-y-2 text-sm text-accent'>
-          <p>
-            Concrete words usually come first because they have tangible meanings
-            children can often understand more easily.
-          </p>
-          <p>
-            These words were chosen for their academic nature so they can support
-            children as they move into school, where communication becomes more academic.
-          </p>
-          <p>
-            Abstract words start unchecked until the concrete words in this set are
-            learned, but you can turn them on whenever you want.
-          </p>
-          <p>
-            Concrete learned: {concreteLearnedCount} / {concreteCount || 0}
-          </p>
-        </div>
+        <details className='mb-4 rounded-3xl border border-accent/20 bg-secondary/30 p-4 text-accent'>
+          <summary className='cursor-pointer text-sm font-semibold uppercase tracking-[0.3em] text-yellow'>
+            Word Cloud Notes
+          </summary>
+          <div className='mt-4 space-y-2 text-sm text-accent'>
+            <p>
+              Concrete words usually come first because they have tangible meanings
+              children can often understand more easily.
+            </p>
+            <p>
+              These words were chosen for their academic nature so they can support
+              children as they move into school, where communication becomes more academic.
+            </p>
+            <p>
+              Abstract words start unchecked until the concrete words in this set are
+              learned, but you can turn them on whenever you want.
+            </p>
+            <p>
+              Concrete learned: {concreteLearnedCount} / {concreteCount || 0}
+            </p>
+          </div>
+        </details>
         <div className='flex flex-wrap items-center gap-4'>
           <label className='flex items-center gap-2 text-sm text-accent'>
             <input

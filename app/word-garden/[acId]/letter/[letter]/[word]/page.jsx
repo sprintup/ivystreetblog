@@ -14,16 +14,18 @@ function normalizeLetter(letter) {
   return String(letter || '').trim().charAt(0).toUpperCase();
 }
 
-function getCurrentPageUrl(acId, letter, encodedWord) {
+function getCurrentPageUrl(acId, letter, encodedWord, autoCheck = false) {
   const headerStore = headers();
   const protocol = headerStore.get('x-forwarded-proto') || 'http';
   const host =
     headerStore.get('x-forwarded-host') || headerStore.get('host') || 'localhost:3000';
 
-  return `${protocol}://${host}/word-garden/${acId}/letter/${letter}/${encodedWord}`;
+  const query = autoCheck ? '?autocheck=1' : '';
+
+  return `${protocol}://${host}/word-garden/${acId}/letter/${letter}/${encodedWord}${query}`;
 }
 
-export default async function WordGardenLetterLevelThreePage({ params }) {
+export default async function WordGardenLetterLevelThreePage({ params, searchParams }) {
   const letter = normalizeLetter(params.letter);
 
   if (!/^[A-Z]$/.test(letter)) {
@@ -46,7 +48,7 @@ export default async function WordGardenLetterLevelThreePage({ params }) {
     notFound();
   }
 
-  const currentPageUrl = getCurrentPageUrl(params.acId, letter, params.word);
+  const currentPageUrl = getCurrentPageUrl(params.acId, letter, params.word, true);
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(
     currentPageUrl
   )}`;
@@ -129,6 +131,7 @@ export default async function WordGardenLetterLevelThreePage({ params }) {
 
       <WorksheetChecklist
         acId={params.acId}
+        autoCheckFromQr={searchParams?.autocheck === '1'}
         qrCodeUrl={qrCodeUrl}
         wordDetail={wordDetail}
       />

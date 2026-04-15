@@ -32,15 +32,29 @@ function getSelectedLetterFromReferer(headerStore) {
   }
 }
 
-function getCurrentPageUrl(acId, phonemeSlug, encodedWord, selectedLetter) {
+function getCurrentPageUrl(
+  acId,
+  phonemeSlug,
+  encodedWord,
+  selectedLetter,
+  autoCheck = false
+) {
   const headerStore = headers();
   const protocol = headerStore.get('x-forwarded-proto') || 'http';
   const host =
     headerStore.get('x-forwarded-host') || headerStore.get('host') || 'localhost:3000';
 
-  const query = selectedLetter
-    ? `?letter=${encodeURIComponent(selectedLetter)}`
-    : '';
+  const queryParams = new URLSearchParams();
+
+  if (selectedLetter) {
+    queryParams.set('letter', selectedLetter);
+  }
+
+  if (autoCheck) {
+    queryParams.set('autocheck', '1');
+  }
+
+  const query = queryParams.toString() ? `?${queryParams.toString()}` : '';
 
   return `${protocol}://${host}/word-garden/${acId}/phoneme/${phonemeSlug}/${encodedWord}${query}`;
 }
@@ -70,7 +84,8 @@ export default async function WordGardenLevelThreePage({ params, searchParams })
     params.acId,
     params.phonemeSlug,
     params.word,
-    selectedLetter
+    selectedLetter,
+    true
   );
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(
     currentPageUrl
@@ -160,6 +175,7 @@ export default async function WordGardenLevelThreePage({ params, searchParams })
 
       <WorksheetChecklist
         acId={params.acId}
+        autoCheckFromQr={searchParams?.autocheck === '1'}
         qrCodeUrl={qrCodeUrl}
         soundTableSelection={selectedLetter}
         wordDetail={wordDetail}

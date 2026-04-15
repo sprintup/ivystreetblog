@@ -1,7 +1,10 @@
 const wordEntries = require('../data/output.js');
 const firstLetterMap = require('../data/first-letter-map.js');
 const phonemeMap = require('../data/phoneme-map.js');
-const { getAvailableConsonants } = require('../data/consonant-acquisition.js');
+const {
+  getAvailableConsonants,
+  getConsonantWindow,
+} = require('../data/consonant-acquisition.js');
 
 const IPA_BY_ARPABET = {
   P: 'p',
@@ -28,6 +31,7 @@ const IPA_BY_ARPABET = {
   DH: 'ð',
   SH: 'ʃ',
   ZH: 'ʒ',
+  ER: 'ɝ',
 };
 
 const COMMON_GLOSSARY = {
@@ -610,6 +614,33 @@ function getSuggestedWordCount(entries = []) {
   ).length;
 }
 
+function getWordAvailabilitySummary(entries = []) {
+  const concreteAvailableWords = entries
+    .filter(
+      entry =>
+        entry.concreteness === 'concrete' &&
+        (entry.completedChecklistCount || 0) === 0
+    )
+    .map(entry => entry.word);
+  const abstractAvailableWords = entries
+    .filter(
+      entry =>
+        entry.concreteness === 'abstract' &&
+        (entry.completedChecklistCount || 0) === 0
+    )
+    .map(entry => entry.word);
+  const completedWords = entries
+    .filter(entry => (entry.completedChecklistCount || 0) > 0)
+    .map(entry => entry.word);
+
+  return {
+    concreteAvailableCount: concreteAvailableWords.length,
+    abstractAvailableCount: abstractAvailableWords.length,
+    completedWordCount: completedWords.length,
+    recommendableWords: [...concreteAvailableWords, ...abstractAvailableWords],
+  };
+}
+
 function getLetterDifficultyLabel(letter) {
   const difficulty = LETTER_DIFFICULTY_BY_LETTER[letter];
 
@@ -622,7 +653,10 @@ function getLetterDifficultyLabel(letter) {
       ? 'Vowel'
       : difficulty.pattern;
 
-  return `${difficulty.level} (${patternLabel})`;
+  const difficultyLabel =
+    difficulty.level === 'Easiest' ? 'Easy' : difficulty.level;
+
+  return `${difficultyLabel} (${patternLabel})`;
 }
 
 function getLetterDifficultyRank(letter) {
@@ -641,6 +675,72 @@ function getLetterDifficultyRank(letter) {
   }
 
   return 3;
+}
+
+function isVowelLetter(letter) {
+  return /^[AEIOU]$/.test(String(letter || '').toUpperCase());
+}
+
+function getDifficultyPowerBonus(difficultyRank) {
+  if (difficultyRank === 2) {
+    return 1;
+  }
+
+  if (difficultyRank >= 3) {
+    return 2;
+  }
+
+  return 0;
+}
+
+function getPhonemeTimingForSlug(phonemeSlug) {
+  const requiredSymbols = String(phonemeSlug || '')
+    .split('__')
+    .filter(Boolean);
+  const windows = requiredSymbols.map(symbol => getConsonantWindow(symbol));
+  const startMonth = windows
+    .map(window => window.startMonth)
+    .filter(Boolean)
+    .reduce(
+      (latestStart, value) => (latestStart === null ? value : Math.max(latestStart, value)),
+      null
+    );
+  const endingMonths = windows.map(window => window.endMonth).filter(Boolean);
+  const endMonth =
+    endingMonths.length > 0
+      ? endingMonths.reduce(
+          (earliestEnd, value) => (earliestEnd === null ? value : Math.min(earliestEnd, value)),
+          null
+        )
+      : null;
+
+  return {
+    startMonth,
+    endMonth,
+  };
+}
+
+function getBasePowerScore(row) {
+  let score = 0;
+  const availableWordCount =
+    (row.concreteAvailableCount || 0) + (row.abstractAvailableCount || 0);
+
+  score += getDifficultyPowerBonus(row.difficultyRank);
+  score += row.rowType === 'phoneme' ? 2 : 1;
+
+  if (availableWordCount <= 5) {
+    score -= 1;
+  }
+
+  if (isVowelLetter(row.parentLetter || row.letter)) {
+    score += 1;
+  }
+
+  if ((row.releaseEndMonth || 0) % 10 === 6) {
+    score += 2;
+  }
+
+  return score;
 }
 
 function compareWordEntries(leftEntry, rightEntry) {
@@ -749,9 +849,11 @@ function buildLevelOneRows(months, practicedWords = []) {
   const availableArpabet = new Set(arpabet);
   const inheritedArpabet = new Set(inherited);
 
-  return LETTER_GROUPS.flatMap(group => {
+  const rows = LETTER_GROUPS.flatMap(group => {
     const letterWords = getWordsForLetter(group.letter, practicedWords);
     const letterSuggestedWordCount = getSuggestedWordCount(letterWords);
+    const letterAvailability = getWordAvailabilitySummary(letterWords);
+    const letterDifficultyRank = getLetterDifficultyRank(group.letter);
     const letterRow = {
       rowKey: `letter-${group.letter}`,
       rowType: 'letter',
@@ -759,9 +861,12 @@ function buildLevelOneRows(months, practicedWords = []) {
       selectionSlug: group.letter,
       parentLetter: group.letter,
       letter: group.letter,
+      displayTarget: group.letter,
+      targetSortValue: group.letter,
       displayPhoneme: getLetterDifficultyLabel(group.letter),
+      expressiveText: getLetterDifficultyLabel(group.letter),
       difficultyLabel: getLetterDifficultyLabel(group.letter),
-      difficultyRank: getLetterDifficultyRank(group.letter),
+      difficultyRank: letterDifficultyRank,
       exampleWord: getLetterExampleWord(group.letter, practicedWords),
       isEnabled: letterWords.length > 0,
       isInherited: false,
@@ -770,11 +875,16 @@ function buildLevelOneRows(months, practicedWords = []) {
       isSelectable: letterWords.length > 0,
       wordCount: letterWords.length,
       suggestedWordCount: letterSuggestedWordCount,
+      concreteAvailableCount: letterAvailability.concreteAvailableCount,
+      abstractAvailableCount: letterAvailability.abstractAvailableCount,
+      completedWordCount: letterAvailability.completedWordCount,
+      recommendableWords: letterAvailability.recommendableWords,
+      releaseEndMonth: null,
       statusText: letterWords.length
         ? letterSuggestedWordCount > 0
-          ? 'Ready to explore'
-          : 'All suggested words practiced'
-        : 'No matching words yet',
+          ? 'Unlocked'
+          : 'Done'
+        : 'No words',
     };
 
     const phonemeRows = group.phonemes.map(phonemeRow => {
@@ -783,12 +893,30 @@ function buildLevelOneRows(months, practicedWords = []) {
         practicedWords
       );
       const suggestedWordCount = getSuggestedWordCount(matchingWords);
+      const wordAvailability = getWordAvailabilitySummary(matchingWords);
       const isEnabled = phonemeRow.phonemeSlug
         .split('__')
         .every(requiredSymbol => availableArpabet.has(requiredSymbol));
       const isInherited = phonemeRow.phonemeSlug
         .split('__')
         .every(requiredSymbol => inheritedArpabet.has(requiredSymbol));
+      const phonemeTiming = getPhonemeTimingForSlug(phonemeRow.phonemeSlug);
+      const expressiveText = isEnabled
+        ? matchingWords.length > 0
+          ? suggestedWordCount > 0
+            ? 'Ready'
+            : 'Practiced'
+          : 'No words'
+        : matchingWords.length > 0
+          ? 'Advanced for age'
+          : 'No words';
+      const statusText = isEnabled
+        ? matchingWords.length > 0
+          ? suggestedWordCount > 0
+            ? 'Unlocked'
+            : 'Done'
+          : 'No words'
+        : 'Locked';
 
       return {
         rowKey: `phoneme-${group.letter}-${phonemeRow.phonemeSlug}`,
@@ -797,7 +925,10 @@ function buildLevelOneRows(months, practicedWords = []) {
         selectionSlug: phonemeRow.phonemeSlug,
         parentLetter: group.letter,
         letter: group.letter,
+        displayTarget: formatPhoneme(phonemeRow.ipa),
+        targetSortValue: `${group.letter}-${formatPhoneme(phonemeRow.ipa)}`,
         displayPhoneme: formatPhoneme(phonemeRow.ipa),
+        expressiveText,
         difficultyLabel: getLetterDifficultyLabel(group.letter),
         difficultyRank: getLetterDifficultyRank(group.letter),
         exampleWord: phonemeRow.exampleWord,
@@ -808,21 +939,47 @@ function buildLevelOneRows(months, practicedWords = []) {
         isSelectable: matchingWords.length > 0,
         wordCount: matchingWords.length,
         suggestedWordCount,
-        statusText: isEnabled
-          ? matchingWords.length > 0
-            ? suggestedWordCount > 0
-              ? isInherited
-                ? 'Inherited and ready'
-                : 'Ready to explore'
-              : 'All suggested words practiced'
-            : 'No matching words yet'
-          : matchingWords.length > 0
-            ? 'Advanced for this age'
-            : 'No matching words yet',
+        concreteAvailableCount: wordAvailability.concreteAvailableCount,
+        abstractAvailableCount: wordAvailability.abstractAvailableCount,
+        completedWordCount: wordAvailability.completedWordCount,
+        recommendableWords: wordAvailability.recommendableWords,
+        releaseEndMonth: phonemeTiming.endMonth,
+        statusText,
       };
     });
 
     return [letterRow, ...phonemeRows];
+  });
+
+  const candidateRows = rows.filter(row => {
+    const availableWordCount =
+      (row.concreteAvailableCount || 0) + (row.abstractAvailableCount || 0);
+
+    return row.isSelectable && !row.isLocked && availableWordCount > 0;
+  });
+  const lowestCompletedCount =
+    candidateRows.length > 0
+      ? Math.min(...candidateRows.map(row => row.completedWordCount || 0))
+      : null;
+
+  return rows.map(row => {
+    const availableWordCount =
+      (row.concreteAvailableCount || 0) + (row.abstractAvailableCount || 0);
+    const inFewestCompletedPool =
+      lowestCompletedCount !== null &&
+      row.isSelectable &&
+      !row.isLocked &&
+      availableWordCount > 0 &&
+      (row.completedWordCount || 0) === lowestCompletedCount;
+    const powerScore =
+      getBasePowerScore(row) + (inFewestCompletedPool ? 1 : 0);
+
+    return {
+      ...row,
+      availableWordCount,
+      powerScore,
+      recommendationWeight: Math.max(1, powerScore),
+    };
   });
 }
 

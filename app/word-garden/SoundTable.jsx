@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const DEFAULT_SORT_RULES = [
-  { column: 'letter', direction: 'asc' },
+  { column: 'target', direction: 'asc' },
 ];
 
 function getRowHref(acId, row) {
@@ -18,6 +18,22 @@ function getRowHref(acId, row) {
   }
 
   return `/word-garden/${acId}/phoneme/${row.selectionSlug}?letter=${encodeURIComponent(
+    row.parentLetter || row.letter || ''
+  )}`;
+}
+
+function getWordHref(acId, row, word) {
+  if (!row?.hasWords || !word) {
+    return null;
+  }
+
+  const encodedWord = encodeURIComponent(word);
+
+  if (row.selectionType === 'letter') {
+    return `/word-garden/${acId}/letter/${encodeURIComponent(row.selectionSlug)}/${encodedWord}`;
+  }
+
+  return `/word-garden/${acId}/phoneme/${row.selectionSlug}/${encodedWord}?letter=${encodeURIComponent(
     row.parentLetter || row.letter || ''
   )}`;
 }
@@ -54,14 +70,20 @@ function getColumnValue(row, column) {
   switch (column) {
     case 'status':
       return getStatusRank(row);
-    case 'letter':
-      return row.letter || '';
+    case 'target':
+      return row.targetSortValue || row.displayTarget || '';
     case 'difficultyRank':
       return row.difficultyRank || 999;
+    case 'expressiveText':
+      return row.expressiveText || '';
+    case 'concreteAvailableCount':
+      return row.concreteAvailableCount || 0;
+    case 'abstractAvailableCount':
+      return row.abstractAvailableCount || 0;
+    case 'completedWordCount':
+      return row.completedWordCount || 0;
     case 'exampleWord':
       return row.exampleWord || '';
-    case 'suggestedWordCount':
-      return row.suggestedWordCount || 0;
     default:
       return '';
   }
@@ -99,7 +121,11 @@ function compareRows(leftRow, rightRow, sortRules) {
 }
 
 function getInitialDirection(column) {
-  if (column === 'suggestedWordCount') {
+  if (
+    column === 'concreteAvailableCount' ||
+    column === 'abstractAvailableCount' ||
+    column === 'completedWordCount'
+  ) {
     return 'desc';
   }
 
@@ -169,6 +195,17 @@ export default function SoundTable({ acId, rows }) {
   const [hideLockedRows, setHideLockedRows] = useState(true);
   const [sortRules, setSortRules] = useState(DEFAULT_SORT_RULES);
   const [pendingUnlockRow, setPendingUnlockRow] = useState(null);
+
+  const recommendationCandidates = useMemo(() => {
+    return rows.filter(
+      row =>
+        row.isSelectable &&
+        !row.isLocked &&
+        row.suggestedWordCount > 0 &&
+        (row.concreteAvailableCount > 0 || row.abstractAvailableCount > 0) &&
+        row.recommendableWords?.length > 0
+    );
+  }, [rows]);
 
   const visibleRows = useMemo(() => {
     const preparedRows = rows.map((row, originalIndex) => ({
@@ -249,6 +286,27 @@ export default function SoundTable({ acId, rows }) {
     }
   }
 
+  function handleRecommendWord() {
+    if (recommendationCandidates.length === 0) {
+      return;
+    }
+
+    const randomRow =
+      recommendationCandidates[
+        Math.floor(Math.random() * recommendationCandidates.length)
+      ];
+
+    const randomWord =
+      randomRow.recommendableWords[
+        Math.floor(Math.random() * randomRow.recommendableWords.length)
+      ];
+    const href = getWordHref(acId, randomRow, randomWord);
+
+    if (href) {
+      router.push(href);
+    }
+  }
+
   return (
     <div className='space-y-4 pb-24 md:pb-28'>
       <div className='flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-accent/20 bg-primary/40 p-4'>
@@ -269,6 +327,15 @@ export default function SoundTable({ acId, rows }) {
           >
             All words
           </Link>
+
+          <button
+            type='button'
+            onClick={handleRecommendWord}
+            disabled={recommendationCandidates.length === 0}
+            className='rounded-full border border-green-400/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-200 transition hover:border-green-300/50 hover:text-white disabled:cursor-not-allowed disabled:opacity-50'
+          >
+            Recommend word
+          </button>
         </div>
 
         <p className='text-sm text-accent'>
@@ -292,18 +359,45 @@ export default function SoundTable({ acId, rows }) {
                 </th>
                 <th className='sticky top-0 z-20 bg-secondary px-4 py-3 text-sm uppercase tracking-wide'>
                   <HeaderButton
-                    column='letter'
-                    label='Letter'
+                    column='target'
+                    label='Target'
                     sortRules={sortRules}
                     onSort={updateSort}
                   />
                 </th>
                 <th className='sticky top-0 z-20 bg-secondary px-4 py-3 text-sm uppercase tracking-wide'>
                   <HeaderButton
-                    column='difficultyRank'
+                    column='expressiveText'
                     label='Expressive Difficulty'
                     sortRules={sortRules}
                     onSort={updateSort}
+                  />
+                </th>
+                <th className='sticky top-0 z-20 bg-secondary px-4 py-3 text-sm uppercase tracking-wide text-right'>
+                  <HeaderButton
+                    column='concreteAvailableCount'
+                    label='Concrete'
+                    sortRules={sortRules}
+                    onSort={updateSort}
+                    align='right'
+                  />
+                </th>
+                <th className='sticky top-0 z-20 bg-secondary px-4 py-3 text-sm uppercase tracking-wide text-right'>
+                  <HeaderButton
+                    column='abstractAvailableCount'
+                    label='Abstract'
+                    sortRules={sortRules}
+                    onSort={updateSort}
+                    align='right'
+                  />
+                </th>
+                <th className='sticky top-0 z-20 bg-secondary px-4 py-3 text-sm uppercase tracking-wide text-right'>
+                  <HeaderButton
+                    column='completedWordCount'
+                    label='Completed'
+                    sortRules={sortRules}
+                    onSort={updateSort}
+                    align='right'
                   />
                 </th>
                 <th className='sticky top-0 z-20 bg-secondary px-4 py-3 text-sm uppercase tracking-wide'>
@@ -312,15 +406,6 @@ export default function SoundTable({ acId, rows }) {
                     label='Example Word'
                     sortRules={sortRules}
                     onSort={updateSort}
-                  />
-                </th>
-                <th className='sticky top-0 z-20 bg-secondary px-4 py-3 text-sm uppercase tracking-wide text-right'>
-                  <HeaderButton
-                    column='suggestedWordCount'
-                    label='Suggested Words'
-                    sortRules={sortRules}
-                    onSort={updateSort}
-                    align='right'
                   />
                 </th>
               </tr>
@@ -361,16 +446,10 @@ export default function SoundTable({ acId, rows }) {
                       </span>
                     </td>
                     <td className='px-4 py-3 font-bold text-white align-top'>
-                      {row.rowType === 'letter' ? (
-                        row.letter
-                      ) : (
-                        <span className='text-accent/40'>&mdash;</span>
-                      )}
+                      <span>{row.displayTarget}</span>
                     </td>
                     <td
                       className={`px-4 py-3 align-top ${
-                        row.rowType === 'phoneme' ? 'pl-8' : ''
-                      } ${
                         row.rowType === 'letter'
                           ? `${getLetterDifficultyClass(row)} font-bold`
                           : row.isEnabled
@@ -380,20 +459,19 @@ export default function SoundTable({ acId, rows }) {
                             : 'text-yellow'
                       }`}
                     >
-                      {row.rowType === 'letter'
-                        ? row.difficultyLabel
-                        : row.displayPhoneme}
+                      {row.expressiveText}
+                    </td>
+                    <td className='px-4 py-3 align-top text-right text-sm text-accent'>
+                      <span className='text-white'>{row.concreteAvailableCount}</span>
+                    </td>
+                    <td className='px-4 py-3 align-top text-right text-sm text-accent'>
+                      <span className='text-white'>{row.abstractAvailableCount}</span>
+                    </td>
+                    <td className='px-4 py-3 align-top text-right text-sm text-accent'>
+                      <span className='text-white'>{row.completedWordCount}</span>
                     </td>
                     <td className='px-4 py-3 align-top text-yellow'>
                       {row.exampleWord}
-                    </td>
-                    <td className='px-4 py-3 align-top text-right text-sm text-accent'>
-                      <span className='text-white'>{row.suggestedWordCount}</span>
-                      {row.wordCount !== row.suggestedWordCount ? (
-                        <span className='block text-xs text-accent/70'>
-                          of {row.wordCount}
-                        </span>
-                      ) : null}
                     </td>
                   </tr>
                 );
