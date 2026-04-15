@@ -637,6 +637,8 @@ function getWordAvailabilitySummary(entries = []) {
     concreteAvailableCount: concreteAvailableWords.length,
     abstractAvailableCount: abstractAvailableWords.length,
     completedWordCount: completedWords.length,
+    concreteRecommendableWords: concreteAvailableWords,
+    abstractRecommendableWords: abstractAvailableWords,
     recommendableWords: [...concreteAvailableWords, ...abstractAvailableWords],
   };
 }
@@ -878,6 +880,8 @@ function buildLevelOneRows(months, practicedWords = []) {
       concreteAvailableCount: letterAvailability.concreteAvailableCount,
       abstractAvailableCount: letterAvailability.abstractAvailableCount,
       completedWordCount: letterAvailability.completedWordCount,
+      concreteRecommendableWords: letterAvailability.concreteRecommendableWords,
+      abstractRecommendableWords: letterAvailability.abstractRecommendableWords,
       recommendableWords: letterAvailability.recommendableWords,
       releaseEndMonth: null,
       statusText: letterWords.length
@@ -942,6 +946,8 @@ function buildLevelOneRows(months, practicedWords = []) {
         concreteAvailableCount: wordAvailability.concreteAvailableCount,
         abstractAvailableCount: wordAvailability.abstractAvailableCount,
         completedWordCount: wordAvailability.completedWordCount,
+        concreteRecommendableWords: wordAvailability.concreteRecommendableWords,
+        abstractRecommendableWords: wordAvailability.abstractRecommendableWords,
         recommendableWords: wordAvailability.recommendableWords,
         releaseEndMonth: phonemeTiming.endMonth,
         statusText,
@@ -1399,6 +1405,22 @@ function getSelectionWordCloudWords(
   );
 }
 
+function getUnlockedWordCloudWords(months, practicedWords = []) {
+  const unlockedWords = buildLevelOneRows(months, practicedWords)
+    .filter(
+      row =>
+        row.isSelectable &&
+        !row.isLocked &&
+        Array.isArray(row.recommendableWords) &&
+        row.recommendableWords.length > 0
+    )
+    .flatMap(row => row.recommendableWords);
+
+  return getWordCloudWordsFromEntries(
+    getWordEntriesFromWordList(unlockedWords, practicedWords)
+  );
+}
+
 module.exports = {
   calculateAgeInMonths,
   validateBirthYearMonth,
@@ -1406,6 +1428,7 @@ module.exports = {
   getWordCloudWords,
   getLetterWordCloudWords,
   getSelectionWordCloudWords,
+  getUnlockedWordCloudWords,
   getWordsForPhonemeSlug,
   getWordsForLetter,
   getWordDetail,

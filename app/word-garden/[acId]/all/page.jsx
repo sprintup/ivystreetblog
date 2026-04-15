@@ -5,19 +5,19 @@ import { getAnonymousChildOrNotFound } from '../../wordGardenServer';
 import {
   calculateAgeInMonths,
   getSelectionWordCloudWords,
+  getUnlockedWordCloudWords,
 } from '@/utils/wordGardenData';
 
-export default async function WordGardenAllWordsPage({ params }) {
+export default async function WordGardenAllWordsPage({ params, searchParams }) {
   const { anonymousChild } = await getAnonymousChildOrNotFound(
     params.acId,
     `/word-garden/${params.acId}/all`
   );
   const ageInMonths = calculateAgeInMonths(anonymousChild.birthYearMonth);
-  const wordCloudWords = getSelectionWordCloudWords(
-    'all',
-    'all',
-    anonymousChild.practicedWords
-  );
+  const showUnlockedOnly = searchParams?.view === 'unlocked';
+  const wordCloudWords = showUnlockedOnly
+    ? getUnlockedWordCloudWords(ageInMonths, anonymousChild.practicedWords)
+    : getSelectionWordCloudWords('all', 'all', anonymousChild.practicedWords);
 
   return (
     <section className='space-y-8 pb-24 md:pb-32'>
@@ -33,7 +33,7 @@ export default async function WordGardenAllWordsPage({ params }) {
           Sound Table
         </Link>
         <span>/</span>
-        <span>All words</span>
+        <span>{showUnlockedOnly ? 'All unlocked words' : 'All words'}</span>
       </div>
 
       <LevelTwoIntro />

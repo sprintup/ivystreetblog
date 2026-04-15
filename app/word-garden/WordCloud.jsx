@@ -173,13 +173,20 @@ export default function WordCloud({
               >
                 {wordEntry.word}
                 {(wordEntry.completedChecklistCount || 0) > 0 ? (
-                  <span
-                    className='ml-2 align-middle rounded-full bg-green-600/80 px-2 py-1 text-xs text-white'
-                    title='Completed'
-                    aria-label='Completed'
-                  >
-                    Done
-                  </span>
+                  <>
+                    <span
+                      className='ml-2 align-middle rounded-full bg-green-600/80 px-2 py-1 text-xs text-white'
+                      title='Completed'
+                      aria-label='Completed'
+                    >
+                      Done
+                    </span>
+                    {wordEntry.practiceCount > 0 ? (
+                      <span className='ml-2 align-middle rounded-full bg-secondary/80 px-2 py-1 text-xs text-accent'>
+                        x{wordEntry.practiceCount}
+                      </span>
+                    ) : null}
+                  </>
                 ) : wordEntry.practiceCount > 0 ? (
                   <span className='ml-2 align-middle rounded-full bg-secondary/80 px-2 py-1 text-xs text-accent'>
                     x{wordEntry.practiceCount}

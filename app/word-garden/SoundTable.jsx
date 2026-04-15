@@ -207,6 +207,23 @@ export default function SoundTable({ acId, rows }) {
     );
   }, [rows]);
 
+  const concreteRecommendationCandidates = useMemo(() => {
+    return recommendationCandidates.filter(
+      row => row.concreteRecommendableWords?.length > 0
+    );
+  }, [recommendationCandidates]);
+
+  const abstractRecommendationCandidates = useMemo(() => {
+    return recommendationCandidates.filter(
+      row => row.abstractRecommendableWords?.length > 0
+    );
+  }, [recommendationCandidates]);
+
+  const activeRecommendationCandidates =
+    concreteRecommendationCandidates.length > 0
+      ? concreteRecommendationCandidates
+      : abstractRecommendationCandidates;
+
   const visibleRows = useMemo(() => {
     const preparedRows = rows.map((row, originalIndex) => ({
       ...row,
@@ -287,19 +304,24 @@ export default function SoundTable({ acId, rows }) {
   }
 
   function handleRecommendWord() {
-    if (recommendationCandidates.length === 0) {
+    if (activeRecommendationCandidates.length === 0) {
       return;
     }
 
+    const shouldRecommendConcrete = concreteRecommendationCandidates.length > 0;
     const randomRow =
-      recommendationCandidates[
-        Math.floor(Math.random() * recommendationCandidates.length)
+      activeRecommendationCandidates[
+        Math.floor(Math.random() * activeRecommendationCandidates.length)
       ];
+    const wordPool = shouldRecommendConcrete
+      ? randomRow.concreteRecommendableWords
+      : randomRow.abstractRecommendableWords;
 
-    const randomWord =
-      randomRow.recommendableWords[
-        Math.floor(Math.random() * randomRow.recommendableWords.length)
-      ];
+    if (!wordPool?.length) {
+      return;
+    }
+
+    const randomWord = wordPool[Math.floor(Math.random() * wordPool.length)];
     const href = getWordHref(acId, randomRow, randomWord);
 
     if (href) {
@@ -309,8 +331,31 @@ export default function SoundTable({ acId, rows }) {
 
   return (
     <div className='space-y-4 pb-24 md:pb-28'>
-      <div className='flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-accent/20 bg-primary/40 p-4'>
+      <div className='flex flex-wrap items-center gap-4 rounded-3xl border border-accent/20 bg-primary/40 p-4'>
         <div className='flex flex-wrap items-center gap-4'>
+          <button
+            type='button'
+            onClick={handleRecommendWord}
+            disabled={activeRecommendationCandidates.length === 0}
+            className='rounded-full border border-green-400/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-200 transition hover:border-green-300/50 hover:text-white disabled:cursor-not-allowed disabled:opacity-50'
+          >
+            Recommend
+          </button>
+
+          <Link
+            href={`/word-garden/${acId}/all?view=unlocked`}
+            className='no-underline rounded-full border border-green-400/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-200 transition hover:border-green-300/50 hover:text-white'
+          >
+            All unlocked words
+          </Link>
+
+          <Link
+            href={`/word-garden/${acId}/all`}
+            className='no-underline rounded-full border border-yellow/30 bg-yellow/10 px-4 py-2 text-sm font-semibold text-yellow transition hover:border-yellow/50 hover:text-orange'
+          >
+            All words
+          </Link>
+
           <label className='flex items-center gap-2 text-sm text-accent'>
             <input
               type='checkbox'
@@ -320,28 +365,7 @@ export default function SoundTable({ acId, rows }) {
             />
             Hide locked rows
           </label>
-
-          <Link
-            href={`/word-garden/${acId}/all`}
-            className='rounded-full border border-yellow/30 bg-yellow/10 px-4 py-2 text-sm font-semibold text-yellow transition hover:border-yellow/50 hover:text-orange'
-          >
-            All words
-          </Link>
-
-          <button
-            type='button'
-            onClick={handleRecommendWord}
-            disabled={recommendationCandidates.length === 0}
-            className='rounded-full border border-green-400/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-200 transition hover:border-green-300/50 hover:text-white disabled:cursor-not-allowed disabled:opacity-50'
-          >
-            Recommend word
-          </button>
         </div>
-
-        <p className='text-sm text-accent'>
-          Click a header to sort. Shift-click another header to add a secondary
-          sort, like a spreadsheet.
-        </p>
       </div>
 
       <div className='rounded-3xl border border-accent/20 bg-primary/50 shadow-lg'>

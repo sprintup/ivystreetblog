@@ -39,7 +39,8 @@ export default async function WordGardenLevelOnePage({ params }) {
                 <p>
                   Each letter has its own row, with matching phoneme rows directly
                   underneath. Phonemes are the specific sounds that are made, and
-                  the sound rows are shown in IPA.
+                  the sound rows are shown in IPA. Look at the example word for an
+                  example of how to pronounce the phoneme in a real word.
                 </p>
                 <p>
                   The pace of development is different for every child, so this
@@ -65,11 +66,30 @@ export default async function WordGardenLevelOnePage({ params }) {
                   <strong>Vowel</strong> because they are open sounds.
                 </p>
                 <p>
+                  Concrete words should usually be learned before abstract words.
+                  The <strong>Completed</strong> column shows how many words already
+                  have completed checklists.
+                </p>
+                <p>
+                  Click a header to sort. Shift-click another header to add a
+                  secondary sort, like a spreadsheet.
+                </p>
+                <p>
+                  <strong>Recommend</strong> picks a random unfinished word from
+                  unlocked rows. It exhausts concrete words before abstract words.
+                  <strong>All words</strong> opens the full word list, where each
+                  word can show how many times it has been opened.{' '}
+                  <strong>All unlocked words</strong> opens the current unfinished
+                  unlocked word set.
+                </p>
+                <p>
                   Hard letters should be practiced more than easy letters,
                   because the link between the letter name and letter sound
                   takes longer to establish. Green sounds are available
                   right now, italic sounds were inherited from earlier months,
-                  and any clickable row opens the next word-cloud level.
+                  and any clickable row opens the next word-cloud level. Use{' '}
+                  <strong>Hide locked rows</strong> to keep the table focused on
+                  what is available right now.
                 </p>
               </div>
             </details>
