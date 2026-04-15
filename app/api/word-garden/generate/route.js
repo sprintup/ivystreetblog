@@ -1,5 +1,6 @@
 import { getServerSession } from 'next-auth/next';
 import { options } from '@auth/options';
+import { getWorksheetGenerationPolicy } from '@/utils/wordGardenGenerationPolicy';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -74,6 +75,7 @@ export async function POST(request) {
   const trimmedCategory = String(category).trim() || 'everyday words';
   const trimmedFocusLabel = String(focusLabel).trim() || 'word study';
   const trimmedDefinition = String(definition).trim();
+  const generationPolicy = getWorksheetGenerationPolicy(trimmedWord);
   const normalizedMorphologyExamples = Array.isArray(morphologyExamples)
     ? morphologyExamples
         .map(example =>
@@ -90,6 +92,15 @@ export async function POST(request) {
         .filter(Boolean)
         .slice(0, 6)
     : [];
+
+  if (generationPolicy.disabled) {
+    return jsonResponse(
+      {
+        error: `Worksheet generation is disabled for "${trimmedWord}".`,
+      },
+      403
+    );
+  }
 
   try {
     const definitionResponse = await fetch(

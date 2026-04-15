@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { getWorksheetGenerationPolicy } from '@/utils/wordGardenGenerationPolicy';
 
 const REQUIRED_CHECKS_PER_PANE = 2;
 const HOMOGRAPH_NOTES = {
@@ -19,18 +20,32 @@ const HOMOGRAPH_NOTES = {
   wave: ['moving water', 'a hand motion'],
 };
 
-function getWorksheetState(generatedContent) {
-  return generatedContent ? 'generated' : 'ungenerated';
+function getWorksheetState(generatedContent, generationDisabled) {
+  if (generatedContent) {
+    return 'generated';
+  }
+
+  return generationDisabled ? 'disabled' : 'ungenerated';
 }
 
 function getStateBadgeClass(state) {
-  return state === 'generated'
-    ? 'bg-green-500/20 text-green-700'
-    : 'bg-slate-200 text-slate-700';
+  if (state === 'generated') {
+    return 'bg-green-500/20 text-green-700';
+  }
+
+  if (state === 'disabled') {
+    return 'bg-amber-100 text-amber-800';
+  }
+
+  return 'bg-slate-200 text-slate-700';
 }
 
 function getStateLabel(state) {
-  return state === 'generated' ? 'Generated' : 'Ungenerated';
+  if (state === 'generated') {
+    return 'Generated';
+  }
+
+  return state === 'disabled' ? 'Disabled' : 'Ungenerated';
 }
 
 function buildInitialCheckedState(panes) {
@@ -257,6 +272,11 @@ export default function WorksheetChecklist({
 }) {
   const router = useRouter();
   const panes = useMemo(() => buildPanes(wordDetail), [wordDetail]);
+  const generationPolicy = useMemo(
+    () => getWorksheetGenerationPolicy(wordDetail.word),
+    [wordDetail.word]
+  );
+  const isGenerationDisabled = generationPolicy.disabled;
   const [apiKey, setApiKey] = useState('');
   const [checkedItems, setCheckedItems] = useState(() => buildInitialCheckedState(panes));
   const [completionError, setCompletionError] = useState('');
@@ -277,7 +297,7 @@ export default function WorksheetChecklist({
   const [isContinueModalOpen, setIsContinueModalOpen] = useState(false);
   const [isCompletionSummaryOpen, setIsCompletionSummaryOpen] = useState(false);
 
-  const state = getWorksheetState(generatedContent);
+  const state = getWorksheetState(generatedContent, isGenerationDisabled);
   const printableDefinition = generatedContent?.childFriendlyDefinition || wordDetail.definition;
   const morphemeEntries =
     state === 'generated'
@@ -395,6 +415,13 @@ export default function WorksheetChecklist({
     event.preventDefault();
     setGenerationError('');
     setGenerationSuccess('');
+
+    if (isGenerationDisabled) {
+      setGenerationError(
+        `Worksheet generation is disabled for "${wordDetail.word}".`
+      );
+      return;
+    }
 
     if (generatedContent) {
       return;
@@ -1041,6 +1068,12 @@ export default function WorksheetChecklist({
                     child-friendly definition, stronger morphology support,
                     related-word suggestions, and a coloring-page image.
                   </p>
+                  {isGenerationDisabled ? (
+                    <p className='rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-amber-900'>
+                      Worksheet generation is disabled for "{wordDetail.word}".
+                      You can still download and print the worksheet without generation.
+                    </p>
+                  ) : null}
                   <p>
                     Each generation usually takes about a minute and costs about a
                     nickel.
@@ -1088,25 +1121,29 @@ export default function WorksheetChecklist({
                 </div>
                 <form onSubmit={handleGenerate} className='space-y-4'>
                   <input type='text' name='username' value='OpenAI Word Garden' readOnly autoComplete='username' className='sr-only' tabIndex={-1} />
-                  <label className='block'>
-                    <span className='mb-2 block text-sm font-medium text-slate-700'>OpenAI API key</span>
-                    <input
-                      type='password'
-                      name='current-password'
-                      value={apiKey}
-                      onChange={event => setApiKey(event.target.value)}
-                      autoComplete='current-password'
-                      placeholder='sk-...'
-                      className='w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900'
-                    />
-                  </label>
+                  {!isGenerationDisabled ? (
+                    <label className='block'>
+                      <span className='mb-2 block text-sm font-medium text-slate-700'>OpenAI API key</span>
+                      <input
+                        type='password'
+                        name='current-password'
+                        value={apiKey}
+                        onChange={event => setApiKey(event.target.value)}
+                        autoComplete='current-password'
+                        placeholder='sk-...'
+                        className='w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900'
+                      />
+                    </label>
+                  ) : null}
                   <div className='flex flex-wrap gap-3'>
                     <button
                       type='submit'
-                      disabled={isGenerating || state === 'generated'}
+                      disabled={isGenerating || state === 'generated' || isGenerationDisabled}
                       className='rounded-full bg-primary px-4 py-2 font-bold text-white disabled:cursor-not-allowed disabled:opacity-60'
                     >
-                      {isGenerating
+                      {isGenerationDisabled
+                        ? 'Generation Disabled'
+                        : isGenerating
                         ? 'Generating...'
                         : state === 'generated'
                           ? 'Worksheet Generated'
