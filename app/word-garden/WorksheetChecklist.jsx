@@ -363,6 +363,7 @@ function buildPanes(wordDetail) {
     {
       id: 'optional',
       title: 'Optional (ages 3+)',
+      description: 'Extra practice with the same word. This section does not count toward completion.',
       strategyTitle: 'Sound Map And Onset / Rime',
       required: false,
       items: [
@@ -1094,32 +1095,9 @@ export default function WorksheetChecklist({
 
   function renderChecklistSection(pane, showDivider = false) {
     const { status, statusClass } = getPaneStatusMeta(pane);
-
-    return (
-      <section
-        key={pane.id}
-        className={`min-w-0 ${showDivider ? 'border-t border-accent/15 pt-6' : ''}`}
-      >
-        <div className='flex flex-wrap items-start gap-4'>
-          <div className='min-w-0'>
-            <div className='flex flex-wrap items-center gap-3'>
-              <h3 className='text-xl text-yellow'>{pane.title}</h3>
-              <span
-                className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] ${
-                  pane.required
-                    ? 'border border-yellow/20 bg-yellow/10 text-yellow'
-                    : 'border border-accent/20 bg-primary/40 text-accent'
-                }`}
-              >
-                {pane.required ? 'Required' : 'Optional'}
-              </span>
-              <span className={`rounded-full border px-3 py-2 text-sm font-semibold ${statusClass}`}>
-                {status}
-              </span>
-            </div>
-            {pane.description ? <p className='mt-2 text-sm text-accent'>{pane.description}</p> : null}
-          </div>
-        </div>
+    const content = (
+      <>
+        {pane.description ? <p className='mt-2 text-sm text-accent'>{pane.description}</p> : null}
         <ol className='mt-5 space-y-3'>
           {pane.items.map(item => (
             <li key={item.id}>
@@ -1146,6 +1124,48 @@ export default function WorksheetChecklist({
           </summary>
           <div className='mt-4 min-w-0'>{renderStrategy(pane.id)}</div>
         </details>
+      </>
+    );
+
+    if (!pane.required) {
+      return (
+        <section
+          key={pane.id}
+          className={`min-w-0 ${showDivider ? 'border-t border-accent/15 pt-6' : ''}`}
+        >
+          <details className='rounded-2xl border border-accent/20 bg-secondary/20 p-4'>
+            <summary className='cursor-pointer list-none'>
+              <div className='flex flex-wrap items-center gap-3'>
+                <h3 className='text-xl text-yellow'>{pane.title}</h3>
+                <span
+                  className={`rounded-full border px-3 py-2 text-sm font-semibold ${statusClass}`}
+                >
+                  {status}
+                </span>
+              </div>
+            </summary>
+            <div className='mt-4'>{content}</div>
+          </details>
+        </section>
+      );
+    }
+
+    return (
+      <section
+        key={pane.id}
+        className={`min-w-0 ${showDivider ? 'border-t border-accent/15 pt-6' : ''}`}
+      >
+        <div className='flex flex-wrap items-start gap-4'>
+          <div className='min-w-0'>
+            <div className='flex flex-wrap items-center gap-3'>
+              <h3 className='text-xl text-yellow'>{pane.title}</h3>
+              <span className={`rounded-full border px-3 py-2 text-sm font-semibold ${statusClass}`}>
+                {status}
+              </span>
+            </div>
+          </div>
+        </div>
+        {content}
       </section>
     );
   }
@@ -1166,10 +1186,6 @@ export default function WorksheetChecklist({
                 {requiredChecksComplete}/{requiredCheckTotal}
               </span>
             </div>
-            <p className='mt-2 text-sm text-accent'>
-              Move through the processor sections below. The optional section is
-              extra practice and does not count toward completion.
-            </p>
           </div>
         </div>
 
@@ -1182,6 +1198,14 @@ export default function WorksheetChecklist({
               Complete any {REQUIRED_CHECKS_PER_PANE} items in each required
               processor section.
             </p>
+            <div className='space-y-3 rounded-2xl border border-accent/15 bg-primary/30 p-4'>
+              {requiredPaneProgress.map(pane => (
+                <div key={`${pane.id}-instruction`}>
+                  <p className='font-semibold text-yellow'>{pane.title}</p>
+                  <p className='mt-1'>{pane.description}</p>
+                </div>
+              ))}
+            </div>
             <p>
               Open the strategy drawer inside each section when you want
               examples and support.
@@ -1189,6 +1213,13 @@ export default function WorksheetChecklist({
             <p>
               Use the optional section when you have extra time and want more
               practice with the same word.
+            </p>
+            <p className='text-xs leading-6 text-accent/90'>
+              Figure 1. The Four Processors Model. Adams, M. J. (2013).
+              Modeling the connections between word recognition and reading. In
+              D. E. Alvermann, N. J. Unrau, & R. B. Ruddell (Eds.),
+              <em> Theoretical models and processes of reading </em>
+              (6th ed., pp. 783-806). International Reading Association.
             </p>
           </div>
         </details>
@@ -1222,22 +1253,6 @@ export default function WorksheetChecklist({
           </div>
         </div>
       ) : null}
-
-      <div className='no-print mb-6 rounded-3xl border border-accent/20 bg-primary/50 p-6 shadow-lg'>
-        <details>
-          <summary className='cursor-pointer text-sm font-semibold uppercase tracking-[0.3em] text-yellow'>
-            4 Processor Model
-          </summary>
-          <div className='mt-4 grid gap-4 md:grid-cols-2'>
-            {requiredPaneProgress.map(pane => (
-              <div key={pane.id} className='rounded-2xl bg-secondary/70 p-4'>
-                <p className='text-sm font-semibold text-yellow'>{pane.title}</p>
-                <p className='mt-2 text-sm text-accent'>{pane.description}</p>
-              </div>
-            ))}
-          </div>
-        </details>
-      </div>
 
       <div className='word-garden-worksheet-layout grid gap-8 pb-12 md:pb-16 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]'>
         <div className='no-print min-w-0 space-y-6'>
