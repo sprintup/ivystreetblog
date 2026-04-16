@@ -104,33 +104,6 @@ function buildPhonemeHref(acId, phonemeSlug, letter = '') {
   }`;
 }
 
-function buildDefinitionLookupWords(wordDetail) {
-  const seen = new Set();
-  const words = [wordDetail.word];
-
-  wordDetail.definitionTokens.forEach(token => {
-    if (token.glossaryTerm && token.glossaryTerm.length > 3) {
-      words.push(token.glossaryTerm);
-    }
-  });
-
-  return words
-    .filter(Boolean)
-    .filter(word => {
-      const normalized = String(word).toLowerCase();
-      if (seen.has(normalized)) {
-        return false;
-      }
-      seen.add(normalized);
-      return true;
-    })
-    .slice(0, 8)
-    .map(word => ({
-      word,
-      url: `https://www.merriam-webster.com/dictionary/${encodeURIComponent(word)}`,
-    }));
-}
-
 function getSelectedLetterValue(wordDetail) {
   return String(
     wordDetail.uppercaseLetter ||
@@ -160,6 +133,12 @@ function getSelectedLetterSound(wordDetail) {
       : null) ||
     'the target sound'
   );
+}
+
+function getAnalyticTargetSound(wordDetail) {
+  return wordDetail.selectionType === 'phoneme'
+    ? wordDetail.targetPhonemeLabel || 'the target sound'
+    : getSelectedLetterSound(wordDetail);
 }
 
 function getRowPhonemeSlugs(row) {
@@ -464,7 +443,6 @@ export default function WorksheetChecklist({
     : getFallbackRelatedEntries(wordDetail);
   const relatedHint = getRelatedWordsHint(wordDetail, hasGeneratedRelatedWords);
   const relatedWords = relatedEntries.slice(0, 3);
-  const lookupWords = buildDefinitionLookupWords(wordDetail);
   const generatedHomographMeanings = Array.isArray(generatedContent?.homographMeanings)
     ? generatedContent.homographMeanings
         .map(meaning => String(meaning || '').trim())
@@ -868,6 +846,9 @@ export default function WorksheetChecklist({
         <div className='min-w-0 grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)]'>
           <section className='min-w-0 rounded-2xl bg-primary/40 p-4'>
             <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Synthetic Approach</p>
+            <p className='mt-3 text-sm text-accent'>
+              Start with the phonemes/letters and build up to word.
+            </p>
             <p className='mt-3 text-3xl font-semibold text-white'>{wordDetail.word}</p>
             <p className='mt-2 text-sm text-accent'>
               Have the child pronounce yellow phonemes. Click for other examples
@@ -900,17 +881,6 @@ export default function WorksheetChecklist({
           <section className='rounded-2xl bg-primary/40 p-4'>
             <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Clickable Definition</p>
             <div className='mt-3'>{renderDefinitionText()}</div>
-            <div className='mt-4 flex flex-wrap gap-2'>
-              {lookupWords.map(entry => (
-                <a
-                  key={entry.word}
-                  href={entry.url}
-                  className='rounded-full border border-accent/20 bg-secondary/80 px-3 py-2 text-sm text-yellow transition hover:border-yellow/40 hover:text-orange'
-                >
-                  {entry.word}
-                </a>
-              ))}
-            </div>
           </section>
           <section className='rounded-2xl bg-primary/40 p-4'>
             <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Sentence Support</p>
@@ -932,10 +902,12 @@ export default function WorksheetChecklist({
         <div className='min-w-0 grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(240px,0.9fr)]'>
           <section className='min-w-0 rounded-2xl bg-primary/40 p-5'>
             <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Analytic Approach</p>
+            <p className='mt-3 text-sm text-accent'>
+              Start with whole word and break down into phonemes/letters.
+            </p>
             <div className='mt-4 max-w-full overflow-x-auto pb-2'>
               <div className='min-w-[20rem] rounded-3xl border border-accent/20 bg-secondary/80 p-5'>
-                <p className='text-xs uppercase tracking-[0.3em] text-accent'>Start with the whole word</p>
-                <p className='mt-3 whitespace-nowrap text-4xl font-semibold tracking-[0.18em] text-white md:text-5xl'>
+                <p className='whitespace-nowrap text-4xl font-semibold tracking-[0.18em] text-white md:text-5xl'>
                   {renderHighlightedLetterWord(
                     wordDetail.word,
                     getSelectedLetterValue(wordDetail)
@@ -947,10 +919,10 @@ export default function WorksheetChecklist({
               {wordDetail.isEmbeddedLetterSelection
                 ? `${wordDetail.word} has the letter ${getSelectedLetterValue(
                     wordDetail
-                  )} inside it, which can make ${getSelectedLetterSound(
+                  )} inside it, which can make ${getAnalyticTargetSound(
                     wordDetail
                   )} sound.`
-                : `${wordDetail.word} starts with ${wordDetail.uppercaseLetter}, which can make ${getSelectedLetterSound(
+                : `${wordDetail.word} starts with ${wordDetail.uppercaseLetter}, which can make ${getAnalyticTargetSound(
                     wordDetail
                   )} sound.`}
             </p>
