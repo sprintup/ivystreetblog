@@ -36,12 +36,14 @@ export default async function WordGardenAllWordsPage({ params, searchParams }) {
         <span>{showUnlockedOnly ? 'All unlocked words' : 'All words'}</span>
       </div>
 
-      <LevelTwoIntro />
+      <LevelTwoIntro selectionNote={showUnlockedOnly ? 'All unlocked words' : 'All words'} />
 
       <WordCloud
         acId={params.acId}
         selectionType='all'
         selectionSlug='all'
+        defaultShowAbstract={!showUnlockedOnly}
+        defaultShowCompleted={!showUnlockedOnly}
         words={wordCloudWords}
         ageInMonths={ageInMonths}
         emptySelectionMessage='No words are ready yet.'

@@ -55,6 +55,7 @@ export default async function WordGardenLevelTwoPage({
       </div>
 
       <LevelTwoIntro
+        selectionNote={getTargetLabel(params.phonemeSlug)}
         topNote={`Typically learned: ${getPhonemeTimingLabel(params.phonemeSlug)}`}
       />
 

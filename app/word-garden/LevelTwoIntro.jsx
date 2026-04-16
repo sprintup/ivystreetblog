@@ -1,10 +1,19 @@
-export default function LevelTwoIntro({ topNote = '' }) {
+export default function LevelTwoIntro({ selectionNote = '', topNote = '' }) {
+  const notes = [selectionNote, topNote].filter(Boolean);
+
   return (
     <div className='rounded-[2rem] border border-accent/20 bg-secondary/80 p-8 shadow-xl'>
       <h1 className='text-4xl text-white'>Word Cloud</h1>
-      {topNote ? (
-        <div className='mt-4 inline-flex rounded-full border border-accent/25 bg-primary/45 px-4 py-2 text-sm text-accent'>
-          {topNote}
+      {notes.length > 0 ? (
+        <div className='mt-4 flex flex-wrap gap-3'>
+          {notes.map(note => (
+            <div
+              key={note}
+              className='inline-flex rounded-full border border-accent/25 bg-primary/45 px-4 py-2 text-sm text-accent'
+            >
+              {note}
+            </div>
+          ))}
         </div>
       ) : null}
       <details className='mt-5 max-w-3xl rounded-3xl border border-accent/20 bg-primary/35 p-5 text-accent'>

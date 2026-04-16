@@ -36,27 +36,35 @@ function renderLetterWordLabel(wordEntry, selectionSlug) {
   const selectedLetter = String(selectionSlug || '')
     .trim()
     .charAt(0);
-  const firstLetterIndex = displayWord.search(/[A-Za-z]/);
 
-  if (!selectedLetter || firstLetterIndex === -1) {
+  if (!selectedLetter) {
     return <span className='text-white'>{displayWord}</span>;
   }
 
-  const highlightedCharacter = displayWord[firstLetterIndex];
-
-  if (highlightedCharacter.toUpperCase() !== selectedLetter.toUpperCase()) {
-    return <span className='text-white'>{displayWord}</span>;
-  }
-
-  return (
-    <>
-      {firstLetterIndex > 0 ? (
-        <span className='text-white'>{displayWord.slice(0, firstLetterIndex)}</span>
-      ) : null}
-      <span className='text-yellow'>{highlightedCharacter}</span>
-      <span className='text-white'>{displayWord.slice(firstLetterIndex + 1)}</span>
-    </>
+  const normalizedSelectedLetter = selectedLetter.toUpperCase();
+  const hasMatch = Array.from(displayWord).some(
+    character =>
+      /[A-Za-z]/.test(character) &&
+      character.toUpperCase() === normalizedSelectedLetter
   );
+
+  if (!hasMatch) {
+    return <span className='text-white'>{displayWord}</span>;
+  }
+
+  return Array.from(displayWord).map((character, index) => (
+    <span
+      key={`${wordEntry.normalizedWord}-${character}-${index}`}
+      className={
+        /[A-Za-z]/.test(character) &&
+        character.toUpperCase() === normalizedSelectedLetter
+          ? 'text-yellow'
+          : 'text-white'
+      }
+    >
+      {character}
+    </span>
+  ));
 }
 
 function renderPhonemeWordLabel(wordEntry, selectionSlug) {
@@ -93,8 +101,11 @@ function renderWordLabel(wordEntry, selectionType, selectionSlug) {
 
 export default function WordCloud({
   acId,
+  defaultShowAbstract,
+  defaultShowCompleted = false,
   selectionType,
   selectionSlug,
+  selectionMessage = '',
   words,
   soundTableSelection = '',
   emptySelectionMessage = 'No words matched this selection yet.',
@@ -116,8 +127,10 @@ export default function WordCloud({
     [concreteWords]
   );
   const [showConcrete, setShowConcrete] = useState(() => getDefaultConcrete());
-  const [showAbstract, setShowAbstract] = useState(() => allConcreteWordsLearned);
-  const [showCompleted, setShowCompleted] = useState(false);
+  const [showAbstract, setShowAbstract] = useState(() =>
+    typeof defaultShowAbstract === 'boolean' ? defaultShowAbstract : allConcreteWordsLearned
+  );
+  const [showCompleted, setShowCompleted] = useState(() => defaultShowCompleted);
   const completedCount = useMemo(
     () => words.filter(wordEntry => (wordEntry.completedChecklistCount || 0) > 0).length,
     [words]
@@ -147,6 +160,11 @@ export default function WordCloud({
   return (
     <div className='space-y-4 pb-24 md:pb-32'>
       <div className='rounded-[2rem] border border-accent/20 bg-primary/40 p-6 shadow-lg md:p-10'>
+        {selectionMessage ? (
+          <div className='mb-6 rounded-2xl border border-yellow/20 bg-yellow/10 p-4 text-sm leading-6 text-accent'>
+            {selectionMessage}
+          </div>
+        ) : null}
         <div className='mb-6 flex flex-wrap items-center gap-4'>
           <label className='flex items-center gap-2 text-sm text-accent'>
             <input
@@ -182,7 +200,7 @@ export default function WordCloud({
             No words match the current filter settings.
           </div>
         ) : (
-          <div className='flex flex-wrap items-center gap-4 leading-loose'>
+          <div className='flex flex-wrap items-center gap-2 leading-loose'>
             {filteredWords.map(wordEntry => (
               <Link
                 key={wordEntry.normalizedWord}
@@ -193,26 +211,28 @@ export default function WordCloud({
                   wordEntry.word,
                   soundTableSelection
                 )}
-                className={`inline-flex flex-wrap items-center gap-2 no-underline font-bold transition hover:opacity-90 ${wordEntry.sizeClass}`}
+                className='inline-flex flex-wrap items-center gap-2 rounded-full border border-accent/20 bg-secondary/80 px-3 py-2 no-underline font-bold shadow-sm transition hover:border-yellow/40 hover:bg-secondary/90 hover:opacity-90'
               >
-                <span>{renderWordLabel(wordEntry, selectionType, selectionSlug)}</span>
+                <span className={`leading-none ${wordEntry.sizeClass}`}>
+                  {renderWordLabel(wordEntry, selectionType, selectionSlug)}
+                </span>
                 {(wordEntry.completedChecklistCount || 0) > 0 ? (
                   <>
                     <span
-                      className='ml-2 align-middle rounded-full bg-green-600/80 px-2 py-1 text-xs text-white'
+                      className='align-middle rounded-full bg-green-600/80 px-2 py-1 text-xs text-white'
                       title='Completed'
                       aria-label='Completed'
                     >
-                      Done
+                      &#10003;
                     </span>
                     {wordEntry.practiceCount > 0 ? (
-                      <span className='ml-2 align-middle rounded-full bg-secondary/80 px-2 py-1 text-xs text-accent'>
+                      <span className='align-middle rounded-full bg-primary/70 px-2 py-1 text-xs text-accent'>
                         x{wordEntry.practiceCount}
                       </span>
                     ) : null}
                   </>
                 ) : wordEntry.practiceCount > 0 ? (
-                  <span className='ml-2 align-middle rounded-full bg-secondary/80 px-2 py-1 text-xs text-accent'>
+                  <span className='align-middle rounded-full bg-primary/70 px-2 py-1 text-xs text-accent'>
                     x{wordEntry.practiceCount}
                   </span>
                 ) : null}

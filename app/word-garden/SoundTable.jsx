@@ -8,6 +8,15 @@ const DEFAULT_SORT_RULES = [
   { column: 'target', direction: 'asc' },
 ];
 
+const STATUS_SORT_RANKS = {
+  Unlocked: 1,
+  Augmented: 2,
+  Embedded: 3,
+  Done: 4,
+  Locked: 5,
+  'No words': 6,
+};
+
 function getRowHref(acId, row) {
   if (!row?.hasWords) {
     return null;
@@ -51,19 +60,7 @@ function getLetterDifficultyClass(row) {
 }
 
 function getStatusRank(row) {
-  if (!row.hasWords) {
-    return 4;
-  }
-
-  if (row.isLocked) {
-    return 3;
-  }
-
-  if (row.suggestedWordCount === 0) {
-    return 2;
-  }
-
-  return 1;
+  return STATUS_SORT_RANKS[row.statusText] || 999;
 }
 
 function getColumnValue(row, column) {

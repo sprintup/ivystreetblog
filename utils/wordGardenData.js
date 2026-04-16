@@ -771,6 +771,11 @@ function getWordAvailabilitySummary(entries = []) {
   const completedWords = entries
     .filter(entry => (entry.completedChecklistCount || 0) > 0)
     .map(entry => entry.word);
+  const unlockedWords = [
+    ...concreteAvailableWords,
+    ...abstractAvailableWords,
+    ...completedWords,
+  ];
 
   return {
     concreteAvailableCount: concreteAvailableWords.length,
@@ -779,6 +784,7 @@ function getWordAvailabilitySummary(entries = []) {
     concreteRecommendableWords: concreteAvailableWords,
     abstractRecommendableWords: abstractAvailableWords,
     recommendableWords: [...concreteAvailableWords, ...abstractAvailableWords],
+    unlockedWords,
   };
 }
 
@@ -934,10 +940,65 @@ function getWordEntriesFromWordList(words, practicedWords = []) {
     .sort(compareWordEntries);
 }
 
+function normalizeLetterSelectionValue(letter) {
+  return String(letter || '')
+    .trim()
+    .charAt(0)
+    .toUpperCase();
+}
+
+function wordStartsWithLetter(word, letter) {
+  const normalizedLetter = normalizeLetterSelectionValue(letter).toLowerCase();
+  const normalizedWord = normalizeWord(word);
+
+  return Boolean(normalizedLetter) && normalizedWord.startsWith(normalizedLetter);
+}
+
+function wordHasEmbeddedLetter(word, letter) {
+  const normalizedLetter = normalizeLetterSelectionValue(letter).toLowerCase();
+  const normalizedWord = normalizeWord(word);
+
+  return (
+    Boolean(normalizedLetter) &&
+    normalizedWord.includes(normalizedLetter) &&
+    !normalizedWord.startsWith(normalizedLetter)
+  );
+}
+
+function annotateLetterSelectionWords(words, letter, matchMode) {
+  const normalizedLetter = normalizeLetterSelectionValue(letter);
+
+  return words.map(entry => ({
+    ...entry,
+    letterSelectionLetter: normalizedLetter,
+    letterSelectionMatchMode: matchMode,
+  }));
+}
+
 function getStarterWordsForLetter(letter) {
   return starterEntries
     .filter(entry => entry.word.charAt(0).toUpperCase() === letter)
     .map(entry => entry.word);
+}
+
+function getEmbeddedWordsForLetter(letter) {
+  const normalizedLetter = String(letter || '')
+    .trim()
+    .charAt(0)
+    .toLowerCase();
+
+  if (!normalizedLetter) {
+    return [];
+  }
+
+  return [
+    ...starterEntries
+      .filter(entry => wordHasEmbeddedLetter(entry.word, normalizedLetter))
+      .map(entry => entry.word),
+    ...COMBINED_WORD_ENTRIES.filter(entry =>
+      wordHasEmbeddedLetter(entry.normalizedWord || entry.word, normalizedLetter)
+    ).map(entry => entry.word),
+  ];
 }
 
 function getStarterWordsForPhoneme(requiredArpabet) {
@@ -948,11 +1009,69 @@ function getStarterWordsForPhoneme(requiredArpabet) {
     .map(entry => entry.word);
 }
 
-function getWordsForLetter(letter, practicedWords = []) {
-  return getWordEntriesFromWordList(
-    [...getStarterWordsForLetter(letter), ...(firstLetterMap[letter] || [])],
-    practicedWords
+function getLetterWordSelection(letter, practicedWords = []) {
+  const normalizedLetter = normalizeLetterSelectionValue(letter);
+
+  if (!normalizedLetter) {
+    return {
+      words: [],
+      matchMode: 'none',
+    };
+  }
+
+  const startsWithWords = annotateLetterSelectionWords(
+    getWordEntriesFromWordList(
+      [
+        ...getStarterWordsForLetter(normalizedLetter),
+        ...(firstLetterMap[normalizedLetter] || []),
+      ],
+      practicedWords
+    ),
+    normalizedLetter,
+    'startsWith'
   );
+  const embeddedWords = annotateLetterSelectionWords(
+    getWordEntriesFromWordList(
+      getEmbeddedWordsForLetter(normalizedLetter),
+      practicedWords
+    ),
+    normalizedLetter,
+    'embedded'
+  );
+
+  if (startsWithWords.length > 0 && startsWithWords.length <= 5 && embeddedWords.length > 0) {
+    return {
+      words: [...startsWithWords, ...embeddedWords],
+      matchMode: 'augmented',
+    };
+  }
+
+  if (startsWithWords.length > 0) {
+    return {
+      words: startsWithWords,
+      matchMode: 'startsWith',
+    };
+  }
+
+  if (embeddedWords.length > 0) {
+    return {
+      words: embeddedWords,
+      matchMode: 'embedded',
+    };
+  }
+
+  return {
+    words: [],
+    matchMode: 'none',
+  };
+}
+
+function getLetterWordMatchMode(letter, practicedWords = []) {
+  return getLetterWordSelection(letter, practicedWords).matchMode;
+}
+
+function getWordsForLetter(letter, practicedWords = []) {
+  return getLetterWordSelection(letter, practicedWords).words;
 }
 
 function getAllWords(practicedWords = []) {
@@ -1005,7 +1124,8 @@ function buildLevelOneRows(months, practicedWords = []) {
   const inheritedArpabet = new Set(inherited);
 
   const rows = LETTER_GROUPS.flatMap(group => {
-    const letterWords = getWordsForLetter(group.letter, practicedWords);
+    const letterSelection = getLetterWordSelection(group.letter, practicedWords);
+    const letterWords = letterSelection.words;
     const letterSuggestedWordCount = getSuggestedWordCount(letterWords);
     const letterAvailability = getWordAvailabilitySummary(letterWords);
     const letterDifficultyRank = getLetterDifficultyRank(group.letter);
@@ -1036,12 +1156,19 @@ function buildLevelOneRows(months, practicedWords = []) {
       concreteRecommendableWords: letterAvailability.concreteRecommendableWords,
       abstractRecommendableWords: letterAvailability.abstractRecommendableWords,
       recommendableWords: letterAvailability.recommendableWords,
+      unlockedWords: letterAvailability.unlockedWords,
       releaseEndMonth: null,
-      statusText: letterWords.length
-        ? letterSuggestedWordCount > 0
-          ? 'Unlocked'
-          : 'Done'
-        : 'No words',
+      letterMatchMode: letterSelection.matchMode,
+      statusText:
+        letterSelection.matchMode === 'augmented'
+          ? 'Augmented'
+          : letterSelection.matchMode === 'embedded'
+            ? 'Embedded'
+            : letterWords.length
+              ? letterSuggestedWordCount > 0
+                ? 'Unlocked'
+                : 'Done'
+              : 'No words',
     };
 
     const phonemeRows = group.phonemes.map(phonemeRow => {
@@ -1102,6 +1229,7 @@ function buildLevelOneRows(months, practicedWords = []) {
         concreteRecommendableWords: wordAvailability.concreteRecommendableWords,
         abstractRecommendableWords: wordAvailability.abstractRecommendableWords,
         recommendableWords: wordAvailability.recommendableWords,
+        unlockedWords: wordAvailability.unlockedWords,
         releaseEndMonth: phonemeTiming.endMonth,
         statusText,
       };
@@ -1510,16 +1638,27 @@ function getPhonemePrompt(word, targetPhonemeLabel, phonemePosition) {
   return `Can you hear ${targetPhonemeLabel} anywhere in "${word}"?`;
 }
 
-function buildChecklist(entry, selectionType, selectionSlug) {
+function buildChecklist(
+  entry,
+  selectionType,
+  selectionSlug
+) {
   const targetLabel = getSelectionLabel(selectionType, selectionSlug);
   const phonemePosition = entry.normalizedIpa.findIndex(
     symbol => formatPhoneme(symbol) === targetLabel
   );
+  const isEmbeddedLetterSelection =
+    selectionType === 'letter' &&
+    (entry.letterSelectionMatchMode ||
+      (wordStartsWithLetter(entry.word, selectionSlug) ? 'startsWith' : 'embedded')) ===
+      'embedded';
   const focusPrompt =
     selectionType === 'all'
       ? `What is the first sound in "${entry.word}"? What other sounds do you hear?`
       : selectionType === 'letter'
-        ? `What letter does "${entry.word}" start with? Can you point to the ${selectionSlug} at the beginning?`
+        ? isEmbeddedLetterSelection
+          ? `What letter do you see inside "${entry.word}"? Can you point to the ${selectionSlug} in the word?`
+          : `What letter does "${entry.word}" start with? Can you point to the ${selectionSlug} at the beginning?`
         : getPhonemePrompt(entry.word, targetLabel, phonemePosition);
 
   return [
@@ -1599,6 +1738,23 @@ function getWordDetailForSelection(
   const focusLabel = getSelectionLabel(selectionType, selectionSlug);
   const soundMapRows = entry.soundMapRows || buildEntrySoundMapRows(entry);
   const graphemes = soundMapRows.map(row => row.grapheme);
+  const selectionLetterMatchMode =
+    selectionType === 'letter'
+      ? getLetterWordMatchMode(selectionSlug, practicedWords)
+      : 'startsWith';
+  const letterMatchMode =
+    selectionType === 'letter'
+      ? entry.letterSelectionMatchMode ||
+        (wordStartsWithLetter(entry.word, selectionSlug) ? 'startsWith' : 'embedded')
+      : 'startsWith';
+  const selectionLetter = String(selectionSlug || '')
+    .trim()
+    .charAt(0)
+    .toUpperCase();
+  const displayLetter =
+    selectionType === 'letter'
+      ? selectionLetter || entry.initialLetter.toUpperCase()
+      : entry.initialLetter.toUpperCase();
 
   return {
     ...entry,
@@ -1613,8 +1769,12 @@ function getWordDetailForSelection(
     definitionTokens: getDefinitionTokens(entry.definition, entry.word),
     targetPhonemeLabel: focusLabel,
     focusLabel,
-    lowercaseLetter: entry.initialLetter.toLowerCase(),
-    uppercaseLetter: entry.initialLetter.toUpperCase(),
+    lowercaseLetter: displayLetter.toLowerCase(),
+    uppercaseLetter: displayLetter,
+    letterMatchMode,
+    selectionLetterMatchMode,
+    isEmbeddedLetterSelection:
+      selectionType === 'letter' && letterMatchMode === 'embedded',
     selectionType,
     selectionSlug,
   };
@@ -1677,10 +1837,10 @@ function getUnlockedWordCloudWords(months, practicedWords = []) {
       row =>
         row.isSelectable &&
         !row.isLocked &&
-        Array.isArray(row.recommendableWords) &&
-        row.recommendableWords.length > 0
+        Array.isArray(row.unlockedWords) &&
+        row.unlockedWords.length > 0
     )
-    .flatMap(row => row.recommendableWords);
+    .flatMap(row => row.unlockedWords);
 
   return getWordCloudWordsFromEntries(
     getWordEntriesFromWordList(unlockedWords, practicedWords)
@@ -1696,6 +1856,7 @@ module.exports = {
   validateBirthYearMonth,
   buildLevelOneRows,
   getLetterDifficultyLabel,
+  getLetterWordMatchMode,
   getLetterScopedPhonemeSlugs,
   getPhonemeTimingLabel,
   getValidSoundTableLetterForPhoneme,

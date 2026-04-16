@@ -7,6 +7,7 @@ import {
   calculateAgeInMonths,
   getLetterDifficultyLabel,
   getLetterLabel,
+  getLetterWordMatchMode,
   getLetterWordCloudWords,
 } from '@/utils/wordGardenData';
 
@@ -26,10 +27,22 @@ export default async function WordGardenLetterLevelTwoPage({ params }) {
     `/word-garden/${params.acId}/letter/${letter}`
   );
   const ageInMonths = calculateAgeInMonths(anonymousChild.birthYearMonth);
+  const letterWordMatchMode = getLetterWordMatchMode(
+    letter,
+    anonymousChild.practicedWords
+  );
   const wordCloudWords = getLetterWordCloudWords(
     letter,
     anonymousChild.practicedWords
   );
+  const shouldShowAbstractByDefault =
+    letterWordMatchMode === 'augmented'
+      ? wordCloudWords.some(
+          wordEntry =>
+            wordEntry.letterSelectionMatchMode === 'startsWith' &&
+            wordEntry.concreteness === 'abstract'
+        )
+      : undefined;
 
   return (
     <section className='space-y-8 pb-24 md:pb-32'>
@@ -48,12 +61,23 @@ export default async function WordGardenLetterLevelTwoPage({ params }) {
         <span>{getLetterLabel(letter)}</span>
       </div>
 
-      <LevelTwoIntro topNote={`Expressive difficulty: ${getLetterDifficultyLabel(letter)}`} />
+      <LevelTwoIntro
+        selectionNote={getLetterLabel(letter)}
+        topNote={`Expressive difficulty: ${getLetterDifficultyLabel(letter)}`}
+      />
 
       <WordCloud
         acId={params.acId}
+        defaultShowAbstract={shouldShowAbstractByDefault}
         selectionType='letter'
         selectionSlug={letter}
+        selectionMessage={
+          letterWordMatchMode === 'embedded'
+            ? "The word list doesn't include any words that begin with this letter, but here are words with the letter embedded inside."
+            : letterWordMatchMode === 'augmented'
+              ? "The word list only includes a few words that begin with this letter, so it is augmented here with words that have the letter embedded inside."
+            : ''
+        }
         words={wordCloudWords}
         ageInMonths={ageInMonths}
         emptySelectionMessage='No words matched this letter yet.'

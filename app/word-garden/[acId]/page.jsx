@@ -80,8 +80,8 @@ export default async function WordGardenLevelOnePage({ params }) {
                   unlocked rows. It exhausts concrete words before abstract words.
                   <strong>All words</strong> opens the full word list, where each
                   word can show how many times it has been opened.{' '}
-                  <strong>All unlocked words</strong> opens the current unfinished
-                  unlocked word set.
+                  <strong>All unlocked words</strong> opens the current unlocked
+                  word set, including completed words when available.
                 </p>
                 <p>
                   Hard letters should be practiced more than easy letters,
