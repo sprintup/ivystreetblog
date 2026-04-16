@@ -78,7 +78,8 @@ export default async function WordGardenInfoPage() {
             <p>
               Printable worksheets make it easy to carry practice into therapy,
               school, or home routines, while the online checklist keeps progress
-              connected to the dashboard.
+              connected to the dashboard so you can teach a word when you have a
+              spare minute.
             </p>
           </div>
         </article>

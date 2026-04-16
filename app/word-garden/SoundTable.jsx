@@ -492,7 +492,17 @@ export default function SoundTable({ acId, rows }) {
                       <span className='text-white'>{row.completedWordCount}</span>
                     </td>
                     <td className='px-4 py-3 align-top text-yellow'>
-                      {row.exampleWord}
+                      {getWordHref(acId, row, row.exampleWord) ? (
+                        <Link
+                          href={getWordHref(acId, row, row.exampleWord)}
+                          className='underline decoration-yellow/60 underline-offset-4 transition hover:text-white'
+                          onClick={event => event.stopPropagation()}
+                        >
+                          {row.exampleWord}
+                        </Link>
+                      ) : (
+                        row.exampleWord
+                      )}
                     </td>
                   </tr>
                 );

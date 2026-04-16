@@ -6,6 +6,7 @@ import { getAnonymousChildOrNotFound } from '../../../wordGardenServer';
 import {
   calculateAgeInMonths,
   getLetterDifficultyLabel,
+  getLetterDifficultyRank,
   getLetterLabel,
   getLetterWordMatchMode,
   getLetterWordCloudWords,
@@ -43,6 +44,14 @@ export default async function WordGardenLetterLevelTwoPage({ params }) {
             wordEntry.concreteness === 'abstract'
         )
       : undefined;
+  const expressiveDifficulty = getLetterDifficultyLabel(letter);
+  const expressiveDifficultyRank = getLetterDifficultyRank(letter);
+  const expressiveDifficultyTone =
+    expressiveDifficultyRank === 1
+      ? 'ready'
+      : expressiveDifficultyRank === 2
+        ? 'advanced'
+        : 'hard';
 
   return (
     <section className='space-y-8 pb-24 md:pb-32'>
@@ -63,7 +72,8 @@ export default async function WordGardenLetterLevelTwoPage({ params }) {
 
       <LevelTwoIntro
         selectionNote={getLetterLabel(letter)}
-        topNote={`Expressive difficulty: ${getLetterDifficultyLabel(letter)}`}
+        statusNote={expressiveDifficulty}
+        statusNoteTone={expressiveDifficultyTone}
       />
 
       <WordCloud

@@ -170,8 +170,13 @@
   .worksheet-front-layout,
   .worksheet-front-body,
   .worksheet-front-sidebar,
-  .worksheet-front-main {
+  .worksheet-front-main,
+  .worksheet-pane-grid,
+  .worksheet-inline-draw,
+  .worksheet-inline-draw-copy,
+  .worksheet-pronunciation-grid {
     gap: 0.0625in !important;
+    background: white !important;
   }
 
   .worksheet-front-body-single-page {
@@ -315,6 +320,7 @@
   .worksheet-pronunciation-tile {
     min-width: 0.5in !important;
     padding: 0.05in 0.04in !important;
+    background: white !important;
   }
 
   .worksheet-pronunciation-grapheme {
@@ -601,7 +607,7 @@
   display: grid;
   gap: 0.02in;
   justify-items: center;
-  background: #f8fafc;
+  background: white;
 }
 
 .worksheet-pronunciation-tile-highlighted {

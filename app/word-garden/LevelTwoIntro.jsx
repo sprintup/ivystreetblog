@@ -1,5 +1,43 @@
-export default function LevelTwoIntro({ selectionNote = '', topNote = '' }) {
-  const notes = [selectionNote, topNote].filter(Boolean);
+export default function LevelTwoIntro({
+  selectionNote = '',
+  topNote = '',
+  topNoteTone = 'neutral',
+  statusNote = '',
+  statusNoteTone = 'neutral',
+}) {
+  const getToneClassName = tone =>
+    tone === 'ready'
+      ? 'border-green-300/30 bg-green-400/10 text-green-300'
+      : tone === 'advanced'
+        ? 'border-yellow/30 bg-yellow/10 text-yellow'
+        : tone === 'hard'
+          ? 'border-orange/30 bg-primary/45 text-orange'
+          : 'border-accent/25 bg-primary/45 text-accent';
+
+  const notes = [
+    selectionNote
+      ? {
+          key: `selection-${selectionNote}`,
+          text: selectionNote,
+          className:
+            'border-accent/25 bg-primary/45 text-accent',
+        }
+      : null,
+    topNote
+      ? {
+          key: `top-${topNote}`,
+          text: topNote,
+          className: getToneClassName(topNoteTone),
+        }
+      : null,
+    statusNote
+      ? {
+          key: `status-${statusNote}`,
+          text: statusNote,
+          className: getToneClassName(statusNoteTone),
+        }
+      : null,
+  ].filter(Boolean);
 
   return (
     <div className='rounded-[2rem] border border-accent/20 bg-secondary/80 p-8 shadow-xl'>
@@ -8,10 +46,10 @@ export default function LevelTwoIntro({ selectionNote = '', topNote = '' }) {
         <div className='mt-4 flex flex-wrap gap-3'>
           {notes.map(note => (
             <div
-              key={note}
-              className='inline-flex rounded-full border border-accent/25 bg-primary/45 px-4 py-2 text-sm text-accent'
+              key={note.key}
+              className={`inline-flex rounded-full border px-4 py-2 text-sm ${note.className}`}
             >
-              {note}
+              {note.text}
             </div>
           ))}
         </div>

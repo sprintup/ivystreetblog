@@ -69,9 +69,35 @@ function renderHighlightedPhonemeWord(wordDetail, phonemeSlug) {
       .split('__')
       .filter(Boolean)
   );
-  const hasHighlightedSegment = wordDetail.soundMapRows.some(row =>
-    selectedSymbols.has(row.phonemeSlug)
+  const getRowPhonemeSlugs = row =>
+    Array.isArray(row?.phonemeSlugs)
+      ? row.phonemeSlugs
+      : row?.phonemeSlug
+        ? [row.phonemeSlug]
+        : [];
+  const getRowSupportedPhonemeSlugs = row =>
+    Array.isArray(row?.supportedPhonemeSlugs)
+      ? row.supportedPhonemeSlugs
+      : getRowPhonemeSlugs(row);
+  const exactHighlightedIndexes = wordDetail.soundMapRows.reduce((indexes, row, index) => {
+    if (getRowPhonemeSlugs(row).some(symbol => selectedSymbols.has(symbol))) {
+      indexes.push(index);
+    }
+
+    return indexes;
+  }, []);
+  const highlightedIndexes = new Set(
+    exactHighlightedIndexes.length > 0
+      ? exactHighlightedIndexes
+      : wordDetail.soundMapRows.reduce((indexes, row, index) => {
+          if (getRowSupportedPhonemeSlugs(row).some(symbol => selectedSymbols.has(symbol))) {
+            indexes.push(index);
+          }
+
+          return indexes;
+        }, [])
   );
+  const hasHighlightedSegment = highlightedIndexes.size > 0;
 
   if (!hasHighlightedSegment) {
     return <span className='text-white'>{wordDetail.word}</span>;
@@ -80,9 +106,9 @@ function renderHighlightedPhonemeWord(wordDetail, phonemeSlug) {
   return wordDetail.soundMapRows.map((row, index) => (
     <span
       key={`${row.grapheme}-${index}-highlight`}
-      className={selectedSymbols.has(row.phonemeSlug) ? 'text-yellow' : 'text-white'}
+      className={highlightedIndexes.has(index) ? 'text-yellow' : 'text-white'}
     >
-      {row.grapheme}
+      {row.displayGrapheme || row.grapheme}
     </span>
   ));
 }

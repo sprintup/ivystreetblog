@@ -6,6 +6,7 @@ import {
   calculateAgeInMonths,
   getPhonemeTimingLabel,
   getTargetLabel,
+  getUnlockedArpabetForMonths,
   getValidSoundTableLetterForPhoneme,
   getWordCloudWords,
 } from '@/utils/wordGardenData';
@@ -24,6 +25,13 @@ export default async function WordGardenLevelTwoPage({
     ageInMonths,
     anonymousChild.practicedWords
   );
+  const phonemeStatusNote = getUnlockedArpabetForMonths(ageInMonths).includes(
+    params.phonemeSlug
+  )
+    ? 'Developmentally appropriate'
+    : 'Advanced for this age';
+  const phonemeStatusNoteTone =
+    phonemeStatusNote === 'Developmentally appropriate' ? 'ready' : 'advanced';
   const soundTableSelectionLabel = getValidSoundTableLetterForPhoneme(
     params.phonemeSlug,
     searchParams?.letter,
@@ -57,6 +65,8 @@ export default async function WordGardenLevelTwoPage({
       <LevelTwoIntro
         selectionNote={getTargetLabel(params.phonemeSlug)}
         topNote={`Typically learned: ${getPhonemeTimingLabel(params.phonemeSlug)}`}
+        statusNote={phonemeStatusNote}
+        statusNoteTone={phonemeStatusNoteTone}
       />
 
       <WordCloud

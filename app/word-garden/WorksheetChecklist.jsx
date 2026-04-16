@@ -162,6 +162,44 @@ function getSelectedLetterSound(wordDetail) {
   );
 }
 
+function getRowPhonemeSlugs(row) {
+  return Array.isArray(row?.phonemeSlugs)
+    ? row.phonemeSlugs
+    : row?.phonemeSlug
+      ? [row.phonemeSlug]
+      : [];
+}
+
+function getRowSupportedPhonemeSlugs(row) {
+  return Array.isArray(row?.supportedPhonemeSlugs)
+    ? row.supportedPhonemeSlugs
+    : getRowPhonemeSlugs(row);
+}
+
+function getHighlightedPhonemeRowIndexes(soundMapRows = [], selectionSlug = '') {
+  const exactMatches = soundMapRows.reduce((indexes, row, index) => {
+    if (getRowPhonemeSlugs(row).includes(selectionSlug)) {
+      indexes.push(index);
+    }
+
+    return indexes;
+  }, []);
+
+  if (exactMatches.length > 0) {
+    return new Set(exactMatches);
+  }
+
+  return new Set(
+    soundMapRows.reduce((indexes, row, index) => {
+      if (getRowSupportedPhonemeSlugs(row).includes(selectionSlug)) {
+        indexes.push(index);
+      }
+
+      return indexes;
+    }, [])
+  );
+}
+
 function renderHighlightedLetterWord(word, selectedLetter) {
   const displayWord = String(word || '');
   const normalizedSelectedLetter = String(selectedLetter || '')
@@ -716,17 +754,24 @@ export default function WorksheetChecklist({
       <div className='max-w-full overflow-x-auto pb-2'>
         <div className='flex min-w-max gap-3'>
           {wordDetail.soundMapRows.map((row, index) => {
-            const isUnlocked =
-              row.phonemeSlug && unlockedArpabetSet.has(row.phonemeSlug);
-            const hasSupportedPhoneme = Boolean(row.phonemeSlug);
+            const rowPhonemeSlugs = getRowPhonemeSlugs(row);
+            const isUnlocked = rowPhonemeSlugs.some(phonemeSlug =>
+              unlockedArpabetSet.has(phonemeSlug)
+            );
+            const hasSupportedPhoneme = rowPhonemeSlugs.length > 0;
+            const linkedPhonemeSlug =
+              wordDetail.selectionType === 'phoneme' &&
+              rowPhonemeSlugs.includes(wordDetail.selectionSlug)
+                ? wordDetail.selectionSlug
+                : rowPhonemeSlugs[0] || '';
             const preservedLetter =
               hasSupportedPhoneme &&
               selectedLetter &&
-              letterScopedPhonemeSlugSet.has(row.phonemeSlug)
+              letterScopedPhonemeSlugSet.has(linkedPhonemeSlug)
                 ? selectedLetter
                 : '';
             const href = hasSupportedPhoneme
-              ? buildPhonemeHref(acId, row.phonemeSlug, preservedLetter)
+              ? buildPhonemeHref(acId, linkedPhonemeSlug, preservedLetter)
               : '';
             const content = (
               <>
@@ -771,7 +816,13 @@ export default function WorksheetChecklist({
 
   function isPronunciationTileHighlighted(row) {
     if (wordDetail.selectionType === 'phoneme') {
-      return row.phonemeSlug === wordDetail.selectionSlug;
+      const highlightedIndexes = getHighlightedPhonemeRowIndexes(
+        wordDetail.soundMapRows,
+        wordDetail.selectionSlug
+      );
+      const rowIndex = wordDetail.soundMapRows.indexOf(row);
+
+      return highlightedIndexes.has(rowIndex);
     }
 
     if (wordDetail.selectionType === 'letter') {
@@ -817,7 +868,10 @@ export default function WorksheetChecklist({
           <section className='min-w-0 rounded-2xl bg-primary/40 p-4'>
             <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Synthetic Approach</p>
             <p className='mt-3 text-3xl font-semibold text-white'>{wordDetail.word}</p>
-            <p className='mt-2 text-sm text-accent'>Click the phonemes for other examples.</p>
+            <p className='mt-2 text-sm text-accent'>
+              Have the child pronounce yellow phonemes. Click for other examples
+              of this phoneme.
+            </p>
             <div className='mt-5 min-w-0'>{renderSoundTiles()}</div>
           </section>
           <section className='rounded-2xl bg-primary/40 p-4'>
@@ -1018,7 +1072,7 @@ export default function WorksheetChecklist({
     );
   }
 
-  function renderPane(pane) {
+  function getPaneStatusMeta(pane) {
     const status = pane.required
       ? pane.isComplete
         ? 'Complete'
@@ -1035,9 +1089,38 @@ export default function WorksheetChecklist({
         ? 'border-sky-400/30 bg-sky-500/10 text-sky-200'
         : 'border-accent/20 bg-primary/40 text-accent';
 
-    const body = (
-      <>
-        <ol className='mt-6 space-y-3'>
+    return { status, statusClass };
+  }
+
+  function renderChecklistSection(pane, showDivider = false) {
+    const { status, statusClass } = getPaneStatusMeta(pane);
+
+    return (
+      <section
+        key={pane.id}
+        className={`min-w-0 ${showDivider ? 'border-t border-accent/15 pt-6' : ''}`}
+      >
+        <div className='flex flex-wrap items-start gap-4'>
+          <div className='min-w-0'>
+            <div className='flex flex-wrap items-center gap-3'>
+              <h3 className='text-xl text-yellow'>{pane.title}</h3>
+              <span
+                className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] ${
+                  pane.required
+                    ? 'border border-yellow/20 bg-yellow/10 text-yellow'
+                    : 'border border-accent/20 bg-primary/40 text-accent'
+                }`}
+              >
+                {pane.required ? 'Required' : 'Optional'}
+              </span>
+              <span className={`rounded-full border px-3 py-2 text-sm font-semibold ${statusClass}`}>
+                {status}
+              </span>
+            </div>
+            {pane.description ? <p className='mt-2 text-sm text-accent'>{pane.description}</p> : null}
+          </div>
+        </div>
+        <ol className='mt-5 space-y-3'>
           {pane.items.map(item => (
             <li key={item.id}>
               <label
@@ -1063,48 +1146,59 @@ export default function WorksheetChecklist({
           </summary>
           <div className='mt-4 min-w-0'>{renderStrategy(pane.id)}</div>
         </details>
-      </>
+      </section>
     );
+  }
 
-    if (!pane.required) {
-      return (
-        <details key={pane.id} className='min-w-0 rounded-3xl border border-accent/20 bg-primary/50 p-6 shadow-lg'>
-          <summary className='flex cursor-pointer list-none flex-wrap items-start gap-4'>
-            <div>
-              <div className='flex flex-wrap items-center gap-3'>
-                <h2 className='text-2xl text-yellow'>{pane.title}</h2>
-                <span className='rounded-full border border-accent/20 bg-primary/40 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-accent'>
-                  Optional
-                </span>
-                <span className={`rounded-full border px-3 py-2 text-sm font-semibold ${statusClass}`}>
-                  {status}
-                </span>
-              </div>
-              {pane.description ? <p className='mt-2 text-sm text-accent'>{pane.description}</p> : null}
-            </div>
-          </summary>
-          {body}
-        </details>
-      );
-    }
+  function renderCombinedChecklistPane() {
+    const optionalPane = paneProgress.find(pane => !pane.required);
 
     return (
-      <article key={pane.id} className='min-w-0 rounded-3xl border border-accent/20 bg-primary/50 p-6 shadow-lg'>
+      <article className='min-w-0 rounded-3xl border border-accent/20 bg-primary/50 p-6 shadow-lg'>
         <div className='flex flex-wrap items-start gap-4'>
-          <div>
+          <div className='min-w-0'>
             <div className='flex flex-wrap items-center gap-3'>
-              <h2 className='text-2xl text-yellow'>{pane.title}</h2>
+              <h2 className='text-2xl text-yellow'>Checklist</h2>
               <span className='rounded-full border border-yellow/20 bg-yellow/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-yellow'>
-                Required
+                4 Required
               </span>
-              <span className={`rounded-full border px-3 py-2 text-sm font-semibold ${statusClass}`}>
-                {status}
+              <span className='rounded-full border border-accent/20 bg-primary/40 px-3 py-2 text-sm font-semibold text-accent'>
+                {requiredChecksComplete}/{requiredCheckTotal}
               </span>
             </div>
-            {pane.description ? <p className='mt-2 text-sm text-accent'>{pane.description}</p> : null}
+            <p className='mt-2 text-sm text-accent'>
+              Move through the processor sections below. The optional section is
+              extra practice and does not count toward completion.
+            </p>
           </div>
         </div>
-        {body}
+
+        <details className='mt-5 min-w-0 rounded-2xl border border-accent/20 bg-secondary/30 p-4'>
+          <summary className='cursor-pointer text-sm font-semibold text-yellow'>
+            Instructions
+          </summary>
+          <div className='mt-4 space-y-3 text-sm text-accent'>
+            <p>
+              Complete any {REQUIRED_CHECKS_PER_PANE} items in each required
+              processor section.
+            </p>
+            <p>
+              Open the strategy drawer inside each section when you want
+              examples and support.
+            </p>
+            <p>
+              Use the optional section when you have extra time and want more
+              practice with the same word.
+            </p>
+          </div>
+        </details>
+
+        <div className='mt-6 space-y-6'>
+          {requiredPaneProgress.map((pane, index) =>
+            renderChecklistSection(pane, index > 0)
+          )}
+          {optionalPane ? renderChecklistSection(optionalPane, true) : null}
+        </div>
       </article>
     );
   }
@@ -1129,16 +1223,35 @@ export default function WorksheetChecklist({
         </div>
       ) : null}
 
+      <div className='no-print mb-6 rounded-3xl border border-accent/20 bg-primary/50 p-6 shadow-lg'>
+        <details>
+          <summary className='cursor-pointer text-sm font-semibold uppercase tracking-[0.3em] text-yellow'>
+            4 Processor Model
+          </summary>
+          <div className='mt-4 grid gap-4 md:grid-cols-2'>
+            {requiredPaneProgress.map(pane => (
+              <div key={pane.id} className='rounded-2xl bg-secondary/70 p-4'>
+                <p className='text-sm font-semibold text-yellow'>{pane.title}</p>
+                <p className='mt-2 text-sm text-accent'>{pane.description}</p>
+              </div>
+            ))}
+          </div>
+        </details>
+      </div>
+
       <div className='word-garden-worksheet-layout grid gap-8 pb-12 md:pb-16 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]'>
-        <div className='no-print min-w-0 space-y-6'>{paneProgress.map(renderPane)}</div>
+        <div className='no-print min-w-0 space-y-6'>
+          {renderCombinedChecklistPane()}
+        </div>
 
         <aside className='no-print space-y-6 self-start xl:sticky xl:top-24'>
           <div className='rounded-3xl border border-accent/20 bg-primary/50 p-6 shadow-lg'>
             <p className='text-sm uppercase tracking-[0.3em] text-yellow'>Completion Rules</p>
-            <h2 className='mt-3 text-2xl text-white'>Finish the 4 required panes</h2>
+            <h2 className='mt-3 text-2xl text-white'>Finish the 4 required processors</h2>
             <p className='mt-3 text-accent'>
-              Complete any {REQUIRED_CHECKS_PER_PANE} items in each required pane. The
-              optional pane does not count toward completion.
+              Complete any {REQUIRED_CHECKS_PER_PANE} items in each required
+              processor section. The optional section does not count toward
+              completion.
             </p>
             <div className='mt-5 rounded-2xl bg-secondary/70 p-4'>
               <div className='flex items-center justify-between gap-4'>

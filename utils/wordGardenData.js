@@ -272,35 +272,6 @@ const LETTER_GROUPS = [
   },
 ];
 
-const LETTER_EXAMPLE_FALLBACKS = {
-  A: 'above',
-  B: 'ballot',
-  C: 'calendar',
-  D: 'data',
-  E: 'earth',
-  F: 'flag',
-  G: 'graph',
-  H: 'heart',
-  I: 'index',
-  J: 'justice',
-  K: 'kite',
-  L: 'light',
-  M: 'map',
-  N: 'number',
-  O: 'ocean',
-  P: 'plant',
-  Q: 'question',
-  R: 'reason',
-  S: 'sound',
-  T: 'title',
-  U: 'United States of America',
-  V: 'vegetable',
-  W: 'weather',
-  X: 'xylophone',
-  Y: 'year',
-  Z: 'zoo',
-};
-
 const LETTER_DIFFICULTY_BY_LETTER = {
   A: { level: 'Hard', pattern: 'Non' },
   B: { level: 'Easiest', pattern: 'CV' },
@@ -345,6 +316,7 @@ const MANUAL_PHONEME_SLUGS_BY_GRAPHEME = new Map(
     ch: ['CH'],
     sh: ['SH'],
     th: ['TH', 'DH'],
+    ear: ['ER'],
     ph: ['F'],
     ng: ['NG'],
     ck: ['K'],
@@ -421,7 +393,12 @@ function graphemeSupportsPhoneme(grapheme, arpabetSymbol) {
 
   const letterGroup = LETTER_GROUP_BY_LETTER.get(normalizedGrapheme.toUpperCase());
   return letterGroup
-    ? letterGroup.phonemes.some(phoneme => phoneme.phonemeSlug === normalizedSymbol)
+    ? letterGroup.phonemes.some(phoneme =>
+        phoneme.phonemeSlug
+          .split('__')
+          .filter(Boolean)
+          .includes(normalizedSymbol)
+      )
     : false;
 }
 
@@ -490,6 +467,86 @@ function alignPhonemesToGraphemes(graphemes = [], arpabet = []) {
   }
 
   return solve(0, 0).mapping;
+}
+
+function getPhonemeSlugSequencesForGrapheme(grapheme) {
+  const normalizedGrapheme = normalizeWord(grapheme).replace(/[^a-z]/g, '');
+
+  if (!normalizedGrapheme) {
+    return [];
+  }
+
+  const manualPhonemes = MANUAL_PHONEME_SLUGS_BY_GRAPHEME.get(normalizedGrapheme);
+  if (manualPhonemes) {
+    return Array.from(manualPhonemes).map(phonemeSlug => [phonemeSlug]);
+  }
+
+  if (normalizedGrapheme.length !== 1) {
+    return [];
+  }
+
+  const letterGroup = LETTER_GROUP_BY_LETTER.get(normalizedGrapheme.toUpperCase());
+  return letterGroup
+    ? letterGroup.phonemes.map(phoneme =>
+        phoneme.phonemeSlug.split('__').filter(Boolean)
+      )
+    : [];
+}
+
+function getSupportedApprovedPhonemeSlugsForGrapheme(grapheme) {
+  return Array.from(
+    new Set(
+      getPhonemeSlugSequencesForGrapheme(grapheme)
+        .flat()
+        .filter(phonemeSlug =>
+          APPROVED_SYNTHETIC_PHONEME_SET.has(phonemeSlug)
+        )
+    )
+  );
+}
+
+function getMatchedApprovedPhonemeSlugsForGrapheme(
+  grapheme,
+  normalizedArpabet = [],
+  alignedPhonemeIndex = null,
+  rawPhonemeSlug = null
+) {
+  const matchedPhonemeSlugs = new Set();
+
+  if (
+    rawPhonemeSlug &&
+    APPROVED_SYNTHETIC_PHONEME_SET.has(rawPhonemeSlug)
+  ) {
+    matchedPhonemeSlugs.add(rawPhonemeSlug);
+  }
+
+  if (alignedPhonemeIndex === null || alignedPhonemeIndex === undefined) {
+    return Array.from(matchedPhonemeSlugs);
+  }
+
+  getPhonemeSlugSequencesForGrapheme(grapheme).forEach(sequence => {
+    if (sequence.length === 0) {
+      return;
+    }
+
+    const actualSequence = normalizedArpabet.slice(
+      alignedPhonemeIndex,
+      alignedPhonemeIndex + sequence.length
+    );
+
+    if (
+      sequence.length === actualSequence.length &&
+      sequence.every((phonemeSlug, index) => actualSequence[index] === phonemeSlug)
+    ) {
+      sequence.forEach(phonemeSlug => {
+        if (APPROVED_SYNTHETIC_PHONEME_SET.has(phonemeSlug)) {
+          matchedPhonemeSlugs.add(phonemeSlug);
+        }
+      });
+    }
+  });
+
+  return Array.from(matchedPhonemeSlugs);
 }
 
 function countSyllables(arpabet = []) {
@@ -1111,11 +1168,7 @@ function formatPhoneme(ipa) {
 }
 
 function getLetterExampleWord(letter, practicedWords = []) {
-  return (
-    getWordsForLetter(letter, practicedWords)[0]?.word ||
-    LETTER_EXAMPLE_FALLBACKS[letter] ||
-    letter
-  );
+  return getWordsForLetter(letter, practicedWords)[0]?.word || '';
 }
 
 function buildLevelOneRows(months, practicedWords = []) {
@@ -1171,69 +1224,73 @@ function buildLevelOneRows(months, practicedWords = []) {
               : 'No words',
     };
 
-    const phonemeRows = group.phonemes.map(phonemeRow => {
-      const matchingWords = getWordsForPhonemeSlug(
-        phonemeRow.phonemeSlug,
-        practicedWords
-      );
-      const suggestedWordCount = getSuggestedWordCount(matchingWords);
-      const wordAvailability = getWordAvailabilitySummary(matchingWords);
-      const isEnabled = phonemeRow.phonemeSlug
-        .split('__')
-        .every(requiredSymbol => availableArpabet.has(requiredSymbol));
-      const isInherited = phonemeRow.phonemeSlug
-        .split('__')
-        .every(requiredSymbol => inheritedArpabet.has(requiredSymbol));
-      const phonemeTiming = getPhonemeTimingForSlug(phonemeRow.phonemeSlug);
-      const expressiveText = isEnabled
-        ? matchingWords.length > 0
-          ? suggestedWordCount > 0
-            ? 'Ready'
-            : 'Practiced'
-          : 'No words'
-        : matchingWords.length > 0
-          ? 'Advanced for age'
-          : 'No words';
-      const statusText = isEnabled
-        ? matchingWords.length > 0
-          ? suggestedWordCount > 0
-            ? 'Unlocked'
-            : 'Done'
-          : 'No words'
-        : 'Locked';
+    const phonemeRows = group.phonemes
+      .filter(phonemeRow =>
+        APPROVED_SYNTHETIC_PHONEME_SET.has(phonemeRow.phonemeSlug)
+      )
+      .map(phonemeRow => {
+        const matchingWords = getWordsForPhonemeSlug(
+          phonemeRow.phonemeSlug,
+          practicedWords
+        );
+        const suggestedWordCount = getSuggestedWordCount(matchingWords);
+        const wordAvailability = getWordAvailabilitySummary(matchingWords);
+        const isEnabled = phonemeRow.phonemeSlug
+          .split('__')
+          .every(requiredSymbol => availableArpabet.has(requiredSymbol));
+        const isInherited = phonemeRow.phonemeSlug
+          .split('__')
+          .every(requiredSymbol => inheritedArpabet.has(requiredSymbol));
+        const phonemeTiming = getPhonemeTimingForSlug(phonemeRow.phonemeSlug);
+        const expressiveText = isEnabled
+          ? matchingWords.length > 0
+            ? suggestedWordCount > 0
+              ? 'Ready'
+              : 'Practiced'
+            : 'No words'
+          : matchingWords.length > 0
+            ? 'Advanced for age'
+            : 'No words';
+        const statusText = isEnabled
+          ? matchingWords.length > 0
+            ? suggestedWordCount > 0
+              ? 'Unlocked'
+              : 'Done'
+            : 'No words'
+          : 'Locked';
 
-      return {
-        rowKey: `phoneme-${group.letter}-${phonemeRow.phonemeSlug}`,
-        rowType: 'phoneme',
-        selectionType: 'phoneme',
-        selectionSlug: phonemeRow.phonemeSlug,
-        parentLetter: group.letter,
-        letter: group.letter,
-        displayTarget: formatPhoneme(phonemeRow.ipa),
-        targetSortValue: `${group.letter}-${formatPhoneme(phonemeRow.ipa)}`,
-        displayPhoneme: formatPhoneme(phonemeRow.ipa),
-        expressiveText,
-        difficultyLabel: getLetterDifficultyLabel(group.letter),
-        difficultyRank: getLetterDifficultyRank(group.letter),
-        exampleWord: phonemeRow.exampleWord,
-        isEnabled,
-        isInherited,
-        isLocked: !isEnabled,
-        hasWords: matchingWords.length > 0,
-        isSelectable: matchingWords.length > 0,
-        wordCount: matchingWords.length,
-        suggestedWordCount,
-        concreteAvailableCount: wordAvailability.concreteAvailableCount,
-        abstractAvailableCount: wordAvailability.abstractAvailableCount,
-        completedWordCount: wordAvailability.completedWordCount,
-        concreteRecommendableWords: wordAvailability.concreteRecommendableWords,
-        abstractRecommendableWords: wordAvailability.abstractRecommendableWords,
-        recommendableWords: wordAvailability.recommendableWords,
-        unlockedWords: wordAvailability.unlockedWords,
-        releaseEndMonth: phonemeTiming.endMonth,
-        statusText,
-      };
-    });
+        return {
+          rowKey: `phoneme-${group.letter}-${phonemeRow.phonemeSlug}`,
+          rowType: 'phoneme',
+          selectionType: 'phoneme',
+          selectionSlug: phonemeRow.phonemeSlug,
+          parentLetter: group.letter,
+          letter: group.letter,
+          displayTarget: formatPhoneme(phonemeRow.ipa),
+          targetSortValue: `${group.letter}-${formatPhoneme(phonemeRow.ipa)}`,
+          displayPhoneme: formatPhoneme(phonemeRow.ipa),
+          expressiveText,
+          difficultyLabel: getLetterDifficultyLabel(group.letter),
+          difficultyRank: getLetterDifficultyRank(group.letter),
+          exampleWord: matchingWords[0]?.word || '',
+          isEnabled,
+          isInherited,
+          isLocked: !isEnabled,
+          hasWords: matchingWords.length > 0,
+          isSelectable: matchingWords.length > 0,
+          wordCount: matchingWords.length,
+          suggestedWordCount,
+          concreteAvailableCount: wordAvailability.concreteAvailableCount,
+          abstractAvailableCount: wordAvailability.abstractAvailableCount,
+          completedWordCount: wordAvailability.completedWordCount,
+          concreteRecommendableWords: wordAvailability.concreteRecommendableWords,
+          abstractRecommendableWords: wordAvailability.abstractRecommendableWords,
+          recommendableWords: wordAvailability.recommendableWords,
+          unlockedWords: wordAvailability.unlockedWords,
+          releaseEndMonth: phonemeTiming.endMonth,
+          statusText,
+        };
+      });
 
     return [letterRow, ...phonemeRows];
   });
@@ -1519,7 +1576,6 @@ function splitWordIntoDisplayGraphemes(word, graphemes = []) {
 function buildEntrySoundMapRows({
   word,
   normalizedArpabet = [],
-  normalizedIpa = [],
 }) {
   const graphemes = splitIntoGraphemes(word);
   const displayGraphemes = splitWordIntoDisplayGraphemes(word, graphemes);
@@ -1531,23 +1587,29 @@ function buildEntrySoundMapRows({
       alignedPhonemeIndex === null || alignedPhonemeIndex === undefined
         ? null
         : normalizedArpabet[alignedPhonemeIndex];
-    const isApprovedPhoneme =
-      rawPhonemeSlug && APPROVED_SYNTHETIC_PHONEME_SET.has(rawPhonemeSlug);
+    const matchedApprovedPhonemeSlugs = getMatchedApprovedPhonemeSlugsForGrapheme(
+      grapheme,
+      normalizedArpabet,
+      alignedPhonemeIndex,
+      rawPhonemeSlug
+    );
+    const phonemeLabels = matchedApprovedPhonemeSlugs
+      .map(phonemeSlug => IPA_BY_ARPABET[phonemeSlug])
+      .filter(Boolean)
+      .map(formatPhoneme);
 
     return {
       grapheme,
       displayGrapheme: displayGraphemes[index] || grapheme,
       phonemeLabel:
-        isApprovedPhoneme &&
-        alignedPhonemeIndex !== null &&
-        normalizedIpa[alignedPhonemeIndex]
-          ? formatPhoneme(normalizedIpa[alignedPhonemeIndex])
+        phonemeLabels.length > 0
+          ? phonemeLabels.join(' + ')
           : null,
-      phonemeSlug:
-        isApprovedPhoneme &&
-        rawPhonemeSlug
-          ? rawPhonemeSlug
-          : null,
+      phonemeSlug: matchedApprovedPhonemeSlugs[0] || null,
+      phonemeSlugs: matchedApprovedPhonemeSlugs,
+      supportedPhonemeSlugs: getSupportedApprovedPhonemeSlugsForGrapheme(
+        grapheme
+      ),
     };
   });
 }
@@ -1856,6 +1918,7 @@ module.exports = {
   validateBirthYearMonth,
   buildLevelOneRows,
   getLetterDifficultyLabel,
+  getLetterDifficultyRank,
   getLetterWordMatchMode,
   getLetterScopedPhonemeSlugs,
   getPhonemeTimingLabel,
