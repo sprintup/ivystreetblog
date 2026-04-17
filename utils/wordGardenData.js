@@ -794,6 +794,31 @@ function getPracticeMap(practicedWords = []) {
   );
 }
 
+function hasOpenChecklistState(practicedWord) {
+  const hasCheckedItems = Array.isArray(practicedWord?.checklistCheckedItemIds)
+    ? practicedWord.checklistCheckedItemIds.length > 0
+    : false;
+  const hasSavedSelection =
+    (practicedWord?.checklistSelectionType === 'all' ||
+      practicedWord?.checklistSelectionType === 'letter' ||
+      practicedWord?.checklistSelectionType === 'phoneme') &&
+    Boolean(String(practicedWord?.checklistSelectionSlug || '').trim());
+
+  return hasCheckedItems || hasSavedSelection;
+}
+
+function getChecklistStatusFromPracticedWord(practicedWord) {
+  if ((practicedWord?.completedChecklistCount || 0) > 0) {
+    return 'complete';
+  }
+
+  if (hasOpenChecklistState(practicedWord)) {
+    return 'started';
+  }
+
+  return 'not-started';
+}
+
 function withPracticeData(entry, practicedWordMap) {
   const practicedWord = practicedWordMap.get(entry.normalizedWord);
 
@@ -801,6 +826,14 @@ function withPracticeData(entry, practicedWordMap) {
     ...entry,
     practiceCount: practicedWord?.practiceCount || 0,
     completedChecklistCount: practicedWord?.completedChecklistCount || 0,
+    checklistCheckedItemIds: Array.isArray(practicedWord?.checklistCheckedItemIds)
+      ? practicedWord.checklistCheckedItemIds
+      : [],
+    checklistSelectionType: practicedWord?.checklistSelectionType || null,
+    checklistSelectionSlug: practicedWord?.checklistSelectionSlug || null,
+    checklistSelectionLetter: practicedWord?.checklistSelectionLetter || null,
+    checklistUpdatedAt: practicedWord?.checklistUpdatedAt || null,
+    checklistStatus: getChecklistStatusFromPracticedWord(practicedWord),
   };
 }
 
@@ -1397,6 +1430,117 @@ function getSelectionLabel(selectionType, selectionSlug) {
     : getTargetLabel(selectionSlug);
 }
 
+function buildWordGardenWordPath(
+  acId,
+  selectionType,
+  selectionSlug,
+  word,
+  selectionLetter = ''
+) {
+  const encodedWord = encodeURIComponent(String(word || '').trim());
+
+  if (!encodedWord) {
+    return '';
+  }
+
+  if (selectionType === 'all') {
+    return `/word-garden/${acId}/all/${encodedWord}`;
+  }
+
+  if (selectionType === 'letter') {
+    return `/word-garden/${acId}/letter/${encodeURIComponent(
+      selectionSlug
+    )}/${encodedWord}`;
+  }
+
+  if (selectionType === 'phoneme') {
+    const query = selectionLetter
+      ? `?letter=${encodeURIComponent(selectionLetter)}`
+      : '';
+
+    return `/word-garden/${acId}/phoneme/${selectionSlug}/${encodedWord}${query}`;
+  }
+
+  return '';
+}
+
+function getRecommendedWordTarget(months, practicedWords = [], excludedWords = []) {
+  const rows = buildLevelOneRows(months, practicedWords);
+
+  function selectRecommendationTarget(excludedWordSet) {
+    const recommendationCandidates = rows
+      .map(row => ({
+        ...row,
+        filteredConcreteRecommendableWords: (row.concreteRecommendableWords || []).filter(
+          word => !excludedWordSet.has(normalizeWord(word))
+        ),
+        filteredAbstractRecommendableWords: (row.abstractRecommendableWords || []).filter(
+          word => !excludedWordSet.has(normalizeWord(word))
+        ),
+      }))
+      .filter(
+        row =>
+          row.isSelectable &&
+          !row.isLocked &&
+          row.suggestedWordCount > 0 &&
+          (row.filteredConcreteRecommendableWords.length > 0 ||
+            row.filteredAbstractRecommendableWords.length > 0)
+      );
+
+    if (recommendationCandidates.length === 0) {
+      return null;
+    }
+
+    const concreteRecommendationCandidates = recommendationCandidates.filter(
+      row => row.filteredConcreteRecommendableWords.length > 0
+    );
+    const abstractRecommendationCandidates = recommendationCandidates.filter(
+      row => row.filteredAbstractRecommendableWords.length > 0
+    );
+    const shouldRecommendConcrete = concreteRecommendationCandidates.length > 0;
+    const activeRecommendationCandidates = shouldRecommendConcrete
+      ? concreteRecommendationCandidates
+      : abstractRecommendationCandidates;
+
+    if (activeRecommendationCandidates.length === 0) {
+      return null;
+    }
+
+    const randomRow =
+      activeRecommendationCandidates[
+        Math.floor(Math.random() * activeRecommendationCandidates.length)
+      ];
+    const wordPool = shouldRecommendConcrete
+      ? randomRow.filteredConcreteRecommendableWords
+      : randomRow.filteredAbstractRecommendableWords;
+
+    if (!Array.isArray(wordPool) || wordPool.length === 0) {
+      return null;
+    }
+
+    const word = wordPool[Math.floor(Math.random() * wordPool.length)];
+
+    return {
+      word,
+      selectionType: randomRow.selectionType,
+      selectionSlug: randomRow.selectionSlug,
+      selectionLetter:
+        randomRow.selectionType === 'phoneme'
+          ? randomRow.parentLetter || randomRow.letter || ''
+          : '',
+    };
+  }
+
+  const excludedWordSet = new Set(
+    (excludedWords || []).map(word => normalizeWord(word)).filter(Boolean)
+  );
+
+  return (
+    selectRecommendationTarget(excludedWordSet) ||
+    (excludedWordSet.size > 0 ? selectRecommendationTarget(new Set()) : null)
+  );
+}
+
 function slugifyTerm(term) {
   return encodeURIComponent(normalizeWord(term));
 }
@@ -1764,6 +1908,83 @@ function getGlossaryTerm(term) {
   };
 }
 
+function getStartedChecklists(practicedWords = [], currentChecklistWord = '') {
+  const normalizedCurrentChecklistWord = normalizeWord(currentChecklistWord);
+  const practicedWordMap = getPracticeMap(practicedWords);
+
+  return practicedWords
+    .map(practicedWord => {
+      const checklistCheckedItemIds = Array.isArray(
+        practicedWord?.checklistCheckedItemIds
+      )
+        ? practicedWord.checklistCheckedItemIds.filter(Boolean)
+        : [];
+
+      if (!hasOpenChecklistState(practicedWord)) {
+        return null;
+      }
+
+      const entry = getWordEntry(practicedWord.word);
+      if (!entry) {
+        return null;
+      }
+
+      const selectionType =
+        practicedWord.checklistSelectionType === 'letter' ||
+        practicedWord.checklistSelectionType === 'phoneme' ||
+        practicedWord.checklistSelectionType === 'all'
+          ? practicedWord.checklistSelectionType
+          : 'all';
+      const selectionSlug =
+        String(
+          practicedWord.checklistSelectionSlug ||
+            (selectionType === 'all' ? 'all' : entry.initialLetter.toUpperCase())
+        ).trim() || 'all';
+      const selectionLetter = normalizeSelectionLetter(
+        practicedWord.checklistSelectionLetter
+      );
+
+      return {
+        ...withPracticeData(entry, practicedWordMap),
+        checklistCheckedItemIds,
+        checklistCheckedCount: checklistCheckedItemIds.length,
+        selectionType,
+        selectionSlug,
+        selectionLetter,
+        selectionLabel: getSelectionLabel(selectionType, selectionSlug),
+        isCurrentWord:
+          entry.normalizedWord === normalizedCurrentChecklistWord,
+      };
+    })
+    .filter(Boolean)
+    .sort((leftEntry, rightEntry) => {
+      if (leftEntry.isCurrentWord !== rightEntry.isCurrentWord) {
+        return leftEntry.isCurrentWord ? -1 : 1;
+      }
+
+      const leftTime = leftEntry.checklistUpdatedAt
+        ? new Date(leftEntry.checklistUpdatedAt).getTime()
+        : 0;
+      const rightTime = rightEntry.checklistUpdatedAt
+        ? new Date(rightEntry.checklistUpdatedAt).getTime()
+        : 0;
+
+      if (leftTime !== rightTime) {
+        return rightTime - leftTime;
+      }
+
+      return leftEntry.word.localeCompare(rightEntry.word);
+    });
+}
+
+function getCurrentChecklist(practicedWords = [], currentChecklistWord = '') {
+  return (
+    getStartedChecklists(practicedWords, currentChecklistWord).find(
+      checklist => checklist.isCurrentWord
+    ) || null
+  );
+}
+
 function getWordsForSelection(selectionType, selectionSlug, practicedWords = []) {
   if (selectionType === 'all') {
     return getAllWords(practicedWords);
@@ -1778,7 +1999,8 @@ function getWordDetailForSelection(
   selectionType,
   selectionSlug,
   word,
-  practicedWords = []
+  practicedWords = [],
+  currentChecklistWord = ''
 ) {
   const availableWords = getWordsForSelection(
     selectionType,
@@ -1837,13 +2059,27 @@ function getWordDetailForSelection(
     selectionLetterMatchMode,
     isEmbeddedLetterSelection:
       selectionType === 'letter' && letterMatchMode === 'embedded',
+    isCurrentWord:
+      normalizeWord(entry.word) === normalizeWord(currentChecklistWord),
     selectionType,
     selectionSlug,
   };
 }
 
-function getWordDetail(phonemeSlug, word, _months, practicedWords = []) {
-  return getWordDetailForSelection('phoneme', phonemeSlug, word, practicedWords);
+function getWordDetail(
+  phonemeSlug,
+  word,
+  _months,
+  practicedWords = [],
+  currentChecklistWord = ''
+) {
+  return getWordDetailForSelection(
+    'phoneme',
+    phonemeSlug,
+    word,
+    practicedWords,
+    currentChecklistWord
+  );
 }
 
 function getWordCloudWordsFromEntries(words) {
@@ -1928,6 +2164,10 @@ module.exports = {
   getSelectionWordCloudWords,
   getUnlockedWordCloudWords,
   getUnlockedArpabetForMonths,
+  getRecommendedWordTarget,
+  getStartedChecklists,
+  getCurrentChecklist,
+  getChecklistStatusFromPracticedWord,
   getWordGardenCompletionSummary,
   getWordsForPhonemeSlug,
   getWordsForLetter,
@@ -1938,6 +2178,7 @@ module.exports = {
   getTargetLabel,
   getLetterLabel,
   getSelectionLabel,
+  buildWordGardenWordPath,
   slugifyTerm,
   unslugifyTerm,
   decodeWordParam,

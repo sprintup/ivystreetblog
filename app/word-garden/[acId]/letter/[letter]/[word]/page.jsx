@@ -5,10 +5,13 @@ import TrackWordVisit from '../../../../TrackWordVisit';
 import WorksheetChecklist from '../../../../WorksheetChecklist';
 import { getAnonymousChildOrNotFound } from '../../../../wordGardenServer';
 import {
+  buildWordGardenWordPath,
   calculateAgeInMonths,
   decodeWordParam,
   getLetterScopedPhonemeSlugs,
   getLetterLabel,
+  getRecommendedWordTarget,
+  getStartedChecklists,
   getUnlockedArpabetForMonths,
   getWordDetailForSelection,
 } from '@/utils/wordGardenData';
@@ -45,7 +48,8 @@ export default async function WordGardenLetterLevelThreePage({ params, searchPar
     'letter',
     letter,
     decodedWord,
-    anonymousChild.practicedWords
+    anonymousChild.practicedWords,
+    anonymousChild.currentChecklistWord
   );
   const letterScopedPhonemeSlugs = getLetterScopedPhonemeSlugs(
     ageInMonths,
@@ -56,6 +60,24 @@ export default async function WordGardenLetterLevelThreePage({ params, searchPar
   if (!wordDetail) {
     notFound();
   }
+
+  const recommendedTarget = getRecommendedWordTarget(
+    ageInMonths,
+    anonymousChild.practicedWords
+  );
+  const recommendHref = recommendedTarget
+    ? buildWordGardenWordPath(
+        params.acId,
+        recommendedTarget.selectionType,
+        recommendedTarget.selectionSlug,
+        recommendedTarget.word,
+        recommendedTarget.selectionLetter
+      )
+    : '';
+  const openChecklistCount = getStartedChecklists(
+    anonymousChild.practicedWords,
+    anonymousChild.currentChecklistWord
+  ).length;
 
   const currentPageUrl = getCurrentPageUrl(params.acId, letter, params.word, true);
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(
@@ -114,6 +136,11 @@ export default async function WordGardenLetterLevelThreePage({ params, searchPar
               <span className='rounded-full border border-accent/30 px-4 py-2'>
                 {wordDetail.concreteness === 'abstract' ? 'Abstract word' : 'Concrete word'}
               </span>
+              {wordDetail.isCurrentWord ? (
+                <span className='rounded-full border border-accent/30 bg-white/5 px-4 py-2 text-accent'>
+                  Current word
+                </span>
+              ) : null}
             </div>
           </div>
           <div className='min-w-[260px] rounded-3xl bg-primary/70 px-5 py-4 text-sm text-accent'>
@@ -145,8 +172,11 @@ export default async function WordGardenLetterLevelThreePage({ params, searchPar
       <WorksheetChecklist
         acId={params.acId}
         autoCheckFromQr={searchParams?.autocheck === '1'}
+        hasCurrentWord={Boolean(anonymousChild.currentChecklistWord)}
+        openChecklistCount={openChecklistCount}
         letterScopedPhonemeSlugs={letterScopedPhonemeSlugs}
         qrCodeUrl={qrCodeUrl}
+        recommendHref={recommendHref}
         unlockedArpabet={getUnlockedArpabetForMonths(ageInMonths)}
         wordDetail={wordDetail}
       />

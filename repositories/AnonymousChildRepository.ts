@@ -18,6 +18,12 @@ interface PracticeWordInput {
   practiceIncrement?: number;
   checklistIncrement?: number;
   resetChecklist?: boolean;
+  checklistCheckedItemIds?: string[];
+  openChecklist?: boolean;
+  selectionType?: 'all' | 'letter' | 'phoneme' | null;
+  selectionSlug?: string;
+  selectionLetter?: string;
+  setCurrentWord?: boolean;
 }
 
 interface AnonymousChildAccess {
@@ -48,6 +54,63 @@ function normalizeIncrement(value: number | undefined): number {
   return Math.floor(normalizedValue);
 }
 
+function normalizeWordValue(value: string | undefined): string {
+  return String(value || '').trim().toLowerCase();
+}
+
+function normalizeChecklistItemIds(values: string[] | undefined): string[] {
+  if (!Array.isArray(values)) {
+    return [];
+  }
+
+  return Array.from(
+    new Set(
+      values
+        .map(value => String(value || '').trim())
+        .filter(Boolean)
+    )
+  );
+}
+
+function normalizeSelectionType(
+  value: PracticeWordInput['selectionType']
+): 'all' | 'letter' | 'phoneme' | null {
+  return value === 'all' || value === 'letter' || value === 'phoneme'
+    ? value
+    : null;
+}
+
+function normalizeSelectionSlug(value: string | undefined): string | null {
+  const normalizedValue = String(value || '').trim();
+  return normalizedValue || null;
+}
+
+function normalizeSelectionLetter(value: string | undefined): string | null {
+  const normalizedValue = String(value || '')
+    .trim()
+    .charAt(0)
+    .toUpperCase();
+
+  return normalizedValue || null;
+}
+
+function hasOpenChecklist(practicedWord: {
+  checklistCheckedItemIds?: string[];
+  checklistSelectionType?: 'all' | 'letter' | 'phoneme' | null;
+  checklistSelectionSlug?: string | null;
+} | null | undefined) {
+  const hasCheckedItems = Array.isArray(practicedWord?.checklistCheckedItemIds)
+    ? practicedWord.checklistCheckedItemIds.length > 0
+    : false;
+  const hasSavedSelection =
+    (practicedWord?.checklistSelectionType === 'all' ||
+      practicedWord?.checklistSelectionType === 'letter' ||
+      practicedWord?.checklistSelectionType === 'phoneme') &&
+    Boolean(String(practicedWord?.checklistSelectionSlug || '').trim());
+
+  return hasCheckedItems || hasSavedSelection;
+}
+
 function toIdString(value: { toString(): string } | string | null | undefined) {
   if (!value) {
     return '';
@@ -67,6 +130,55 @@ function getUserDisplayName(user: {
 }
 
 export class AnonymousChildRepository extends BaseRepository {
+  private getStartedChecklistWords(anonymousChild: IAnonymousChild) {
+    return anonymousChild.practicedWords.filter(practicedWord =>
+      hasOpenChecklist(practicedWord)
+    );
+  }
+
+  private ensureCurrentChecklistWord(
+    anonymousChild: IAnonymousChild,
+    preferredWord = ''
+  ) {
+    const startedChecklistWords = this.getStartedChecklistWords(anonymousChild);
+
+    if (startedChecklistWords.length === 0) {
+      anonymousChild.currentChecklistWord = null;
+      return;
+    }
+
+    const normalizedPreferredWord = normalizeWordValue(preferredWord);
+    if (
+      normalizedPreferredWord &&
+      startedChecklistWords.some(
+        practicedWord => practicedWord.word === normalizedPreferredWord
+      )
+    ) {
+      anonymousChild.currentChecklistWord = normalizedPreferredWord;
+      return;
+    }
+
+    const normalizedCurrentWord = normalizeWordValue(
+      anonymousChild.currentChecklistWord || ''
+    );
+    if (
+      normalizedCurrentWord &&
+      startedChecklistWords.some(
+        practicedWord => practicedWord.word === normalizedCurrentWord
+      )
+    ) {
+      anonymousChild.currentChecklistWord = normalizedCurrentWord;
+      return;
+    }
+
+    const randomStartedChecklist =
+      startedChecklistWords[
+        Math.floor(Math.random() * startedChecklistWords.length)
+      ];
+
+    anonymousChild.currentChecklistWord = randomStartedChecklist?.word || null;
+  }
+
   private async ensureAnonymousChildMetadata(
     anonymousChild: IAnonymousChild
   ): Promise<IAnonymousChild> {
@@ -83,6 +195,12 @@ export class AnonymousChildRepository extends BaseRepository {
 
     if (!anonymousChild.shareToken) {
       anonymousChild.shareToken = randomUUID();
+      didChange = true;
+    }
+
+    const previousCurrentChecklistWord = anonymousChild.currentChecklistWord || null;
+    this.ensureCurrentChecklistWord(anonymousChild);
+    if ((anonymousChild.currentChecklistWord || null) !== previousCurrentChecklistWord) {
       didChange = true;
     }
 
@@ -166,6 +284,7 @@ export class AnonymousChildRepository extends BaseRepository {
       practicedWords: anonymousChild.practicedWords,
       createdAt: anonymousChild.createdAt,
       updatedAt: anonymousChild.updatedAt,
+      currentChecklistWord: anonymousChild.currentChecklistWord || null,
       isOriginator,
       shareToken: isOriginator ? anonymousChild.shareToken || null : null,
       surrogateCount: surrogates.length,
@@ -255,6 +374,7 @@ export class AnonymousChildRepository extends BaseRepository {
         waiverAcceptedAt: input.waiverAcceptedAt,
         originatorUserId: user._id,
         shareToken: randomUUID(),
+        currentChecklistWord: null,
         practicedWords: [],
       });
 
@@ -325,33 +445,118 @@ export class AnonymousChildRepository extends BaseRepository {
       }
 
       const { anonymousChild } = access;
-      const normalizedWord = input.word.trim().toLowerCase();
+      const normalizedWord = normalizeWordValue(input.word);
       const practiceIncrement = normalizeIncrement(input.practiceIncrement ?? 1);
       const checklistIncrement = normalizeIncrement(
         input.checklistIncrement ?? 0
       );
       const resetChecklist = Boolean(input.resetChecklist);
+      const hasChecklistStateUpdate = Array.isArray(input.checklistCheckedItemIds);
+      const checklistCheckedItemIds = normalizeChecklistItemIds(
+        input.checklistCheckedItemIds
+      );
+      const openChecklist = Boolean(input.openChecklist);
+      const selectionType = normalizeSelectionType(input.selectionType);
+      const selectionSlug = normalizeSelectionSlug(input.selectionSlug);
+      const selectionLetter = normalizeSelectionLetter(input.selectionLetter);
+      const setCurrentWord = Boolean(input.setCurrentWord);
+      const shouldKeepChecklistOpen = Boolean(
+        openChecklist || checklistCheckedItemIds.length > 0
+      );
       const existingWord = anonymousChild.practicedWords.find(
         practicedWord => practicedWord.word === normalizedWord
       );
 
-      if (practiceIncrement === 0 && checklistIncrement === 0 && !resetChecklist) {
+      if (
+        practiceIncrement === 0 &&
+        checklistIncrement === 0 &&
+        !resetChecklist &&
+        !hasChecklistStateUpdate &&
+        !setCurrentWord
+      ) {
         return anonymousChild;
       }
 
-      if (existingWord) {
-        existingWord.practiceCount += practiceIncrement;
-        existingWord.completedChecklistCount = resetChecklist
-          ? 0
-          : existingWord.completedChecklistCount + checklistIncrement;
-        existingWord.lastPracticedAt = new Date();
-      } else if (!resetChecklist) {
+      const shouldCreatePracticedWord =
+        !existingWord &&
+        !resetChecklist &&
+        (practiceIncrement > 0 ||
+          checklistIncrement > 0 ||
+          (hasChecklistStateUpdate && shouldKeepChecklistOpen));
+
+      let practicedWord = existingWord;
+
+      if (shouldCreatePracticedWord) {
         anonymousChild.practicedWords.push({
           word: normalizedWord,
           practiceCount: practiceIncrement,
           completedChecklistCount: checklistIncrement,
           lastPracticedAt: new Date(),
+          checklistCheckedItemIds,
+          checklistSelectionType:
+            shouldKeepChecklistOpen ? selectionType : null,
+          checklistSelectionSlug:
+            shouldKeepChecklistOpen ? selectionSlug : null,
+          checklistSelectionLetter:
+            shouldKeepChecklistOpen ? selectionLetter : null,
+          checklistUpdatedAt:
+            shouldKeepChecklistOpen ? new Date() : null,
         });
+
+        practicedWord = anonymousChild.practicedWords.find(
+          entry => entry.word === normalizedWord
+        );
+      }
+
+      if (practicedWord) {
+        practicedWord.practiceCount += existingWord ? practiceIncrement : 0;
+
+        if (resetChecklist) {
+          practicedWord.completedChecklistCount = 0;
+          practicedWord.checklistCheckedItemIds = [];
+          practicedWord.checklistSelectionType = null;
+          practicedWord.checklistSelectionSlug = null;
+          practicedWord.checklistSelectionLetter = null;
+          practicedWord.checklistUpdatedAt = new Date();
+        } else {
+          practicedWord.completedChecklistCount += existingWord
+            ? checklistIncrement
+            : 0;
+        }
+
+        if (hasChecklistStateUpdate) {
+          practicedWord.checklistCheckedItemIds = checklistCheckedItemIds;
+          practicedWord.checklistSelectionType =
+            shouldKeepChecklistOpen ? selectionType : null;
+          practicedWord.checklistSelectionSlug =
+            shouldKeepChecklistOpen ? selectionSlug : null;
+          practicedWord.checklistSelectionLetter =
+            shouldKeepChecklistOpen ? selectionLetter : null;
+          practicedWord.checklistUpdatedAt = new Date();
+        }
+
+        if (checklistIncrement > 0) {
+          practicedWord.checklistCheckedItemIds = [];
+          practicedWord.checklistSelectionType = null;
+          practicedWord.checklistSelectionSlug = null;
+          practicedWord.checklistSelectionLetter = null;
+          practicedWord.checklistUpdatedAt = new Date();
+        }
+
+        practicedWord.lastPracticedAt = new Date();
+      }
+
+      if (setCurrentWord && hasOpenChecklist(practicedWord)) {
+        this.ensureCurrentChecklistWord(anonymousChild, normalizedWord);
+      } else if (
+        (resetChecklist ||
+          checklistIncrement > 0 ||
+          (hasChecklistStateUpdate && !shouldKeepChecklistOpen)) &&
+        normalizeWordValue(anonymousChild.currentChecklistWord || '') === normalizedWord
+      ) {
+        this.ensureCurrentChecklistWord(anonymousChild);
+      } else {
+        this.ensureCurrentChecklistWord(anonymousChild);
       }
 
       await anonymousChild.save();

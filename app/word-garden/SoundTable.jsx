@@ -187,11 +187,14 @@ function HeaderButton({ column, label, sortRules, onSort, align = 'left' }) {
   );
 }
 
-export default function SoundTable({ acId, rows }) {
+export default function SoundTable({ acId, hasCurrentWord = false, rows }) {
   const router = useRouter();
   const [hideLockedRows, setHideLockedRows] = useState(true);
   const [sortRules, setSortRules] = useState(DEFAULT_SORT_RULES);
   const [pendingUnlockRow, setPendingUnlockRow] = useState(null);
+  const currentWordButtonClass = hasCurrentWord
+    ? 'no-underline rounded-full border border-green-400/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-200 transition hover:border-green-300/50 hover:text-white'
+    : 'no-underline rounded-full border border-accent/30 bg-white/5 px-4 py-2 text-sm font-semibold text-accent transition hover:border-accent/50 hover:text-white';
 
   const recommendationCandidates = useMemo(() => {
     return rows.filter(
@@ -330,6 +333,13 @@ export default function SoundTable({ acId, rows }) {
     <div className='space-y-4 pb-24 md:pb-28'>
       <div className='flex flex-wrap items-center gap-4 rounded-3xl border border-accent/20 bg-primary/40 p-4'>
         <div className='flex flex-wrap items-center gap-4'>
+          <Link
+            href={`/word-garden/${acId}/current`}
+            className={currentWordButtonClass}
+          >
+            Current word
+          </Link>
+
           <button
             type='button'
             onClick={handleRecommendWord}
@@ -338,6 +348,13 @@ export default function SoundTable({ acId, rows }) {
           >
             Recommend
           </button>
+
+          <Link
+            href={`/word-garden/${acId}/checklists`}
+            className='no-underline rounded-full border border-green-400/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-200 transition hover:border-green-300/50 hover:text-white'
+          >
+            Checklists
+          </Link>
 
           <Link
             href={`/word-garden/${acId}/all?view=unlocked`}

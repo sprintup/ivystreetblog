@@ -28,6 +28,11 @@ export interface IPracticedWord {
   practiceCount: number;
   completedChecklistCount: number;
   lastPracticedAt: Date | null;
+  checklistCheckedItemIds?: string[];
+  checklistSelectionType?: 'all' | 'letter' | 'phoneme' | null;
+  checklistSelectionSlug?: string | null;
+  checklistSelectionLetter?: string | null;
+  checklistUpdatedAt?: Date | null;
 }
 
 export interface IAnonymousChild extends Document {
@@ -37,6 +42,7 @@ export interface IAnonymousChild extends Document {
   waiverAcceptedAt: Date;
   originatorUserId?: mongoose.Types.ObjectId | null;
   shareToken?: string;
+  currentChecklistWord?: string | null;
   practicedWords: IPracticedWord[];
   createdAt: Date;
   updatedAt: Date;
@@ -56,6 +62,7 @@ export interface IWordGardenDashboardChild {
   practicedWords: IPracticedWord[];
   createdAt: Date;
   updatedAt: Date;
+  currentChecklistWord: string | null;
   isOriginator: boolean;
   shareToken: string | null;
   surrogateCount: number;
@@ -121,6 +128,30 @@ const PracticedWordSchema = new mongoose.Schema(
       min: 0,
     },
     lastPracticedAt: {
+      type: Date,
+      default: null,
+    },
+    checklistCheckedItemIds: {
+      type: [String],
+      default: [],
+    },
+    checklistSelectionType: {
+      type: String,
+      enum: ['all', 'letter', 'phoneme'],
+      default: null,
+    },
+    checklistSelectionSlug: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+    checklistSelectionLetter: {
+      type: String,
+      default: null,
+      trim: true,
+      uppercase: true,
+    },
+    checklistUpdatedAt: {
       type: Date,
       default: null,
     },
@@ -223,6 +254,12 @@ const AnonymousChildSchema = new mongoose.Schema(
       sparse: true,
       trim: true,
       default: () => randomUUID(),
+    },
+    currentChecklistWord: {
+      type: String,
+      default: null,
+      trim: true,
+      lowercase: true,
     },
     practicedWords: {
       type: [PracticedWordSchema],

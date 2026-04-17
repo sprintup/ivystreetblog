@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import approvedLetterConstants from '@/data/approved-letter-constant.json';
 import { getWorksheetGenerationPolicy } from '@/utils/wordGardenGenerationPolicy';
 
@@ -49,10 +49,45 @@ function getStateLabel(state) {
   return state === 'disabled' ? 'Disabled' : 'Ungenerated';
 }
 
+function getChecklistStatusLabel(status) {
+  if (status === 'complete') {
+    return 'Complete';
+  }
+
+  return status === 'started' ? 'Started' : 'Start Checklist';
+}
+
+function getChecklistStatusClass(status) {
+  if (status === 'complete') {
+    return 'border-green-400/30 bg-green-500/10 text-green-200';
+  }
+
+  if (status === 'started') {
+    return 'border-yellow/30 bg-yellow/10 text-yellow';
+  }
+
+  return 'border-accent/30 bg-white/5 text-accent';
+}
+
 function buildInitialCheckedState(panes) {
   return panes.reduce((state, pane) => {
     pane.items.forEach(item => {
       state[item.id] = false;
+    });
+    return state;
+  }, {});
+}
+
+function buildCheckedStateFromSavedItems(panes, savedItemIds = []) {
+  const savedItemIdSet = new Set(
+    Array.isArray(savedItemIds)
+      ? savedItemIds.map(itemId => String(itemId || '').trim()).filter(Boolean)
+      : []
+  );
+
+  return panes.reduce((state, pane) => {
+    pane.items.forEach(item => {
+      state[item.id] = savedItemIdSet.has(item.id);
     });
     return state;
   }, {});
@@ -65,6 +100,12 @@ function buildFullyCheckedState(panes) {
     });
     return state;
   }, {});
+}
+
+function getCheckedItemIdsFromState(checkedState = {}) {
+  return Object.entries(checkedState)
+    .filter(([, isChecked]) => Boolean(isChecked))
+    .map(([itemId]) => itemId);
 }
 
 function getFallbackMorphemeEntries(wordDetail) {
@@ -509,8 +550,11 @@ function buildPanes(wordDetail) {
 export default function WorksheetChecklist({
   acId,
   autoCheckFromQr = false,
+  hasCurrentWord = false,
+  openChecklistCount = 0,
   letterScopedPhonemeSlugs = [],
   qrCodeUrl,
+  recommendHref = '',
   soundTableSelection = '',
   unlockedArpabet = [],
   wordDetail,
@@ -536,7 +580,9 @@ export default function WorksheetChecklist({
   );
   const isGenerationDisabled = generationPolicy.disabled;
   const [apiKey, setApiKey] = useState('');
-  const [checkedItems, setCheckedItems] = useState(() => buildInitialCheckedState(panes));
+  const [checkedItems, setCheckedItems] = useState(() =>
+    buildCheckedStateFromSavedItems(panes, wordDetail.checklistCheckedItemIds)
+  );
   const [completionError, setCompletionError] = useState('');
   const [completionSuccess, setCompletionSuccess] = useState('');
   const [generationError, setGenerationError] = useState('');
@@ -551,10 +597,19 @@ export default function WorksheetChecklist({
   const [isWordComplete, setIsWordComplete] = useState(
     () => (wordDetail.completedChecklistCount || 0) > 0
   );
+  const [isChecklistOpen, setIsChecklistOpen] = useState(
+    () => wordDetail.checklistStatus === 'started'
+  );
+  const [isCurrentWord, setIsCurrentWord] = useState(() => Boolean(wordDetail.isCurrentWord));
+  const [isStartingChecklist, setIsStartingChecklist] = useState(false);
   const [isResettingChecklist, setIsResettingChecklist] = useState(false);
+  const [isResetStartedChecklist, setIsResetStartedChecklist] = useState(false);
+  const [isSettingCurrentWord, setIsSettingCurrentWord] = useState(false);
   const [isContinueModalOpen, setIsContinueModalOpen] = useState(false);
+  const [isResetStartedModalOpen, setIsResetStartedModalOpen] = useState(false);
   const [isCompletionSummaryOpen, setIsCompletionSummaryOpen] = useState(false);
   const [isPrintableImageReady, setIsPrintableImageReady] = useState(true);
+  const checklistSaveQueueRef = useRef(Promise.resolve());
 
   const state = getWorksheetState(generatedContent, isGenerationDisabled);
   const printableDefinition = generatedContent?.childFriendlyDefinition || wordDetail.definition;
@@ -613,9 +668,79 @@ export default function WorksheetChecklist({
   const incompletePaneNames = requiredPaneProgress
     .filter(pane => !pane.isComplete)
     .map(pane => pane.title);
+  const checkedItemIds = getCheckedItemIdsFromState(checkedItems);
+  const checklistStatus = isWordComplete
+    ? 'complete'
+    : isChecklistOpen
+      ? 'started'
+      : 'not-started';
+  const hasActiveCurrentWord = Boolean(hasCurrentWord || isCurrentWord);
+  const currentWordHref =
+    checklistStatus === 'started'
+      ? `/word-garden/${acId}/current`
+      : `/word-garden/${acId}/current?exclude=${encodeURIComponent(wordDetail.word)}`;
+  const currentWordLinkClass = hasActiveCurrentWord
+    ? 'rounded-full border border-yellow/30 bg-yellow/10 px-4 py-2 text-sm font-semibold text-yellow no-underline transition hover:border-yellow/50 hover:text-orange'
+    : 'rounded-full border border-accent/30 bg-white/5 px-4 py-2 text-sm font-semibold text-accent no-underline transition hover:border-accent/50 hover:text-white';
   const completionLearningSummary = `You practiced how "${wordDetail.word}" sounds, what it means, how it looks, and how to infer deeper meaning from context and related words.`;
   const completionNextSteps =
     'Next, you will return to the sound table to choose another letter, sound, or word to explore.';
+
+  const queueChecklistProgressSave = useCallback(
+    (
+      nextCheckedState,
+      {
+        openChecklist = false,
+        setAsCurrent = true,
+        errorMessage = 'Unable to save checklist progress right now.',
+      } = {}
+    ) => {
+      const nextCheckedItemIds = getCheckedItemIdsFromState(nextCheckedState);
+      const nextChecklistOpen = Boolean(openChecklist || nextCheckedItemIds.length > 0);
+
+      checklistSaveQueueRef.current = checklistSaveQueueRef.current
+        .catch(() => null)
+        .then(async () => {
+          const response = await fetch(`/api/word-garden/children/${acId}/practice`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              word: wordDetail.word,
+              practiceIncrement: 0,
+              checklistIncrement: 0,
+              checklistCheckedItemIds: nextCheckedItemIds,
+              openChecklist: nextChecklistOpen,
+              selectionType: wordDetail.selectionType,
+              selectionSlug: wordDetail.selectionSlug,
+              selectionLetter:
+                wordDetail.selectionType === 'phoneme' ? selectedLetter : '',
+              setCurrentWord: setAsCurrent && nextChecklistOpen,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error(errorMessage);
+          }
+
+          setIsChecklistOpen(nextChecklistOpen);
+          setIsCurrentWord(nextChecklistOpen && setAsCurrent);
+          router.refresh();
+        })
+        .catch(error => {
+          console.error('Error saving checklist progress:', error);
+          setCompletionError(error.message || errorMessage);
+        });
+
+      return checklistSaveQueueRef.current;
+    },
+    [
+      acId,
+      selectedLetter,
+      wordDetail.selectionSlug,
+      wordDetail.selectionType,
+      wordDetail.word,
+    ]
+  );
 
   const downloadWorksheet = useCallback(() => {
     if (hasGeneratedImage && !isPrintableImageReady) {
@@ -667,16 +792,36 @@ export default function WorksheetChecklist({
   }, [acId, isCompletionSummaryOpen, router]);
 
   useEffect(() => {
-    if (!autoCheckFromQr || hasAppliedQrAutoCheck || isWordComplete) {
+    if (
+      !autoCheckFromQr ||
+      hasAppliedQrAutoCheck ||
+      isWordComplete ||
+      checkedItemIds.length > 0
+    ) {
       return;
     }
 
-    setCheckedItems(buildFullyCheckedState(panes));
+    const fullyCheckedState = buildFullyCheckedState(panes);
+
+    setCheckedItems(fullyCheckedState);
+    setIsChecklistOpen(true);
+    setIsCurrentWord(true);
+    void queueChecklistProgressSave(fullyCheckedState, {
+      openChecklist: true,
+      setAsCurrent: true,
+    });
     setCompletionSuccess(
       'Checklist pre-filled from the worksheet QR code. Press Complete Checklist when you are ready.'
     );
     setHasAppliedQrAutoCheck(true);
-  }, [autoCheckFromQr, hasAppliedQrAutoCheck, isWordComplete, panes]);
+  }, [
+    autoCheckFromQr,
+    checkedItemIds.length,
+    hasAppliedQrAutoCheck,
+    isWordComplete,
+    panes,
+    queueChecklistProgressSave,
+  ]);
 
   useEffect(() => {
     if (!generatedContent || hasTriggeredGeneratedPrint || !isPrintableImageReady) {
@@ -699,9 +844,152 @@ export default function WorksheetChecklist({
   ]);
 
   function toggleItem(itemId) {
-    setCheckedItems(current => ({ ...current, [itemId]: !current[itemId] }));
+    const nextCheckedItems = {
+      ...checkedItems,
+      [itemId]: !checkedItems[itemId],
+    };
+    const nextCheckedItemIds = getCheckedItemIdsFromState(nextCheckedItems);
+    const shouldKeepChecklistOpen = isChecklistOpen || nextCheckedItemIds.length > 0;
+    const shouldSetCurrentWord =
+      isCurrentWord ||
+      (!isChecklistOpen && openChecklistCount === 0 && !hasCurrentWord);
+
+    setCheckedItems(nextCheckedItems);
+    setIsChecklistOpen(shouldKeepChecklistOpen);
+    setIsCurrentWord(shouldKeepChecklistOpen && shouldSetCurrentWord);
+    void queueChecklistProgressSave(nextCheckedItems, {
+      openChecklist: shouldKeepChecklistOpen,
+      setAsCurrent: shouldSetCurrentWord,
+    });
     setCompletionError('');
     setCompletionSuccess('');
+  }
+
+  async function handleStartChecklist() {
+    if (isChecklistOpen || isWordComplete) {
+      return;
+    }
+
+    const shouldSetCurrentWord = openChecklistCount === 0;
+
+    setIsStartingChecklist(true);
+    setCompletionError('');
+    setCompletionSuccess('');
+
+    try {
+      const response = await fetch(`/api/word-garden/children/${acId}/practice`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          word: wordDetail.word,
+          practiceIncrement: 0,
+          checklistIncrement: 0,
+          checklistCheckedItemIds: [],
+          openChecklist: true,
+          selectionType: wordDetail.selectionType,
+          selectionSlug: wordDetail.selectionSlug,
+          selectionLetter:
+            wordDetail.selectionType === 'phoneme' ? selectedLetter : '',
+          setCurrentWord: shouldSetCurrentWord,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Unable to start this checklist right now.');
+      }
+
+      setIsChecklistOpen(true);
+      setIsCurrentWord(shouldSetCurrentWord);
+      setCompletionSuccess('Checklist started. Check items as you work.');
+      router.refresh();
+    } catch (error) {
+      console.error('Error starting checklist:', error);
+      setCompletionError('Unable to start this checklist right now.');
+    } finally {
+      setIsStartingChecklist(false);
+    }
+  }
+
+  async function handleSetCurrentWord() {
+    if (checklistStatus !== 'started' || isCurrentWord) {
+      return;
+    }
+
+    setIsSettingCurrentWord(true);
+    setCompletionError('');
+    setCompletionSuccess('');
+
+    try {
+      const response = await fetch(`/api/word-garden/children/${acId}/practice`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          word: wordDetail.word,
+          practiceIncrement: 0,
+          checklistIncrement: 0,
+          checklistCheckedItemIds: checkedItemIds,
+          openChecklist: true,
+          selectionType: wordDetail.selectionType,
+          selectionSlug: wordDetail.selectionSlug,
+          selectionLetter:
+            wordDetail.selectionType === 'phoneme' ? selectedLetter : '',
+          setCurrentWord: true,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Unable to set the current word right now.');
+      }
+
+      setIsCurrentWord(true);
+      setCompletionSuccess('This word is now set as the current word.');
+      router.refresh();
+    } catch (error) {
+      console.error('Error setting current word:', error);
+      setCompletionError('Unable to set the current word right now.');
+    } finally {
+      setIsSettingCurrentWord(false);
+    }
+  }
+
+  async function handleResetStartedChecklist() {
+    setIsResetStartedChecklist(true);
+    setCompletionError('');
+    setCompletionSuccess('');
+
+    try {
+      const response = await fetch(`/api/word-garden/children/${acId}/practice`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          word: wordDetail.word,
+          practiceIncrement: 0,
+          checklistIncrement: 0,
+          checklistCheckedItemIds: [],
+          openChecklist: false,
+          selectionType: wordDetail.selectionType,
+          selectionSlug: wordDetail.selectionSlug,
+          selectionLetter:
+            wordDetail.selectionType === 'phoneme' ? selectedLetter : '',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Unable to reset this checklist right now.');
+      }
+
+      setCheckedItems(buildInitialCheckedState(panes));
+      setIsChecklistOpen(false);
+      setIsCurrentWord(false);
+      setIsResetStartedModalOpen(false);
+      setCompletionSuccess('Checklist reset to not started.');
+      router.refresh();
+    } catch (error) {
+      console.error('Error resetting started checklist:', error);
+      setCompletionError('Unable to reset this checklist right now.');
+    } finally {
+      setIsResetStartedChecklist(false);
+    }
   }
 
   async function handleGenerate(event) {
@@ -794,7 +1082,11 @@ export default function WorksheetChecklist({
       }
 
       setIsWordComplete(true);
+      setCheckedItems(buildInitialCheckedState(panes));
+      setIsChecklistOpen(false);
+      setIsCurrentWord(false);
       setCompletionSuccess('Checklist marked complete online.');
+      router.refresh();
       setIsCompletionSummaryOpen(true);
     } catch (error) {
       console.error('Error completing worksheet online:', error);
@@ -827,9 +1119,12 @@ export default function WorksheetChecklist({
 
       setIsWordComplete(false);
       setCheckedItems(buildInitialCheckedState(panes));
+      setIsChecklistOpen(false);
+      setIsCurrentWord(false);
       setCompletionSuccess(
         'This word is ready for more work. Finish the checklist again when you are ready.'
       );
+      router.refresh();
       setIsContinueModalOpen(false);
     } catch (error) {
       console.error('Error reopening completed word:', error);
@@ -1349,7 +1644,7 @@ export default function WorksheetChecklist({
           <div className='min-w-0'>
             <div className='flex flex-wrap items-center gap-3'>
               <h2 className='text-2xl text-yellow'>Checklist</h2>
-              <span className='rounded-full border border-yellow/20 bg-yellow/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-yellow'>
+              <span className='rounded-full border border-accent/20 bg-primary/40 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-accent'>
                 4 Required
               </span>
               <span className='rounded-full border border-accent/20 bg-primary/40 px-3 py-2 text-sm font-semibold text-accent'>
@@ -1406,6 +1701,78 @@ export default function WorksheetChecklist({
 
   return (
     <>
+      <div className='no-print mb-6 rounded-3xl border border-accent/20 bg-primary/40 p-5 shadow-lg'>
+        <div className='flex flex-wrap items-center gap-3'>
+          {!isCurrentWord ? (
+            <Link
+              href={currentWordHref}
+              className={currentWordLinkClass}
+            >
+              Go to Current Word
+            </Link>
+          ) : null}
+
+          {recommendHref ? (
+            <button
+              type='button'
+              onClick={() => router.push(recommendHref)}
+              className='rounded-full border border-green-400/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-200 transition hover:border-green-300/50 hover:text-white'
+            >
+              Recommend
+            </button>
+          ) : null}
+
+          <Link
+            href={`/word-garden/${acId}/checklists`}
+            className='rounded-full border border-green-400/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-200 no-underline transition hover:border-green-300/50 hover:text-white'
+          >
+            Checklists
+          </Link>
+
+          {checklistStatus === 'started' ? (
+            <button
+              type='button'
+              onClick={() => setIsResetStartedModalOpen(true)}
+              className={`rounded-full border px-4 py-2 text-sm font-semibold transition hover:text-white ${getChecklistStatusClass(
+                checklistStatus
+              )}`}
+            >
+              {getChecklistStatusLabel(checklistStatus)}
+            </button>
+          ) : checklistStatus === 'not-started' ? (
+            <button
+              type='button'
+              onClick={handleStartChecklist}
+              disabled={isStartingChecklist}
+              className='rounded-full border border-green-400/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-200 transition hover:border-green-300/50 hover:text-white disabled:cursor-not-allowed disabled:opacity-50'
+            >
+              {isStartingChecklist ? 'Starting...' : getChecklistStatusLabel(checklistStatus)}
+            </button>
+          ) : (
+            <span
+              className={`rounded-full border px-4 py-2 text-sm font-semibold ${getChecklistStatusClass(
+                checklistStatus
+              )}`}
+            >
+              {getChecklistStatusLabel(checklistStatus)}
+            </span>
+          )}
+
+          <button
+            type='button'
+            onClick={handleSetCurrentWord}
+            disabled={checklistStatus !== 'started' || isCurrentWord || isSettingCurrentWord}
+            className={`rounded-full border px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${
+              checklistStatus === 'started' && !isCurrentWord
+                ? 'border-green-400/30 bg-green-500/10 text-green-200 hover:border-green-300/50 hover:text-white'
+                : 'border-accent/30 bg-white/5 text-accent hover:border-accent/50 hover:text-white'
+            }`}
+          >
+            {isSettingCurrentWord ? 'Setting...' : 'Set Current Word'}
+          </button>
+        </div>
+      </div>
+
       {isWordComplete ? (
         <div className='no-print mb-6 rounded-3xl border border-yellow/40 bg-primary/50 p-5 shadow-lg'>
           <div className='flex flex-wrap items-center justify-between gap-4'>
@@ -1669,6 +2036,40 @@ export default function WorksheetChecklist({
                 className='rounded-full bg-primary px-4 py-2 font-bold text-white disabled:cursor-not-allowed disabled:opacity-60'
               >
                 {isResettingChecklist ? 'Reopening...' : 'Continue Working'}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {isResetStartedModalOpen ? (
+        <div className='no-print fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 px-4'>
+          <div className='w-full max-w-lg rounded-3xl bg-white p-6 text-slate-900 shadow-2xl'>
+            <p className='text-sm uppercase tracking-[0.3em] text-slate-500'>
+              Reset Checklist
+            </p>
+            <h3 className='mt-3 text-2xl font-bold text-slate-900'>
+              Set {wordDetail.word} to not started?
+            </h3>
+            <p className='mt-4 text-sm leading-6 text-slate-700'>
+              This will clear the saved checkbox state for this word. You can
+              always start it again later by checking any item.
+            </p>
+            <div className='mt-6 flex flex-wrap justify-end gap-3'>
+              <button
+                type='button'
+                onClick={() => setIsResetStartedModalOpen(false)}
+                className='rounded-full bg-slate-200 px-4 py-2 font-bold text-slate-900'
+              >
+                Cancel
+              </button>
+              <button
+                type='button'
+                onClick={handleResetStartedChecklist}
+                disabled={isResetStartedChecklist}
+                className='rounded-full bg-primary px-4 py-2 font-bold text-white disabled:cursor-not-allowed disabled:opacity-60'
+              >
+                {isResetStartedChecklist ? 'Resetting...' : 'Set To Not Started'}
               </button>
             </div>
           </div>

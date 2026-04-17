@@ -14,6 +14,12 @@ export async function POST(request, { params }) {
     practiceIncrement = 1,
     checklistIncrement = 0,
     resetChecklist = false,
+    checklistCheckedItemIds,
+    openChecklist = false,
+    selectionType = null,
+    selectionSlug = '',
+    selectionLetter = '',
+    setCurrentWord = false,
   } = await request.json();
 
   if (!word || !word.trim()) {
@@ -31,7 +37,13 @@ export async function POST(request, { params }) {
       word,
       practiceIncrement,
       checklistIncrement,
-      resetChecklist
+      resetChecklist,
+      checklistCheckedItemIds,
+      openChecklist,
+      selectionType,
+      selectionSlug,
+      selectionLetter,
+      setCurrentWord
     );
 
     if (!anonymousChild) {

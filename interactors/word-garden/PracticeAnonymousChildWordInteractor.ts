@@ -16,13 +16,25 @@ export class PracticeAnonymousChildWordInteractor extends BaseInteractor {
     word: string,
     practiceIncrement = 1,
     checklistIncrement = 0,
-    resetChecklist = false
+    resetChecklist = false,
+    checklistCheckedItemIds: string[] | undefined = undefined,
+    openChecklist = false,
+    selectionType: 'all' | 'letter' | 'phoneme' | null = null,
+    selectionSlug = '',
+    selectionLetter = '',
+    setCurrentWord = false
   ): Promise<IAnonymousChild | null> {
     return this.anonymousChildRepo.recordWordPracticeForUser(userEmail, acId, {
       word,
       practiceIncrement,
       checklistIncrement,
       resetChecklist,
+      checklistCheckedItemIds,
+      openChecklist,
+      selectionType,
+      selectionSlug,
+      selectionLetter,
+      setCurrentWord,
     });
   }
 }

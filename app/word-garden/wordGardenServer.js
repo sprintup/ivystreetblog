@@ -1,5 +1,6 @@
 import { getServerSession } from 'next-auth/next';
 import { redirect } from 'next/navigation';
+import { unstable_noStore as noStore } from 'next/cache';
 import { options } from '@auth/options';
 import { CreateUserInteractor } from '@interactors/user/CreateUserInteractor';
 import { ReadWordGardenDashboardInteractor } from '@/interactors/word-garden/ReadWordGardenDashboardInteractor';
@@ -10,6 +11,7 @@ function getSignInRedirect(callbackPath = '/word-garden') {
 }
 
 export async function requireWordGardenSession(callbackPath = '/word-garden') {
+  noStore();
   const session = await getServerSession(options);
 
   if (!session) {
@@ -27,6 +29,7 @@ export async function requireWordGardenSession(callbackPath = '/word-garden') {
 }
 
 export async function getWordGardenDashboardData() {
+  noStore();
   const { session, user } = await requireWordGardenSession('/word-garden');
   const readWordGardenDashboardInteractor =
     await ReadWordGardenDashboardInteractor.create();
@@ -42,6 +45,7 @@ export async function getWordGardenDashboardData() {
 }
 
 export async function getAnonymousChildOrNotFound(acId, callbackPath = '/word-garden') {
+  noStore();
   const { session } = await requireWordGardenSession(callbackPath);
   const readAnonymousChildInteractor = await ReadAnonymousChildInteractor.create();
   const anonymousChild = await readAnonymousChildInteractor.execute(
