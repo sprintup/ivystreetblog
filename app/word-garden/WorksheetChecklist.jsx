@@ -104,6 +104,15 @@ function buildPhonemeHref(acId, phonemeSlug, letter = '') {
   }`;
 }
 
+function buildLetterHref(acId, letter) {
+  const normalizedLetter = String(letter || '')
+    .trim()
+    .charAt(0)
+    .toUpperCase();
+
+  return normalizedLetter ? `/word-garden/${acId}/letter/${normalizedLetter}` : '';
+}
+
 function getSelectedLetterValue(wordDetail) {
   return String(
     wordDetail.uppercaseLetter ||
@@ -116,6 +125,10 @@ function getSelectedLetterValue(wordDetail) {
     .toUpperCase();
 }
 
+function isVowelLetter(letter) {
+  return /^[AEIOU]$/.test(String(letter || '').toUpperCase());
+}
+
 function getSelectedLetterSound(wordDetail) {
   const targetLetter = getSelectedLetterValue(wordDetail);
   const matchingSoundRow = wordDetail.soundMapRows.find(
@@ -123,16 +136,54 @@ function getSelectedLetterSound(wordDetail) {
       String(row.grapheme || '').toUpperCase().includes(targetLetter) &&
       row.phonemeLabel
   );
-  const firstAvailableSound = wordDetail.soundMapRows.find(row => row.phonemeLabel);
 
   return (
     matchingSoundRow?.phonemeLabel ||
-    firstAvailableSound?.phonemeLabel ||
     (wordDetail.selectionType === 'phoneme'
       ? wordDetail.targetPhonemeLabel
       : null) ||
-    'the target sound'
+    null
   );
+}
+
+function getOrthographicLetterSoundPhrase(wordDetail) {
+  if (wordDetail.selectionType === 'phoneme') {
+    return `${getAnalyticTargetSound(wordDetail)} sound`;
+  }
+
+  const targetLetter = getSelectedLetterValue(wordDetail);
+
+  if (isVowelLetter(targetLetter)) {
+    return `an open ${targetLetter} sound`;
+  }
+
+  const selectedLetterSound = getSelectedLetterSound(wordDetail);
+  return selectedLetterSound ? `${selectedLetterSound} sound` : null;
+}
+
+function getFallbackLetterSoundPhrase(wordDetail) {
+  const targetLetter = getSelectedLetterValue(wordDetail);
+
+  return isVowelLetter(targetLetter)
+    ? `an open ${targetLetter} sound`
+    : `a ${targetLetter} sound`;
+}
+
+function getSelectedLetterSoundLinkData(wordDetail) {
+  const targetLetter = getSelectedLetterValue(wordDetail);
+  const matchingSoundRow = wordDetail.soundMapRows.find(
+    row =>
+      String(row.grapheme || '').toUpperCase().includes(targetLetter) &&
+      row.phonemeLabel &&
+      row.phonemeSlug
+  );
+
+  return matchingSoundRow
+    ? {
+        text: matchingSoundRow.phonemeLabel,
+        phonemeSlug: matchingSoundRow.phonemeSlug,
+      }
+    : null;
 }
 
 function getAnalyticTargetSound(wordDetail) {
@@ -316,10 +367,12 @@ function buildPanes(wordDetail) {
         ? `Say "${wordDetail.word}" out loud and point out the letter ${targetLetter} in the word, like ${letterConstant}.`
         : `Say "${wordDetail.word}" out loud and say it starts with ${targetLetter} like ${letterConstant}.`
       : `Say "${wordDetail.word}" out loud and emphasize ${emphasisTarget}.`;
-  const firstSound = getSelectedLetterSound(wordDetail);
+  const matchingLetterSoundLink = getSelectedLetterSoundLinkData(wordDetail);
   const orthographicFocus = getOrthographicFocusDisplay(wordDetail);
   const orthographicFocusSound = getAnalyticTargetSound(wordDetail);
   const orthographicFocusType = getOrthographicFocusLabel(wordDetail);
+  const orthographicLetterSoundPhrase = getOrthographicLetterSoundPhrase(wordDetail);
+  const fallbackLetterSoundPhrase = getFallbackLetterSoundPhrase(wordDetail);
   const upper =
     wordDetail.selectionType === 'phoneme'
       ? String(orthographicFocus || '').replace(/[^A-Za-z]/g, '').toUpperCase() ||
@@ -381,8 +434,12 @@ function buildPanes(wordDetail) {
           label: wordDetail.selectionType === 'phoneme'
             ? `"${wordDetail.word}" includes ${orthographicFocusType} ${orthographicFocus}, which can make ${orthographicFocusSound} sound.`
             : isEmbeddedLetterSelection
-            ? `"${wordDetail.word}" has letter ${upper} inside it, which can make ${firstSound} sound.`
-            : `"${wordDetail.word}" starts with letter ${upper}, which makes ${firstSound} sound.`,
+            ? matchingLetterSoundLink
+              ? `"${wordDetail.word}" has letter ${upper} inside it, which can make ${orthographicLetterSoundPhrase}.`
+              : `"${wordDetail.word}" has letter ${upper} inside it, and ${upper} can make ${fallbackLetterSoundPhrase}.`
+            : matchingLetterSoundLink
+              ? `"${wordDetail.word}" starts with letter ${upper}, which can make ${orthographicLetterSoundPhrase}.`
+              : `"${wordDetail.word}" starts with letter ${upper}, and ${upper} can make ${fallbackLetterSoundPhrase}.`,
         },
         {
           id: 'orthographic-forms',
@@ -528,6 +585,12 @@ export default function WorksheetChecklist({
   const selectedLetter =
     soundTableSelection ||
     (wordDetail.selectionType === 'letter' ? wordDetail.selectionSlug : '');
+  const orthographicTargetHref =
+    wordDetail.selectionType === 'phoneme'
+      ? buildPhonemeHref(acId, wordDetail.selectionSlug, selectedLetter)
+      : buildLetterHref(acId, getSelectedLetterValue(wordDetail));
+  const selectedLetterSoundLink = getSelectedLetterSoundLinkData(wordDetail);
+  const fallbackLetterSoundPhrase = getFallbackLetterSoundPhrase(wordDetail);
 
   const paneProgress = panes.map(pane => {
     const checkedCount = pane.items.filter(item => checkedItems[item.id]).length;
@@ -984,37 +1047,44 @@ export default function WorksheetChecklist({
                 </p>
               </div>
             </div>
-            <p className='mt-4 text-accent'>
-              {wordDetail.selectionType === 'phoneme'
-                ? `${wordDetail.word} includes ${getOrthographicFocusLabel(
-                    wordDetail
-                  )} ${getOrthographicFocusDisplay(
-                    wordDetail
-                  )}, which can make ${getAnalyticTargetSound(wordDetail)} sound.`
-                : wordDetail.isEmbeddedLetterSelection
-                ? `${wordDetail.word} has the letter ${getSelectedLetterValue(
-                    wordDetail
-                  )} inside it, which can make ${getAnalyticTargetSound(
-                    wordDetail
-                  )} sound.`
-                : `${wordDetail.word} starts with ${wordDetail.uppercaseLetter}, which can make ${getAnalyticTargetSound(
-                    wordDetail
-                  )} sound.`}
-            </p>
+            <p className='mt-4 text-accent'>{renderOrthographicExplanation()}</p>
           </section>
           <section className='rounded-2xl bg-primary/40 p-4'>
             <p className='text-xs uppercase tracking-[0.3em] text-yellow'>
               {wordDetail.selectionType === 'phoneme' ? 'Target Letters' : 'Letter Match'}
             </p>
             <div className='mt-4 grid gap-3 sm:grid-cols-2'>
-              <div className='rounded-2xl border border-accent/20 bg-secondary/80 p-4 text-center'>
-                <p className='text-xs uppercase tracking-[0.25em] text-accent'>Uppercase</p>
-                <p className='mt-3 text-5xl font-semibold text-white'>{wordDetail.uppercaseLetter}</p>
-              </div>
-              <div className='rounded-2xl border border-accent/20 bg-secondary/80 p-4 text-center'>
-                <p className='text-xs uppercase tracking-[0.25em] text-accent'>Lowercase</p>
-                <p className='mt-3 text-5xl font-semibold lowercase text-white'>{wordDetail.lowercaseLetter}</p>
-              </div>
+              {[
+                {
+                  label: 'Uppercase',
+                  value: wordDetail.uppercaseLetter,
+                  valueClass: 'mt-3 text-5xl font-semibold text-white',
+                },
+                {
+                  label: 'Lowercase',
+                  value: wordDetail.lowercaseLetter,
+                  valueClass: 'mt-3 text-5xl font-semibold lowercase text-white',
+                },
+              ].map(card =>
+                orthographicTargetHref ? (
+                  <Link
+                    key={card.label}
+                    href={orthographicTargetHref}
+                    className='rounded-2xl border border-accent/20 bg-secondary/80 p-4 text-center no-underline transition hover:border-yellow/40 hover:bg-secondary'
+                  >
+                    <p className='text-xs uppercase tracking-[0.25em] text-accent'>{card.label}</p>
+                    <p className={card.valueClass}>{card.value}</p>
+                  </Link>
+                ) : (
+                  <div
+                    key={card.label}
+                    className='rounded-2xl border border-accent/20 bg-secondary/80 p-4 text-center'
+                  >
+                    <p className='text-xs uppercase tracking-[0.25em] text-accent'>{card.label}</p>
+                    <p className={card.valueClass}>{card.value}</p>
+                  </div>
+                )
+              )}
             </div>
           </section>
         </div>
@@ -1140,6 +1210,57 @@ export default function WorksheetChecklist({
         : 'border-accent/20 bg-primary/40 text-accent';
 
     return { status, statusClass };
+  }
+
+  function renderOrthographicExplanation() {
+    if (wordDetail.selectionType === 'phoneme') {
+      return (
+        <>
+          {wordDetail.word} includes {getOrthographicFocusLabel(wordDetail)}{' '}
+          {getOrthographicFocusDisplay(wordDetail)}, which can make{' '}
+          <Link
+            href={buildPhonemeHref(acId, wordDetail.selectionSlug, selectedLetter)}
+            className='text-yellow underline decoration-dotted underline-offset-4 hover:text-orange'
+          >
+            {getAnalyticTargetSound(wordDetail)}
+          </Link>{' '}
+          sound.
+        </>
+      );
+    }
+
+    const leadText = wordDetail.isEmbeddedLetterSelection
+      ? `${wordDetail.word} has the letter ${getSelectedLetterValue(wordDetail)} inside it, `
+      : `${wordDetail.word} starts with letter ${wordDetail.uppercaseLetter}, `;
+
+    if (selectedLetterSoundLink) {
+      return (
+        <>
+          {leadText}
+          which can make{' '}
+          <Link
+            href={buildPhonemeHref(acId, selectedLetterSoundLink.phonemeSlug, selectedLetter)}
+            className='text-yellow underline decoration-dotted underline-offset-4 hover:text-orange'
+          >
+            {selectedLetterSoundLink.text}
+          </Link>{' '}
+          sound.
+        </>
+      );
+    }
+
+    return (
+      <>
+        {leadText}and{' '}
+        <Link
+          href={buildLetterHref(acId, getSelectedLetterValue(wordDetail))}
+          className='text-yellow underline decoration-dotted underline-offset-4 hover:text-orange'
+        >
+          {getSelectedLetterValue(wordDetail)}
+        </Link>{' '}
+        can make {fallbackLetterSoundPhrase}.
+      </>
+    );
   }
 
   function renderChecklistSection(pane, showDivider = false) {
