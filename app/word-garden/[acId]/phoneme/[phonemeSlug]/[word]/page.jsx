@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import TrackWordVisit from '../../../../TrackWordVisit';
+import WordFocusHeader from '../../../../WordFocusHeader';
 import WorksheetChecklist from '../../../../WorksheetChecklist';
 import { getAnonymousChildOrNotFound } from '../../../../wordGardenServer';
 import {
@@ -64,56 +65,6 @@ function getCurrentPageUrl(
   const query = queryParams.toString() ? `?${queryParams.toString()}` : '';
 
   return `${protocol}://${host}/word-garden/${acId}/phoneme/${phonemeSlug}/${encodedWord}${query}`;
-}
-
-function renderHighlightedPhonemeWord(wordDetail, phonemeSlug) {
-  const selectedSymbols = new Set(
-    String(phonemeSlug || '')
-      .split('__')
-      .filter(Boolean)
-  );
-  const getRowPhonemeSlugs = row =>
-    Array.isArray(row?.phonemeSlugs)
-      ? row.phonemeSlugs
-      : row?.phonemeSlug
-        ? [row.phonemeSlug]
-        : [];
-  const getRowSupportedPhonemeSlugs = row =>
-    Array.isArray(row?.supportedPhonemeSlugs)
-      ? row.supportedPhonemeSlugs
-      : getRowPhonemeSlugs(row);
-  const exactHighlightedIndexes = wordDetail.soundMapRows.reduce((indexes, row, index) => {
-    if (getRowPhonemeSlugs(row).some(symbol => selectedSymbols.has(symbol))) {
-      indexes.push(index);
-    }
-
-    return indexes;
-  }, []);
-  const highlightedIndexes = new Set(
-    exactHighlightedIndexes.length > 0
-      ? exactHighlightedIndexes
-      : wordDetail.soundMapRows.reduce((indexes, row, index) => {
-          if (getRowSupportedPhonemeSlugs(row).some(symbol => selectedSymbols.has(symbol))) {
-            indexes.push(index);
-          }
-
-          return indexes;
-        }, [])
-  );
-  const hasHighlightedSegment = highlightedIndexes.size > 0;
-
-  if (!hasHighlightedSegment) {
-    return <span className='text-white'>{wordDetail.word}</span>;
-  }
-
-  return wordDetail.soundMapRows.map((row, index) => (
-    <span
-      key={`${row.grapheme}-${index}-highlight`}
-      className={highlightedIndexes.has(index) ? 'text-yellow' : 'text-white'}
-    >
-      {row.displayGrapheme || row.grapheme}
-    </span>
-  ));
 }
 
 export default async function WordGardenLevelThreePage({ params, searchParams }) {
@@ -212,58 +163,12 @@ export default async function WordGardenLevelThreePage({ params, searchParams })
         <span>{wordDetail.word}</span>
       </div>
 
-      <div className='no-print rounded-[2rem] bg-secondary/80 border border-accent/20 p-8 shadow-xl'>
-        <div className='flex flex-wrap items-start justify-between gap-6'>
-          <div className='max-w-3xl'>
-            <h1 className='text-5xl text-white'>{wordDetail.word}</h1>
-            <p className='text-lg text-accent mt-4 leading-8'>
-              {wordDetail.definitionTokens.map((token, index) =>
-                token.isLinkable ? (
-                  <a
-                    key={`${token.text}-${index}`}
-                    href={token.dictionaryUrl}
-                    className='font-normal text-accent underline decoration-dotted underline-offset-4 decoration-accent/70 hover:text-yellow hover:decoration-yellow'
-                  >
-                    {token.text}
-                  </a>
-                ) : (
-                  <span key={`${token.text}-${index}`}>{token.text}</span>
-                )
-              )}
-            </p>
-            <div className='mt-6 flex flex-wrap gap-3 text-sm text-accent'>
-              <span className='rounded-full border border-accent/30 px-4 py-2'>
-                {wordDetail.syllableCount} syllable{wordDetail.syllableCount === 1 ? '' : 's'}
-              </span>
-              <span className='rounded-full border border-accent/30 px-4 py-2'>
-                {wordDetail.concreteness === 'abstract' ? 'Abstract word' : 'Concrete word'}
-              </span>
-              {wordDetail.isCurrentWord ? (
-                <span className='rounded-full border border-accent/30 bg-white/5 px-4 py-2 text-accent'>
-                  Current word
-                </span>
-              ) : null}
-            </div>
-          </div>
-          <div className='min-w-[260px] rounded-3xl bg-primary/70 px-5 py-4 text-sm text-accent'>
-            <p className='text-[11px] uppercase tracking-[0.25em] text-accent'>
-              Target Sound
-            </p>
-            <p className='mt-2 text-3xl font-semibold text-yellow'>
-              {getTargetLabel(params.phonemeSlug)}
-            </p>
-            <p className='mt-4 text-[11px] uppercase tracking-[0.25em] text-accent'>
-              Sound In Word
-            </p>
-            <p className='mt-2 text-4xl font-semibold tracking-[0.08em]'>
-              {renderHighlightedPhonemeWord(wordDetail, params.phonemeSlug)}
-            </p>
-            {wordDetail.category ? (
-              <p className='mt-4'>Category: {wordDetail.category}</p>
-            ) : null}
-          </div>
-        </div>
-      </div>
+      <WordFocusHeader
+        acId={params.acId}
+        focusLetter={selectedLetter}
+        unlockedArpabet={getUnlockedArpabetForMonths(ageInMonths)}
+        wordDetail={wordDetail}
+      />
 
       <WorksheetChecklist
         acId={params.acId}

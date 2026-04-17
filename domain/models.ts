@@ -43,6 +43,7 @@ export interface IAnonymousChild extends Document {
   originatorUserId?: mongoose.Types.ObjectId | null;
   shareToken?: string;
   currentChecklistWord?: string | null;
+  checklistWordOrder?: string[];
   practicedWords: IPracticedWord[];
   createdAt: Date;
   updatedAt: Date;
@@ -260,6 +261,16 @@ const AnonymousChildSchema = new mongoose.Schema(
       default: null,
       trim: true,
       lowercase: true,
+    },
+    checklistWordOrder: {
+      type: [
+        {
+          type: String,
+          trim: true,
+          lowercase: true,
+        },
+      ],
+      default: [],
     },
     practicedWords: {
       type: [PracticedWordSchema],

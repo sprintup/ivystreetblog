@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import CopyCurrentWordLinkButton from '../../CopyCurrentWordLinkButton';
-import StartedChecklistTile from '../../StartedChecklistTile';
+import StartedChecklistGrid from '../../StartedChecklistGrid';
 import { getAnonymousChildOrNotFound } from '../../wordGardenServer';
 import {
   buildWordGardenWordPath,
@@ -17,8 +16,18 @@ export default async function WordGardenChecklistsPage({ params }) {
   const ageInMonths = calculateAgeInMonths(anonymousChild.birthYearMonth);
   const startedChecklists = getStartedChecklists(
     anonymousChild.practicedWords,
-    anonymousChild.currentChecklistWord
-  );
+    anonymousChild.currentChecklistWord,
+    anonymousChild.checklistWordOrder
+  ).map(checklist => ({
+    ...checklist,
+    href: buildWordGardenWordPath(
+      params.acId,
+      checklist.selectionType,
+      checklist.selectionSlug,
+      checklist.word,
+      checklist.selectionLetter
+    ),
+  }));
   const hasCurrentWord = Boolean(anonymousChild.currentChecklistWord);
   const currentWordUrl = `/word-garden/${params.acId}/current`;
   const recommendedTarget = getRecommendedWordTarget(
@@ -67,7 +76,9 @@ export default async function WordGardenChecklistsPage({ params }) {
                     A checklist opens when you press <strong>Start Checklist</strong>{' '}
                     or check any box on a word page. The app remembers that open
                     state and any checks so you can come back later without
-                    losing your place.
+                    losing your place. Use <strong>Move Up</strong> and{' '}
+                    <strong>Move Down</strong> on the tiles below to reorganize
+                    the checklist words.
                   </p>
                 </div>
                 <div className='rounded-2xl border border-accent/15 bg-primary/30 p-4'>
@@ -153,7 +164,6 @@ export default async function WordGardenChecklistsPage({ params }) {
               Recommend
             </Link>
           ) : null}
-          <CopyCurrentWordLinkButton path={currentWordUrl} />
         </div>
       </div>
 
@@ -164,26 +174,10 @@ export default async function WordGardenChecklistsPage({ params }) {
             or check any box, to start saving checklist progress here.
           </div>
         ) : (
-          <div className='grid gap-4 sm:grid-cols-2 xl:grid-cols-3'>
-            {startedChecklists.map(checklist => {
-              const href = buildWordGardenWordPath(
-                params.acId,
-                checklist.selectionType,
-                checklist.selectionSlug,
-                checklist.word,
-                checklist.selectionLetter
-              );
-
-              return (
-                <StartedChecklistTile
-                  key={`${checklist.normalizedWord}-${checklist.selectionType}-${checklist.selectionSlug}`}
-                  acId={params.acId}
-                  checklist={checklist}
-                  href={href}
-                />
-              );
-            })}
-          </div>
+          <StartedChecklistGrid
+            acId={params.acId}
+            startedChecklists={startedChecklists}
+          />
         )}
       </div>
     </section>

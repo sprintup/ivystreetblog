@@ -26,6 +26,20 @@ interface PracticeWordInput {
   setCurrentWord?: boolean;
 }
 
+function normalizeChecklistWordOrder(values: string[] | undefined): string[] {
+  if (!Array.isArray(values)) {
+    return [];
+  }
+
+  return Array.from(
+    new Set(
+      values
+        .map(value => normalizeWordValue(value))
+        .filter(Boolean)
+    )
+  );
+}
+
 interface AnonymousChildAccess {
   user: IUser;
   anonymousChild: IAnonymousChild;
@@ -130,6 +144,37 @@ function getUserDisplayName(user: {
 }
 
 export class AnonymousChildRepository extends BaseRepository {
+  private applyChecklistWordOrder(
+    anonymousChild: IAnonymousChild,
+    preferredOrder: string[] | undefined = undefined
+  ) {
+    const startedChecklistWords = [...this.getStartedChecklistWords(anonymousChild)].sort(
+      (leftWord, rightWord) => {
+        const leftTime = leftWord.checklistUpdatedAt
+          ? new Date(leftWord.checklistUpdatedAt).getTime()
+          : 0;
+        const rightTime = rightWord.checklistUpdatedAt
+          ? new Date(rightWord.checklistUpdatedAt).getTime()
+          : 0;
+
+        if (leftTime !== rightTime) {
+          return rightTime - leftTime;
+        }
+
+        return leftWord.word.localeCompare(rightWord.word);
+      }
+    );
+    const startedWordSet = new Set(startedChecklistWords.map(practicedWord => practicedWord.word));
+    const normalizedOrder = normalizeChecklistWordOrder(
+      preferredOrder ?? anonymousChild.checklistWordOrder
+    ).filter(word => startedWordSet.has(word));
+    const missingWords = startedChecklistWords
+      .map(practicedWord => practicedWord.word)
+      .filter(word => !normalizedOrder.includes(word));
+
+    anonymousChild.checklistWordOrder = [...normalizedOrder, ...missingWords];
+  }
+
   private getStartedChecklistWords(anonymousChild: IAnonymousChild) {
     return anonymousChild.practicedWords.filter(practicedWord =>
       hasOpenChecklist(practicedWord)
@@ -195,6 +240,17 @@ export class AnonymousChildRepository extends BaseRepository {
 
     if (!anonymousChild.shareToken) {
       anonymousChild.shareToken = randomUUID();
+      didChange = true;
+    }
+
+    const previousChecklistWordOrder = Array.isArray(anonymousChild.checklistWordOrder)
+      ? [...anonymousChild.checklistWordOrder]
+      : [];
+    this.applyChecklistWordOrder(anonymousChild);
+    if (
+      JSON.stringify(anonymousChild.checklistWordOrder || []) !==
+      JSON.stringify(previousChecklistWordOrder)
+    ) {
       didChange = true;
     }
 
@@ -375,6 +431,7 @@ export class AnonymousChildRepository extends BaseRepository {
         originatorUserId: user._id,
         shareToken: randomUUID(),
         currentChecklistWord: null,
+        checklistWordOrder: [],
         practicedWords: [],
       });
 
@@ -559,10 +616,35 @@ export class AnonymousChildRepository extends BaseRepository {
         this.ensureCurrentChecklistWord(anonymousChild);
       }
 
+      this.applyChecklistWordOrder(anonymousChild);
+
       await anonymousChild.save();
       return anonymousChild;
     } catch (error) {
       console.error('Error recording anonymous child word practice:', error);
+      throw error;
+    }
+  }
+
+  async reorderStartedChecklistsForUser(
+    userEmail: string,
+    acId: string,
+    orderedWords: string[]
+  ): Promise<IAnonymousChild | null> {
+    try {
+      const access = await this.getAnonymousChildAccessForUser(userEmail, acId);
+      if (!access) {
+        return null;
+      }
+
+      const { anonymousChild } = access;
+      this.applyChecklistWordOrder(anonymousChild, orderedWords);
+      this.ensureCurrentChecklistWord(anonymousChild);
+      await anonymousChild.save();
+
+      return anonymousChild;
+    } catch (error) {
+      console.error('Error reordering started checklists:', error);
       throw error;
     }
   }

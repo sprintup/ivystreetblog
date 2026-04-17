@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -8,30 +7,25 @@ export default function StartedChecklistTile({
   acId,
   checklist,
   href,
+  isMoveUpDisabled = false,
+  isMoveDownDisabled = false,
+  onMoveUp = null,
+  onMoveDown = null,
 }) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  function getSelectionHref() {
-    if (checklist.selectionType === 'all') {
-      return `/word-garden/${acId}/all`;
-    }
+  function handleOpen() {
+    router.push(href);
+  }
 
-    if (checklist.selectionType === 'letter') {
-      return `/word-garden/${acId}/letter/${encodeURIComponent(checklist.selectionSlug)}`;
+  function handleTileKeyDown(event) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleOpen();
     }
-
-    if (checklist.selectionType === 'phoneme') {
-      return `/word-garden/${acId}/phoneme/${checklist.selectionSlug}${
-        checklist.selectionLetter
-          ? `?letter=${encodeURIComponent(checklist.selectionLetter)}`
-          : ''
-      }`;
-    }
-
-    return '';
   }
 
   async function handleDelete() {
@@ -71,8 +65,6 @@ export default function StartedChecklistTile({
     setIsDeleting(false);
   }
 
-  const selectionHref = getSelectionHref();
-
   return (
     <>
       <div
@@ -80,50 +72,65 @@ export default function StartedChecklistTile({
           checklist.isCurrentWord
             ? 'border-yellow/40 bg-secondary/90'
             : 'border-accent/20 bg-secondary/70'
-        }`}
+        } cursor-pointer hover:border-yellow/40 hover:bg-secondary/90`}
+        role='link'
+        tabIndex={0}
+        onClick={handleOpen}
+        onKeyDown={handleTileKeyDown}
       >
         <div className='flex h-full flex-col gap-4'>
-          <div className='flex flex-wrap items-center gap-2'>
-            <h2 className='text-2xl text-white'>{checklist.word}</h2>
-            {checklist.isCurrentWord ? (
-              <span className='rounded-full bg-yellow/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-yellow'>
-                Current
+          <div className='flex flex-wrap items-start justify-between gap-3'>
+            <div className='min-w-0'>
+              <h2 className='text-2xl text-white'>{checklist.word}</h2>
+            </div>
+            <div className='flex flex-wrap justify-end gap-2 text-sm'>
+              {checklist.isCurrentWord ? (
+                <span className='rounded-full bg-yellow/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-yellow'>
+                  Current
+                </span>
+              ) : null}
+              <span className='rounded-full border border-accent/30 px-3 py-1 text-accent'>
+                Started
               </span>
-            ) : null}
+              <span className='rounded-full border border-accent/30 px-3 py-1 text-accent'>
+                {checklist.checklistCheckedCount} checked
+              </span>
+              <span className='rounded-full border border-accent/30 px-3 py-1 text-accent'>
+                x{checklist.practiceCount}
+              </span>
+            </div>
           </div>
-          {selectionHref ? (
-            <Link
-              href={selectionHref}
-              className='mt-2 text-sm text-accent underline decoration-dotted underline-offset-4 decoration-accent/70 transition hover:text-yellow hover:decoration-yellow'
-            >
-              {checklist.selectionLabel}
-            </Link>
-          ) : (
-            <p className='mt-2 text-sm text-accent'>{checklist.selectionLabel}</p>
-          )}
-
-          <div className='flex flex-wrap gap-2 text-sm'>
-            <span className='rounded-full border border-accent/30 px-3 py-1 text-accent'>
-              Started
-            </span>
-            <span className='rounded-full border border-accent/30 px-3 py-1 text-accent'>
-              {checklist.checklistCheckedCount} checked
-            </span>
-            <span className='rounded-full border border-accent/30 px-3 py-1 text-accent'>
-              x{checklist.practiceCount}
-            </span>
-          </div>
+          <p className='text-sm leading-6 text-accent'>{checklist.definition}</p>
 
           <div className='flex flex-wrap items-center justify-end gap-3'>
-            <Link
-              href={href}
-              className='rounded-full border border-green-400/30 bg-green-500/10 px-3 py-1.5 text-xs font-semibold text-green-200 no-underline transition hover:border-green-300/50 hover:text-white'
-            >
-              Open
-            </Link>
             <button
               type='button'
-              onClick={() => setIsDeleteModalOpen(true)}
+              onClick={event => {
+                event.stopPropagation();
+                onMoveUp?.();
+              }}
+              disabled={isMoveUpDisabled}
+              className='rounded-full border border-accent/30 bg-white/5 px-3 py-1.5 text-xs font-semibold text-accent transition hover:border-accent/50 hover:text-white disabled:cursor-not-allowed disabled:opacity-50'
+            >
+              Move Up
+            </button>
+            <button
+              type='button'
+              onClick={event => {
+                event.stopPropagation();
+                onMoveDown?.();
+              }}
+              disabled={isMoveDownDisabled}
+              className='rounded-full border border-accent/30 bg-white/5 px-3 py-1.5 text-xs font-semibold text-accent transition hover:border-accent/50 hover:text-white disabled:cursor-not-allowed disabled:opacity-50'
+            >
+              Move Down
+            </button>
+            <button
+              type='button'
+              onClick={event => {
+                event.stopPropagation();
+                setIsDeleteModalOpen(true);
+              }}
               disabled={isDeleting}
               className='rounded-full border border-red-300/40 px-3 py-1.5 text-xs font-semibold text-red-200 transition hover:border-red-300 hover:text-white disabled:cursor-not-allowed disabled:opacity-60'
             >

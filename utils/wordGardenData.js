@@ -1908,8 +1908,19 @@ function getGlossaryTerm(term) {
   };
 }
 
-function getStartedChecklists(practicedWords = [], currentChecklistWord = '') {
+function getStartedChecklists(
+  practicedWords = [],
+  currentChecklistWord = '',
+  checklistWordOrder = []
+) {
   const normalizedCurrentChecklistWord = normalizeWord(currentChecklistWord);
+  const normalizedChecklistWordOrder = Array.isArray(checklistWordOrder)
+    ? checklistWordOrder.map(word => normalizeWord(word)).filter(Boolean)
+    : [];
+  const checklistWordOrderIndexes = new Map(
+    normalizedChecklistWordOrder.map((word, index) => [word, index])
+  );
+  const hasManualOrder = normalizedChecklistWordOrder.length > 0;
   const practicedWordMap = getPracticeMap(practicedWords);
 
   return practicedWords
@@ -1958,7 +1969,18 @@ function getStartedChecklists(practicedWords = [], currentChecklistWord = '') {
     })
     .filter(Boolean)
     .sort((leftEntry, rightEntry) => {
-      if (leftEntry.isCurrentWord !== rightEntry.isCurrentWord) {
+      const leftOrderIndex = checklistWordOrderIndexes.has(leftEntry.normalizedWord)
+        ? checklistWordOrderIndexes.get(leftEntry.normalizedWord)
+        : Number.POSITIVE_INFINITY;
+      const rightOrderIndex = checklistWordOrderIndexes.has(rightEntry.normalizedWord)
+        ? checklistWordOrderIndexes.get(rightEntry.normalizedWord)
+        : Number.POSITIVE_INFINITY;
+
+      if (hasManualOrder && leftOrderIndex !== rightOrderIndex) {
+        return leftOrderIndex - rightOrderIndex;
+      }
+
+      if (!hasManualOrder && leftEntry.isCurrentWord !== rightEntry.isCurrentWord) {
         return leftEntry.isCurrentWord ? -1 : 1;
       }
 
@@ -1977,9 +1999,17 @@ function getStartedChecklists(practicedWords = [], currentChecklistWord = '') {
     });
 }
 
-function getCurrentChecklist(practicedWords = [], currentChecklistWord = '') {
+function getCurrentChecklist(
+  practicedWords = [],
+  currentChecklistWord = '',
+  checklistWordOrder = []
+) {
   return (
-    getStartedChecklists(practicedWords, currentChecklistWord).find(
+    getStartedChecklists(
+      practicedWords,
+      currentChecklistWord,
+      checklistWordOrder
+    ).find(
       checklist => checklist.isCurrentWord
     ) || null
   );

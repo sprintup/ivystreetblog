@@ -25,7 +25,8 @@ export default async function WordGardenCurrentWordPage({ params, searchParams }
   const excludedWord = getSingleSearchParamValue(searchParams?.exclude);
   const currentChecklist = getCurrentChecklist(
     anonymousChild.practicedWords,
-    anonymousChild.currentChecklistWord
+    anonymousChild.currentChecklistWord,
+    anonymousChild.checklistWordOrder
   );
 
   if (currentChecklist) {
@@ -42,7 +43,8 @@ export default async function WordGardenCurrentWordPage({ params, searchParams }
 
   const startedChecklists = getStartedChecklists(
     anonymousChild.practicedWords,
-    anonymousChild.currentChecklistWord
+    anonymousChild.currentChecklistWord,
+    anonymousChild.checklistWordOrder
   );
 
   if (startedChecklists.length > 0) {

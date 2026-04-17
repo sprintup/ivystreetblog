@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import TrackWordVisit from '../../../TrackWordVisit';
+import WordFocusHeader from '../../../WordFocusHeader';
 import WorksheetChecklist from '../../../WorksheetChecklist';
 import { getAnonymousChildOrNotFound } from '../../../wordGardenServer';
 import {
@@ -93,64 +94,11 @@ export default async function WordGardenAllWordsDetailPage({ params, searchParam
         <span>{wordDetail.word}</span>
       </div>
 
-      <div className='no-print rounded-[2rem] bg-secondary/80 border border-accent/20 p-8 shadow-xl'>
-        <div className='flex flex-wrap items-start justify-between gap-6'>
-          <div className='max-w-3xl'>
-            <h1 className='text-5xl text-white'>{wordDetail.word}</h1>
-            <p className='text-lg text-accent mt-4 leading-8'>
-              {wordDetail.definitionTokens.map((token, index) =>
-                token.isLinkable ? (
-                  <a
-                    key={`${token.text}-${index}`}
-                    href={token.dictionaryUrl}
-                    className='font-normal text-accent underline decoration-dotted underline-offset-4 decoration-accent/70 hover:text-yellow hover:decoration-yellow'
-                  >
-                    {token.text}
-                  </a>
-                ) : (
-                  <span key={`${token.text}-${index}`}>{token.text}</span>
-                )
-              )}
-            </p>
-            <div className='mt-6 flex flex-wrap gap-3 text-sm text-accent'>
-              <span className='rounded-full border border-accent/30 px-4 py-2'>
-                {wordDetail.syllableCount} syllable{wordDetail.syllableCount === 1 ? '' : 's'}
-              </span>
-              <span className='rounded-full border border-accent/30 px-4 py-2'>
-                {wordDetail.concreteness === 'abstract' ? 'Abstract word' : 'Concrete word'}
-              </span>
-              {wordDetail.isCurrentWord ? (
-                <span className='rounded-full border border-accent/30 bg-white/5 px-4 py-2 text-accent'>
-                  Current word
-                </span>
-              ) : null}
-            </div>
-          </div>
-          <div className='min-w-[260px] rounded-3xl bg-primary/70 px-5 py-4 text-sm text-accent'>
-            <div className='grid grid-cols-2 gap-3'>
-              <div className='rounded-2xl border border-accent/20 bg-secondary/60 p-3 text-center'>
-                <p className='text-[11px] uppercase tracking-[0.25em] text-accent'>
-                  Lowercase
-                </p>
-                <p className='mt-2 text-4xl font-semibold lowercase text-white'>
-                  {wordDetail.lowercaseLetter || '-'}
-                </p>
-              </div>
-              <div className='rounded-2xl border border-accent/20 bg-secondary/60 p-3 text-center'>
-                <p className='text-[11px] uppercase tracking-[0.25em] text-accent'>
-                  Uppercase
-                </p>
-                <p className='mt-2 text-4xl font-semibold text-white'>
-                  {wordDetail.uppercaseLetter || '-'}
-                </p>
-              </div>
-            </div>
-            {wordDetail.category ? (
-              <p className='mt-4'>Category: {wordDetail.category}</p>
-            ) : null}
-          </div>
-        </div>
-      </div>
+      <WordFocusHeader
+        acId={params.acId}
+        unlockedArpabet={getUnlockedArpabetForMonths(ageInMonths)}
+        wordDetail={wordDetail}
+      />
 
       <WorksheetChecklist
         acId={params.acId}
