@@ -141,6 +141,65 @@ function getAnalyticTargetSound(wordDetail) {
     : getSelectedLetterSound(wordDetail);
 }
 
+function getOrthographicFocusRows(wordDetail) {
+  if (wordDetail.selectionType !== 'phoneme') {
+    return [];
+  }
+
+  const highlightedIndexes = getHighlightedPhonemeRowIndexes(
+    wordDetail.soundMapRows,
+    wordDetail.selectionSlug
+  );
+
+  return wordDetail.soundMapRows.filter((row, index) => highlightedIndexes.has(index));
+}
+
+function getOrthographicFocusDisplay(wordDetail) {
+  if (wordDetail.selectionType !== 'phoneme') {
+    return getSelectedLetterValue(wordDetail);
+  }
+
+  return (
+    getOrthographicFocusRows(wordDetail)[0]?.displayGrapheme ||
+    getOrthographicFocusRows(wordDetail)[0]?.grapheme ||
+    getSelectedLetterValue(wordDetail)
+  );
+}
+
+function getOrthographicFocusLabel(wordDetail) {
+  const focusDisplay = getOrthographicFocusDisplay(wordDetail);
+  const lettersOnly = String(focusDisplay || '').replace(/[^A-Za-z]/g, '');
+
+  return lettersOnly.length > 1 ? 'letters' : 'letter';
+}
+
+function renderHighlightedOrthographicWord(wordDetail) {
+  if (wordDetail.selectionType !== 'phoneme') {
+    return renderHighlightedLetterWord(
+      wordDetail.word,
+      getSelectedLetterValue(wordDetail)
+    );
+  }
+
+  const highlightedIndexes = getHighlightedPhonemeRowIndexes(
+    wordDetail.soundMapRows,
+    wordDetail.selectionSlug
+  );
+
+  if (highlightedIndexes.size === 0) {
+    return wordDetail.word;
+  }
+
+  return wordDetail.soundMapRows.map((row, index) => (
+    <span
+      key={`${row.displayGrapheme || row.grapheme}-${index}-orthographic`}
+      className={highlightedIndexes.has(index) ? 'text-yellow' : undefined}
+    >
+      {row.displayGrapheme || row.grapheme}
+    </span>
+  ));
+}
+
 function getRowPhonemeSlugs(row) {
   return Array.isArray(row?.phonemeSlugs)
     ? row.phonemeSlugs
@@ -258,8 +317,19 @@ function buildPanes(wordDetail) {
         : `Say "${wordDetail.word}" out loud and say it starts with ${targetLetter} like ${letterConstant}.`
       : `Say "${wordDetail.word}" out loud and emphasize ${emphasisTarget}.`;
   const firstSound = getSelectedLetterSound(wordDetail);
-  const upper = wordDetail.uppercaseLetter || wordDetail.word.charAt(0).toUpperCase();
-  const lower = wordDetail.lowercaseLetter || upper.toLowerCase();
+  const orthographicFocus = getOrthographicFocusDisplay(wordDetail);
+  const orthographicFocusSound = getAnalyticTargetSound(wordDetail);
+  const orthographicFocusType = getOrthographicFocusLabel(wordDetail);
+  const upper =
+    wordDetail.selectionType === 'phoneme'
+      ? String(orthographicFocus || '').replace(/[^A-Za-z]/g, '').toUpperCase() ||
+        wordDetail.word.charAt(0).toUpperCase()
+      : wordDetail.uppercaseLetter || wordDetail.word.charAt(0).toUpperCase();
+  const lower =
+    wordDetail.selectionType === 'phoneme'
+      ? String(orthographicFocus || '').replace(/[^A-Za-z]/g, '').toLowerCase() ||
+        upper.toLowerCase()
+      : wordDetail.lowercaseLetter || upper.toLowerCase();
 
   return [
     {
@@ -308,7 +378,9 @@ function buildPanes(wordDetail) {
         },
         {
           id: 'orthographic-start',
-          label: isEmbeddedLetterSelection
+          label: wordDetail.selectionType === 'phoneme'
+            ? `"${wordDetail.word}" includes ${orthographicFocusType} ${orthographicFocus}, which can make ${orthographicFocusSound} sound.`
+            : isEmbeddedLetterSelection
             ? `"${wordDetail.word}" has letter ${upper} inside it, which can make ${firstSound} sound.`
             : `"${wordDetail.word}" starts with letter ${upper}, which makes ${firstSound} sound.`,
         },
@@ -908,15 +980,18 @@ export default function WorksheetChecklist({
             <div className='mt-4 max-w-full overflow-x-auto pb-2'>
               <div className='min-w-[20rem] rounded-3xl border border-accent/20 bg-secondary/80 p-5'>
                 <p className='whitespace-nowrap text-4xl font-semibold tracking-[0.18em] text-white md:text-5xl'>
-                  {renderHighlightedLetterWord(
-                    wordDetail.word,
-                    getSelectedLetterValue(wordDetail)
-                  )}
+                  {renderHighlightedOrthographicWord(wordDetail)}
                 </p>
               </div>
             </div>
             <p className='mt-4 text-accent'>
-              {wordDetail.isEmbeddedLetterSelection
+              {wordDetail.selectionType === 'phoneme'
+                ? `${wordDetail.word} includes ${getOrthographicFocusLabel(
+                    wordDetail
+                  )} ${getOrthographicFocusDisplay(
+                    wordDetail
+                  )}, which can make ${getAnalyticTargetSound(wordDetail)} sound.`
+                : wordDetail.isEmbeddedLetterSelection
                 ? `${wordDetail.word} has the letter ${getSelectedLetterValue(
                     wordDetail
                   )} inside it, which can make ${getAnalyticTargetSound(
@@ -928,7 +1003,9 @@ export default function WorksheetChecklist({
             </p>
           </section>
           <section className='rounded-2xl bg-primary/40 p-4'>
-            <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Letter Match</p>
+            <p className='text-xs uppercase tracking-[0.3em] text-yellow'>
+              {wordDetail.selectionType === 'phoneme' ? 'Target Letters' : 'Letter Match'}
+            </p>
             <div className='mt-4 grid gap-3 sm:grid-cols-2'>
               <div className='rounded-2xl border border-accent/20 bg-secondary/80 p-4 text-center'>
                 <p className='text-xs uppercase tracking-[0.25em] text-accent'>Uppercase</p>
