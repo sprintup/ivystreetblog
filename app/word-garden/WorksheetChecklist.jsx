@@ -1703,14 +1703,18 @@ export default function WorksheetChecklist({
     <>
       <div className='no-print mb-6 rounded-3xl border border-accent/20 bg-primary/40 p-5 shadow-lg'>
         <div className='flex flex-wrap items-center gap-3'>
-          {!isCurrentWord ? (
+          {isCurrentWord ? (
+            <span className='rounded-full border border-accent/30 bg-white/5 px-4 py-2 text-sm font-semibold text-accent'>
+              Current word
+            </span>
+          ) : (
             <Link
               href={currentWordHref}
               className={currentWordLinkClass}
             >
               Go to Current Word
             </Link>
-          ) : null}
+          )}
 
           {recommendHref ? (
             <button
