@@ -525,17 +525,8 @@ function buildPanes(wordDetail) {
   const initialLetterArticle = getLetterArticle(initialLetter);
   const initialLetterSoundData = getInitialLetterSoundData(wordDetail);
   const firstSoundChecklistLabel = `${wordDetail.word} starts with ${initialLetterArticle} ${initialLetter}, which makes ${initialLetterSoundData.phrase}. Can you say ${initialLetterSoundData.promptLabel}?`;
-  const orthographicFocus = getOrthographicFocusDisplay(wordDetail);
-  const upper =
-    wordDetail.selectionType === 'phoneme'
-      ? String(orthographicFocus || '').replace(/[^A-Za-z]/g, '').toUpperCase() ||
-        wordDetail.word.charAt(0).toUpperCase()
-      : wordDetail.uppercaseLetter || wordDetail.word.charAt(0).toUpperCase();
-  const lower =
-    wordDetail.selectionType === 'phoneme'
-      ? String(orthographicFocus || '').replace(/[^A-Za-z]/g, '').toLowerCase() ||
-        upper.toLowerCase()
-      : wordDetail.lowercaseLetter || upper.toLowerCase();
+  const upper = initialLetter || wordDetail.word.charAt(0).toUpperCase();
+  const lower = upper.toLowerCase();
 
   return [
     {
@@ -800,6 +791,15 @@ export default function WorksheetChecklist({
   const hasPhonemeRelationSentence = Boolean(
     wordDetail.primaryPhonemeRelatedWordExample?.word && primaryPhonemeRelation?.label
   );
+  const categoryRelationLeadWordHref = hasCategoryRelationSentence
+    ? buildWordHrefWithContext(acId, 'all', '', categoryRelationLeadWord)
+    : '';
+  const firstLetterRelationLeadWordHref = hasFirstLetterRelationSentence
+    ? buildWordHrefWithContext(acId, 'all', '', firstLetterRelationLeadWord)
+    : '';
+  const phonemeRelationLeadWordHref = hasPhonemeRelationSentence
+    ? buildWordHrefWithContext(acId, 'all', '', phonemeRelationLeadWord)
+    : '';
   const orthographicTargetHref =
     wordDetail.selectionType === 'phoneme'
       ? buildPhonemeHref(acId, wordDetail.selectionSlug, selectedLetter)
@@ -1345,6 +1345,23 @@ export default function WorksheetChecklist({
     }
   }
 
+  const scrollToChecklistPane = useCallback(paneId => {
+    if (!paneId) {
+      return;
+    }
+
+    setCollapsedRequiredPanes(previousState => ({
+      ...previousState,
+      [paneId]: false,
+    }));
+
+    window.setTimeout(() => {
+      document
+        .getElementById(`checklist-pane-${paneId}`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  }, []);
+
   function renderDefinitionText() {
     if (generatedContent?.childFriendlyDefinition) {
       return <p className='leading-7 text-accent'>{generatedContent.childFriendlyDefinition}</p>;
@@ -1632,7 +1649,17 @@ export default function WorksheetChecklist({
             </p>
             <div className='mt-3 space-y-3'>
               <div className='rounded-2xl bg-secondary/80 p-4 text-sm text-accent'>
-                The word &apos;<span className='text-yellow'>{categoryRelationLeadWord}</span>
+                The word &apos;
+                {categoryRelationLeadWordHref ? (
+                  <Link
+                    href={categoryRelationLeadWordHref}
+                    className='text-yellow underline decoration-dotted underline-offset-4 hover:text-orange'
+                  >
+                    {categoryRelationLeadWord}
+                  </Link>
+                ) : (
+                  <span className='text-yellow'>{categoryRelationLeadWord}</span>
+                )}
                 &apos; is related to the word &apos;{wordDetail.word}&apos; by the category{' '}
                 <Link
                   href={categoryHref}
@@ -1643,7 +1670,17 @@ export default function WorksheetChecklist({
                 .
               </div>
               <div className='rounded-2xl bg-secondary/80 p-4 text-sm text-accent'>
-                The word &apos;<span className='text-yellow'>{firstLetterRelationLeadWord}</span>
+                The word &apos;
+                {firstLetterRelationLeadWordHref ? (
+                  <Link
+                    href={firstLetterRelationLeadWordHref}
+                    className='text-yellow underline decoration-dotted underline-offset-4 hover:text-orange'
+                  >
+                    {firstLetterRelationLeadWord}
+                  </Link>
+                ) : (
+                  <span className='text-yellow'>{firstLetterRelationLeadWord}</span>
+                )}
                 &apos; is related to the word &apos;{wordDetail.word}&apos; by the first letter{' '}
                 {firstLetterHref ? (
                   <Link
@@ -1658,7 +1695,17 @@ export default function WorksheetChecklist({
                 .
               </div>
               <div className='rounded-2xl bg-secondary/80 p-4 text-sm text-accent'>
-                The word &apos;<span className='text-yellow'>{phonemeRelationLeadWord}</span>
+                The word &apos;
+                {phonemeRelationLeadWordHref ? (
+                  <Link
+                    href={phonemeRelationLeadWordHref}
+                    className='text-yellow underline decoration-dotted underline-offset-4 hover:text-orange'
+                  >
+                    {phonemeRelationLeadWord}
+                  </Link>
+                ) : (
+                  <span className='text-yellow'>{phonemeRelationLeadWord}</span>
+                )}
                 &apos; is related to the word &apos;{wordDetail.word}&apos; by the sound{' '}
                 {primaryPhonemeRelation && primaryPhonemeHref ? (
                   <Link
@@ -1845,7 +1892,8 @@ export default function WorksheetChecklist({
       return (
         <section
           key={pane.id}
-          className={`min-w-0 ${showDivider ? 'border-t border-accent/15 pt-6' : ''}`}
+          id={`checklist-pane-${pane.id}`}
+          className={`min-w-0 scroll-mt-28 ${showDivider ? 'border-t border-accent/15 pt-6' : ''}`}
         >
           <details className='rounded-2xl border border-accent/20 bg-secondary/20 p-4'>
             <summary className='cursor-pointer list-none'>
@@ -1867,7 +1915,8 @@ export default function WorksheetChecklist({
     return (
       <section
         key={pane.id}
-        className={`min-w-0 ${showDivider ? 'border-t border-accent/15 pt-6' : ''}`}
+        id={`checklist-pane-${pane.id}`}
+        className={`min-w-0 scroll-mt-28 ${showDivider ? 'border-t border-accent/15 pt-6' : ''}`}
       >
         <details
           open={!collapsedRequiredPanes[pane.id]}
@@ -1956,6 +2005,85 @@ export default function WorksheetChecklist({
           )}
           {optionalPane ? renderChecklistSection(optionalPane, true) : null}
         </div>
+      </article>
+    );
+  }
+
+  function renderCompletionRulesPane() {
+    return (
+      <article className='rounded-3xl border border-accent/20 bg-primary/50 p-6 shadow-lg'>
+        <p className='text-sm uppercase tracking-[0.3em] text-yellow'>Completion Rules</p>
+        <h2 className='mt-3 text-2xl text-white'>Finish the 4 required processors</h2>
+        <p className='mt-3 text-accent'>
+          Complete any {REQUIRED_CHECKS_PER_PANE} items in each required processor
+          section. The optional section does not count toward completion.
+        </p>
+        <div className='mt-5 rounded-2xl bg-secondary/70 p-4'>
+          <div className='flex items-center justify-between gap-4'>
+            <p className='text-sm text-accent'>Required checks completed</p>
+            <p className='text-lg font-semibold text-yellow'>
+              {requiredChecksComplete} / {requiredCheckTotal}
+            </p>
+          </div>
+          <div className='mt-3 h-3 overflow-hidden rounded-full bg-primary/60'>
+            <div
+              className='h-full rounded-full bg-yellow transition-all'
+              style={{
+                width: `${Math.min(100, (requiredChecksComplete / requiredCheckTotal) * 100)}%`,
+              }}
+            />
+          </div>
+        </div>
+        <div className='mt-5 space-y-3'>
+          {requiredPaneProgress.map(pane => (
+            <button
+              key={pane.id}
+              type='button'
+              onClick={() => scrollToChecklistPane(pane.id)}
+              className={`flex w-full items-center justify-between gap-4 rounded-2xl px-4 py-3 text-left transition ${
+                pane.isComplete
+                  ? 'border border-green-400/30 bg-green-500/10 hover:bg-green-500/15'
+                  : pane.checkedCount > 0
+                    ? 'border border-yellow/30 bg-yellow/10 hover:bg-yellow/15'
+                    : 'bg-secondary/70 hover:bg-secondary'
+              }`}
+            >
+              <span className={pane.isComplete ? 'text-green-200' : 'text-accent'}>
+                {pane.title}
+              </span>
+              <span
+                className={`text-sm font-semibold ${
+                  pane.isComplete ? 'text-green-200' : 'text-yellow'
+                }`}
+              >
+                {Math.min(pane.checkedCount, REQUIRED_CHECKS_PER_PANE)}/{REQUIRED_CHECKS_PER_PANE}
+              </span>
+            </button>
+          ))}
+        </div>
+        <div className='mt-6 flex flex-wrap gap-3'>
+          <button
+            type='button'
+            onClick={handleCompleteOnline}
+            disabled={isSubmitting || isWordComplete || isCompletionSummaryOpen}
+            className='rounded-full bg-yellow px-4 py-2 font-bold text-primary disabled:cursor-not-allowed disabled:opacity-60'
+          >
+            {isSubmitting
+              ? 'Saving...'
+              : isWordComplete
+                ? 'Marked Complete'
+                : 'Complete Checklist'}
+          </button>
+          <button
+            type='button'
+            onClick={downloadWorksheet}
+            className='rounded-full bg-secondary px-4 py-2 font-bold text-yellow'
+          >
+            Download Worksheet
+          </button>
+        </div>
+        {completionError ? <p className='mt-4 text-sm text-red-300'>{completionError}</p> : null}
+        {completionSuccess ? <p className='mt-4 text-sm text-green-300'>{completionSuccess}</p> : null}
       </article>
     );
   }
@@ -2189,73 +2317,10 @@ export default function WorksheetChecklist({
         </div>
       ) : null}
 
-      <div className='word-garden-worksheet-layout grid gap-8 pb-12 md:pb-16 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]'>
-        <div className='no-print min-w-0 space-y-6'>
-          {renderGeneratorPane()}
-          {renderCombinedChecklistPane()}
-        </div>
-
-        <aside className='no-print space-y-6 self-start xl:sticky xl:top-24'>
-          <div className='rounded-3xl border border-accent/20 bg-primary/50 p-6 shadow-lg'>
-            <p className='text-sm uppercase tracking-[0.3em] text-yellow'>Completion Rules</p>
-            <h2 className='mt-3 text-2xl text-white'>Finish the 4 required processors</h2>
-            <p className='mt-3 text-accent'>
-              Complete any {REQUIRED_CHECKS_PER_PANE} items in each required
-              processor section. The optional section does not count toward
-              completion.
-            </p>
-            <div className='mt-5 rounded-2xl bg-secondary/70 p-4'>
-              <div className='flex items-center justify-between gap-4'>
-                <p className='text-sm text-accent'>Required checks completed</p>
-                <p className='text-lg font-semibold text-yellow'>
-                  {requiredChecksComplete} / {requiredCheckTotal}
-                </p>
-              </div>
-              <div className='mt-3 h-3 overflow-hidden rounded-full bg-primary/60'>
-                <div
-                  className='h-full rounded-full bg-yellow transition-all'
-                  style={{
-                    width: `${Math.min(100, (requiredChecksComplete / requiredCheckTotal) * 100)}%`,
-                  }}
-                />
-              </div>
-            </div>
-            <div className='mt-5 space-y-3'>
-              {requiredPaneProgress.map(pane => (
-                <div key={pane.id} className='flex items-center justify-between gap-4 rounded-2xl bg-secondary/70 px-4 py-3'>
-                  <span className='text-accent'>{pane.title}</span>
-                  <span className='text-sm font-semibold text-yellow'>
-                    {Math.min(pane.checkedCount, REQUIRED_CHECKS_PER_PANE)}/{REQUIRED_CHECKS_PER_PANE}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <div className='mt-6 flex flex-wrap gap-3'>
-              <button
-                type='button'
-                onClick={handleCompleteOnline}
-                disabled={isSubmitting || isWordComplete || isCompletionSummaryOpen}
-                className='rounded-full bg-yellow px-4 py-2 font-bold text-primary disabled:cursor-not-allowed disabled:opacity-60'
-              >
-                {isSubmitting
-                  ? 'Saving...'
-                  : isWordComplete
-                    ? 'Marked Complete'
-                    : 'Complete Checklist'}
-              </button>
-              <button
-                type='button'
-                onClick={downloadWorksheet}
-                className='rounded-full bg-secondary px-4 py-2 font-bold text-yellow'
-              >
-                Download Worksheet
-              </button>
-            </div>
-            {completionError ? <p className='mt-4 text-sm text-red-300'>{completionError}</p> : null}
-            {completionSuccess ? <p className='mt-4 text-sm text-green-300'>{completionSuccess}</p> : null}
-          </div>
-
-        </aside>
+      <div className='word-garden-worksheet-layout no-print min-w-0 space-y-6 pb-12 md:pb-16'>
+        {renderGeneratorPane()}
+        {renderCompletionRulesPane()}
+        {renderCombinedChecklistPane()}
       </div>
 
       {isCompletionSummaryOpen ? (
