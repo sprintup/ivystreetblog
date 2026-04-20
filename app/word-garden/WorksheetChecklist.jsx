@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getWorksheetGenerationPolicy } from '@/utils/wordGardenGenerationPolicy';
+import { LETTER_GROUPS, getTargetLabel } from '@/utils/wordGardenData';
 
 const REQUIRED_CHECKS_PER_PANE = 2;
 
@@ -330,19 +331,84 @@ function getLetterArticle(letter) {
   return /^[AEFHILMNORSX]$/.test(String(letter || '').toUpperCase()) ? 'an' : 'a';
 }
 
+function getLetterPhonemeLabels(letter) {
+  const normalizedLetter = String(letter || '')
+    .trim()
+    .charAt(0)
+    .toUpperCase();
+  const letterGroup = LETTER_GROUPS.find(group => group.letter === normalizedLetter);
+
+  if (!letterGroup) {
+    return [];
+  }
+
+  const seenPhonemeSlugs = new Set();
+
+  return (letterGroup.phonemes || [])
+    .filter(phoneme => phoneme?.phonemeSlug && !seenPhonemeSlugs.has(phoneme.phonemeSlug))
+    .map(phoneme => {
+      seenPhonemeSlugs.add(phoneme.phonemeSlug);
+      return getTargetLabel(phoneme.phonemeSlug);
+    });
+}
+
+function getLetterPhonemeOptions(letter, unlockedPhonemeSet = new Set()) {
+  const normalizedLetter = String(letter || '')
+    .trim()
+    .charAt(0)
+    .toUpperCase();
+  const letterGroup = LETTER_GROUPS.find(group => group.letter === normalizedLetter);
+
+  if (!letterGroup) {
+    return [];
+  }
+
+  const seenPhonemeSlugs = new Set();
+
+  return (letterGroup.phonemes || [])
+    .filter(phoneme => phoneme?.phonemeSlug && !seenPhonemeSlugs.has(phoneme.phonemeSlug))
+    .map(phoneme => {
+      seenPhonemeSlugs.add(phoneme.phonemeSlug);
+
+      return {
+        phonemeSlug: phoneme.phonemeSlug,
+        label: getTargetLabel(phoneme.phonemeSlug),
+        isUnlocked: isPhonemeSlugUnlocked(phoneme.phonemeSlug, unlockedPhonemeSet),
+      };
+    });
+}
+
 function getInitialLetterSoundData(wordDetail) {
   const firstSoundRow =
     (wordDetail.soundMapRows || []).find(row => row.phonemeLabel) || null;
   const initialLetter = getInitialLetterValue(wordDetail);
+  const letterPhonemeLabels = getLetterPhonemeLabels(initialLetter);
 
   if (firstSoundRow?.phonemeLabel) {
     const phonemeSlug = getRowPhonemeSlugs(firstSoundRow)[0] || null;
+    const orderedPhonemeLabels = [
+      firstSoundRow.phonemeLabel,
+      ...letterPhonemeLabels.filter(label => label !== firstSoundRow.phonemeLabel),
+    ];
+    const soundCount = orderedPhonemeLabels.length;
 
     return {
       label: firstSoundRow.phonemeLabel,
       promptLabel: firstSoundRow.phonemeLabel,
-      phrase: `a ${firstSoundRow.phonemeLabel} sound`,
+      phrase: `${soundCount} sound${soundCount === 1 ? '' : 's'}, ${orderedPhonemeLabels.join(', ')}`,
       phonemeSlug,
+      letter: initialLetter,
+    };
+  }
+
+  if (letterPhonemeLabels.length > 0) {
+    const soundCount = letterPhonemeLabels.length;
+
+    return {
+      label: letterPhonemeLabels[0],
+      promptLabel: letterPhonemeLabels[0],
+      phrase: `${soundCount} sound${soundCount === 1 ? '' : 's'}, ${letterPhonemeLabels.join(', ')}`,
+      phonemeSlug: null,
       letter: initialLetter,
     };
   }
@@ -1410,6 +1476,12 @@ export default function WorksheetChecklist({
 
   function renderStrategy(paneId) {
     if (paneId === 'phonological') {
+      const focusLetter = getChecklistFocusLetterValue(wordDetail, selectedLetter);
+      const focusLetterPhonemeOptions =
+        wordDetail.selectionType === 'phoneme'
+          ? []
+          : getLetterPhonemeOptions(focusLetter, unlockedArpabetSet);
+
       return (
         <div className='min-w-0 grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)]'>
           <section className='min-w-0 rounded-2xl bg-primary/40 p-4'>
@@ -1438,6 +1510,31 @@ export default function WorksheetChecklist({
                 Rime: {wordDetail.onsetAndRime.rime || '-'}
               </span>
             </div>
+            {focusLetterPhonemeOptions.length > 0 ? (
+              <div className='mt-5 rounded-2xl border border-accent/20 bg-secondary/60 p-4'>
+                <p className='text-xs uppercase tracking-[0.25em] text-accent'>
+                  Focus Letter Phonemes
+                </p>
+                <p className='mt-2 text-sm text-accent'>
+                  {focusLetter} can make these sounds. Click one for other examples.
+                </p>
+                <div className='mt-3 flex flex-wrap gap-2'>
+                  {focusLetterPhonemeOptions.map(option => (
+                    <Link
+                      key={`${focusLetter}-${option.phonemeSlug}-strategy`}
+                      href={buildPhonemeHref(acId, option.phonemeSlug, focusLetter)}
+                      className={`rounded-full px-4 py-2 text-sm no-underline transition ${
+                        option.isUnlocked
+                          ? 'border border-yellow/30 bg-yellow/10 text-yellow hover:border-yellow/45 hover:bg-yellow/15'
+                          : 'border border-white/10 bg-white/5 text-slate-400 hover:border-white/20 hover:text-slate-200'
+                      }`}
+                    >
+                      {option.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </section>
         </div>
       );
