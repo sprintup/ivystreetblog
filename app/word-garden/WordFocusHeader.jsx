@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import {
+  LETTER_GROUPS,
   buildWordGardenWordPath,
   getTargetLabel,
 } from '@/utils/wordGardenData';
@@ -168,6 +169,45 @@ function buildPhonemeListHref(acId, phonemeSlug, letter = '') {
     : '';
 }
 
+function buildAllWordsCategoryHref(acId, category = '') {
+  const normalizedCategory = String(category || '').trim();
+
+  return normalizedCategory
+    ? `/word-garden/${acId}/all?category=${encodeURIComponent(normalizedCategory)}`
+    : `/word-garden/${acId}/all`;
+}
+
+function getLetterPhonemeOptions(acId, letter, unlockedPhonemeSet) {
+  const normalizedLetter = normalizeLetter(letter);
+  const letterGroup = LETTER_GROUPS.find(
+    group => group.letter === normalizedLetter
+  );
+
+  if (!letterGroup) {
+    return [];
+  }
+
+  const seenPhonemeSlugs = new Set();
+
+  return (letterGroup.phonemes || [])
+    .map(phoneme => phoneme.phonemeSlug)
+    .filter(Boolean)
+    .filter(phonemeSlug => {
+      if (seenPhonemeSlugs.has(phonemeSlug)) {
+        return false;
+      }
+
+      seenPhonemeSlugs.add(phonemeSlug);
+      return true;
+    })
+    .map(phonemeSlug => ({
+      phonemeSlug,
+      label: getTargetLabel(phonemeSlug),
+      href: buildPhonemeListHref(acId, phonemeSlug, normalizedLetter),
+      isUnlocked: isPhonemeUnlocked(phonemeSlug, unlockedPhonemeSet),
+    }));
+}
+
 export default function WordFocusHeader({
   acId,
   wordDetail,
@@ -230,6 +270,10 @@ export default function WordFocusHeader({
   const phonemeListHref = isPhonemeFocus
     ? buildPhonemeListHref(acId, wordDetail.selectionSlug, phonemeContextLetter)
     : '';
+  const letterPhonemeOptions = isPhonemeFocus
+    ? []
+    : getLetterPhonemeOptions(acId, currentFocusLetter, unlockedPhonemeSet);
+  const categoryHref = buildAllWordsCategoryHref(acId, wordDetail.category);
 
   return (
     <div className='no-print rounded-[2rem] border border-accent/20 bg-secondary/80 p-8 shadow-xl'>
@@ -313,19 +357,19 @@ export default function WordFocusHeader({
                     label: 'Lowercase',
                     value: currentFocusLetter.toLowerCase(),
                     valueClass:
-                      'mt-2 text-4xl font-semibold lowercase text-white',
+                      'mt-2 text-4xl font-semibold lowercase text-yellow',
                   },
                   {
                     label: 'Uppercase',
                     value: currentFocusLetter,
-                    valueClass: 'mt-2 text-4xl font-semibold text-white',
+                    valueClass: 'mt-2 text-4xl font-semibold text-yellow',
                   },
                 ].map(card =>
                   letterListHref ? (
                     <Link
                       key={card.label}
                       href={letterListHref}
-                      className='rounded-2xl border border-accent/20 bg-secondary/60 p-3 text-center no-underline transition hover:border-yellow/40 hover:bg-secondary'
+                      className='rounded-2xl border border-yellow/30 bg-secondary/60 p-3 text-center no-underline transition hover:border-yellow/50 hover:bg-secondary'
                     >
                       <p className='text-[11px] uppercase tracking-[0.25em] text-accent'>
                         {card.label}
@@ -345,12 +389,44 @@ export default function WordFocusHeader({
                   )
                 )}
               </div>
+              {letterPhonemeOptions.length > 0 ? (
+                <>
+                  <p className='mt-4 text-[11px] uppercase tracking-[0.25em] text-accent'>
+                    Focus Letter Phonemes
+                  </p>
+                  <div className='mt-3 flex flex-wrap gap-2'>
+                    {letterPhonemeOptions.map(option => (
+                      <Link
+                        key={`${currentFocusLetter}-${option.phonemeSlug}`}
+                        href={option.href}
+                        className={getFocusPillClass({
+                          type: 'phoneme',
+                          isActive: false,
+                          isUnlocked: option.isUnlocked,
+                        })}
+                      >
+                        {option.label}
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              ) : null}
               <p className='mt-4 text-4xl font-semibold tracking-[0.08em]'>
                 {renderHighlightedLetterWord(wordDetail.word, currentFocusLetter)}
               </p>
             </>
           )}
-          {wordDetail.category ? <p className='mt-4'>Category: {wordDetail.category}</p> : null}
+          {wordDetail.category ? (
+            <p className='mt-4'>
+              Category:{' '}
+              <Link
+                href={categoryHref}
+                className='text-yellow no-underline transition hover:text-orange'
+              >
+                {wordDetail.category}
+              </Link>
+            </p>
+          ) : null}
         </div>
       </div>
     </div>

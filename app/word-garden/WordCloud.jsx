@@ -141,6 +141,7 @@ function renderWordLabel(wordEntry, selectionType, selectionSlug) {
 
 export default function WordCloud({
   acId,
+  defaultCategory = 'All',
   defaultShowAbstract,
   defaultShowCompleted = false,
   selectionType,
@@ -158,8 +159,26 @@ export default function WordCloud({
     () => words.filter(wordEntry => wordEntry.concreteness === 'abstract'),
     [words]
   );
-  const concreteCount = concreteWords.length;
-  const abstractCount = abstractWords.length;
+  const categoryOptions = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          words
+            .map(wordEntry => String(wordEntry.category || '').trim())
+            .filter(Boolean)
+        )
+      ).sort((leftCategory, rightCategory) =>
+        leftCategory.localeCompare(rightCategory)
+      ),
+    [words]
+  );
+  const normalizedDefaultCategory = useMemo(
+    () =>
+      selectionType === 'all' && categoryOptions.includes(String(defaultCategory || '').trim())
+        ? String(defaultCategory || '').trim()
+        : 'All',
+    [categoryOptions, defaultCategory, selectionType]
+  );
   const allConcreteWordsLearned = useMemo(
     () =>
       concreteWords.length === 0 ||
@@ -168,13 +187,12 @@ export default function WordCloud({
   );
   const [showConcrete, setShowConcrete] = useState(() => getDefaultConcrete());
   const [showAbstract, setShowAbstract] = useState(() =>
-    typeof defaultShowAbstract === 'boolean' ? defaultShowAbstract : allConcreteWordsLearned
+    typeof defaultShowAbstract === 'boolean'
+      ? defaultShowAbstract && allConcreteWordsLearned
+      : allConcreteWordsLearned
   );
   const [showCompleted, setShowCompleted] = useState(() => defaultShowCompleted);
-  const completedCount = useMemo(
-    () => words.filter(wordEntry => (wordEntry.completedChecklistCount || 0) > 0).length,
-    [words]
-  );
+  const [selectedCategory, setSelectedCategory] = useState(() => normalizedDefaultCategory);
 
   const filteredWords = useMemo(
     () =>
@@ -183,10 +201,55 @@ export default function WordCloud({
           wordEntry.concreteness === 'abstract' ? showAbstract : showConcrete;
         const isCompleted = (wordEntry.completedChecklistCount || 0) > 0;
         const matchesCompletion = showCompleted || !isCompleted;
+        const matchesCategory =
+          selectionType !== 'all' ||
+          selectedCategory === 'All' ||
+          String(wordEntry.category || '').trim() === selectedCategory;
 
-        return matchesConcreteness && matchesCompletion;
+        return matchesConcreteness && matchesCompletion && matchesCategory;
       }),
-    [showAbstract, showCompleted, showConcrete, words]
+    [selectedCategory, selectionType, showAbstract, showCompleted, showConcrete, words]
+  );
+  const categoryScopedWords = useMemo(
+    () =>
+      words.filter(wordEntry => {
+        return (
+          selectionType !== 'all' ||
+          selectedCategory === 'All' ||
+          String(wordEntry.category || '').trim() === selectedCategory
+        );
+      }),
+    [selectedCategory, selectionType, words]
+  );
+  const concreteCount = useMemo(
+    () =>
+      categoryScopedWords.filter(wordEntry => {
+        const isCompleted = (wordEntry.completedChecklistCount || 0) > 0;
+        const matchesCompletion = showCompleted || !isCompleted;
+
+        return wordEntry.concreteness === 'concrete' && matchesCompletion;
+      }).length,
+    [categoryScopedWords, showCompleted]
+  );
+  const abstractCount = useMemo(
+    () =>
+      categoryScopedWords.filter(wordEntry => {
+        const isCompleted = (wordEntry.completedChecklistCount || 0) > 0;
+        const matchesCompletion = showCompleted || !isCompleted;
+
+        return wordEntry.concreteness === 'abstract' && matchesCompletion;
+      }).length,
+    [categoryScopedWords, showCompleted]
+  );
+  const completedCount = useMemo(
+    () =>
+      categoryScopedWords.filter(wordEntry => {
+        const matchesConcreteness =
+          wordEntry.concreteness === 'abstract' ? showAbstract : showConcrete;
+
+        return matchesConcreteness && (wordEntry.completedChecklistCount || 0) > 0;
+      }).length,
+    [categoryScopedWords, showAbstract, showConcrete]
   );
 
   if (words.length === 0) {
@@ -233,6 +296,23 @@ export default function WordCloud({
             />
             Completed ({completedCount})
           </label>
+          {selectionType === 'all' && categoryOptions.length > 0 ? (
+            <label className='flex items-center gap-2 text-sm text-accent'>
+              <span>Category</span>
+              <select
+                value={selectedCategory}
+                onChange={event => setSelectedCategory(event.target.value)}
+                className='rounded-full border border-accent/30 bg-secondary/80 px-3 py-2 text-sm text-accent'
+              >
+                <option value='All'>All</option>
+                {categoryOptions.map(category => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : null}
         </div>
 
         {filteredWords.length === 0 ? (

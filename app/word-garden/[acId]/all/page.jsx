@@ -15,6 +15,9 @@ export default async function WordGardenAllWordsPage({ params, searchParams }) {
   );
   const ageInMonths = calculateAgeInMonths(anonymousChild.birthYearMonth);
   const showUnlockedOnly = searchParams?.view === 'unlocked';
+  const selectedCategory = Array.isArray(searchParams?.category)
+    ? searchParams.category[0]
+    : searchParams?.category || '';
   const wordCloudWords = showUnlockedOnly
     ? getUnlockedWordCloudWords(ageInMonths, anonymousChild.practicedWords)
     : getSelectionWordCloudWords('all', 'all', anonymousChild.practicedWords);
@@ -39,10 +42,12 @@ export default async function WordGardenAllWordsPage({ params, searchParams }) {
       <LevelTwoIntro selectionNote={showUnlockedOnly ? 'All unlocked words' : 'All words'} />
 
       <WordCloud
+        key={`all-words-${showUnlockedOnly ? 'unlocked' : 'all'}-${selectedCategory || 'All'}`}
         acId={params.acId}
+        defaultCategory={selectedCategory || 'All'}
         selectionType='all'
         selectionSlug='all'
-        defaultShowAbstract={!showUnlockedOnly}
+        defaultShowAbstract={showUnlockedOnly ? false : undefined}
         defaultShowCompleted={!showUnlockedOnly}
         words={wordCloudWords}
         ageInMonths={ageInMonths}

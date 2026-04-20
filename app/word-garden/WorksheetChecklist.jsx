@@ -3,23 +3,9 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import approvedLetterConstants from '@/data/approved-letter-constant.json';
 import { getWorksheetGenerationPolicy } from '@/utils/wordGardenGenerationPolicy';
 
 const REQUIRED_CHECKS_PER_PANE = 2;
-const HOMOGRAPH_NOTES = {
-  bark: ['the sound a dog makes', 'the outside of a tree'],
-  bat: ['an animal that flies at night', 'a stick used in sports'],
-  can: ['to be able', 'a metal container'],
-  duck: ['a bird', 'to bend down quickly'],
-  jam: ['fruit spread', 'something stuck together, like traffic'],
-  leaves: ['parts of a plant', 'goes away'],
-  park: ['an outdoor place', 'to leave a car in one spot'],
-  ring: ['jewelry', 'a bell or phone sound'],
-  seal: ['an ocean animal', 'to close something tightly'],
-  watch: ['something that tells time', 'to look carefully'],
-  wave: ['moving water', 'a hand motion'],
-};
 
 function getWorksheetState(generatedContent, generationDisabled) {
   if (generatedContent) {
@@ -102,24 +88,22 @@ function buildFullyCheckedState(panes) {
   }, {});
 }
 
+function buildInitialRequiredPaneCollapseState(panes, checkedState = {}) {
+  return panes.reduce((state, pane) => {
+    if (!pane.required) {
+      return state;
+    }
+
+    const checkedCount = pane.items.filter(item => checkedState[item.id]).length;
+    state[pane.id] = checkedCount >= REQUIRED_CHECKS_PER_PANE;
+    return state;
+  }, {});
+}
+
 function getCheckedItemIdsFromState(checkedState = {}) {
   return Object.entries(checkedState)
     .filter(([, isChecked]) => Boolean(isChecked))
     .map(([itemId]) => itemId);
-}
-
-function getFallbackMorphemeEntries(wordDetail) {
-  return wordDetail.morphologyExamples.map(example => ({
-    form: example.form,
-    sentence: example.sentence,
-  }));
-}
-
-function getFallbackRelatedEntries(wordDetail) {
-  return wordDetail.relatedWords.slice(0, 6).map(word => ({
-    word: word.word,
-    isLinkable: true,
-  }));
 }
 
 function buildWordHrefWithContext(acId, selectionType, selectionSlug, word, letter = '') {
@@ -152,6 +136,14 @@ function buildLetterHref(acId, letter) {
     .toUpperCase();
 
   return normalizedLetter ? `/word-garden/${acId}/letter/${normalizedLetter}` : '';
+}
+
+function buildAllWordsCategoryHref(acId, category = '') {
+  const normalizedCategory = String(category || '').trim();
+
+  return normalizedCategory
+    ? `/word-garden/${acId}/all?category=${encodeURIComponent(normalizedCategory)}`
+    : `/word-garden/${acId}/all`;
 }
 
 function getSelectedLetterValue(wordDetail) {
@@ -223,6 +215,27 @@ function getSelectedLetterSoundLinkData(wordDetail) {
     ? {
         text: matchingSoundRow.phonemeLabel,
         phonemeSlug: matchingSoundRow.phonemeSlug,
+      }
+    : null;
+}
+
+function getPrimaryPhonemeRelationData(wordDetail) {
+  if (wordDetail.selectionType === 'phoneme' && wordDetail.selectionSlug) {
+    return {
+      label: wordDetail.targetPhonemeLabel,
+      phonemeSlug: wordDetail.selectionSlug,
+    };
+  }
+
+  const firstMappedRow = (wordDetail.soundMapRows || []).find(row => {
+    const phonemeSlug = getRowPhonemeSlugs(row)[0];
+    return phonemeSlug && row.phonemeLabel;
+  });
+
+  return firstMappedRow
+    ? {
+        label: firstMappedRow.phonemeLabel,
+        phonemeSlug: getRowPhonemeSlugs(firstMappedRow)[0],
       }
     : null;
 }
@@ -306,6 +319,53 @@ function getRowSupportedPhonemeSlugs(row) {
     : getRowPhonemeSlugs(row);
 }
 
+function getInitialLetterValue(wordDetail) {
+  return String(wordDetail.initialLetter || wordDetail.word.charAt(0) || '')
+    .trim()
+    .charAt(0)
+    .toUpperCase();
+}
+
+function getLetterArticle(letter) {
+  return /^[AEFHILMNORSX]$/.test(String(letter || '').toUpperCase()) ? 'an' : 'a';
+}
+
+function getInitialLetterSoundData(wordDetail) {
+  const firstSoundRow =
+    (wordDetail.soundMapRows || []).find(row => row.phonemeLabel) || null;
+  const initialLetter = getInitialLetterValue(wordDetail);
+
+  if (firstSoundRow?.phonemeLabel) {
+    const phonemeSlug = getRowPhonemeSlugs(firstSoundRow)[0] || null;
+
+    return {
+      label: firstSoundRow.phonemeLabel,
+      promptLabel: firstSoundRow.phonemeLabel,
+      phrase: `a ${firstSoundRow.phonemeLabel} sound`,
+      phonemeSlug,
+      letter: initialLetter,
+    };
+  }
+
+  if (/^[AEIOU]$/.test(initialLetter)) {
+    return {
+      label: `open ${initialLetter}`,
+      promptLabel: `the ${initialLetter} sound`,
+      phrase: `an open ${initialLetter} sound`,
+      phonemeSlug: null,
+      letter: initialLetter,
+    };
+  }
+
+  return {
+    label: `${initialLetter}`,
+    promptLabel: `${initialLetter} sound`,
+    phrase: `a ${initialLetter} sound`,
+    phonemeSlug: null,
+    letter: initialLetter,
+  };
+}
+
 function getHighlightedPhonemeRowIndexes(soundMapRows = [], selectionSlug = '') {
   const exactMatches = soundMapRows.reduce((indexes, row, index) => {
     if (getRowPhonemeSlugs(row).includes(selectionSlug)) {
@@ -327,6 +387,27 @@ function getHighlightedPhonemeRowIndexes(soundMapRows = [], selectionSlug = '') 
 
       return indexes;
     }, [])
+  );
+}
+
+function isPhonemeSlugUnlocked(phonemeSlug, unlockedPhonemeSet) {
+  const symbols = String(phonemeSlug || '')
+    .split('__')
+    .filter(Boolean);
+
+  return (
+    symbols.length > 0 &&
+    symbols.every(symbol => unlockedPhonemeSet.has(symbol))
+  );
+}
+
+function getChecklistFocusLetterValue(wordDetail, selectedLetter = '') {
+  return (
+    String(selectedLetter || '').trim().charAt(0).toUpperCase() ||
+    (wordDetail.selectionType === 'letter'
+      ? getSelectedLetterValue(wordDetail)
+      : '') ||
+    getInitialLetterValue(wordDetail)
   );
 }
 
@@ -356,25 +437,6 @@ function renderHighlightedLetterWord(word, selectedLetter) {
   ));
 }
 
-function getRelatedWordsHint(wordDetail, hasGeneratedRelatedWords) {
-  if (hasGeneratedRelatedWords) {
-    return 'Hint: these words connect by meaning. Talk about what idea they share.';
-  }
-  if (wordDetail.selectionType === 'all') {
-    return 'Hint: these words may connect by meaning, spelling pattern, or shared sounds.';
-  }
-  if (wordDetail.selectionType === 'letter') {
-    if (wordDetail.selectionLetterMatchMode === 'augmented') {
-      return `Hint: these words connect to the letter ${wordDetail.selectionSlug}. Some begin with it, and some contain it inside.`;
-    }
-
-    return wordDetail.isEmbeddedLetterSelection
-      ? `Hint: these words all contain the letter ${wordDetail.selectionSlug}.`
-      : `Hint: these words all begin with the letter ${wordDetail.selectionSlug}.`;
-  }
-  return `Hint: listen for ${wordDetail.targetPhonemeLabel} in each word.`;
-}
-
 function getPhonologicalPrompt(wordDetail) {
   if (wordDetail.selectionType === 'all') {
     return `Ask: What is the first sound in ${wordDetail.word}? What other sounds do you hear in the word?`;
@@ -393,27 +455,11 @@ function buildPanes(wordDetail) {
   const syllables = `${wordDetail.syllableCount} syllable${
     wordDetail.syllableCount === 1 ? '' : 's'
   }`;
-  const targetLetter = getSelectedLetterValue(wordDetail);
-  const letterConstant = approvedLetterConstants?.[targetLetter] || targetLetter;
-  const isEmbeddedLetterSelection = Boolean(wordDetail.isEmbeddedLetterSelection);
-  const emphasisTarget =
-    wordDetail.selectionType === 'letter'
-      ? wordDetail.selectionSlug
-      : wordDetail.selectionType === 'phoneme'
-        ? wordDetail.targetPhonemeLabel
-        : 'the first sound';
-  const phonologicalSayLabel =
-    wordDetail.selectionType === 'letter'
-      ? isEmbeddedLetterSelection
-        ? `Say "${wordDetail.word}" out loud and point out the letter ${targetLetter} in the word, like ${letterConstant}.`
-        : `Say "${wordDetail.word}" out loud and say it starts with ${targetLetter} like ${letterConstant}.`
-      : `Say "${wordDetail.word}" out loud and emphasize ${emphasisTarget}.`;
-  const matchingLetterSoundLink = getSelectedLetterSoundLinkData(wordDetail);
+  const initialLetter = getInitialLetterValue(wordDetail);
+  const initialLetterArticle = getLetterArticle(initialLetter);
+  const initialLetterSoundData = getInitialLetterSoundData(wordDetail);
+  const firstSoundChecklistLabel = `${wordDetail.word} starts with ${initialLetterArticle} ${initialLetter}, which makes ${initialLetterSoundData.phrase}. Can you say ${initialLetterSoundData.promptLabel}?`;
   const orthographicFocus = getOrthographicFocusDisplay(wordDetail);
-  const orthographicFocusSound = getAnalyticTargetSound(wordDetail);
-  const orthographicFocusType = getOrthographicFocusLabel(wordDetail);
-  const orthographicLetterSoundPhrase = getOrthographicLetterSoundPhrase(wordDetail);
-  const fallbackLetterSoundPhrase = getFallbackLetterSoundPhrase(wordDetail);
   const upper =
     wordDetail.selectionType === 'phoneme'
       ? String(orthographicFocus || '').replace(/[^A-Za-z]/g, '').toUpperCase() ||
@@ -435,7 +481,7 @@ function buildPanes(wordDetail) {
       items: [
         {
           id: 'phonological-say',
-          label: phonologicalSayLabel,
+          label: firstSoundChecklistLabel,
         },
         { id: 'phonological-repeat', label: `Ask the child to say "${wordDetail.word}".` },
         {
@@ -467,24 +513,24 @@ function buildPanes(wordDetail) {
       required: true,
       items: [
         {
-          id: 'orthographic-spell',
-          label: `Write or show "${wordDetail.word}" for the child.`,
-        },
-        {
           id: 'orthographic-start',
-          label: wordDetail.selectionType === 'phoneme'
-            ? `"${wordDetail.word}" includes ${orthographicFocusType} ${orthographicFocus}, which can make ${orthographicFocusSound} sound.`
-            : isEmbeddedLetterSelection
-            ? matchingLetterSoundLink
-              ? `"${wordDetail.word}" has letter ${upper} inside it, which can make ${orthographicLetterSoundPhrase}.`
-              : `"${wordDetail.word}" has letter ${upper} inside it, and ${upper} can make ${fallbackLetterSoundPhrase}.`
-            : matchingLetterSoundLink
-              ? `"${wordDetail.word}" starts with letter ${upper}, which can make ${orthographicLetterSoundPhrase}.`
-              : `"${wordDetail.word}" starts with letter ${upper}, and ${upper} can make ${fallbackLetterSoundPhrase}.`,
+          label: (
+            <>
+              "{wordDetail.word}" starts with letter {initialLetter}, which looks like{' '}
+              <strong className='worksheet-letter-emphasis uppercase'>{upper}</strong>{' '}
+              in uppercase and{' '}
+              <strong className='worksheet-letter-emphasis lowercase'>{lower}</strong>{' '}
+              in lowercase.
+            </>
+          ),
         },
         {
-          id: 'orthographic-forms',
-          label: `Show both uppercase ${upper} and lowercase ${lower}.`,
+          id: 'orthographic-spell',
+          label: `Write or show the word "${wordDetail.word}" for the child.`,
+        },
+        {
+          id: 'orthographic-write-draw',
+          label: `Have the child write the word "${wordDetail.word}" and draw "${wordDetail.word}".`,
         },
       ],
     },
@@ -492,16 +538,18 @@ function buildPanes(wordDetail) {
       id: 'context',
       title: 'Context',
       description: 'Inferring deeper meaning.',
-      strategyTitle: 'Morphemes And Related Words',
+      strategyTitle: 'Related Words, Synonyms, Antonyms, Homonyms, Morphemes',
       required: true,
       items: [
         {
-          id: 'context-homographs',
-          label: `Discuss morphemes, related words or homographs.`,
+          id: 'context-category',
+          label: `What are some words in the ${
+            wordDetail.category ? `${wordDetail.category} category` : 'category'
+          } that relate to "${wordDetail.word}"?`,
         },
         {
-          id: 'context-related',
-          label: `Name some categories in which "${wordDetail.word}" belongs.`,
+          id: 'context-connections',
+          label: 'Discuss any synonyms, antonym, homonyms, morphemes.',
         },
         {
           id: 'context-known',
@@ -537,10 +585,6 @@ function buildPanes(wordDetail) {
         {
           id: 'optional-sign',
           label: `Practice sign language for "${wordDetail.word}".`,
-        },
-        {
-          id: 'optional-write',
-          label: `Have the child try to write "${wordDetail.word}".`,
         },
       ],
     },
@@ -583,6 +627,12 @@ export default function WorksheetChecklist({
   const [checkedItems, setCheckedItems] = useState(() =>
     buildCheckedStateFromSavedItems(panes, wordDetail.checklistCheckedItemIds)
   );
+  const [collapsedRequiredPanes, setCollapsedRequiredPanes] = useState(() =>
+    buildInitialRequiredPaneCollapseState(
+      panes,
+      buildCheckedStateFromSavedItems(panes, wordDetail.checklistCheckedItemIds)
+    )
+  );
   const [completionError, setCompletionError] = useState('');
   const [completionSuccess, setCompletionSuccess] = useState('');
   const [generationError, setGenerationError] = useState('');
@@ -610,36 +660,80 @@ export default function WorksheetChecklist({
   const [isCompletionSummaryOpen, setIsCompletionSummaryOpen] = useState(false);
   const [isPrintableImageReady, setIsPrintableImageReady] = useState(true);
   const checklistSaveQueueRef = useRef(Promise.resolve());
+  const previousRequiredPaneCompletionRef = useRef({});
 
   const state = getWorksheetState(generatedContent, isGenerationDisabled);
   const printableDefinition = generatedContent?.childFriendlyDefinition || wordDetail.definition;
   const hasGeneratedImage = Boolean(generatedContent?.imageDataUrl);
-  const morphemeEntries =
-    state === 'generated'
-      ? generatedContent?.morphemeSentences || []
-      : getFallbackMorphemeEntries(wordDetail);
-  const hasGeneratedRelatedWords = generatedContent?.relatedWordConnections?.length > 0;
-  const relatedEntries = hasGeneratedRelatedWords
-    ? generatedContent.relatedWordConnections.map(entry => ({
-        word: entry.word,
-        isLinkable: false,
-      }))
-    : getFallbackRelatedEntries(wordDetail);
-  const relatedHint = getRelatedWordsHint(wordDetail, hasGeneratedRelatedWords);
-  const relatedWords = relatedEntries.slice(0, 3);
+  const generatedSynonymEntries = Array.isArray(generatedContent?.relatedWordConnections)
+    ? generatedContent.relatedWordConnections
+        .map(entry => ({
+          word: String(entry?.word || '').trim(),
+          reason: String(entry?.reason || '').trim(),
+        }))
+        .filter(entry => entry.word)
+        .slice(0, 3)
+    : [];
+  const generatedAntonymEntries = Array.isArray(generatedContent?.antonymConnections)
+    ? generatedContent.antonymConnections
+        .map(entry => ({
+          word: String(entry?.word || '').trim(),
+          reason: String(entry?.reason || '').trim(),
+        }))
+        .filter(entry => entry.word)
+        .slice(0, 3)
+    : [];
   const generatedHomographMeanings = Array.isArray(generatedContent?.homographMeanings)
     ? generatedContent.homographMeanings
         .map(meaning => String(meaning || '').trim())
         .filter(Boolean)
         .slice(0, 4)
     : [];
-  const homographMeanings =
-    generatedHomographMeanings.length > 0
-      ? generatedHomographMeanings
-      : HOMOGRAPH_NOTES[String(wordDetail.word || '').trim().toLowerCase()] || [];
+  const generatedMorphemeEntries = Array.isArray(generatedContent?.morphemeSentences)
+    ? generatedContent.morphemeSentences
+        .map(entry => ({
+          form: String(entry?.form || '').trim(),
+          sentence: String(entry?.sentence || '').trim(),
+        }))
+        .filter(entry => entry.form && entry.sentence)
+        .slice(0, 3)
+    : [];
+  const hasGeneratedLanguageExamples =
+    generatedSynonymEntries.length > 0 ||
+    generatedAntonymEntries.length > 0 ||
+    generatedHomographMeanings.length > 0 ||
+    generatedMorphemeEntries.length > 0;
   const selectedLetter =
     soundTableSelection ||
     (wordDetail.selectionType === 'letter' ? wordDetail.selectionSlug : '');
+  const categoryHref = buildAllWordsCategoryHref(acId, wordDetail.category);
+  const firstLetter = String(wordDetail.initialLetter || wordDetail.word.charAt(0) || '')
+    .trim()
+    .charAt(0)
+    .toUpperCase();
+  const firstLetterHref = firstLetter ? buildLetterHref(acId, firstLetter) : '';
+  const primaryPhonemeRelation =
+    wordDetail.primaryRelationPhoneme || getPrimaryPhonemeRelationData(wordDetail);
+  const primaryPhonemeHref = primaryPhonemeRelation
+    ? buildPhonemeHref(
+        acId,
+        primaryPhonemeRelation.phonemeSlug,
+        selectedLetter || firstLetter
+      )
+    : '';
+  const categoryRelationLeadWord =
+    wordDetail.categoryRelatedWordExample?.word || 'Another word';
+  const firstLetterRelationLeadWord =
+    wordDetail.firstLetterRelatedWordExample?.word || 'Another word';
+  const phonemeRelationLeadWord =
+    wordDetail.primaryPhonemeRelatedWordExample?.word || 'Another word';
+  const hasCategoryRelationSentence = Boolean(wordDetail.categoryRelatedWordExample?.word);
+  const hasFirstLetterRelationSentence = Boolean(
+    wordDetail.firstLetterRelatedWordExample?.word
+  );
+  const hasPhonemeRelationSentence = Boolean(
+    wordDetail.primaryPhonemeRelatedWordExample?.word && primaryPhonemeRelation?.label
+  );
   const orthographicTargetHref =
     wordDetail.selectionType === 'phoneme'
       ? buildPhonemeHref(acId, wordDetail.selectionSlug, selectedLetter)
@@ -685,6 +779,34 @@ export default function WorksheetChecklist({
   const completionLearningSummary = `You practiced how "${wordDetail.word}" sounds, what it means, how it looks, and how to infer deeper meaning from context and related words.`;
   const completionNextSteps =
     'Next, you will return to the sound table to choose another letter, sound, or word to explore.';
+
+  useEffect(() => {
+    setCollapsedRequiredPanes(previousState => {
+      const nextState = { ...previousState };
+      let changed = false;
+
+      requiredPaneProgress.forEach(pane => {
+        const wasComplete = Boolean(previousRequiredPaneCompletionRef.current[pane.id]);
+
+        if (!(pane.id in nextState)) {
+          nextState[pane.id] = pane.isComplete;
+          changed = true;
+        } else if (pane.isComplete && !wasComplete) {
+          nextState[pane.id] = true;
+          changed = true;
+        } else if (!pane.isComplete && wasComplete) {
+          nextState[pane.id] = false;
+          changed = true;
+        }
+      });
+
+      previousRequiredPaneCompletionRef.current = Object.fromEntries(
+        requiredPaneProgress.map(pane => [pane.id, pane.isComplete])
+      );
+
+      return changed ? nextState : previousState;
+    });
+  }, [requiredPaneProgress]);
 
   const queueChecklistProgressSave = useCallback(
     (
@@ -735,6 +857,7 @@ export default function WorksheetChecklist({
     },
     [
       acId,
+      router,
       selectedLetter,
       wordDetail.selectionSlug,
       wordDetail.selectionType,
@@ -749,15 +872,36 @@ export default function WorksheetChecklist({
     }
 
     const previousTitle = document.title;
-    const restoreTitle = () => {
+    const previousScrollX = window.scrollX;
+    const previousScrollY = window.scrollY;
+    let hasRestored = false;
+    const restoreTitleAndScroll = () => {
+      if (hasRestored) {
+        return;
+      }
+
+      hasRestored = true;
       document.title = previousTitle;
-      window.removeEventListener('afterprint', restoreTitle);
+      window.removeEventListener('afterprint', handleAfterPrint);
+      window.scrollTo(previousScrollX, previousScrollY);
+    };
+    const handleAfterPrint = () => {
+      window.setTimeout(restoreTitleAndScroll, 0);
     };
 
     document.title = wordDetail.word;
-    window.addEventListener('afterprint', restoreTitle);
-    window.setTimeout(restoreTitle, 15000);
-    window.print();
+    window.addEventListener('afterprint', handleAfterPrint);
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+
+    window.setTimeout(() => {
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          window.print();
+        });
+      });
+    }, 40);
+
+    window.setTimeout(restoreTitleAndScroll, 15000);
   }, [hasGeneratedImage, isPrintableImageReady, wordDetail.word]);
 
   useEffect(() => {
@@ -1041,6 +1185,7 @@ export default function WorksheetChecklist({
         childFriendlyDefinition: data.childFriendlyDefinition || '',
         morphemeSentences: data.morphemeSentences || [],
         relatedWordConnections: data.relatedWordConnections || [],
+        antonymConnections: data.antonymConnections || [],
         homographMeanings: data.homographMeanings || [],
         imageDataUrl: data.imageDataUrl || '',
       });
@@ -1165,7 +1310,7 @@ export default function WorksheetChecklist({
           {wordDetail.soundMapRows.map((row, index) => {
             const rowPhonemeSlugs = getRowPhonemeSlugs(row);
             const isUnlocked = rowPhonemeSlugs.some(phonemeSlug =>
-              unlockedArpabetSet.has(phonemeSlug)
+              isPhonemeSlugUnlocked(phonemeSlug, unlockedArpabetSet)
             );
             const hasSupportedPhoneme = rowPhonemeSlugs.length > 0;
             const linkedPhonemeSlug =
@@ -1224,31 +1369,24 @@ export default function WorksheetChecklist({
   }
 
   function isPronunciationTileHighlighted(row) {
-    if (wordDetail.selectionType === 'phoneme') {
-      const highlightedIndexes = getHighlightedPhonemeRowIndexes(
-        wordDetail.soundMapRows,
-        wordDetail.selectionSlug
-      );
-      const rowIndex = wordDetail.soundMapRows.indexOf(row);
+    const focusLetter = getChecklistFocusLetterValue(wordDetail, selectedLetter);
+    const rowPhonemeSlugs = getRowPhonemeSlugs(row);
+    const highlightsLetter = Boolean(
+      focusLetter &&
+        String(row.grapheme || '')
+          .toUpperCase()
+          .includes(focusLetter)
+    );
+    const highlightsUnlockedPhoneme = rowPhonemeSlugs.some(phonemeSlug =>
+      isPhonemeSlugUnlocked(phonemeSlug, unlockedArpabetSet)
+    );
 
-      return highlightedIndexes.has(rowIndex);
-    }
-
-    if (wordDetail.selectionType === 'letter') {
-      const selectedLetterValue = getSelectedLetterValue(wordDetail);
-
-      return String(row.grapheme || '')
-        .toUpperCase()
-        .includes(selectedLetterValue);
-    }
-
-    return false;
+    return highlightsLetter || highlightsUnlockedPhoneme;
   }
 
-  function renderPrintPronunciationHelper() {
+  function renderPrintPronunciationTiles(extraClassName = '') {
     return (
-      <section className='worksheet-card'>
-        <p className='worksheet-card-title'>Pronunciation Helper</p>
+      <div className={extraClassName}>
         <div className='worksheet-pronunciation-grid'>
           {wordDetail.soundMapRows.map((row, index) => {
             const isHighlighted = isPronunciationTileHighlighted(row);
@@ -1266,7 +1404,7 @@ export default function WorksheetChecklist({
             );
           })}
         </div>
-      </section>
+      </div>
     );
   }
 
@@ -1388,75 +1526,89 @@ export default function WorksheetChecklist({
 
     if (paneId === 'context') {
       return (
-        <div className='grid gap-4 xl:grid-cols-3'>
-          <section className='rounded-2xl bg-primary/40 p-4'>
-            <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Morphemes</p>
-            <p className='mt-3 text-sm text-accent'>
-              Small decorations to words that make them more precise.
-            </p>
-            {morphemeEntries.length === 0 ? (
-              <p className='mt-3 text-accent'>This word works best as a whole-word practice target.</p>
-            ) : (
-              <div className='mt-3 space-y-3'>
-                {morphemeEntries.slice(0, 4).map(example => (
-                  <div key={`${example.form}-${example.sentence}`} className='rounded-2xl bg-secondary/80 p-4'>
-                    <p className='font-semibold text-yellow'>{example.form}</p>
-                    <p className='mt-2 text-sm text-accent'>{example.sentence}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
+        <div className='grid gap-4 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]'>
           <section className='rounded-2xl bg-primary/40 p-4'>
             <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Related Words</p>
-            <p className='mt-3 text-sm text-accent'>{relatedHint}</p>
+            <p className='mt-3 text-sm text-accent'>
+              Explore how this word connects to other words by category, first
+              letter, and sound.
+            </p>
             <div className='mt-3 space-y-3'>
-              {relatedWords.length === 0 ? (
-                <p className='text-accent'>No related words are ready yet.</p>
-              ) : (
-                relatedWords.map(entry => (
-                  <div key={entry.word} className='rounded-2xl bg-secondary/80 p-4'>
-                    {entry.isLinkable ? (
-                      <Link
-                        href={buildWordHrefWithContext(
-                          acId,
-                          wordDetail.selectionType,
-                          wordDetail.selectionSlug,
-                          entry.word,
-                          selectedLetter
-                        )}
-                        className='text-yellow hover:text-orange'
-                      >
-                        {entry.word}
-                      </Link>
-                    ) : (
-                      <span className='text-yellow'>{entry.word}</span>
-                    )}
-                  </div>
-                ))
-              )}
+              <div className='rounded-2xl bg-secondary/80 p-4 text-sm text-accent'>
+                The word &apos;<span className='text-yellow'>{categoryRelationLeadWord}</span>
+                &apos; is related to the word &apos;{wordDetail.word}&apos; by the category{' '}
+                <Link
+                  href={categoryHref}
+                  className='text-yellow underline decoration-dotted underline-offset-4 hover:text-orange'
+                >
+                  {wordDetail.category}
+                </Link>
+                .
+              </div>
+              <div className='rounded-2xl bg-secondary/80 p-4 text-sm text-accent'>
+                The word &apos;<span className='text-yellow'>{firstLetterRelationLeadWord}</span>
+                &apos; is related to the word &apos;{wordDetail.word}&apos; by the first letter{' '}
+                {firstLetterHref ? (
+                  <Link
+                    href={firstLetterHref}
+                    className='text-yellow underline decoration-dotted underline-offset-4 hover:text-orange'
+                  >
+                    {firstLetter}
+                  </Link>
+                ) : (
+                  <span className='text-yellow'>{firstLetter || '-'}</span>
+                )}
+                .
+              </div>
+              <div className='rounded-2xl bg-secondary/80 p-4 text-sm text-accent'>
+                The word &apos;<span className='text-yellow'>{phonemeRelationLeadWord}</span>
+                &apos; is related to the word &apos;{wordDetail.word}&apos; by the sound{' '}
+                {primaryPhonemeRelation && primaryPhonemeHref ? (
+                  <Link
+                    href={primaryPhonemeHref}
+                    className='text-yellow underline decoration-dotted underline-offset-4 hover:text-orange'
+                  >
+                    {primaryPhonemeRelation.label}
+                  </Link>
+                ) : (
+                  <span className='text-yellow'>
+                    {primaryPhonemeRelation?.label || 'sound'}
+                  </span>
+                )}
+                .
+              </div>
             </div>
           </section>
           <section className='rounded-2xl bg-primary/40 p-4'>
-            <p className='text-xs uppercase tracking-[0.3em] text-yellow'>Homographs</p>
-            {homographMeanings.length > 0 ? (
-              <div className='mt-3 space-y-3'>
-                <p className='text-accent'>
-                  A homograph is a word that is spelled the same way but can have
-                  different meanings.
+            <p className='text-xs uppercase tracking-[0.3em] text-yellow'>
+              Synonyms, Antonyms, Homonyms, Morphemes
+            </p>
+            <div className='mt-3 space-y-3'>
+              <div className='rounded-2xl bg-secondary/80 p-4'>
+                <p className='font-semibold text-yellow'>Synonyms</p>
+                <p className='mt-2 text-sm text-accent'>
+                  Synonyms are words with similar meanings.
                 </p>
-                {homographMeanings.map(meaning => (
-                  <div key={meaning} className='rounded-2xl border border-accent/20 bg-secondary/80 px-4 py-3 text-sm text-accent'>
-                    {meaning}
-                  </div>
-                ))}
               </div>
-            ) : (
-              <p className='mt-3 text-accent'>
-                A homograph is a word that is spelled the same way but can have
-                different meanings.
-              </p>
-            )}
+              <div className='rounded-2xl bg-secondary/80 p-4'>
+                <p className='font-semibold text-yellow'>Antonyms</p>
+                <p className='mt-2 text-sm text-accent'>
+                  Antonyms are words with opposite meanings.
+                </p>
+              </div>
+              <div className='rounded-2xl bg-secondary/80 p-4'>
+                <p className='font-semibold text-yellow'>Homonyms</p>
+                <p className='mt-2 text-sm text-accent'>
+                  Homonyms can sound the same or look the same but mean different things.
+                </p>
+              </div>
+              <div className='rounded-2xl bg-secondary/80 p-4'>
+                <p className='font-semibold text-yellow'>Morphemes</p>
+                <p className='mt-2 text-sm text-accent'>
+                  Morphemes are small decorations to words that make them more precise.
+                </p>
+              </div>
+            </div>
           </section>
         </div>
       );
@@ -1620,17 +1772,29 @@ export default function WorksheetChecklist({
         key={pane.id}
         className={`min-w-0 ${showDivider ? 'border-t border-accent/15 pt-6' : ''}`}
       >
-        <div className='flex flex-wrap items-start gap-4'>
-          <div className='min-w-0'>
+        <details
+          open={!collapsedRequiredPanes[pane.id]}
+          className='rounded-2xl border border-accent/20 bg-secondary/20 p-4'
+        >
+          <summary
+            onClick={event => {
+              event.preventDefault();
+              setCollapsedRequiredPanes(previousState => ({
+                ...previousState,
+                [pane.id]: !previousState[pane.id],
+              }));
+            }}
+            className='cursor-pointer list-none'
+          >
             <div className='flex flex-wrap items-center gap-3'>
               <h3 className='text-xl text-yellow'>{pane.title}</h3>
               <span className={`rounded-full border px-3 py-2 text-sm font-semibold ${statusClass}`}>
                 {status}
               </span>
             </div>
-          </div>
-        </div>
-        {content}
+          </summary>
+          <div className='mt-4'>{content}</div>
+        </details>
       </section>
     );
   }
@@ -1699,8 +1863,141 @@ export default function WorksheetChecklist({
     );
   }
 
+  function renderGeneratorPane() {
+    return (
+      <div className='rounded-3xl bg-white p-6 text-slate-900 shadow-xl'>
+        <button
+          type='button'
+          onClick={() => setIsGeneratorOpen(current => !current)}
+          className='flex w-full items-center justify-between gap-4 text-left'
+          aria-expanded={isGeneratorOpen}
+        >
+          <p className='text-xs uppercase tracking-[0.3em] text-slate-500'>Generate Worksheet</p>
+          <div className='flex items-center gap-3'>
+            <span className={`rounded-full px-3 py-1 text-sm font-bold ${getStateBadgeClass(state)}`}>
+              {getStateLabel(state)}
+            </span>
+            <span className='text-xl leading-none text-slate-500'>{isGeneratorOpen ? '-' : '+'}</span>
+          </div>
+        </button>
+
+        {isGeneratorOpen ? (
+          <div className='mt-4 space-y-4'>
+            <div className='space-y-3 text-sm text-slate-600'>
+              <p>
+                You do not need to generate content to print the worksheet, but
+                generation will usually make the worksheet better by adding a
+                child-friendly definition, stronger morphology support,
+                related-word suggestions, and a coloring-page image.
+              </p>
+              {isGenerationDisabled ? (
+                <p className='rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-amber-900'>
+                  Worksheet generation is disabled for "{wordDetail.word}".
+                  You can still download and print the worksheet without generation.
+                </p>
+              ) : null}
+              <p>
+                Each generation usually takes about a minute and costs about a
+                nickel.
+              </p>
+              <p>
+                To do generation, visit the{' '}
+                <a
+                  href='https://platform.openai.com/settings/organization/billing/overview'
+                  className='text-primary underline decoration-dotted underline-offset-4'
+                >
+                  Billing page
+                </a>
+                , turn auto recharge off, and add a small credit to your
+                account, such as $5.
+              </p>
+              <p>
+                Then create an API key on the{' '}
+                <a
+                  href='https://platform.openai.com/settings/organization/api-keys'
+                  className='text-primary underline decoration-dotted underline-offset-4'
+                >
+                  API keys page
+                </a>
+                . Copy the secret key value and store it securely.
+              </p>
+              <p>
+                When you want to generate a worksheet, paste that key into the
+                box below.
+              </p>
+              <p>
+                After generation finishes, the print dialog will open
+                automatically so you can download or print the worksheet.
+              </p>
+              <p>
+                Example output:{' '}
+                <a
+                  href='/investigate.pdf'
+                  className='text-primary underline decoration-dotted underline-offset-4'
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  investigate.pdf
+                </a>
+              </p>
+            </div>
+            <form onSubmit={handleGenerate} className='space-y-4'>
+              <input
+                type='text'
+                name='username'
+                value='OpenAI Word Garden'
+                readOnly
+                autoComplete='username'
+                className='sr-only'
+                tabIndex={-1}
+              />
+              {!isGenerationDisabled ? (
+                <label className='block'>
+                  <span className='mb-2 block text-sm font-medium text-slate-700'>OpenAI API key</span>
+                  <input
+                    type='password'
+                    name='current-password'
+                    value={apiKey}
+                    onChange={event => setApiKey(event.target.value)}
+                    autoComplete='current-password'
+                    placeholder='sk-...'
+                    className='w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900'
+                  />
+                </label>
+              ) : null}
+              <div className='flex flex-wrap gap-3'>
+                <button
+                  type='submit'
+                  disabled={isGenerating || state === 'generated' || isGenerationDisabled}
+                  className='rounded-full bg-primary px-4 py-2 font-bold text-white disabled:cursor-not-allowed disabled:opacity-60'
+                >
+                  {isGenerationDisabled
+                    ? 'Generation Disabled'
+                    : isGenerating
+                      ? 'Generating...'
+                      : state === 'generated'
+                        ? 'Worksheet Generated'
+                        : 'Generate Worksheet'}
+                </button>
+                <button
+                  type='button'
+                  onClick={downloadWorksheet}
+                  className='rounded-full bg-slate-200 px-4 py-2 font-bold text-slate-900'
+                >
+                  Download Worksheet
+                </button>
+              </div>
+            </form>
+            {generationError ? <p className='text-sm text-red-700'>{generationError}</p> : null}
+            {generationSuccess ? <p className='text-sm text-green-700'>{generationSuccess}</p> : null}
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+
   return (
-    <>
+    <div className='word-garden-print-root'>
       <div className='no-print mb-6 rounded-3xl border border-accent/20 bg-primary/40 p-5 shadow-lg'>
         <div className='flex flex-wrap items-center gap-3'>
           {isCurrentWord ? (
@@ -1797,6 +2094,7 @@ export default function WorksheetChecklist({
 
       <div className='word-garden-worksheet-layout grid gap-8 pb-12 md:pb-16 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]'>
         <div className='no-print min-w-0 space-y-6'>
+          {renderGeneratorPane()}
           {renderCombinedChecklistPane()}
         </div>
 
@@ -1860,128 +2158,6 @@ export default function WorksheetChecklist({
             {completionSuccess ? <p className='mt-4 text-sm text-green-300'>{completionSuccess}</p> : null}
           </div>
 
-          <div className='rounded-3xl bg-white p-6 text-slate-900 shadow-xl'>
-            <button
-              type='button'
-              onClick={() => setIsGeneratorOpen(current => !current)}
-              className='flex w-full items-center justify-between gap-4 text-left'
-              aria-expanded={isGeneratorOpen}
-            >
-              <p className='text-xs uppercase tracking-[0.3em] text-slate-500'>Generate Worksheet</p>
-              <div className='flex items-center gap-3'>
-                <span className={`rounded-full px-3 py-1 text-sm font-bold ${getStateBadgeClass(state)}`}>
-                  {getStateLabel(state)}
-                </span>
-                <span className='text-xl leading-none text-slate-500'>{isGeneratorOpen ? '-' : '+'}</span>
-              </div>
-            </button>
-
-            {isGeneratorOpen ? (
-              <div className='mt-4 space-y-4'>
-                <div className='space-y-3 text-sm text-slate-600'>
-                  <p>
-                    You do not need to generate content to print the worksheet, but
-                    generation will usually make the worksheet better by adding a
-                    child-friendly definition, stronger morphology support,
-                    related-word suggestions, and a coloring-page image.
-                  </p>
-                  {isGenerationDisabled ? (
-                    <p className='rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-amber-900'>
-                      Worksheet generation is disabled for "{wordDetail.word}".
-                      You can still download and print the worksheet without generation.
-                    </p>
-                  ) : null}
-                  <p>
-                    Each generation usually takes about a minute and costs about a
-                    nickel.
-                  </p>
-                  <p>
-                    To do generation, visit the{' '}
-                    <a
-                      href='https://platform.openai.com/settings/organization/billing/overview'
-                      className='text-primary underline decoration-dotted underline-offset-4'
-                    >
-                      Billing page
-                    </a>
-                    , turn auto recharge off, and add a small credit to your
-                    account, such as $5.
-                  </p>
-                  <p>
-                    Then create an API key on the{' '}
-                    <a
-                      href='https://platform.openai.com/settings/organization/api-keys'
-                      className='text-primary underline decoration-dotted underline-offset-4'
-                    >
-                      API keys page
-                    </a>
-                    . Copy the secret key value and store it securely.
-                  </p>
-                  <p>
-                    When you want to generate a worksheet, paste that key into the
-                    box below.
-                  </p>
-                  <p>
-                    After generation finishes, the print dialog will open
-                    automatically so you can download or print the worksheet.
-                  </p>
-                  <p>
-                    Example output:{' '}
-                    <a
-                      href='/investigate.pdf'
-                      className='text-primary underline decoration-dotted underline-offset-4'
-                      target='_blank'
-                      rel='noreferrer'
-                    >
-                      investigate.pdf
-                    </a>
-                  </p>
-                </div>
-                <form onSubmit={handleGenerate} className='space-y-4'>
-                  <input type='text' name='username' value='OpenAI Word Garden' readOnly autoComplete='username' className='sr-only' tabIndex={-1} />
-                  {!isGenerationDisabled ? (
-                    <label className='block'>
-                      <span className='mb-2 block text-sm font-medium text-slate-700'>OpenAI API key</span>
-                      <input
-                        type='password'
-                        name='current-password'
-                        value={apiKey}
-                        onChange={event => setApiKey(event.target.value)}
-                        autoComplete='current-password'
-                        placeholder='sk-...'
-                        className='w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900'
-                      />
-                    </label>
-                  ) : null}
-                  <div className='flex flex-wrap gap-3'>
-                    <button
-                      type='submit'
-                      disabled={isGenerating || state === 'generated' || isGenerationDisabled}
-                      className='rounded-full bg-primary px-4 py-2 font-bold text-white disabled:cursor-not-allowed disabled:opacity-60'
-                    >
-                      {isGenerationDisabled
-                        ? 'Generation Disabled'
-                        : isGenerating
-                        ? 'Generating...'
-                        : state === 'generated'
-                          ? 'Worksheet Generated'
-                          : 'Generate Worksheet'}
-                    </button>
-                    <button
-                      type='button'
-                      onClick={downloadWorksheet}
-                      className='rounded-full bg-slate-200 px-4 py-2 font-bold text-slate-900'
-                    >
-                      Download Worksheet
-                    </button>
-                  </div>
-                </form>
-                {generationError ? <p className='text-sm text-red-700'>{generationError}</p> : null}
-                {generationSuccess ? (
-                  <p className='text-sm text-green-700'>{generationSuccess}</p>
-                ) : null}
-              </div>
-            ) : null}
-          </div>
         </aside>
       </div>
 
@@ -2089,9 +2265,9 @@ export default function WorksheetChecklist({
           <div className='worksheet-frame worksheet-front-page-frame'>
             <div className='worksheet-header'>
               <div className='min-w-0'>
-                <p className='worksheet-kicker'>Word Garden Worksheet</p>
                 <h3 className='worksheet-word'>{wordDetail.word}</h3>
                 <p className='worksheet-definition'>{printableDefinition}</p>
+                {renderPrintPronunciationTiles('mt-3')}
               </div>
               <div className='worksheet-qr-block'>
                 <img src={qrCodeUrl} alt={`QR code for ${wordDetail.word}`} className='worksheet-qr' />
@@ -2130,27 +2306,33 @@ export default function WorksheetChecklist({
                     </div>
                   </section>
 
-                  <section className='worksheet-card'>
-                    <p className='worksheet-card-title'>Related Words</p>
-                    <p className='worksheet-small-copy'>How are these words related?</p>
-                    {relatedWords.length > 0 ? (
-                      <ul className='mt-3 worksheet-write-in-list'>
-                        {relatedWords.map(entry => (
-                          <li key={entry.word} className='worksheet-write-in-item'>
-                            <strong>{entry.word}</strong>
-                            <span className='worksheet-write-line' />
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className='worksheet-small-copy'>No related words are ready yet.</p>
-                    )}
+                  <section className='worksheet-inline-draw worksheet-print-draw-row worksheet-card'>
+                    <div className='worksheet-inline-draw-copy'>
+                      <p className='worksheet-card-title'>
+                        {generatedContent?.imageDataUrl ? 'Color Or Trace' : 'Draw Your Own Picture'}
+                      </p>
+                      <p className='worksheet-back-prompt'>
+                        {generatedContent?.imageDataUrl
+                          ? `Color the picture for "${wordDetail.word}" and say the word again while you work.`
+                          : wordDetail.drawPrompt}
+                      </p>
+                    </div>
+
+                    <div className='worksheet-inline-draw-box'>
+                      {generatedContent?.imageDataUrl ? (
+                        <img
+                          src={generatedContent.imageDataUrl}
+                          alt={`${wordDetail.word} coloring page`}
+                          className='worksheet-drawing-image'
+                        />
+                      ) : (
+                        <div className='worksheet-draw-placeholder' />
+                      )}
+                    </div>
                   </section>
                 </div>
 
                 <div className='worksheet-front-sidebar'>
-                  {renderPrintPronunciationHelper()}
-
                   <section className='worksheet-card'>
                     <p className='worksheet-card-title'>
                       {panes.find(pane => pane.id === 'optional')?.title}
@@ -2166,71 +2348,111 @@ export default function WorksheetChecklist({
                   </section>
 
                   <section className='worksheet-card'>
-                    <p className='worksheet-card-title'>Morphemes</p>
-                    <p className='worksheet-small-copy'>
-                      Small decorations to words that make them more precise.
-                    </p>
-                    {morphemeEntries.length === 0 ? (
-                      <p className='mt-3 worksheet-small-copy'>
-                        Keep this as a whole-word practice target.
-                      </p>
+                    <p className='worksheet-card-title'>Related Words</p>
+                    {hasCategoryRelationSentence ||
+                    hasFirstLetterRelationSentence ||
+                    hasPhonemeRelationSentence ? (
+                      <div className='mt-2 space-y-1.5'>
+                        {hasCategoryRelationSentence ? (
+                          <p className='worksheet-small-copy'>
+                            The word &apos;<strong>{categoryRelationLeadWord}</strong>&apos; is
+                            related to the word &apos;{wordDetail.word}&apos; by the category{' '}
+                            <strong>{wordDetail.category}</strong>.
+                          </p>
+                        ) : null}
+                        {hasFirstLetterRelationSentence ? (
+                          <p className='worksheet-small-copy'>
+                            The word &apos;<strong>{firstLetterRelationLeadWord}</strong>&apos; is
+                            related to the word &apos;{wordDetail.word}&apos; by the first
+                            letter <strong>{firstLetter || '-'}</strong>.
+                          </p>
+                        ) : null}
+                        {hasPhonemeRelationSentence ? (
+                          <p className='worksheet-small-copy'>
+                            The word &apos;<strong>{phonemeRelationLeadWord}</strong>&apos; is
+                            related to the word &apos;{wordDetail.word}&apos; by the sound{' '}
+                            <strong>{primaryPhonemeRelation?.label}</strong>.
+                          </p>
+                        ) : null}
+                      </div>
                     ) : (
-                      <ul className='mt-3 worksheet-detail-list'>
-                        {morphemeEntries.slice(0, 3).map(entry => (
-                          <li key={`${entry.form}-${entry.sentence}`}>
-                            <strong>{entry.form}</strong>: {entry.sentence}
-                          </li>
-                        ))}
-                      </ul>
+                      <p className='worksheet-small-copy'>No related words are ready yet.</p>
                     )}
                   </section>
 
-                  {homographMeanings.length > 0 ? (
+                  {hasGeneratedLanguageExamples ? (
                     <section className='worksheet-card'>
-                      <p className='worksheet-card-title'>Homographs</p>
-                      <ul className='worksheet-detail-list'>
-                        {homographMeanings.map(meaning => (
-                          <li key={meaning}>{meaning}</li>
-                        ))}
-                      </ul>
+                      <p className='worksheet-card-title'>Synonyms, Antonyms, Homonyms, Morphemes</p>
+                      <div className='mt-3 space-y-3'>
+                        {generatedSynonymEntries.length > 0 ? (
+                          <div>
+                            <p className='font-semibold text-slate-900'>Synonyms</p>
+                            <p className='worksheet-small-copy'>
+                              Words with similar meanings.
+                            </p>
+                            <ul className='mt-2 worksheet-detail-list'>
+                              {generatedSynonymEntries.slice(0, 2).map(entry => (
+                                <li key={`${entry.word}-${entry.reason || 'synonym-print'}`}>
+                                  <strong>{entry.word}</strong>
+                                  {entry.reason ? `: ${entry.reason}` : ''}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : null}
+                        {generatedAntonymEntries.length > 0 ? (
+                          <div>
+                            <p className='font-semibold text-slate-900'>Antonyms</p>
+                            <p className='worksheet-small-copy'>
+                              Words with opposite meanings.
+                            </p>
+                            <ul className='mt-2 worksheet-detail-list'>
+                              {generatedAntonymEntries.slice(0, 2).map(entry => (
+                                <li key={`${entry.word}-${entry.reason || 'antonym-print'}`}>
+                                  <strong>{entry.word}</strong>
+                                  {entry.reason ? `: ${entry.reason}` : ''}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : null}
+                        {generatedHomographMeanings.length > 0 ? (
+                          <div>
+                            <p className='font-semibold text-slate-900'>Homonyms</p>
+                            <p className='worksheet-small-copy'>
+                              Words that can sound the same or look the same but mean different things.
+                            </p>
+                            <ul className='mt-2 worksheet-detail-list'>
+                              {generatedHomographMeanings.slice(0, 2).map(meaning => (
+                                <li key={meaning}>{meaning}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : null}
+                        {generatedMorphemeEntries.length > 0 ? (
+                          <div>
+                            <p className='font-semibold text-slate-900'>Morphemes</p>
+                            <p className='worksheet-small-copy'>
+                              Small decorations to words that make them more precise.
+                            </p>
+                            <ul className='mt-2 worksheet-detail-list'>
+                              {generatedMorphemeEntries.slice(0, 2).map(entry => (
+                                <li key={`${entry.form}-${entry.sentence}`}>
+                                  <strong>{entry.form}</strong>: {entry.sentence}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : null}
+                      </div>
                     </section>
                   ) : null}
                 </div>
               </div>
-
-              <section className='worksheet-inline-draw worksheet-print-draw-row'>
-                <div className='worksheet-inline-draw-copy'>
-                  <p className='worksheet-card-title'>
-                    {generatedContent?.imageDataUrl ? 'Color Or Trace' : 'Draw Your Own Picture'}
-                  </p>
-                  <p className='worksheet-back-prompt'>
-                    {generatedContent?.imageDataUrl
-                      ? `Color the picture for "${wordDetail.word}" and say the word again while you work.`
-                      : wordDetail.drawPrompt}
-                  </p>
-                  {!generatedContent?.imageDataUrl ? (
-                    <p className='worksheet-small-copy'>
-                      Use the definition above to help the child decide what to draw.
-                    </p>
-                  ) : null}
-                </div>
-
-                <div className='worksheet-inline-draw-box'>
-                  {generatedContent?.imageDataUrl ? (
-                    <img
-                      src={generatedContent.imageDataUrl}
-                      alt={`${wordDetail.word} coloring page`}
-                      className='worksheet-drawing-image'
-                    />
-                  ) : (
-                    <div className='worksheet-draw-placeholder' />
-                  )}
-                </div>
-              </section>
             </div>
           </div>
         </article>
       </div>
-    </>
+    </div>
   );
 }
