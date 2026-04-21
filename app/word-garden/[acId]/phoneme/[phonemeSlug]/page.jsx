@@ -20,6 +20,9 @@ export default async function WordGardenLevelTwoPage({
     `/word-garden/${params.acId}/phoneme/${params.phonemeSlug}`
   );
   const ageInMonths = calculateAgeInMonths(anonymousChild.birthYearMonth);
+  const selectedCategory = Array.isArray(searchParams?.category)
+    ? searchParams.category[0]
+    : searchParams?.category || '';
   const wordCloudWords = getWordCloudWords(
     params.phonemeSlug,
     ageInMonths,
@@ -70,7 +73,12 @@ export default async function WordGardenLevelTwoPage({
       />
 
       <WordCloud
+        key={`phoneme-${params.phonemeSlug}-${soundTableSelectionLabel || 'all'}-${
+          selectedCategory || 'All'
+        }`}
         acId={params.acId}
+        defaultCategory={selectedCategory || 'All'}
+        hasCurrentWord={Boolean(anonymousChild.currentChecklistWord)}
         selectionType='phoneme'
         selectionSlug={params.phonemeSlug}
         words={wordCloudWords}

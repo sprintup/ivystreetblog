@@ -600,9 +600,9 @@ function buildPanes(wordDetail) {
       items: [
         {
           id: 'context-category',
-          label: `What are some words in the ${
-            wordDetail.category ? `${wordDetail.category} category` : 'category'
-          } that relate to "${wordDetail.word}"?`,
+          label: `"${wordDetail.word}" is a type of what in ${
+            wordDetail.category ? wordDetail.category : 'this category'
+          }?`,
         },
         {
           id: 'context-connections',

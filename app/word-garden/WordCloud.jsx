@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 function getDefaultConcrete() {
@@ -29,6 +30,21 @@ function buildWordHref(
       ? `?letter=${encodeURIComponent(soundTableSelection)}`
       : ''
   }`;
+}
+
+function buildAllWordsHref(acId, view = '', category = '') {
+  const searchParams = new URLSearchParams();
+
+  if (view) {
+    searchParams.set('view', view);
+  }
+
+  if (category && category !== 'All') {
+    searchParams.set('category', category);
+  }
+
+  const queryString = searchParams.toString();
+  return `/word-garden/${acId}/all${queryString ? `?${queryString}` : ''}`;
 }
 
 function renderLetterWordLabel(wordEntry, selectionSlug) {
@@ -144,6 +160,7 @@ export default function WordCloud({
   defaultCategory = 'All',
   defaultShowAbstract,
   defaultShowCompleted = false,
+  hasCurrentWord = false,
   selectionType,
   selectionSlug,
   selectionMessage = '',
@@ -151,6 +168,7 @@ export default function WordCloud({
   soundTableSelection = '',
   emptySelectionMessage = 'No words matched this selection yet.',
 }) {
+  const router = useRouter();
   const concreteWords = useMemo(
     () => words.filter(wordEntry => wordEntry.concreteness === 'concrete'),
     [words]
@@ -174,10 +192,10 @@ export default function WordCloud({
   );
   const normalizedDefaultCategory = useMemo(
     () =>
-      selectionType === 'all' && categoryOptions.includes(String(defaultCategory || '').trim())
+      categoryOptions.includes(String(defaultCategory || '').trim())
         ? String(defaultCategory || '').trim()
         : 'All',
-    [categoryOptions, defaultCategory, selectionType]
+    [categoryOptions, defaultCategory]
   );
   const allConcreteWordsLearned = useMemo(
     () =>
@@ -197,29 +215,31 @@ export default function WordCloud({
   const filteredWords = useMemo(
     () =>
       words.filter(wordEntry => {
+        const isCompleted = (wordEntry.completedChecklistCount || 0) > 0;
         const matchesConcreteness =
           wordEntry.concreteness === 'abstract' ? showAbstract : showConcrete;
-        const isCompleted = (wordEntry.completedChecklistCount || 0) > 0;
-        const matchesCompletion = showCompleted || !isCompleted;
         const matchesCategory =
-          selectionType !== 'all' ||
           selectedCategory === 'All' ||
           String(wordEntry.category || '').trim() === selectedCategory;
+        const matchesIncompleteSelection = matchesConcreteness && !isCompleted;
+        const matchesCompletedSelection = showCompleted && isCompleted;
 
-        return matchesConcreteness && matchesCompletion && matchesCategory;
+        return (
+          matchesCategory &&
+          (matchesIncompleteSelection || matchesCompletedSelection)
+        );
       }),
-    [selectedCategory, selectionType, showAbstract, showCompleted, showConcrete, words]
+    [selectedCategory, showAbstract, showCompleted, showConcrete, words]
   );
   const categoryScopedWords = useMemo(
     () =>
       words.filter(wordEntry => {
         return (
-          selectionType !== 'all' ||
           selectedCategory === 'All' ||
           String(wordEntry.category || '').trim() === selectedCategory
         );
       }),
-    [selectedCategory, selectionType, words]
+    [selectedCategory, words]
   );
   const concreteCount = useMemo(
     () =>
@@ -243,14 +263,57 @@ export default function WordCloud({
   );
   const completedCount = useMemo(
     () =>
-      categoryScopedWords.filter(wordEntry => {
-        const matchesConcreteness =
-          wordEntry.concreteness === 'abstract' ? showAbstract : showConcrete;
-
-        return matchesConcreteness && (wordEntry.completedChecklistCount || 0) > 0;
-      }).length,
-    [categoryScopedWords, showAbstract, showConcrete]
+      categoryScopedWords.filter(
+        wordEntry => (wordEntry.completedChecklistCount || 0) > 0
+      ).length,
+    [categoryScopedWords]
   );
+  const concreteRecommendationCandidates = useMemo(
+    () =>
+      categoryScopedWords.filter(
+        wordEntry =>
+          wordEntry.concreteness === 'concrete' &&
+          (wordEntry.completedChecklistCount || 0) === 0
+      ),
+    [categoryScopedWords]
+  );
+  const abstractRecommendationCandidates = useMemo(
+    () =>
+      categoryScopedWords.filter(
+        wordEntry =>
+          wordEntry.concreteness === 'abstract' &&
+          (wordEntry.completedChecklistCount || 0) === 0
+      ),
+    [categoryScopedWords]
+  );
+  const recommendationCandidates =
+    concreteRecommendationCandidates.length > 0
+      ? concreteRecommendationCandidates
+      : abstractRecommendationCandidates;
+  const currentWordButtonClass = hasCurrentWord
+    ? 'no-underline rounded-full border border-green-400/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-200 transition hover:border-green-300/50 hover:text-white'
+    : 'no-underline rounded-full border border-accent/30 bg-white/5 px-4 py-2 text-sm font-semibold text-accent transition hover:border-accent/50 hover:text-white';
+
+  function handleRecommendWord() {
+    if (recommendationCandidates.length === 0) {
+      return;
+    }
+
+    const randomWord =
+      recommendationCandidates[
+        Math.floor(Math.random() * recommendationCandidates.length)
+      ];
+
+    router.push(
+      buildWordHref(
+        acId,
+        selectionType,
+        selectionSlug,
+        randomWord.word,
+        soundTableSelection
+      )
+    );
+  }
 
   if (words.length === 0) {
     return (
@@ -262,6 +325,47 @@ export default function WordCloud({
 
   return (
     <div className='space-y-4 pb-24 md:pb-32'>
+      <div className='rounded-3xl border border-accent/20 bg-primary/40 p-4'>
+        <div className='flex flex-wrap items-center gap-4'>
+          <Link
+            href={`/word-garden/${acId}/current`}
+            className={currentWordButtonClass}
+          >
+            Current word
+          </Link>
+
+          <button
+            type='button'
+            onClick={handleRecommendWord}
+            disabled={recommendationCandidates.length === 0}
+            className='rounded-full border border-green-400/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-200 transition hover:border-green-300/50 hover:text-white disabled:cursor-not-allowed disabled:opacity-50'
+          >
+            Recommend
+          </button>
+
+          <Link
+            href={`/word-garden/${acId}/checklists`}
+            className='no-underline rounded-full border border-green-400/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-200 transition hover:border-green-300/50 hover:text-white'
+          >
+            Checklists
+          </Link>
+
+          <Link
+            href={buildAllWordsHref(acId, 'unlocked', selectedCategory)}
+            className='no-underline rounded-full border border-green-400/30 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-200 transition hover:border-green-300/50 hover:text-white'
+          >
+            All unlocked words
+          </Link>
+
+          <Link
+            href={buildAllWordsHref(acId, '', selectedCategory)}
+            className='no-underline rounded-full border border-yellow/30 bg-yellow/10 px-4 py-2 text-sm font-semibold text-yellow transition hover:border-yellow/50 hover:text-orange'
+          >
+            All words
+          </Link>
+        </div>
+      </div>
+
       <div className='rounded-[2rem] border border-accent/20 bg-primary/40 p-6 shadow-lg md:p-10'>
         {selectionMessage ? (
           <div className='mb-6 rounded-2xl border border-yellow/20 bg-yellow/10 p-4 text-sm leading-6 text-accent'>
@@ -269,6 +373,23 @@ export default function WordCloud({
           </div>
         ) : null}
         <div className='mb-6 flex flex-wrap items-center gap-4'>
+          {categoryOptions.length > 0 ? (
+            <label className='flex items-center gap-2 text-sm text-accent'>
+              <span>Category</span>
+              <select
+                value={selectedCategory}
+                onChange={event => setSelectedCategory(event.target.value)}
+                className='rounded-full border border-accent/30 bg-secondary/80 px-3 py-2 text-sm text-accent'
+              >
+                <option value='All'>All</option>
+                {categoryOptions.map(category => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : null}
           <label className='flex items-center gap-2 text-sm text-accent'>
             <input
               type='checkbox'
@@ -296,23 +417,6 @@ export default function WordCloud({
             />
             Completed ({completedCount})
           </label>
-          {selectionType === 'all' && categoryOptions.length > 0 ? (
-            <label className='flex items-center gap-2 text-sm text-accent'>
-              <span>Category</span>
-              <select
-                value={selectedCategory}
-                onChange={event => setSelectedCategory(event.target.value)}
-                className='rounded-full border border-accent/30 bg-secondary/80 px-3 py-2 text-sm text-accent'
-              >
-                <option value='All'>All</option>
-                {categoryOptions.map(category => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-            </label>
-          ) : null}
         </div>
 
         {filteredWords.length === 0 ? (

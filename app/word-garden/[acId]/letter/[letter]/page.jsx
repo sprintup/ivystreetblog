@@ -16,7 +16,10 @@ function normalizeLetter(letter) {
   return String(letter || '').trim().charAt(0).toUpperCase();
 }
 
-export default async function WordGardenLetterLevelTwoPage({ params }) {
+export default async function WordGardenLetterLevelTwoPage({
+  params,
+  searchParams,
+}) {
   const letter = normalizeLetter(params.letter);
 
   if (!/^[A-Z]$/.test(letter)) {
@@ -28,6 +31,9 @@ export default async function WordGardenLetterLevelTwoPage({ params }) {
     `/word-garden/${params.acId}/letter/${letter}`
   );
   const ageInMonths = calculateAgeInMonths(anonymousChild.birthYearMonth);
+  const selectedCategory = Array.isArray(searchParams?.category)
+    ? searchParams.category[0]
+    : searchParams?.category || '';
   const letterWordMatchMode = getLetterWordMatchMode(
     letter,
     anonymousChild.practicedWords
@@ -77,8 +83,11 @@ export default async function WordGardenLetterLevelTwoPage({ params }) {
       />
 
       <WordCloud
+        key={`letter-${letter}-${selectedCategory || 'All'}`}
         acId={params.acId}
+        defaultCategory={selectedCategory || 'All'}
         defaultShowAbstract={shouldShowAbstractByDefault}
+        hasCurrentWord={Boolean(anonymousChild.currentChecklistWord)}
         selectionType='letter'
         selectionSlug={letter}
         selectionMessage={

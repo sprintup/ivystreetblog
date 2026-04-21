@@ -49,6 +49,7 @@ export default async function WordGardenAllWordsPage({ params, searchParams }) {
         selectionSlug='all'
         defaultShowAbstract={showUnlockedOnly ? false : undefined}
         defaultShowCompleted={!showUnlockedOnly}
+        hasCurrentWord={Boolean(anonymousChild.currentChecklistWord)}
         words={wordCloudWords}
         ageInMonths={ageInMonths}
         emptySelectionMessage='No words are ready yet.'
