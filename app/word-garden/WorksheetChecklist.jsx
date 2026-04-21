@@ -393,11 +393,15 @@ function getInitialLetterSoundData(wordDetail) {
       ...letterPhonemeLabels.filter(label => label !== firstSoundRow.phonemeLabel),
     ];
     const soundCount = orderedPhonemeLabels.length;
+    const phrase =
+      soundCount === 1
+        ? `the sound ${orderedPhonemeLabels[0]}`
+        : `${soundCount} sounds, ${orderedPhonemeLabels.join(', ')}`;
 
     return {
       label: firstSoundRow.phonemeLabel,
       promptLabel: firstSoundRow.phonemeLabel,
-      phrase: `${soundCount} sound${soundCount === 1 ? '' : 's'}, ${orderedPhonemeLabels.join(', ')}`,
+      phrase,
       phonemeSlug,
       letter: initialLetter,
     };
@@ -405,11 +409,15 @@ function getInitialLetterSoundData(wordDetail) {
 
   if (letterPhonemeLabels.length > 0) {
     const soundCount = letterPhonemeLabels.length;
+    const phrase =
+      soundCount === 1
+        ? `the sound ${letterPhonemeLabels[0]}`
+        : `${soundCount} sounds, ${letterPhonemeLabels.join(', ')}`;
 
     return {
       label: letterPhonemeLabels[0],
       promptLabel: letterPhonemeLabels[0],
-      phrase: `${soundCount} sound${soundCount === 1 ? '' : 's'}, ${letterPhonemeLabels.join(', ')}`,
+      phrase,
       phonemeSlug: null,
       letter: initialLetter,
     };
@@ -528,7 +536,7 @@ function buildPanes(wordDetail) {
   const initialLetterArticle = getLetterArticle(initialLetter);
   const initialLetterSoundData = getInitialLetterSoundData(wordDetail);
   const firstSoundChecklistLabel = initialLetterSoundData.constantWord
-    ? `${wordDetail.word} starts with ${initialLetterArticle} ${initialLetter} like ${initialLetterSoundData.constantWord}.`
+    ? `${wordDetail.word} starts with the letter ${initialLetter}, what sound does this ${initialLetter} make?`
     : `${wordDetail.word} starts with ${initialLetterArticle} ${initialLetter}, which makes ${initialLetterSoundData.phrase}. Can you say ${initialLetterSoundData.promptLabel}?`;
   const upper = initialLetter || wordDetail.word.charAt(0).toUpperCase();
   const lower = upper.toLowerCase();
