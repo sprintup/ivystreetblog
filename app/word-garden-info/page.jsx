@@ -24,7 +24,9 @@ export default async function WordGardenInfoPage() {
         <p className='max-w-3xl text-lg text-accent'>
           Word Garden helps adults support vocabulary and speech-sound learning
           with anonymous child profiles, sound tables, word clouds, and printable
-          worksheets that make practice feel more concrete and organized.
+          worksheets that make practice feel more concrete and organized. It is
+          designed for the adult to use as a teaching helper with the child,
+          rather than as a self-use app for the child alone.
         </p>
         <div className='mt-8 flex flex-wrap gap-3'>
           <Link
@@ -80,6 +82,11 @@ export default async function WordGardenInfoPage() {
               school, or home routines, while the online checklist keeps progress
               connected to the dashboard so you can teach a word when you have a
               spare minute.
+            </p>
+            <p>
+              The app is meant to guide the adult through what to model, notice,
+              and practice with the child, so the child does not need to operate
+              the app directly.
             </p>
           </div>
         </article>
