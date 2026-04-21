@@ -564,7 +564,10 @@ function buildPanes(wordDetail) {
           label: `Say the definition of "${wordDetail.word}" together.`,
         },
         { id: 'meaning-sentence', label: `Say "${wordDetail.word}" as part of a sentence.` },
-        { id: 'meaning-explain', label: `Ask the child what "${wordDetail.word}" means.` },
+        {
+          id: 'meaning-explain',
+          label: `Find, show or act the word "${wordDetail.word}" with the child.`,
+        },
       ],
     },
     {
@@ -751,6 +754,15 @@ export default function WorksheetChecklist({
         .filter(Boolean)
         .slice(0, 4)
     : [];
+  const generatedCategoryTypeAnswer = String(
+    generatedContent?.categoryTypeAnswer || ''
+  )
+    .replace(/[.?!]+$/g, '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 4)
+    .join(' ');
   const generatedMorphemeEntries = Array.isArray(generatedContent?.morphemeSentences)
     ? generatedContent.morphemeSentences
         .map(entry => ({
@@ -1254,6 +1266,7 @@ export default function WorksheetChecklist({
 
       setGeneratedContent({
         childFriendlyDefinition: data.childFriendlyDefinition || '',
+        categoryTypeAnswer: data.categoryTypeAnswer || '',
         morphemeSentences: data.morphemeSentences || [],
         relatedWordConnections: data.relatedWordConnections || [],
         antonymConnections: data.antonymConnections || [],
@@ -2114,62 +2127,69 @@ export default function WorksheetChecklist({
         {isGeneratorOpen ? (
           <div className='mt-4 space-y-4'>
             <div className='space-y-3 text-sm text-slate-600'>
-              <p>
-                You do not need to generate content to print the worksheet, but
-                generation will usually make the worksheet better by adding a
-                child-friendly definition, stronger morphology support,
-                related-word suggestions, and a coloring-page image.
-              </p>
+              <div className='rounded-2xl bg-slate-50 p-4'>
+                <p className='text-sm font-semibold text-slate-900'>About generation</p>
+                <p className='mt-2'>
+                  You do not need to generate content to print the worksheet,
+                  but generation will usually make the worksheet better by
+                  adding a child-friendly definition, stronger morphology
+                  support, related-word suggestions, and a coloring-page image.
+                </p>
+                <p className='mt-2'>
+                  Each generation usually takes about a minute and costs about a
+                  nickel.
+                </p>
+                <p className='mt-2'>
+                  After generation finishes, the print dialog will open
+                  automatically so you can download or print the worksheet.
+                </p>
+                <p className='mt-2'>
+                  Example output:{' '}
+                  <a
+                    href='/investigate.pdf'
+                    className='text-primary underline decoration-dotted underline-offset-4'
+                    target='_blank'
+                    rel='noreferrer'
+                  >
+                    investigate.pdf
+                  </a>
+                </p>
+              </div>
               {isGenerationDisabled ? (
                 <p className='rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-amber-900'>
                   Worksheet generation is disabled for "{wordDetail.word}".
                   You can still download and print the worksheet without generation.
                 </p>
               ) : null}
-              <p>
-                Each generation usually takes about a minute and costs about a
-                nickel.
-              </p>
-              <p>
-                To do generation, visit the{' '}
-                <a
-                  href='https://platform.openai.com/settings/organization/billing/overview'
-                  className='text-primary underline decoration-dotted underline-offset-4'
-                >
-                  Billing page
-                </a>
-                , turn auto recharge off, and add a small credit to your
-                account, such as $5.
-              </p>
-              <p>
-                Then create an API key on the{' '}
-                <a
-                  href='https://platform.openai.com/settings/organization/api-keys'
-                  className='text-primary underline decoration-dotted underline-offset-4'
-                >
-                  API keys page
-                </a>
-                . Copy the secret key value and store it securely.
-              </p>
-              <p>
-                When you want to generate a worksheet, paste that key into the
-                box below.
-              </p>
-              <p>
-                After generation finishes, the print dialog will open
-                automatically so you can download or print the worksheet.
-              </p>
-              <p>
-                Example output:{' '}
-                <a
-                  href='/investigate.pdf'
-                  className='text-primary underline decoration-dotted underline-offset-4'
-                  target='_blank'
-                  rel='noreferrer'
-                >
-                  investigate.pdf
-                </a>
-              </p>
+              <div className='rounded-2xl bg-slate-50 p-4'>
+                <p className='text-sm font-semibold text-slate-900'>API key setup</p>
+                <p className='mt-2'>
+                  Visit the{' '}
+                  <a
+                    href='https://platform.openai.com/settings/organization/billing/overview'
+                    className='text-primary underline decoration-dotted underline-offset-4'
+                  >
+                    Billing page
+                  </a>
+                  , turn auto recharge off, and add a small credit to your
+                  account, such as $5.
+                </p>
+                <p className='mt-2'>
+                  Then create an API key on the{' '}
+                  <a
+                    href='https://platform.openai.com/settings/organization/api-keys'
+                    className='text-primary underline decoration-dotted underline-offset-4'
+                  >
+                    API keys page
+                  </a>
+                  . Copy the secret key value and store it securely.
+                </p>
+                <p className='mt-2'>
+                  When you want to generate a worksheet, paste that key into the
+                  box below. The browser will offer to store it for you. The
+                  token is not stored in the database.
+                </p>
+              </div>
             </div>
             <form onSubmit={handleGenerate} className='space-y-4'>
               <input
@@ -2464,7 +2484,12 @@ export default function WorksheetChecklist({
                               {pane.items.map(item => (
                                 <li key={item.id} className='worksheet-check-item'>
                                   <span className='worksheet-print-checkbox' />
-                                  <span className='worksheet-print-task'>{item.label}</span>
+                                  <span className='worksheet-print-task'>
+                                    {item.id === 'context-category' &&
+                                    generatedCategoryTypeAnswer
+                                      ? `${item.label} (${generatedCategoryTypeAnswer})`
+                                      : item.label}
+                                  </span>
                                 </li>
                               ))}
                             </ol>

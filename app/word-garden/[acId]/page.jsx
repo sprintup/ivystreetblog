@@ -100,16 +100,15 @@ export default async function WordGardenLevelOnePage({ params }) {
                     jumps back into the main active checklist.
                   </p>
                 </div>
-                <div className='rounded-2xl border border-accent/15 bg-primary/30 p-4 md:col-span-2'>
+                <div className='rounded-2xl border border-accent/15 bg-primary/30 p-4'>
                   <p className='text-sm font-semibold text-yellow'>Practice Notes</p>
                   <p className='mt-2'>
                     Hard letters should be practiced more than easy letters,
                     because the link between the letter name and letter sound
                     takes longer to establish. Green sounds are available right
                     now, italic sounds were inherited from earlier months, and
-                    any clickable row opens the next word-cloud level. Use{' '}
-                    <strong>Hide locked rows</strong> to focus on what is
-                    available right now.
+                    <strong> Hide locked rows</strong> helps you focus on what
+                    is available right now.
                   </p>
                   <p className='mt-3 text-sm'>
                     For more detail on started checklists, current word behavior,
@@ -121,6 +120,24 @@ export default async function WordGardenLevelOnePage({ params }) {
                       Checklists
                     </Link>{' '}
                     page.
+                  </p>
+                </div>
+                <div className='rounded-2xl border border-accent/15 bg-primary/30 p-4'>
+                  <p className='text-sm font-semibold text-yellow'>App Flow</p>
+                  <p className='mt-2'>
+                    Throughout the app, I&apos;ve tried to make yellow text,
+                    pills, and labels clickable whenever they open another
+                    useful page or list.
+                  </p>
+                  <p className='mt-3'>
+                    The app builds across three levels. <strong>Level 1</strong>{' '}
+                    is the <strong>Sound Table</strong>, where you choose a
+                    letter or phoneme (sound). Clicking here opens{' '}
+                    <strong>Level 2</strong>, the <strong>Word Cloud</strong>,
+                    which focuses on the target
+                    you selected in Level 1. Clicking a word in the cloud opens{' '}
+                    <strong>Level 3</strong>, a single-word page with practice
+                    activities and links back to both Levels 1 and 2.
                   </p>
                 </div>
               </div>

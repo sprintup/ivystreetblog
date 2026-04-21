@@ -406,7 +406,7 @@ export default function SoundTable({ acId, hasCurrentWord = false, rows }) {
                 <th className='sticky top-0 z-20 bg-secondary px-4 py-3 text-sm uppercase tracking-wide'>
                   <HeaderButton
                     column='expressiveText'
-                    label='Expressive Difficulty'
+                    label='Difficulty'
                     sortRules={sortRules}
                     onSort={updateSort}
                   />

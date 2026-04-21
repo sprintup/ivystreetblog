@@ -14,6 +14,7 @@ export default function StartedChecklistTile({
 }) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSettingCurrentWord, setIsSettingCurrentWord] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -65,6 +66,44 @@ export default function StartedChecklistTile({
     setIsDeleting(false);
   }
 
+  async function handleMakeCurrent() {
+    if (checklist.isCurrentWord || isSettingCurrentWord) {
+      return;
+    }
+
+    setIsSettingCurrentWord(true);
+    setErrorMessage('');
+
+    try {
+      const response = await fetch(`/api/word-garden/children/${acId}/practice`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          word: checklist.word,
+          practiceIncrement: 0,
+          checklistIncrement: 0,
+          checklistCheckedItemIds: checklist.checklistCheckedItemIds || [],
+          openChecklist: true,
+          selectionType: checklist.selectionType,
+          selectionSlug: checklist.selectionSlug,
+          selectionLetter: checklist.selectionLetter || '',
+          setCurrentWord: true,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Unable to set the current word right now.');
+      }
+
+      router.refresh();
+    } catch (error) {
+      console.error('Error setting current word from checklist tile:', error);
+      setErrorMessage('Unable to set the current word right now.');
+    } finally {
+      setIsSettingCurrentWord(false);
+    }
+  }
+
   return (
     <>
       <div
@@ -103,6 +142,25 @@ export default function StartedChecklistTile({
           <p className='text-sm leading-6 text-accent'>{checklist.definition}</p>
 
           <div className='flex flex-wrap items-center justify-end gap-3'>
+            <button
+              type='button'
+              onClick={event => {
+                event.stopPropagation();
+                void handleMakeCurrent();
+              }}
+              disabled={checklist.isCurrentWord || isSettingCurrentWord}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                checklist.isCurrentWord
+                  ? 'border border-green-400/30 bg-green-500/10 text-green-200'
+                  : 'border border-green-400/30 bg-green-500/10 text-green-200 hover:border-green-300/50 hover:text-white'
+              }`}
+            >
+              {checklist.isCurrentWord
+                ? 'Current'
+                : isSettingCurrentWord
+                  ? 'Setting...'
+                  : 'Make Current'}
+            </button>
             <button
               type='button'
               onClick={event => {

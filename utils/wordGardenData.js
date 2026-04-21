@@ -2001,6 +2001,10 @@ function getStartedChecklists(
     })
     .filter(Boolean)
     .sort((leftEntry, rightEntry) => {
+      if (leftEntry.isCurrentWord !== rightEntry.isCurrentWord) {
+        return leftEntry.isCurrentWord ? -1 : 1;
+      }
+
       const leftOrderIndex = checklistWordOrderIndexes.has(leftEntry.normalizedWord)
         ? checklistWordOrderIndexes.get(leftEntry.normalizedWord)
         : Number.POSITIVE_INFINITY;
@@ -2010,10 +2014,6 @@ function getStartedChecklists(
 
       if (hasManualOrder && leftOrderIndex !== rightOrderIndex) {
         return leftOrderIndex - rightOrderIndex;
-      }
-
-      if (!hasManualOrder && leftEntry.isCurrentWord !== rightEntry.isCurrentWord) {
-        return leftEntry.isCurrentWord ? -1 : 1;
       }
 
       const leftTime = leftEntry.checklistUpdatedAt

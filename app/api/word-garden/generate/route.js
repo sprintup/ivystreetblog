@@ -117,7 +117,7 @@ export async function POST(request) {
             {
               role: 'system',
               content:
-                'You create printable word-study supports for caregivers and young children. Return only JSON that matches the requested schema. Keep the definition child-friendly, concrete, and under 28 words. Create an image prompt for a black-and-white coloring-page style illustration with thick outlines, a pure white background, no gray shading, no gray fill, no drop shadows, and no text. If morphology examples or same-target words are provided, use them only as context. For morphemeSentences, include only real, natural English forms that make semantic sense for the target word. Never mechanically add endings. If a target word does not naturally take an -ing, past-tense, or plural form in normal child-facing use, leave that form out. If no natural morphology examples fit, return an empty array. For relatedWordConnections, prefer 3 child-friendly synonyms or close meaning words for the target word; if true synonyms are not natural, use conceptually related words instead. For antonymConnections, include up to 3 child-friendly opposite-meaning words only when the target word has natural opposites a caregiver could discuss with a young child; otherwise return an empty array. Keep every synonym, antonym, homonym, and morpheme response age-appropriate for a young child, short enough to read aloud, and easy for a caregiver to discuss. Avoid mature, scary, violent, sexual, or overly academic examples. Do not choose words only because they share a sound, phoneme, or first letter. For homographMeanings, include short child-friendly meanings only when the target word has a common same-spelling or same-sounding different-meaning match that would be useful to discuss; otherwise return an empty array. Book recommendations must be picture-book friendly and concise.',
+                'You create printable word-study supports for caregivers and young children. Return only JSON that matches the requested schema. Keep the definition child-friendly, concrete, and under 28 words. Create an image prompt for a black-and-white coloring-page style illustration with thick outlines, a pure white background, no gray shading, no gray fill, no drop shadows, and no text. If morphology examples or same-target words are provided, use them only as context. For morphemeSentences, include only real, natural English forms that make semantic sense for the target word. Never mechanically add endings. If a target word does not naturally take an -ing, past-tense, or plural form in normal child-facing use, leave that form out. If no natural morphology examples fit, return an empty array. For relatedWordConnections, prefer 3 child-friendly synonyms or close meaning words for the target word; if true synonyms are not natural, use conceptually related words instead. For antonymConnections, include up to 3 child-friendly opposite-meaning words only when the target word has natural opposites a caregiver could discuss with a young child; otherwise return an empty array. Keep every synonym, antonym, homonym, and morpheme response age-appropriate for a young child, short enough to read aloud, and easy for a caregiver to discuss. Avoid mature, scary, violent, sexual, or overly academic examples. Do not choose words only because they share a sound, phoneme, or first letter. For homographMeanings, include short child-friendly meanings only when the target word has a common same-spelling or same-sounding different-meaning match that would be useful to discuss; otherwise return an empty array. For categoryTypeAnswer, answer the question "<word> is a type of what in <category>?" in 2 to 4 simple words, with no punctuation; return an empty string if no natural short answer fits. Book recommendations must be picture-book friendly and concise.',
             },
             {
               role: 'user',
@@ -149,6 +149,9 @@ export async function POST(request) {
                 additionalProperties: false,
                 properties: {
                   childFriendlyDefinition: {
+                    type: 'string',
+                  },
+                  categoryTypeAnswer: {
                     type: 'string',
                   },
                   imagePrompt: {
@@ -230,6 +233,7 @@ export async function POST(request) {
                 },
                 required: [
                   'childFriendlyDefinition',
+                  'categoryTypeAnswer',
                   'imagePrompt',
                   'morphemeSentences',
                   'relatedWordConnections',
@@ -295,6 +299,7 @@ export async function POST(request) {
 
     return jsonResponse({
       childFriendlyDefinition: generatedContent.childFriendlyDefinition,
+      categoryTypeAnswer: generatedContent.categoryTypeAnswer || '',
       morphemeSentences: generatedContent.morphemeSentences || [],
       relatedWordConnections: generatedContent.relatedWordConnections || [],
       antonymConnections: generatedContent.antonymConnections || [],

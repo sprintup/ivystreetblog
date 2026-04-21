@@ -4,10 +4,13 @@ import LevelTwoIntro from '../../../LevelTwoIntro';
 import WordCloud from '../../../WordCloud';
 import { getAnonymousChildOrNotFound } from '../../../wordGardenServer';
 import {
+  LETTER_GROUPS,
   calculateAgeInMonths,
   getLetterDifficultyLabel,
   getLetterDifficultyRank,
   getLetterLabel,
+  getTargetLabel,
+  getUnlockedArpabetForMonths,
   getLetterWordMatchMode,
   getLetterWordCloudWords,
 } from '@/utils/wordGardenData';
@@ -58,6 +61,24 @@ export default async function WordGardenLetterLevelTwoPage({
       : expressiveDifficultyRank === 2
         ? 'advanced'
         : 'hard';
+  const unlockedPhonemeSet = new Set(getUnlockedArpabetForMonths(ageInMonths));
+  const relatedPills = (LETTER_GROUPS.find(group => group.letter === letter)?.phonemes || [])
+    .filter(
+      (phoneme, index, phonemes) =>
+        phoneme?.phonemeSlug &&
+        phonemes.findIndex(
+          candidate => candidate.phonemeSlug === phoneme.phonemeSlug
+        ) === index
+    )
+    .map(phoneme => ({
+      key: `${letter}-${phoneme.phonemeSlug}`,
+      text: getTargetLabel(phoneme.phonemeSlug),
+      href: `/word-garden/${params.acId}/phoneme/${phoneme.phonemeSlug}?letter=${letter}`,
+      isUnlocked: String(phoneme.phonemeSlug || '')
+        .split('__')
+        .filter(Boolean)
+        .every(symbol => unlockedPhonemeSet.has(symbol)),
+    }));
 
   return (
     <section className='space-y-8 pb-24 md:pb-32'>
@@ -77,6 +98,8 @@ export default async function WordGardenLetterLevelTwoPage({
       </div>
 
       <LevelTwoIntro
+        acId={params.acId}
+        relatedPills={relatedPills}
         selectionNote={getLetterLabel(letter)}
         statusNote={expressiveDifficulty}
         statusNoteTone={expressiveDifficultyTone}

@@ -39,7 +39,10 @@ export default async function WordGardenAllWordsPage({ params, searchParams }) {
         <span>{showUnlockedOnly ? 'All unlocked words' : 'All words'}</span>
       </div>
 
-      <LevelTwoIntro selectionNote={showUnlockedOnly ? 'All unlocked words' : 'All words'} />
+      <LevelTwoIntro
+        acId={params.acId}
+        selectionNote={showUnlockedOnly ? 'All unlocked words' : 'All words'}
+      />
 
       <WordCloud
         key={`all-words-${showUnlockedOnly ? 'unlocked' : 'all'}-${selectedCategory || 'All'}`}

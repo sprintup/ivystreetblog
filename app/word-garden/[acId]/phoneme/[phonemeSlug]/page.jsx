@@ -3,6 +3,7 @@ import LevelTwoIntro from '../../../LevelTwoIntro';
 import WordCloud from '../../../WordCloud';
 import { getAnonymousChildOrNotFound } from '../../../wordGardenServer';
 import {
+  LETTER_GROUPS,
   calculateAgeInMonths,
   getPhonemeTimingLabel,
   getTargetLabel,
@@ -35,6 +36,19 @@ export default async function WordGardenLevelTwoPage({
     : 'Advanced for this age';
   const phonemeStatusNoteTone =
     phonemeStatusNote === 'Developmentally appropriate' ? 'ready' : 'advanced';
+  const isPhonemeUnlocked = getUnlockedArpabetForMonths(ageInMonths).includes(
+    params.phonemeSlug
+  );
+  const relatedPills = LETTER_GROUPS.filter(group =>
+    (group.phonemes || []).some(
+      phoneme => phoneme.phonemeSlug === params.phonemeSlug
+    )
+  ).map(group => ({
+    key: `${params.phonemeSlug}-${group.letter}`,
+    text: group.letter,
+    href: `/word-garden/${params.acId}/letter/${group.letter}`,
+    isUnlocked: isPhonemeUnlocked,
+  }));
   const soundTableSelectionLabel = getValidSoundTableLetterForPhoneme(
     params.phonemeSlug,
     searchParams?.letter,
@@ -66,6 +80,8 @@ export default async function WordGardenLevelTwoPage({
       </div>
 
       <LevelTwoIntro
+        acId={params.acId}
+        relatedPills={relatedPills}
         selectionNote={getTargetLabel(params.phonemeSlug)}
         topNote={`Typically learned: ${getPhonemeTimingLabel(params.phonemeSlug)}`}
         statusNote={phonemeStatusNote}
