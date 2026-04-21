@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import approvedLetterConstants from '@/data/approved-letter-constant.json';
 import { getWorksheetGenerationPolicy } from '@/utils/wordGardenGenerationPolicy';
 import { LETTER_GROUPS, getTargetLabel } from '@/utils/wordGardenData';
 
@@ -383,8 +384,9 @@ function getInitialLetterSoundData(wordDetail) {
     (wordDetail.soundMapRows || []).find(row => row.phonemeLabel) || null;
   const initialLetter = getInitialLetterValue(wordDetail);
   const letterPhonemeLabels = getLetterPhonemeLabels(initialLetter);
+  const constantWord = approvedLetterConstants?.[initialLetter] || '';
 
-  if (firstSoundRow?.phonemeLabel) {
+  if (letterPhonemeLabels.length > 0 && firstSoundRow?.phonemeLabel) {
     const phonemeSlug = getRowPhonemeSlugs(firstSoundRow)[0] || null;
     const orderedPhonemeLabels = [
       firstSoundRow.phonemeLabel,
@@ -413,11 +415,12 @@ function getInitialLetterSoundData(wordDetail) {
     };
   }
 
-  if (/^[AEIOU]$/.test(initialLetter)) {
+  if (constantWord) {
     return {
-      label: `open ${initialLetter}`,
-      promptLabel: `the ${initialLetter} sound`,
-      phrase: `an open ${initialLetter} sound`,
+      label: initialLetter,
+      promptLabel: '',
+      phrase: '',
+      constantWord,
       phonemeSlug: null,
       letter: initialLetter,
     };
@@ -425,8 +428,8 @@ function getInitialLetterSoundData(wordDetail) {
 
   return {
     label: `${initialLetter}`,
-    promptLabel: `${initialLetter} sound`,
-    phrase: `a ${initialLetter} sound`,
+    promptLabel: '',
+    phrase: '',
     phonemeSlug: null,
     letter: initialLetter,
   };
@@ -524,7 +527,9 @@ function buildPanes(wordDetail) {
   const initialLetter = getInitialLetterValue(wordDetail);
   const initialLetterArticle = getLetterArticle(initialLetter);
   const initialLetterSoundData = getInitialLetterSoundData(wordDetail);
-  const firstSoundChecklistLabel = `${wordDetail.word} starts with ${initialLetterArticle} ${initialLetter}, which makes ${initialLetterSoundData.phrase}. Can you say ${initialLetterSoundData.promptLabel}?`;
+  const firstSoundChecklistLabel = initialLetterSoundData.constantWord
+    ? `${wordDetail.word} starts with ${initialLetterArticle} ${initialLetter} like ${initialLetterSoundData.constantWord}.`
+    : `${wordDetail.word} starts with ${initialLetterArticle} ${initialLetter}, which makes ${initialLetterSoundData.phrase}. Can you say ${initialLetterSoundData.promptLabel}?`;
   const upper = initialLetter || wordDetail.word.charAt(0).toUpperCase();
   const lower = upper.toLowerCase();
 
