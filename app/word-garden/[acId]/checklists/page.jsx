@@ -164,6 +164,18 @@ export default async function WordGardenChecklistsPage({ params }) {
               Recommend
             </Link>
           ) : null}
+          <Link
+            href={`/word-garden/${params.acId}/all?view=unlocked`}
+            className='rounded-full border border-green-400/30 bg-green-500/10 px-4 py-2 font-semibold text-green-200 no-underline transition hover:border-green-300/50 hover:text-white'
+          >
+            All available words
+          </Link>
+          <Link
+            href={`/word-garden/${params.acId}/all?completed=1&concrete=0&abstract=0`}
+            className='rounded-full border border-yellow/30 bg-yellow/10 px-4 py-2 font-semibold text-yellow no-underline transition hover:border-yellow/50 hover:text-white'
+          >
+            Completed
+          </Link>
         </div>
       </div>
 

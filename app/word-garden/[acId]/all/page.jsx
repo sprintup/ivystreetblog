@@ -8,6 +8,20 @@ import {
   getUnlockedWordCloudWords,
 } from '@/utils/wordGardenData';
 
+function getBooleanSearchParamValue(value, fallbackValue) {
+  const normalizedValue = Array.isArray(value) ? value[0] : value;
+
+  if (normalizedValue === '1' || normalizedValue === 'true') {
+    return true;
+  }
+
+  if (normalizedValue === '0' || normalizedValue === 'false') {
+    return false;
+  }
+
+  return fallbackValue;
+}
+
 export default async function WordGardenAllWordsPage({ params, searchParams }) {
   const { anonymousChild } = await getAnonymousChildOrNotFound(
     params.acId,
@@ -18,6 +32,18 @@ export default async function WordGardenAllWordsPage({ params, searchParams }) {
   const selectedCategory = Array.isArray(searchParams?.category)
     ? searchParams.category[0]
     : searchParams?.category || '';
+  const defaultShowConcrete = getBooleanSearchParamValue(
+    searchParams?.concrete,
+    true
+  );
+  const defaultShowAbstract = getBooleanSearchParamValue(
+    searchParams?.abstract,
+    showUnlockedOnly ? false : undefined
+  );
+  const defaultShowCompleted = getBooleanSearchParamValue(
+    searchParams?.completed,
+    !showUnlockedOnly
+  );
   const wordCloudWords = showUnlockedOnly
     ? getUnlockedWordCloudWords(ageInMonths, anonymousChild.practicedWords)
     : getSelectionWordCloudWords('all', 'all', anonymousChild.practicedWords);
@@ -45,13 +71,18 @@ export default async function WordGardenAllWordsPage({ params, searchParams }) {
       />
 
       <WordCloud
-        key={`all-words-${showUnlockedOnly ? 'unlocked' : 'all'}-${selectedCategory || 'All'}`}
+        key={`all-words-${showUnlockedOnly ? 'unlocked' : 'all'}-${selectedCategory || 'All'}-${
+          defaultShowConcrete ? 'concrete-on' : 'concrete-off'
+        }-${defaultShowAbstract ? 'abstract-on' : 'abstract-off'}-${
+          defaultShowCompleted ? 'completed-on' : 'completed-off'
+        }`}
         acId={params.acId}
         defaultCategory={selectedCategory || 'All'}
+        defaultShowConcrete={defaultShowConcrete}
         selectionType='all'
         selectionSlug='all'
-        defaultShowAbstract={showUnlockedOnly ? false : undefined}
-        defaultShowCompleted={!showUnlockedOnly}
+        defaultShowAbstract={defaultShowAbstract}
+        defaultShowCompleted={defaultShowCompleted}
         hasCurrentWord={Boolean(anonymousChild.currentChecklistWord)}
         words={wordCloudWords}
         ageInMonths={ageInMonths}

@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
-function getDefaultConcrete() {
-  return true;
+function getDefaultConcrete(defaultShowConcrete) {
+  return typeof defaultShowConcrete === 'boolean' ? defaultShowConcrete : true;
 }
 
 function buildWordHref(
@@ -158,6 +158,7 @@ function renderWordLabel(wordEntry, selectionType, selectionSlug) {
 export default function WordCloud({
   acId,
   defaultCategory = 'All',
+  defaultShowConcrete,
   defaultShowAbstract,
   defaultShowCompleted = false,
   hasCurrentWord = false,
@@ -203,7 +204,9 @@ export default function WordCloud({
       concreteWords.every(wordEntry => (wordEntry.completedChecklistCount || 0) > 0),
     [concreteWords]
   );
-  const [showConcrete, setShowConcrete] = useState(() => getDefaultConcrete());
+  const [showConcrete, setShowConcrete] = useState(() =>
+    getDefaultConcrete(defaultShowConcrete)
+  );
   const [showAbstract, setShowAbstract] = useState(() =>
     typeof defaultShowAbstract === 'boolean'
       ? defaultShowAbstract && allConcreteWordsLearned

@@ -144,11 +144,8 @@ function getUserDisplayName(user: {
 }
 
 export class AnonymousChildRepository extends BaseRepository {
-  private applyChecklistWordOrder(
-    anonymousChild: IAnonymousChild,
-    preferredOrder: string[] | undefined = undefined
-  ) {
-    const startedChecklistWords = [...this.getStartedChecklistWords(anonymousChild)].sort(
+  private getSortedStartedChecklistWords(anonymousChild: IAnonymousChild) {
+    return [...this.getStartedChecklistWords(anonymousChild)].sort(
       (leftWord, rightWord) => {
         const leftTime = leftWord.checklistUpdatedAt
           ? new Date(leftWord.checklistUpdatedAt).getTime()
@@ -164,6 +161,13 @@ export class AnonymousChildRepository extends BaseRepository {
         return leftWord.word.localeCompare(rightWord.word);
       }
     );
+  }
+
+  private applyChecklistWordOrder(
+    anonymousChild: IAnonymousChild,
+    preferredOrder: string[] | undefined = undefined
+  ) {
+    const startedChecklistWords = this.getSortedStartedChecklistWords(anonymousChild);
     const startedWordSet = new Set(startedChecklistWords.map(practicedWord => practicedWord.word));
     const normalizedOrder = normalizeChecklistWordOrder(
       preferredOrder ?? anonymousChild.checklistWordOrder
@@ -185,7 +189,7 @@ export class AnonymousChildRepository extends BaseRepository {
     anonymousChild: IAnonymousChild,
     preferredWord = ''
   ) {
-    const startedChecklistWords = this.getStartedChecklistWords(anonymousChild);
+    const startedChecklistWords = this.getSortedStartedChecklistWords(anonymousChild);
 
     if (startedChecklistWords.length === 0) {
       anonymousChild.currentChecklistWord = null;
@@ -216,12 +220,15 @@ export class AnonymousChildRepository extends BaseRepository {
       return;
     }
 
-    const randomStartedChecklist =
-      startedChecklistWords[
-        Math.floor(Math.random() * startedChecklistWords.length)
-      ];
+    const startedWordSet = new Set(
+      startedChecklistWords.map(practicedWord => practicedWord.word)
+    );
+    const orderedStartedWords = normalizeChecklistWordOrder(
+      anonymousChild.checklistWordOrder
+    ).filter(word => startedWordSet.has(word));
 
-    anonymousChild.currentChecklistWord = randomStartedChecklist?.word || null;
+    anonymousChild.currentChecklistWord =
+      orderedStartedWords[0] || startedChecklistWords[0]?.word || null;
   }
 
   private async ensureAnonymousChildMetadata(

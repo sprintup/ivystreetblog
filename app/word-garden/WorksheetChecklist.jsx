@@ -148,6 +148,16 @@ function buildAllWordsCategoryHref(acId, category = '') {
     : `/word-garden/${acId}/all`;
 }
 
+function buildSelectionListHref(acId, selectionType, selectionSlug, letter = '') {
+  if (selectionType === 'all') {
+    return `/word-garden/${acId}/all`;
+  }
+
+  return selectionType === 'letter'
+    ? buildLetterHref(acId, selectionSlug)
+    : buildPhonemeHref(acId, selectionSlug, letter);
+}
+
 function getSelectedLetterValue(wordDetail) {
   return String(
     wordDetail.uppercaseLetter ||
@@ -734,6 +744,8 @@ export default function WorksheetChecklist({
   const [isPrintableImageReady, setIsPrintableImageReady] = useState(true);
   const checklistSaveQueueRef = useRef(Promise.resolve());
   const previousRequiredPaneCompletionRef = useRef({});
+  const previousReadyToCompleteRef = useRef(false);
+  const completeChecklistButtonRef = useRef(null);
 
   const state = getWorksheetState(generatedContent, isGenerationDisabled);
   const printableDefinition = generatedContent?.childFriendlyDefinition || wordDetail.definition;
@@ -869,7 +881,7 @@ export default function WorksheetChecklist({
     : 'rounded-full border border-accent/30 bg-white/5 px-4 py-2 text-sm font-semibold text-accent no-underline transition hover:border-accent/50 hover:text-white';
   const completionLearningSummary = `You practiced how "${wordDetail.word}" sounds, what it means, how it looks, and how to infer deeper meaning from context and related words.`;
   const completionNextSteps =
-    'Next, you will return to the sound table to choose another letter, sound, or word to explore.';
+    'Next, you can return to the sound table or open the checklists page.';
 
   useEffect(() => {
     setCollapsedRequiredPanes(previousState => {
@@ -1015,16 +1027,22 @@ export default function WorksheetChecklist({
   }, [generatedContent?.imageDataUrl]);
 
   useEffect(() => {
-    if (!isCompletionSummaryOpen) {
-      return undefined;
+    if (readyToComplete && !previousReadyToCompleteRef.current && !isWordComplete) {
+      setCollapsedRequiredPanes(previousState => ({
+        ...previousState,
+        ...Object.fromEntries(requiredPaneProgress.map(pane => [pane.id, true])),
+      }));
+
+      window.setTimeout(() => {
+        completeChecklistButtonRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      }, 80);
     }
 
-    const redirectTimer = window.setTimeout(() => {
-      router.replace(`/word-garden/${acId}`);
-    }, 2600);
-
-    return () => window.clearTimeout(redirectTimer);
-  }, [acId, isCompletionSummaryOpen, router]);
+    previousReadyToCompleteRef.current = readyToComplete;
+  }, [isWordComplete, readyToComplete, requiredPaneProgress]);
 
   useEffect(() => {
     if (
@@ -1337,6 +1355,7 @@ export default function WorksheetChecklist({
     setIsResettingChecklist(true);
     setCompletionError('');
     setCompletionSuccess('');
+    const shouldSetCurrentWord = openChecklistCount === 0;
 
     try {
       const response = await fetch(`/api/word-garden/children/${acId}/practice`, {
@@ -1347,6 +1366,13 @@ export default function WorksheetChecklist({
           practiceIncrement: 0,
           checklistIncrement: 0,
           resetChecklist: true,
+          checklistCheckedItemIds: [],
+          openChecklist: true,
+          selectionType: wordDetail.selectionType,
+          selectionSlug: wordDetail.selectionSlug,
+          selectionLetter:
+            wordDetail.selectionType === 'phoneme' ? selectedLetter : '',
+          setCurrentWord: shouldSetCurrentWord,
         }),
       });
 
@@ -1356,10 +1382,10 @@ export default function WorksheetChecklist({
 
       setIsWordComplete(false);
       setCheckedItems(buildInitialCheckedState(panes));
-      setIsChecklistOpen(false);
-      setIsCurrentWord(false);
+      setIsChecklistOpen(true);
+      setIsCurrentWord(shouldSetCurrentWord);
       setCompletionSuccess(
-        'This word is ready for more work. Finish the checklist again when you are ready.'
+        'This word is ready for more work and has been added back to your checklist list.'
       );
       router.refresh();
       setIsContinueModalOpen(false);
@@ -2092,6 +2118,7 @@ export default function WorksheetChecklist({
             type='button'
             onClick={handleCompleteOnline}
             disabled={isSubmitting || isWordComplete || isCompletionSummaryOpen}
+            ref={completeChecklistButtonRef}
             className='rounded-full bg-yellow px-4 py-2 font-bold text-primary disabled:cursor-not-allowed disabled:opacity-60'
           >
             {isSubmitting
@@ -2371,17 +2398,32 @@ export default function WorksheetChecklist({
             <p className='mt-4 text-sm leading-6 text-slate-700'>
               {completionNextSteps}
             </p>
-            <div className='mt-6 flex flex-wrap items-center justify-between gap-3'>
-              <p className='text-sm font-medium text-green-700'>
-                Returning to the sound table...
-              </p>
+            <div className='mt-6 flex flex-wrap items-center justify-end gap-3'>
               <button
                 type='button'
-                onClick={() => router.replace(`/word-garden/${acId}`)}
-                className='rounded-full bg-primary px-4 py-2 font-bold text-white'
+                onClick={() => setIsCompletionSummaryOpen(false)}
+                className='rounded-full bg-slate-200 px-4 py-2 font-bold text-slate-900'
               >
-                Go Now
+                Stay Here
               </button>
+              <Link
+                href={currentWordHref}
+                className='rounded-full bg-green-600 px-4 py-2 font-bold text-white no-underline'
+              >
+                Next Word
+              </Link>
+              <Link
+                href={`/word-garden/${acId}`}
+                className='rounded-full bg-yellow px-4 py-2 font-bold text-primary no-underline'
+              >
+                Sound Table
+              </Link>
+              <Link
+                href={`/word-garden/${acId}/checklists`}
+                className='rounded-full bg-primary px-4 py-2 font-bold text-white no-underline'
+              >
+                Checklists
+              </Link>
             </div>
           </div>
         </div>
