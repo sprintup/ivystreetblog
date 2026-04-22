@@ -179,6 +179,52 @@ export class AnonymousChildRepository extends BaseRepository {
     anonymousChild.checklistWordOrder = [...normalizedOrder, ...missingWords];
   }
 
+  private getDisplayedChecklistWordOrder(anonymousChild: IAnonymousChild) {
+    const startedChecklistWords = this.getSortedStartedChecklistWords(anonymousChild);
+    const startedWordSet = new Set(startedChecklistWords.map(practicedWord => practicedWord.word));
+    const normalizedOrder = normalizeChecklistWordOrder(
+      anonymousChild.checklistWordOrder
+    ).filter(word => startedWordSet.has(word));
+    const missingWords = startedChecklistWords
+      .map(practicedWord => practicedWord.word)
+      .filter(word => !normalizedOrder.includes(word));
+    const orderedWords = [...normalizedOrder, ...missingWords];
+    const normalizedCurrentWord = normalizeWordValue(
+      anonymousChild.currentChecklistWord || ''
+    );
+
+    if (!normalizedCurrentWord || !orderedWords.includes(normalizedCurrentWord)) {
+      return orderedWords;
+    }
+
+    return [
+      normalizedCurrentWord,
+      ...orderedWords.filter(word => word !== normalizedCurrentWord),
+    ];
+  }
+
+  private promoteChecklistWordToFront(
+    anonymousChild: IAnonymousChild,
+    preferredWord = ''
+  ) {
+    const normalizedPreferredWord = normalizeWordValue(preferredWord);
+
+    if (!normalizedPreferredWord) {
+      return;
+    }
+
+    const displayedOrder = this.getDisplayedChecklistWordOrder(anonymousChild);
+
+    if (!displayedOrder.includes(normalizedPreferredWord)) {
+      return;
+    }
+
+    anonymousChild.checklistWordOrder = [
+      normalizedPreferredWord,
+      ...displayedOrder.filter(word => word !== normalizedPreferredWord),
+    ];
+  }
+
   private getStartedChecklistWords(anonymousChild: IAnonymousChild) {
     return anonymousChild.practicedWords.filter(practicedWord =>
       hasOpenChecklist(practicedWord)
@@ -611,6 +657,7 @@ export class AnonymousChildRepository extends BaseRepository {
       }
 
       if (setCurrentWord && hasOpenChecklist(practicedWord)) {
+        this.promoteChecklistWordToFront(anonymousChild, normalizedWord);
         this.ensureCurrentChecklistWord(anonymousChild, normalizedWord);
       } else if (
         (resetChecklist ||
