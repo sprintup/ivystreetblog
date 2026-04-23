@@ -1,9 +1,24 @@
 // BookRepository.ts
 import { IBookData } from '@/domain/interfaces';
-import { BookModel, IBook } from '@/domain/models';
+import { BookModel, IBook, IBooklist } from '@/domain/models';
 import { BaseRepository } from '@/repositories/BaseRepository';
 
 export class BookRepository extends BaseRepository {
+  private async findOwnedBook(userEmail: string, bookId: string) {
+    const user = await this.findUser(userEmail);
+
+    if (!user) {
+      return null;
+    }
+
+    const book = await this.Book.findOne({
+      _id: bookId,
+      BookOwner: user._id,
+    });
+
+    return { user, book };
+  }
+
   async createNewBook(userEmail: string, bookData: IBookData): Promise<IBook> {
     const user = await this.User.findOne({ email: userEmail });
     if (!user) {
@@ -89,6 +104,49 @@ export class BookRepository extends BaseRepository {
     }
   }
 
+  async addOwnedBookToBooklist(
+    userEmail: string,
+    booklistId: string,
+    bookId: string
+  ): Promise<IBooklist | null> {
+    try {
+      const user = await this.findUser(userEmail);
+      if (!user) {
+        return null;
+      }
+
+      const booklist = await this.Booklist.findOne({
+        _id: booklistId,
+        booklistOwnerId: user._id,
+      });
+      if (!booklist) {
+        console.error('No owned booklist found with the provided booklistId:', booklistId);
+        return null;
+      }
+
+      const book = await this.Book.findOne({
+        _id: bookId,
+        BookOwner: user._id,
+      });
+      if (!book) {
+        console.error('No owned book found with the provided bookId:', bookId);
+        return null;
+      }
+
+      if (booklist.bookIds.some(id => id.toString() === bookId)) {
+        return booklist;
+      }
+
+      booklist.bookIds.push(book._id);
+      await booklist.save();
+
+      return booklist;
+    } catch (error) {
+      console.error('Error adding owned book to booklist:', error);
+      throw error;
+    }
+  }
+
   async deleteBookFromCollectionAndBooklistsAndTrackedBooks(
     bookId: string
   ): Promise<IBook | null> {
@@ -137,7 +195,7 @@ export class BookRepository extends BaseRepository {
     }
   }
 
-  async getBooksByUserEmail(userEmail: string): Promise<IBookDocument[]> {
+  async getBooksByUserEmail(userEmail: string): Promise<IBook[]> {
     try {
       // Find the user by email
       const user = await this.User.findOne({ email: userEmail });
@@ -175,6 +233,45 @@ export class BookRepository extends BaseRepository {
     }
   }
 
+  async getOwnedBookById(userEmail: string, bookId: string): Promise<IBook | null> {
+    try {
+      const ownedBook = await this.findOwnedBook(userEmail, bookId);
+
+      if (!ownedBook?.book) {
+        console.error('No owned book found with the provided bookId:', bookId);
+        return null;
+      }
+
+      return ownedBook.book;
+    } catch (error) {
+      console.error('Error retrieving owned book:', error);
+      throw error;
+    }
+  }
+
+  async updateOwnedBook(
+    userEmail: string,
+    bookId: string,
+    updatedData: any
+  ): Promise<IBook | null> {
+    try {
+      const ownedBook = await this.findOwnedBook(userEmail, bookId);
+
+      if (!ownedBook?.book) {
+        console.error('No owned book found with the provided bookId:', bookId);
+        return null;
+      }
+
+      Object.assign(ownedBook.book, updatedData);
+      await ownedBook.book.save();
+
+      return ownedBook.book;
+    } catch (error) {
+      console.error('Error updating owned book:', error);
+      throw error;
+    }
+  }
+
   async removeBookFromBooklist(
     booklistId: string,
     bookId: string
@@ -203,6 +300,36 @@ export class BookRepository extends BaseRepository {
     }
   }
 
+  async removeOwnedBookFromBooklist(
+    userEmail: string,
+    booklistId: string,
+    bookId: string
+  ): Promise<IBooklist | null> {
+    try {
+      const user = await this.findUser(userEmail);
+      if (!user) {
+        return null;
+      }
+
+      const booklist = await this.Booklist.findOne({
+        _id: booklistId,
+        booklistOwnerId: user._id,
+      });
+      if (!booklist) {
+        console.error('No owned booklist found with the provided booklistId:', booklistId);
+        return null;
+      }
+
+      booklist.bookIds = booklist.bookIds.filter(id => id.toString() !== bookId);
+      await booklist.save();
+
+      return booklist;
+    } catch (error) {
+      console.error('Error removing owned book from booklist:', error);
+      throw error;
+    }
+  }
+
   async toggleBookArchiveInUserCollection(bookId: string): Promise<IBook> {
     console.log('trying to find bookId: ', bookId);
     try {
@@ -219,6 +346,60 @@ export class BookRepository extends BaseRepository {
     } catch (error) {
       console.error('Error toggling book archive:', error);
       throw new Error('Failed to toggle book archive');
+    }
+  }
+
+  async toggleOwnedBookArchiveInUserCollection(
+    userEmail: string,
+    bookId: string
+  ): Promise<IBook | null> {
+    try {
+      const ownedBook = await this.findOwnedBook(userEmail, bookId);
+
+      if (!ownedBook?.book) {
+        console.error('No owned book found with the provided bookId:', bookId);
+        return null;
+      }
+
+      ownedBook.book.IsArchived = !ownedBook.book.IsArchived;
+      await ownedBook.book.save();
+
+      return ownedBook.book;
+    } catch (error) {
+      console.error('Error toggling owned book archive:', error);
+      throw error;
+    }
+  }
+
+  async deleteOwnedBookFromCollectionAndBooklistsAndTrackedBooks(
+    userEmail: string,
+    bookId: string
+  ): Promise<IBook | null> {
+    try {
+      const ownedBook = await this.findOwnedBook(userEmail, bookId);
+
+      if (!ownedBook?.book || !ownedBook.user) {
+        console.error('No owned book found with the provided bookId:', bookId);
+        return null;
+      }
+
+      const book = ownedBook.book;
+      await this.Book.deleteOne({ _id: book._id, BookOwner: ownedBook.user._id });
+
+      await this.Booklist.updateMany(
+        { bookIds: bookId, booklistOwnerId: ownedBook.user._id },
+        { $pull: { bookIds: bookId } }
+      );
+
+      await this.User.updateMany(
+        { 'trackedBooks.bookId': bookId, _id: ownedBook.user._id },
+        { $pull: { trackedBooks: { bookId } } }
+      );
+
+      return book;
+    } catch (error) {
+      console.error('Error deleting owned book:', error);
+      throw error;
     }
   }
 

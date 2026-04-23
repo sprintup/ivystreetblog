@@ -26,7 +26,11 @@ export class AddBookFromCollectionToBooklistInteractor extends BaseInteractor {
     return interactor;
   }
 
-  async execute(booklistId: string, bookId: string): Promise<IBooklist | null> {
-    return this.bookRepo.addBookToBooklist(booklistId, bookId);
+  async execute(
+    userEmail: string,
+    booklistId: string,
+    bookId: string
+  ): Promise<IBooklist | null> {
+    return this.bookRepo.addOwnedBookToBooklist(userEmail, booklistId, bookId);
   }
 }

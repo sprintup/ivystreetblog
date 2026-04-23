@@ -38,7 +38,6 @@ export default function RecommendBookToBooklistComponent({ booklist }) {
         },
         body: JSON.stringify({
           bookId: selectedBook._id,
-          recommendedBy: session.user.email,
           recommendationReason,
         }),
       });

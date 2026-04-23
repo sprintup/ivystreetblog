@@ -31,9 +31,14 @@ export class UpdateBookListInteractor extends BaseInteractor {
   }
 
   async execute(
+    userEmail: string,
     booklistId: string,
     updatedData: UpdateBooklistData
   ): Promise<IBooklist | null> {
-    return this.booklistRepo.updateBooklist(booklistId, updatedData);
+    return this.booklistRepo.updateOwnedBooklist(
+      userEmail,
+      booklistId,
+      updatedData
+    );
   }
 }

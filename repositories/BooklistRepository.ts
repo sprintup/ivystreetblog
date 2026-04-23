@@ -5,6 +5,19 @@ import mongoose from 'mongoose';
 import { RecommendBookData } from '@/domain/interfaces';
 
 export class BooklistRepository extends BaseRepository {
+  private async findOwnedBooklist(userEmail: string, booklistId: string) {
+    const user = await this.findUser(userEmail);
+
+    if (!user) {
+      return null;
+    }
+
+    return this.Booklist.findOne({
+      _id: booklistId,
+      booklistOwnerId: user._id,
+    });
+  }
+
   async getBooklistsByUserEmail(userEmail: string): Promise<IBooklist[]> {
     try {
       const user = await this.User.findOne({ email: userEmail }).populate<{
@@ -158,6 +171,47 @@ export class BooklistRepository extends BaseRepository {
     }
   }
 
+  async getOwnedBooklistByIdWithBooks(
+    userEmail: string,
+    booklistId: string
+  ): Promise<IBooklist | null> {
+    const user = await this.findUser(userEmail);
+
+    if (!user) {
+      return null;
+    }
+
+    try {
+      const booklist = await this.Booklist.findOne({
+        _id: booklistId,
+        booklistOwnerId: user._id,
+      }).populate({
+        path: 'bookIds',
+        model: 'Book',
+        select:
+          'Name Author Description Age Series Publication_Date Publisher ISBN Link Source BookOwner',
+        populate: {
+          path: 'BookOwner',
+          model: 'User',
+          select: 'email',
+        },
+      });
+
+      if (!booklist) {
+        console.error(
+          'No owned booklist found with the provided booklistId:',
+          booklistId
+        );
+        return null;
+      }
+
+      return booklist;
+    } catch (error) {
+      console.error('Error getting owned booklist by ID:', error);
+      throw error;
+    }
+  }
+
   async getPublicBooklists(): Promise<IBooklist[]> {
     try {
       const publicBooklists = await this.Booklist.find({
@@ -207,6 +261,77 @@ export class BooklistRepository extends BaseRepository {
     }
   }
 
+  async updateOwnedBooklist(
+    userEmail: string,
+    booklistId: string,
+    updatedData: {
+      title?: string;
+      description?: string;
+      visibility?: string;
+      openToRecommendations?: boolean;
+    }
+  ): Promise<IBooklist | null> {
+    const ownedBooklist = await this.findOwnedBooklist(userEmail, booklistId);
+
+    if (!ownedBooklist) {
+      console.error(
+        'No owned booklist found with the provided booklistId:',
+        booklistId
+      );
+      return null;
+    }
+
+    try {
+      ownedBooklist.title = updatedData.title;
+      ownedBooklist.description = updatedData.description;
+      ownedBooklist.visibility = updatedData.visibility;
+      ownedBooklist.openToRecommendations = updatedData.openToRecommendations;
+      ownedBooklist.updatedAt = new Date();
+      await ownedBooklist.save();
+
+      return ownedBooklist;
+    } catch (error) {
+      console.error('Error updating owned booklist:', error);
+      throw error;
+    }
+  }
+
+  async removeOwnedBooklist(
+    userEmail: string,
+    booklistId: string
+  ): Promise<IBooklist | null> {
+    const user = await this.findUser(userEmail);
+
+    if (!user) {
+      return null;
+    }
+
+    try {
+      const removedBooklist = await this.Booklist.findOneAndDelete({
+        _id: booklistId,
+        booklistOwnerId: user._id,
+      });
+
+      if (!removedBooklist) {
+        console.error(
+          'No owned booklist found with the provided booklistId:',
+          booklistId
+        );
+        return null;
+      }
+
+      await this.User.updateOne(
+        { _id: user._id },
+        { $pull: { bookListIds: removedBooklist._id } }
+      );
+
+      return removedBooklist;
+    } catch (error) {
+      console.error('Error removing owned booklist:', error);
+      throw error;
+    }
+  }
+
   async addBookToBooklist(booklistId: string, bookId: string): Promise<void> {
     try {
       const booklist = await this.Booklist.findById(booklistId);
@@ -250,10 +375,13 @@ export class BooklistRepository extends BaseRepository {
         return null;
       }
 
-      const recommendedBook = await this.Book.findById(bookId);
+      const recommendedBook = await this.Book.findOne({
+        _id: bookId,
+        BookOwner: recommendedByUser._id,
+      });
       if (!recommendedBook) {
         console.error(
-          'No recommended book found with the provided ID:',
+          'No owned recommended book found with the provided ID:',
           bookId
         );
         return null;

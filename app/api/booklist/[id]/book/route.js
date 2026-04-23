@@ -2,14 +2,20 @@ import { AddBookFromCollectionToBooklistInteractor } from "@interactors/booklist
 import { RemoveBookFromBooklistInteractor } from "@interactors/booklists/RemoveBookFromBooklistInteractor";
 import { revalidateTag } from 'next/cache';
 import { BOOKLISTS_TAG } from '@domain/commons';
+import { requireSessionUser } from '@/utils/authSession';
 
 export async function POST(request, { params }) {
+    const { userEmail, unauthorizedResponse } = await requireSessionUser();
+    if (unauthorizedResponse) {
+        return unauthorizedResponse;
+    }
+
     try {
         const { bookId } = await request.json();
         const { id: booklistId } = params;
 
         const addBookFromCollectionToBooklistInteractor = await AddBookFromCollectionToBooklistInteractor.create();
-        const updatedBooklist = await addBookFromCollectionToBooklistInteractor.execute(booklistId, bookId);
+        const updatedBooklist = await addBookFromCollectionToBooklistInteractor.execute(userEmail, booklistId, bookId);
 
         if (updatedBooklist) {
             revalidateTag(BOOKLISTS_TAG);
@@ -23,12 +29,17 @@ export async function POST(request, { params }) {
 }
 
 export async function DELETE(request, { params }) {
+    const { userEmail, unauthorizedResponse } = await requireSessionUser();
+    if (unauthorizedResponse) {
+        return unauthorizedResponse;
+    }
+
     try {
         const { bookId } = await request.json();
         const { id: booklistId } = params;
 
         const removeBookFromBooklistInteractor = await RemoveBookFromBooklistInteractor.create();
-        const updatedBooklist = await removeBookFromBooklistInteractor.execute(booklistId, bookId);
+        const updatedBooklist = await removeBookFromBooklistInteractor.execute(userEmail, booklistId, bookId);
 
         if (updatedBooklist) {
             return new Response(JSON.stringify(updatedBooklist), { status: 200 });

@@ -2,6 +2,7 @@
 import { ReadPublicBooklistInteractor } from "@/interactors/booklists/public/ReadPublicBooklistInteractor";
 import { UpdateBookListInteractor } from "@interactors/booklists/private/UpdateBookListInteractor";
 import { DeleteBooklistInteractor } from "@interactors/booklists/DeleteBooklistInteractor";
+import { requireSessionUser } from '@/utils/authSession';
 
 export async function GET(request, { params }) {
   try {
@@ -19,11 +20,16 @@ export async function GET(request, { params }) {
 }
 
 export async function PUT(request, { params }) {
+  const { userEmail, unauthorizedResponse } = await requireSessionUser();
+  if (unauthorizedResponse) {
+    return unauthorizedResponse;
+  }
+
   try {
     const booklistId = params.id;
     const { title, description, visibility, openToRecommendations } = await request.json();
     const updateBooklistInteractor = await UpdateBookListInteractor.create();
-    const updatedBooklist = await updateBooklistInteractor.execute(booklistId, { title, description, visibility, openToRecommendations });
+    const updatedBooklist = await updateBooklistInteractor.execute(userEmail, booklistId, { title, description, visibility, openToRecommendations });
     if (updatedBooklist) {
       return new Response(JSON.stringify(updatedBooklist), { status: 200 });
     } else {
@@ -36,10 +42,15 @@ export async function PUT(request, { params }) {
 // TODO MAKE SURE ITS THE RIGHT USER
 // TODO MAKE SURE THIS DELETES THE NESTED BOOKS OR CREATE A PAGE THAT SHOWS THE UNTETHERED BOOKS
 export async function DELETE(request, { params }) {
+  const { userEmail, unauthorizedResponse } = await requireSessionUser();
+  if (unauthorizedResponse) {
+    return unauthorizedResponse;
+  }
+
   const deleteBooklistInteractor = await DeleteBooklistInteractor.create();
   try {
     const booklistId = params.id;
-    const removedBooklist = await deleteBooklistInteractor.execute(booklistId);
+    const removedBooklist = await deleteBooklistInteractor.execute(userEmail, booklistId);
     if (removedBooklist) {
       return new Response(JSON.stringify({ message: "Booklist deleted successfully" }), { status: 200 });
     } else {

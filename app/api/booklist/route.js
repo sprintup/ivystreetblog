@@ -1,16 +1,12 @@
 // app/api/booklist/route.js
 import { CreateBooklistInteractor } from "@interactors/booklists/CreateBooklistInteractor"
 import { ReadMyBookShelfInteractor } from '@/interactors/booklists/private/ReadMyBookShelfInteractor';
+import { requireSessionUser } from '@/utils/authSession';
 
 export async function GET(request) {
-  console.log("Request", request.url)
-  const { searchParams } = new URL(request.url);
-  const userEmail = searchParams.get('userEmail');
-
-  if (!userEmail) {
-    return new Response(JSON.stringify({ error: 'User email is required' }), {
-      status: 400,
-    });
+  const { userEmail, unauthorizedResponse } = await requireSessionUser();
+  if (unauthorizedResponse) {
+    return unauthorizedResponse;
   }
 
   try {
@@ -39,7 +35,12 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-  const { userEmail, booklist } = await request.json();
+  const { userEmail, unauthorizedResponse } = await requireSessionUser();
+  if (unauthorizedResponse) {
+    return unauthorizedResponse;
+  }
+
+  const { booklist } = await request.json();
   const createBooklistInteractor = await CreateBooklistInteractor.create();
   try {
     const result = await createBooklistInteractor.execute(userEmail, booklist);

@@ -24,8 +24,9 @@ export class DeleteBookFromCollectionAndAllBooklistsInteractor extends BaseInter
     return interactor;
   }
 
-  async execute(bookId: string): Promise<IBook | null> {
-    return this.bookRepo.deleteBookFromCollectionAndBooklistsAndTrackedBooks(
+  async execute(userEmail: string, bookId: string): Promise<IBook | null> {
+    return this.bookRepo.deleteOwnedBookFromCollectionAndBooklistsAndTrackedBooks(
+      userEmail,
       bookId
     );
   }

@@ -22,7 +22,7 @@ export class DeleteBooklistInteractor extends BaseInteractor {
     return interactor;
   }
   
-  async execute(booklistId: string): Promise<IBooklist | null> {
-    return this.booklistRepo.removeBooklist(booklistId);
+  async execute(userEmail: string, booklistId: string): Promise<IBooklist | null> {
+    return this.booklistRepo.removeOwnedBooklist(userEmail, booklistId);
   }
 }

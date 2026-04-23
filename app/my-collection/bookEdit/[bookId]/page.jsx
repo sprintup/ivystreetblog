@@ -1,9 +1,16 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 export default function EditBook({ params }) {
   const { bookId } = params;
+  const { data: session } = useSession({
+    required: true,
+    onUnauthenticated() {
+      return { redirect: '/api/auth/signin?callbackUrl=/my-collection' };
+    },
+  });
   const [bookName, setBookName] = useState('');
   const [author, setAuthor] = useState('');
   const [description, setDescription] = useState('');
@@ -23,19 +30,16 @@ export default function EditBook({ params }) {
         const response = await fetch(`/api/book/${params.bookId}`);
         if (response.ok) {
           const data = await response.json();
-          if (data.length > 0) {
-            const book = data[0];
-            setBookName(book.Name || '');
-            setAuthor(book.Author || '');
-            setDescription(book.Description || '');
-            setAge(book.Age || '');
-            setSeries(book.Series || '');
-            setPublicationDate(book.Publication_Date || '');
-            setPublisher(book.Publisher || '');
-            setIsbn(book.ISBN || '');
-            setLink(book.Link || '');
-            setSource(book.Source || '');
-          }
+          setBookName(data.Name || '');
+          setAuthor(data.Author || '');
+          setDescription(data.Description || '');
+          setAge(data.Age || '');
+          setSeries(data.Series || '');
+          setPublicationDate(data.Publication_Date || '');
+          setPublisher(data.Publisher || '');
+          setIsbn(data.ISBN || '');
+          setLink(data.Link || '');
+          setSource(data.Source || '');
         } else {
           console.error('Error fetching book:', response.statusText);
         }
@@ -44,8 +48,10 @@ export default function EditBook({ params }) {
       }
     };
 
-    fetchBook();
-  }, [bookId]);
+    if (session) {
+      fetchBook();
+    }
+  }, [bookId, params.bookId, session]);
 
   const handleUpdateBook = async e => {
     e.preventDefault();

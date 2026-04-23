@@ -1,11 +1,21 @@
 import { RecommendBookToBooklistInteractor } from "@/interactors/booklists/recommendation/RecommendBookToBooklistInteractor";
+import { requireSessionUser } from '@/utils/authSession';
 
 export async function POST(request, { params }) {
+    const { userEmail, unauthorizedResponse } = await requireSessionUser();
+    if (unauthorizedResponse) {
+        return unauthorizedResponse;
+    }
+
     try {
         const booklistId = params.id;
-        const { bookId, recommendedBy, recommendationReason } = await request.json();
+        const { bookId, recommendationReason } = await request.json();
         const recommendBookInteractor = await RecommendBookToBooklistInteractor.create();
-        const updatedBooklist = await recommendBookInteractor.execute(booklistId, { bookId, recommendedBy, recommendationReason });
+        const updatedBooklist = await recommendBookInteractor.execute(booklistId, userEmail, {
+            bookId,
+            recommendedBy: userEmail,
+            recommendationReason,
+        });
         if (updatedBooklist) {
             return new Response(JSON.stringify(updatedBooklist), { status: 200 });
         } else {

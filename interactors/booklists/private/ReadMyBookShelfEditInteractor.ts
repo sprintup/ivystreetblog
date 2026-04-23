@@ -24,7 +24,7 @@ export class ReadMyBookShelfEditInteractor extends BaseInteractor {
     return interactor;
   }
 
-  async execute(booklistId: string): Promise<IBooklist | null> {
-    return this.booklistRepo.getBooklistByIdWithBooks(booklistId);
+  async execute(userEmail: string, booklistId: string): Promise<IBooklist | null> {
+    return this.booklistRepo.getOwnedBooklistByIdWithBooks(userEmail, booklistId);
   }
 }

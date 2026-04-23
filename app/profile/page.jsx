@@ -24,7 +24,7 @@ export default function ProfilePage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email: session.user.email }),
+          body: JSON.stringify({}),
         });
         if (response.ok) {
           const userProfile = await response.json();
@@ -50,7 +50,7 @@ export default function ProfilePage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: session.user.email, publicProfileName }),
+        body: JSON.stringify({ publicProfileName }),
       });
       if (response.ok) {
         // Profile updated successfully

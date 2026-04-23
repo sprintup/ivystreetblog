@@ -44,7 +44,6 @@ export default function UserBookCollectionComponent({ session, children }) {
           body: JSON.stringify({
             page: currentPage,
             limit: booksPerPage,
-            userEmail: session.user.email,
           }),
         });
         if (response.ok) {

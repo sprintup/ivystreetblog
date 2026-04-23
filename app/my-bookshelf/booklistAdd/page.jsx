@@ -13,7 +13,7 @@ import {
 
 export default function BooklistPage() {
   const router = useRouter();
-  const { data: session } = useSession({
+  useSession({
     required: true,
     onUnauthenticated() {
       return { redirect: '/api/auth/signin?callbackUrl=/my-bookshelf' };
@@ -42,7 +42,7 @@ export default function BooklistPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userEmail: session.user.email, booklist }),
+        body: JSON.stringify({ booklist }),
       });
 
       if (response.ok) {

@@ -30,11 +30,15 @@ export class RecommendBookToBooklistInteractor extends BaseInteractor {
 
   async execute(
     booklistId: string,
+    recommendedBy: string,
     recommendBookData: RecommendBookData
   ): Promise<IBooklist | null> {
     const result = await this.booklistRepo.recommendBookToBooklist(
       booklistId,
-      recommendBookData
+      {
+        ...recommendBookData,
+        recommendedBy,
+      }
     );
     return this.convertToPlainObject(result) as IBooklist | null;
   }

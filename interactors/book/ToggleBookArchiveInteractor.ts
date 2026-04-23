@@ -33,7 +33,7 @@ export class ToggleBookArchiveInteractor extends BaseInteractor {
    * @param {string} bookId - The ID of the book to toggle the archive status.
    * @returns {Promise<IBook>} A promise that resolves to the updated book.
    */
-  async execute(bookId: string): Promise<IBook> {
-    return this.bookRepo.toggleBookArchiveInUserCollection(bookId);
+  async execute(userEmail: string, bookId: string): Promise<IBook | null> {
+    return this.bookRepo.toggleOwnedBookArchiveInUserCollection(userEmail, bookId);
   }
 }

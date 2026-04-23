@@ -11,8 +11,9 @@ import { IBook } from '@/domain/models';
  * When I view the reading list,
  * Then I see the details of those books.
  *
- * @param {string[]} bookIds - The IDs of the books to retrieve.
- * @returns {Promise<IBook[]>} A promise that resolves to an array of book details.
+ * @param {string} userEmail - The email of the current user.
+ * @param {string} bookId - The ID of the book to retrieve.
+ * @returns {Promise<IBook | null>} A promise that resolves to the owned book details.
  */
 export class ReadBookForEditBookInteractor extends BaseInteractor {
   static async create() {
@@ -22,7 +23,7 @@ export class ReadBookForEditBookInteractor extends BaseInteractor {
     return interactor;
   }
 
-  async execute(bookIds: string[]): Promise<IBook[]> {
-    return this.bookRepo.getBooksByIds(bookIds);
+  async execute(userEmail: string, bookId: string): Promise<IBook | null> {
+    return this.bookRepo.getOwnedBookById(userEmail, bookId);
   }
 }

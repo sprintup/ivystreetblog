@@ -19,7 +19,12 @@ import AddToBooklistButtonComponent from './AddToBooklistButtonComponent';
 
 export default function EditBooklistPage({ params }) {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session } = useSession({
+    required: true,
+    onUnauthenticated() {
+      return { redirect: '/api/auth/signin?callbackUrl=/my-bookshelf' };
+    },
+  });
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [visibility, setVisibility] = useState('public');
@@ -50,8 +55,10 @@ export default function EditBooklistPage({ params }) {
   };
 
   useEffect(() => {
-    fetchBooklist();
-  }, [params.id]);
+    if (session) {
+      fetchBooklist();
+    }
+  }, [params.id, session]);
 
   const handleBookChange = () => {
     fetchBooklist();

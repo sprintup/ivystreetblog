@@ -1,13 +1,14 @@
 # Authentication
 
-This app uses NextAuth for sign-in and session handling. The active authentication setup lives in `app/api/auth/[...nextauth]/options.js`, and the route handler is exposed through `app/api/auth/[...nextauth]/route.js`.
+This app uses NextAuth for sign-in and session handling. The active authentication setup lives in [app/api/auth/[...nextauth]/options.js](app/api/auth/[...nextauth]/options.js), and the route handler is exposed through [app/api/auth/[...nextauth]/route.js](app/api/auth/[...nextauth]/route.js).
 
 ## Stack
 
 - Auth library: `next-auth`
 - Active provider: GitHub
 - Inactive/commented providers: Google and credentials
-- Client session provider: `app/ClientProvider.jsx`
+- Client session provider: [app/ClientProvider.jsx](app/ClientProvider.jsx)
+- Shared API session helper: [utils/authSession.js](utils/authSession.js)
 - Server session usage: `getServerSession(options)`
 
 ## Environment Variables
@@ -29,9 +30,10 @@ The only enabled provider is GitHub:
 
 - `GitHubProvider(...)` is configured in `options.js`
 - Google and credentials are commented out
-- No custom adapter is configured
+- no custom adapter is configured
 
 Inference from the current NextAuth config:
+
 - because there is no database adapter configured in `options.js`, session persistence is effectively using NextAuth's default stateless JWT-based flow rather than a separate session collection in MongoDB
 
 ## Role Handling
@@ -49,7 +51,7 @@ That role is propagated like this:
 
 That means `session.user.role` is available on both the server and the client after sign-in.
 
-## How Sessions Reach the App
+## How Sessions Reach The App
 
 ### Server side
 
@@ -60,9 +62,18 @@ const session = await getServerSession(options);
 ```
 
 Common examples:
-- `app/layout.js`
+
+- [app/layout.js](app/layout.js)
 - many `app/api/**/route.js` files
-- `app/word-garden/wordGardenServer.js`
+- [app/word-garden/wordGardenServer.js](app/word-garden/wordGardenServer.js)
+
+For API routes that need a consistent unauthorized response, the repo now also has:
+
+```js
+const { userEmail, unauthorizedResponse } = await requireSessionUser();
+```
+
+from [utils/authSession.js](utils/authSession.js).
 
 ### Client side
 
@@ -72,7 +83,7 @@ The root layout wraps the app in:
 <SessionProvider>{children}</SessionProvider>
 ```
 
-from `app/ClientProvider.jsx`.
+from [app/ClientProvider.jsx](app/ClientProvider.jsx).
 
 Client components then use:
 
@@ -81,8 +92,9 @@ const { data: session } = useSession();
 ```
 
 Examples:
-- `app/(components)/Nav.jsx`
-- `app/page.jsx`
+
+- [app/(components)/Nav.jsx](app/(components)/Nav.jsx)
+- [app/page.jsx](app/page.jsx)
 - several bookshelf/collection UI components
 
 ## User Bootstrap
@@ -97,18 +109,19 @@ The bridge is `CreateUserInteractor.findOrCreateUser(...)`, which:
 2. creates one if it does not exist yet
 
 This bootstrap happens very explicitly in Word Garden:
-- `requireWordGardenSession()` in `app/word-garden/wordGardenServer.js`
-- `ensureUser(session)` in `app/api/word-garden/children/route.js`
+
+- `requireWordGardenSession()` in [app/word-garden/wordGardenServer.js](app/word-garden/wordGardenServer.js)
+- `ensureUser(session)` in [app/api/word-garden/children/route.js](app/api/word-garden/children/route.js)
 
 As a result, Word Garden is careful to ensure the app-level `User` document exists before working with child profiles.
 
 ## Word Garden Authorization Model
 
-Word Garden has the strongest authorization model in the app.
+Word Garden still has the strongest authorization model in the app.
 
 ### Page-level protection
 
-Server-side Word Garden pages use helpers from `app/word-garden/wordGardenServer.js`:
+Server-side Word Garden pages use helpers from [app/word-garden/wordGardenServer.js](app/word-garden/wordGardenServer.js):
 
 - `requireWordGardenSession(callbackPath)`
 - `getAnonymousChildOrNotFound(acId, callbackPath)`
@@ -120,6 +133,7 @@ Behavior:
 - signed in and authorized: return the child/profile data
 
 This protection is used across:
+
 - sound table pages
 - word cloud pages
 - level 3 word pages
@@ -160,7 +174,7 @@ Rules enforced in the repository:
 
 Share acceptance is page-driven rather than API-driven:
 
-- route: `app/word-garden/share/[shareToken]/page.jsx`
+- route: [app/word-garden/share/[shareToken]/page.jsx](app/word-garden/share/[shareToken]/page.jsx)
 - helper: `requireWordGardenSession(...)`
 - action: `AcceptSharedAnonymousChildInteractor`
 
@@ -172,35 +186,91 @@ Flow:
 4. if found, the child's Mongo `_id` is added to the user's `acIds`
 5. the user is redirected back to the dashboard with a status in the query string
 
-## Current Auth/Authorization Shape by Area
+## Bookshelf And Profile Hardening
+
+The biggest auth change in this pass was bringing the older bookshelf/profile APIs closer to the same pattern Word Garden already used:
+
+- require a real NextAuth session
+- derive the acting email from the session, not from the request body or query string
+- enforce ownership in the repository layer, not just the UI
+
+### Shared API helper
+
+The common entry point is now [utils/authSession.js](utils/authSession.js):
+
+- `requireSessionUser()`
+- `jsonErrorResponse()`
+
+That helper is now used by the session-protected bookshelf/profile routes so they do not have to trust caller-supplied identity.
+
+### Routes that were hardened
+
+These routes now derive identity from the current session instead of trusting request payloads:
+
+- [app/api/collection/route.js](app/api/collection/route.js)
+- [app/api/user/profile/route.js](app/api/user/profile/route.js)
+- [app/api/user/booklists-dropdown/route.js](app/api/user/booklists-dropdown/route.js)
+- [app/api/booklist/route.js](app/api/booklist/route.js)
+- [app/api/booklist/[id]/edit/route.js](app/api/booklist/[id]/edit/route.js)
+- [app/api/booklist/[id]/route.js](app/api/booklist/[id]/route.js) for `PUT` and `DELETE`
+- [app/api/booklist/[id]/book/route.js](app/api/booklist/[id]/book/route.js)
+- [app/api/booklist/[id]/recommend/route.js](app/api/booklist/[id]/recommend/route.js)
+- [app/api/book/[id]/route.js](app/api/book/[id]/route.js)
+- [app/api/book/route.js](app/api/book/route.js)
+- [app/api/book/toggleArchive/route.js](app/api/book/toggleArchive/route.js)
+
+### Repository-level ownership checks
+
+The main ownership enforcement now lives in:
+
+- [repositories/BookRepository.ts](repositories/BookRepository.ts)
+- [repositories/BooklistRepository.ts](repositories/BooklistRepository.ts)
+
+Notable additions:
+
+- owned book fetch/update/delete methods
+- owned booklist fetch/update/delete methods
+- owned add/remove book-to-booklist methods
+- recommendation flow now derives `recommendedBy` from the signed-in session and also verifies that the recommended book belongs to that signed-in user
+
+That means the UI can no longer simply claim:
+
+- "I am this email"
+- "I own this book"
+- "I own this booklist"
+
+and have the API trust it.
+
+## Current Auth/Authorization Shape By Area
 
 ### Stronger protection
 
-These parts consistently derive identity from the current session:
+These areas now consistently derive identity from the current session:
 
 - NextAuth sign-in/session handling
 - Word Garden pages
 - Word Garden API routes
-- reading-list and review routes
+- reading-list routes
+- review routes
+- bookshelf/profile write routes
+- private bookshelf/profile edit/read routes
 - recommendation accept/reject/delete routes
 
-### Older or weaker protection
+### Remaining weaker or legacy areas
 
-Several older API routes still trust email or ownership information from the request body/query rather than fully deriving it from the session. Examples include:
+The app is in a better place than before, but it is not perfectly uniform yet.
 
-- `app/api/collection/route.js`
-- `app/api/user/profile/route.js`
-- `app/api/booklist/route.js`
-- `app/api/booklist/[id]/route.js`
-- `app/api/booklist/[id]/book/route.js`
-- `app/api/booklist/[id]/recommend/route.js`
-- `app/api/book/toggleArchive/route.js`
-- `app/api/book/route.js` `PUT` and `DELETE`
+Remaining improvement opportunities are mostly about consistency rather than the same old "trust the caller's email" problem. Examples:
 
-So the app currently has a mixed model:
+- some older routes still call `getServerSession(options)` inline instead of using the shared helper
+- some public route handlers are intentionally open because they serve public bookshelf pages
+- the app still relies on feature-specific repository checks rather than a single centralized policy layer
 
-- Word Garden is session-aware and access-checked
-- several bookshelf/profile APIs are still "UI-internal" in style and would benefit from stricter ownership checks
+So the current shape is:
+
+- Word Garden remains the strongest, most explicit auth model
+- bookshelf/profile APIs are now much closer to that model
+- the remaining gaps are mostly cleanup and standardization, not the original body/query identity problem
 
 ## Recommended Mental Model
 
@@ -211,7 +281,7 @@ When working in this repo, it helps to think of auth in three layers:
 3. Feature-specific rules answer "what is this person allowed to do with this specific resource?"
 
 Word Garden follows all three layers consistently.
-Other legacy API areas often only do layers 1 and 2, or sometimes skip session enforcement entirely.
+After this hardening pass, the bookshelf/profile routes now follow the same pattern more closely.
 
 ## Quick Reference
 
@@ -222,6 +292,7 @@ Other legacy API areas often only do layers 1 and 2, or sometimes skip session e
 ### Main server helpers
 
 - `getServerSession(options)`
+- `requireSessionUser()`
 - `requireWordGardenSession(...)`
 - `getAnonymousChildOrNotFound(...)`
 
@@ -236,11 +307,12 @@ Typical fields referenced by app code:
 
 ## Summary
 
-Today, authentication is simple:
+Today, authentication is still simple:
 
 - users sign in with GitHub
 - NextAuth provides the session
 - the app maps that session to its own `User` record
 - Word Garden adds strong resource-level authorization on top
+- the older bookshelf/profile APIs now derive ownership from that same session instead of trusting caller-supplied identity
 
-If this app is hardened further, the clearest improvement would be to bring the older bookshelf/profile APIs up to the same ownership-check standard already used by Word Garden.
+If this app is hardened further, the next gains are likely to come from consistency and cleanup, not from the earlier "email in the request body" pattern that used to exist in several private routes.

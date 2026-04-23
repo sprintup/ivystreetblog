@@ -1,90 +1,154 @@
-![Project Status](https://img.shields.io/badge/status-broken-red)
+![Status](https://img.shields.io/badge/status-active-2ea44f)
+![Auth](https://img.shields.io/badge/auth-hardened-0ea5e9)
+![Word%20Garden](https://img.shields.io/badge/feature-Word%20Garden-f59e0b)
 
-# Overview
+# Ivy Street Blog
 
-This project started due to an assignment in a Children's Literature class, but will serve in the long term as a resource for the community that uses children books as the topic that can be used to practice different technologies. So below there are two parts that separate the concerns of the school project from the concerns of the website as a resource for the little free library. The Adding books to the ![https://github.com/sprintup/ivystreetblog/blob/main/data/books_data.json](base booklist) is a great first pull request.
+This repo started as a Children's Literature class project and has grown into a broader community-facing app. Today it combines:
+
+- bookshelf and reading-list features for a little free library site
+- the `Word Garden` teaching helper for caregiver-supported vocabulary and phonemic-awareness practice
+
+The original codebase was bootstrapped from the [gpt-engineer Next.js starter](https://github.com/gpt-engineer-org/gpt-engineer).
+
+If you want an easy first data contribution, updating the [base book dataset](data/books_data.json) is still a good entry point.
 
 ## License
 
 This project is licensed under the [Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/). By contributing to this project, you agree to abide by the terms of this license.
 
-### School Part
+## Main Docs
 
-There is a resource called [github pages](https://docs.github.com/en/pages/quickstart) that can be used to push a simple index page (just update the [index.html file](https://github.com/sprintup/ivystreetblog/blob/gh-pages/index.html) and push to the `gh-pages` branch), that I can turn into a react page in the main project. This page can be found [here](https://sprintup.github.io/ivystreetblog/)
+Project-wide and implementation docs:
 
-### Ivy Street Blog (resource for little free library) Website Part
+- [User Guide](readme-userguide.md)
+- [Word Garden Features](readme-features-word-garden.md)
+- [Authentication](readme-authentication.md)
+- [API Endpoints](readme-api-endpoints.md)
+- [Data Model](readme-data-model.md)
+- [Adding A Word](readme-adding-word.md)
+- [Adding A Phoneme](readme-adding-phonemes.md)
 
-This is a website that accompanies my little free library. It's also an opportunity to practice some open source development, including the use of various tools including AI. The original code was generated from https://github.com/gpt-engineer-org/gpt-engineer
+## Prompt Templates And Generation Logic
 
-## How to contribute
+If you are looking for the actual prompt-template sources in the code:
 
-This project utilizes [dev containers](https://containers.dev/), which is short for 'development containers' which are [docker](https://docs.docker.com/get-started/overview/) containers that are provisioned with all the development dependencies. These containers can be run locally on your own computer using [docker desktop](https://www.docker.com/products/docker-desktop/) using a editor like [VS Code](https://code.visualstudio.com/docs/devcontainers/containers) or remotely (in the cloud) using [Github Codespaces](https://docs.github.com/en/codespaces). If you develop remotely, you should be able to develop using the cloud editor (VS Code) only and shouldn't have to install anything on your actual machine (but some experiences might be a bit more complicated).
+- [Word Garden OpenAI worksheet prompt](app/api/word-garden/generate/route.js)
+- [Build-time draw-prompt template logic](data/add-phonemes.js)
+- [Runtime word-entry and draw-prompt fallback logic](utils/wordGardenData.js)
 
-Here are [directions for how to open the codespace in github](https://docs.github.com/en/codespaces/developing-in-a-codespace/creating-a-codespace-for-a-repository#creating-a-codespace-for-a-repository). **Don't forget to [stop your codespace](https://docs.github.com/en/codespaces/developing-in-a-codespace/stopping-and-starting-a-codespace#stopping-a-codespace) once you're finished**, otherwise you can burn through all your free time unnecissarily.
+## Main App Areas
 
-If you make it this far, then a standard git workflow should apply (commit changes on a feature branch and make pull request). If you're totally new to git/github, I [created this list of resources](https://github.com/sprintup/blah?tab=readme-ov-file#additional-resources) to follow.
+### Word Garden
 
-### Codespace breakdown
+Word Garden is the most structured feature set in the repo. It is designed for an adult to use while teaching a child, not as a child self-use app.
 
-Once your codespace is running, the project files will be loaded in a linux container running on github and the default editor is [VSCode](https://code.visualstudio.com/docs). You'll be able to manipulate the files and will develop using the terminal, typically using shortcut keys. See [terminal basics](https://code.visualstudio.com/docs/terminal/basics) for more information. Also, [these videos](https://code.visualstudio.com/docs/getstarted/introvideos) look good for learning how to use VSCode for editing.
+Core flow:
 
-### Asking questions
+1. `Sound Table`
+2. `Word Cloud`
+3. `Word Page / Checklist / Worksheet`
 
-- Please use the [issues](https://github.com/sprintup/ivystreetblog/issues) section of the repository to ask any questions. Just make a new issue and I'll answer it there for others to see as well.
+Start here:
 
-### Misc.
+- [Word Garden public info page](app/word-garden-info/page.jsx)
+- [Word Garden user guide](readme-userguide.md)
+- [Word Garden feature summary](readme-features-word-garden.md)
 
-The deveopment of features (including just getting the thing to run) is not organized in the issues at this time. If there is interest in collaborating, let me know in the issues and I can organize it publically instead of just keeping track myself.
+### Bookshelf / Library Site
 
-The first thing I'm going to work on is provisiong a better dev container (it's currently only has python 3 image, which means node is not installed). One of the coolest features is the ML model (hence the python), but this is a project for a class and I need to finish the website part first for a presentation.
+The bookshelf side of the app supports:
 
-### Serving Predictions
+- private book collections
+- booklists
+- public bookshelves
+- tracked reading lists
+- recommendation flows
 
-![](public/serving-predictions.png)
+Start here:
 
-## Reference Projects
+- [API endpoint inventory](readme-api-endpoints.md)
+- [Authentication notes](readme-authentication.md)
+
+## Getting Started
+
+### Local development
+
+Useful commands:
+
+```bash
+npm run dev
+npm run lint
+npm run build
+npm run start
+```
+
+### Dev containers / Codespaces
+
+This project uses [dev containers](https://containers.dev/), which makes it possible to work either:
+
+- locally with Docker Desktop and VS Code
+- remotely with [GitHub Codespaces](https://docs.github.com/en/codespaces)
+
+Helpful links:
+
+- [Open a repo in a Codespace](https://docs.github.com/en/codespaces/developing-in-a-codespace/creating-a-codespace-for-a-repository#creating-a-codespace-for-a-repository)
+- [Stop a Codespace when finished](https://docs.github.com/en/codespaces/developing-in-a-codespace/stopping-and-starting-a-codespace#stopping-a-codespace)
+- [VS Code terminal basics](https://code.visualstudio.com/docs/terminal/basics)
+- [VS Code intro videos](https://code.visualstudio.com/docs/getstarted/introvideos)
+
+## How To Contribute
+
+If you are new to the repo:
+
+1. open the project in a dev container or Codespace
+2. make changes on a feature branch
+3. run lint and build locally
+4. open a pull request
+
+If you are new to GitHub workflows, this older resource list may still help:
+
+- [Additional Git/GitHub resources](https://github.com/sprintup/blah?tab=readme-ov-file#additional-resources)
+
+Questions and collaboration requests are best handled through:
+
+- [GitHub Issues](https://github.com/sprintup/ivystreetblog/issues)
+
+## Reference Material
+
+### School / GitHub Pages piece
+
+There is also a separate GitHub Pages artifact tied to the class project:
+
+- [GitHub Pages quickstart](https://docs.github.com/en/pages/quickstart)
+- [gh-pages index.html](https://github.com/sprintup/ivystreetblog/blob/gh-pages/index.html)
+- [Published GitHub Pages site](https://sprintup.github.io/ivystreetblog/)
+
+### Auth reference video
+
+The original auth setup was based in part on:
+
+- [Next.js Auth - FreeCodeCamp video](https://youtu.be/MNm1XhDjX1s?si=Dg5NwwSuzblyX7kc&t=125)
+
+### Other references
 
 - [API Design with Node.js V4 - Scott Moss](https://hendrixer.github.io/API-design-v4/)
-  - [github](https://github.com/Hendrixer/API-design-v4-course)
+- [API Design with Node.js V4 source](https://github.com/Hendrixer/API-design-v4-course)
 - [Web Authentication APIs](https://firtman.github.io/authentication/)
-
-## Docs
-
-- [Next Pages Router](https://nextjs.org/docs/pages/building-your-application/routing)
-
-# Auth Video
-
-Based on this video ![Next.js Auth - Freecodecamp](https://youtu.be/MNm1XhDjX1s?si=Dg5NwwSuzblyX7kc&t=125)
-
-## Extensions used
-
-Name: ES7 React/Redux/GraphQL/React-Native snippets
-Id: rodrigovallades.es7-react-js-snippets
-Description: Simple extensions for React, Redux and Graphql in JS/TS with ES7 syntax (forked from dsznajder)
-Version: 1.9.3
-Publisher: rodrigovallades
-VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=rodrigovallades.es7-react-js-snippets
-
-## Cmds
-
-- `npx create-next-app` with `y`
-  - no typscript
-  - yes ESLint
-  - yes tailwind
-  - no src directory
-  - yes app router
-  - no custom import alias
-- `npm i next-auth`
-  - next version 13.5.4
-  - next-auth version ^4.23.2
-- `rafce` shortcut withe extension to make component using extension
-
-## Video Notes
-
-- Starting at about **25:40** in the video is where .env is configured, which is not checked into repo.
-- https://console.developers.google.com/
-- The [NEXTAUTH_SECRET](https://next-auth.js.org/configuration/options#nextauth_secret) is set set to encrypt traffic
-
-# Misc
-- [Here is some good caching documentation](https://github.com/vercel/next.js/discussions/54075)
+- [Next.js App Router routing docs](https://nextjs.org/docs/pages/building-your-application/routing)
+- [Next.js caching discussion](https://github.com/vercel/next.js/discussions/54075)
 - [Next.js App Router Caching: Explained!](https://www.youtube.com/watch?v=VBlSe8tvg4U)
+
+## Historical Notes
+
+The repo still contains some notes from the early setup period:
+
+- `npx create-next-app` with App Router and Tailwind
+- `next-auth` added during the early auth prototype
+- an early VS Code snippet workflow using `rafce`
+
+Those notes were useful during bootstrapping, but the more current guides are the readmes linked above.
+
+## Screenshot
+
+![Serving predictions screenshot](public/serving-predictions.png)

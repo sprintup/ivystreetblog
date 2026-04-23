@@ -1,10 +1,16 @@
 import { ReadMyBookShelfEditInteractor } from "@/interactors/booklists/private/ReadMyBookShelfEditInteractor";
+import { requireSessionUser } from '@/utils/authSession';
 
 export async function GET(request, { params }) {
+    const { userEmail, unauthorizedResponse } = await requireSessionUser();
+    if (unauthorizedResponse) {
+        return unauthorizedResponse;
+    }
+
     try {
         const booklistId = params.id;
         const readMyBookShelfEditInteractor = await ReadMyBookShelfEditInteractor.create();
-        const booklist = await readMyBookShelfEditInteractor.execute(booklistId);
+        const booklist = await readMyBookShelfEditInteractor.execute(userEmail, booklistId);
 
         if (booklist) {
             return new Response(JSON.stringify(booklist), { status: 200 });

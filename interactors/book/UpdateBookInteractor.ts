@@ -28,9 +28,10 @@ export class UpdateBookInteractor extends BaseInteractor {
   }
 
   async execute(
+    userEmail: string,
     bookId: string,
     updatedData: UpdateBookData
   ): Promise<IBook | null> {
-    return this.bookRepo.updateBook(bookId, updatedData);
+    return this.bookRepo.updateOwnedBook(userEmail, bookId, updatedData);
   }
 }

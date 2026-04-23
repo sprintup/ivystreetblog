@@ -1,18 +1,16 @@
-import { getServerSession } from "next-auth/next";
-import { options } from "@auth/options";
 import { CreateBookInteractor } from "@interactors/book/CreateBookInteractor";
 import { UpdateBookInteractor } from "@interactors/book/UpdateBookInteractor";
 import { DeleteBookFromCollectionAndAllBooklistsInteractor } from "@/interactors/book/DeleteBookFromCollectionAndAllBooklistsInteractor";
+import { requireSessionUser } from '@/utils/authSession';
 
 export async function POST(request) {
-    const session = await getServerSession(options);
-    if (!session) {
-        return new Response("Unauthorized", { status: 401 });
+    const { userEmail, unauthorizedResponse } = await requireSessionUser();
+    if (unauthorizedResponse) {
+        return unauthorizedResponse;
     }
 
     const createBookInteractor = await CreateBookInteractor.create();
     const { Name, Author } = await request.json();
-    const userEmail = session.user.email;
 
     try {
         const newBook = await createBookInteractor.execute(userEmail, { Name, Author });
@@ -24,10 +22,15 @@ export async function POST(request) {
 }
 
 export async function PUT(request, { params }) {
+    const { userEmail, unauthorizedResponse } = await requireSessionUser();
+    if (unauthorizedResponse) {
+        return unauthorizedResponse;
+    }
+
     try {
         const { bookId, BookName, Series, Description, Author, Age, Publication_Date, Product_Details, Publisher, ISBN, Link, Source, BookOwner } = await request.json();
         const updateBookInteractor = await UpdateBookInteractor.create();
-        const updatedBook = await updateBookInteractor.execute(bookId, { BookName, Series, Description, Author, Age, Publication_Date, Product_Details, Publisher, ISBN, Link, Source, BookOwner });
+        const updatedBook = await updateBookInteractor.execute(userEmail, bookId, { BookName, Series, Description, Author, Age, Publication_Date, Product_Details, Publisher, ISBN, Link, Source, BookOwner });
         if (updatedBook) {
             return new Response(JSON.stringify(updatedBook), { status: 200 });
         } else {
@@ -40,10 +43,18 @@ export async function PUT(request, { params }) {
 
 // TODO MAKE SURE ITS THE RIGHT USER
 export async function DELETE(request) {
+    const { userEmail, unauthorizedResponse } = await requireSessionUser();
+    if (unauthorizedResponse) {
+        return unauthorizedResponse;
+    }
+
     try {
         const { bookId } = await request.json();
         const deleteBookInteractor = await DeleteBookFromCollectionAndAllBooklistsInteractor.create();
-        await deleteBookInteractor.execute(bookId);
+        const removedBook = await deleteBookInteractor.execute(userEmail, bookId);
+        if (!removedBook) {
+            return new Response(JSON.stringify({ error: "Book not found" }), { status: 404 });
+        }
         return new Response(JSON.stringify({ message: "Book removed successfully" }), { status: 200 });
     } catch (error) {
         console.error("Error removing book:", error);
