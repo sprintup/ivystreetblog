@@ -33,7 +33,9 @@ Project-wide and implementation docs:
 
 If you are looking for the actual prompt-template sources in the code:
 
-- [Word Garden OpenAI worksheet prompt](app/api/word-garden/generate/route.js)
+- [Word Garden OpenAI worksheet system prompt](app/api/word-garden/generate/route.js#L118)
+- [Word Garden OpenAI worksheet user prompt inputs](app/api/word-garden/generate/route.js#L123)
+- [Word Garden OpenAI worksheet response schema](app/api/word-garden/generate/route.js#L142)
 - [Build-time draw-prompt template logic](data/add-phonemes.js)
 - [Runtime word-entry and draw-prompt fallback logic](utils/wordGardenData.js)
 
