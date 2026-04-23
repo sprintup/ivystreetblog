@@ -110,8 +110,8 @@ export default function StartedChecklistTile({
         className={`rounded-3xl border p-5 shadow-lg transition ${
           checklist.isCurrentWord
             ? 'border-yellow/40 bg-secondary/90'
-            : 'border-accent/20 bg-secondary/70'
-        } cursor-pointer hover:border-yellow/40 hover:bg-secondary/90`}
+            : 'border-accent/20 bg-secondary/70 hover:border-accent/40 hover:bg-secondary/90 focus-visible:border-accent/40'
+        } cursor-pointer outline-none focus-visible:bg-secondary/90 focus-visible:ring-2 focus-visible:ring-accent/20`}
         role='link'
         tabIndex={0}
         onClick={handleOpen}

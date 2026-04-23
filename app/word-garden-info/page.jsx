@@ -8,6 +8,9 @@ function getDashboardHref(session) {
     : '/api/auth/signin?callbackUrl=/word-garden';
 }
 
+const WORD_GARDEN_USER_GUIDE_HREF =
+  'https://github.com/sprintup/ivystreetblog/blob/main/readme-userguide.md';
+
 export default async function WordGardenInfoPage() {
   const session = await getServerSession(options);
   const dashboardHref = getDashboardHref(session);
@@ -41,6 +44,14 @@ export default async function WordGardenInfoPage() {
           >
             Read FAQs
           </Link>
+          <a
+            href={WORD_GARDEN_USER_GUIDE_HREF}
+            className='rounded-full border border-accent/30 px-5 py-3 font-bold text-accent no-underline hover:border-yellow hover:text-yellow'
+            target='_blank'
+            rel='noreferrer'
+          >
+            Read Full User Guide
+          </a>
         </div>
       </div>
 
@@ -108,6 +119,18 @@ export default async function WordGardenInfoPage() {
             Print or generate worksheets that connect sound, meaning, and spelling.
           </div>
         </div>
+        <p className='mt-5 text-sm text-accent'>
+          If you want a fuller walkthrough with screenshots, open the{' '}
+          <a
+            href={WORD_GARDEN_USER_GUIDE_HREF}
+            className='text-yellow underline decoration-dotted underline-offset-4 hover:text-orange'
+            target='_blank'
+            rel='noreferrer'
+          >
+            Word Garden user guide on GitHub
+          </a>
+          .
+        </p>
       </div>
     </section>
   );

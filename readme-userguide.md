@@ -61,6 +61,10 @@ Ways to enter Word Garden:
 
 On the main Word Garden dashboard, you will see your list of anonymous child profiles.
 
+![Word Garden dashboard](public/user-guide/word-garden.png)
+
+*The dashboard is the home base for each anonymous child profile. This is where you open the sound table, manage sharing, and keep practice organized by child.*
+
 ## Step 2: Add An Anonymous Child
 
 Use the add-child form to create a profile.
@@ -88,6 +92,10 @@ The top of the page shows:
 - instructions
 - child details
 - button shortcuts like `Current word`, `Recommend`, `Checklists`, `All unlocked words`, and `All words`
+
+![Sound Table](public/user-guide/sound-table.png)
+
+*The Sound Table is Level 1. It is the main place to choose a letter or phoneme target, sort the rows, and move into the next level.*
 
 ## How To Read The Sound Table
 
@@ -189,6 +197,10 @@ The word pills can also show:
 - whether the word has a completed checklist
 - highlighted letters or graphemes based on the active target
 
+![Word Cloud for T](public/user-guide/word-cloud-t.png)
+
+*The Word Cloud is Level 2. It helps you move from a chosen letter or phoneme into real words, while still showing filters, counts, and highlighted target parts.*
+
 ## Step 5: Open A Word Page
 
 Click any word in the cloud to open Level 3.
@@ -204,6 +216,10 @@ The word page includes:
 - strategy panes
 - worksheet actions
 - links back to Level 1 and Level 2
+
+![Word page for test](public/user-guide/word-test.png)
+
+*The Level 3 word page is where the adult does the actual guided teaching work for one word, including focus pills, checklist prompts, strategies, and printable worksheet tools.*
 
 ## Focus Pills
 
@@ -305,6 +321,10 @@ Each tile can show:
 - current-word state
 
 This page is a good home base if you are juggling several words at once.
+
+![Checklists page](public/user-guide/checklists.png)
+
+*The Checklists page keeps track of words you have already opened. It is useful when you want to revisit several words, reorder them, or pick which one should be current.*
 
 ## Sharing A Child Profile
 
