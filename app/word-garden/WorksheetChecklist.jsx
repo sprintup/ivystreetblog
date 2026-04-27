@@ -2041,6 +2041,17 @@ export default function WorksheetChecklist({
               Use the optional section when you have extra time and want more
               practice with the same word.
             </p>
+            <p>
+              Tip: the{' '}
+              <Link
+                href={`/word-garden/${acId}/checklists`}
+                className='text-yellow hover:text-orange'
+              >
+                Checklists page
+              </Link>{' '}
+              is mobile friendly, and its instructions include the bookmarkable
+              current-word link if you want a quick way back into practice.
+            </p>
             <p className='text-xs leading-6 text-accent/90'>
               Figure 1. The Four Processors Model. Adams, M. J. (2013).
               Modeling the connections between word recognition and reading. In

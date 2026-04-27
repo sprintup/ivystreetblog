@@ -106,6 +106,13 @@ const Nav = () => {
                     My Reading List
                   </NavLink>
                   <NavLink
+                    href='/word-garden'
+                    isActive={isActive}
+                    onClick={closeMenu}
+                  >
+                    Word Garden
+                  </NavLink>
+                  <NavLink
                     href='/profile'
                     isActive={isActive}
                     onClick={closeMenu}
@@ -219,6 +226,13 @@ const Nav = () => {
                 onClick={closeMenu}
               >
                 My Reading List
+              </MobileNavLink>
+              <MobileNavLink
+                href='/word-garden'
+                isActive={isActive}
+                onClick={closeMenu}
+              >
+                Word Garden
               </MobileNavLink>
               <MobileNavLink
                 href='/profile'

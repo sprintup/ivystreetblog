@@ -52,8 +52,15 @@ export default async function WordGardenLevelOnePage({ params }) {
                     The pace of development is different for every child, so this
                     table uses child age as a guide for when phonemes are released
                     for expressive practice, based on Chapter 2 of Pence Turnbull
-                    and Justice (2016), page 36,
-                    <em> Building Blocks of Language</em>.
+                     and Justice (2016), page 36,
+                     <em> Building Blocks of Language</em>.
+                  </p>
+                  <p className='mt-3 text-sm'>
+                    This matches the usual age-order pattern shown in consonant
+                    acquisition charts: many earlier sounds appear around ages 2
+                    to 3, while later sounds such as <strong>/ʃ/</strong> and{' '}
+                    <strong>/θ/</strong> often keep developing closer to ages 6
+                    to 8.
                   </p>
                 </div>
                 <div className='rounded-2xl border border-accent/15 bg-primary/30 p-4'>

@@ -1,6 +1,4 @@
 ![Status](https://img.shields.io/badge/status-active-2ea44f)
-![Auth](https://img.shields.io/badge/auth-hardened-0ea5e9)
-![Word%20Garden](https://img.shields.io/badge/feature-Word%20Garden-f59e0b)
 
 # Ivy Street Blog
 
@@ -23,6 +21,7 @@ Project-wide and implementation docs:
 
 - [User Guide](readme-userguide.md)
 - [Word Garden Features](readme-features-word-garden.md)
+- [Booklists User Guide](readme-booklists-userguide.md)
 - [Authentication](readme-authentication.md)
 - [API Endpoints](readme-api-endpoints.md)
 - [Data Model](readme-data-model.md)

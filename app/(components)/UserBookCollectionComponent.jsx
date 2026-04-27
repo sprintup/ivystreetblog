@@ -5,6 +5,37 @@ import { useState, useEffect } from 'react';
 import BookAddToCollectionComponent from '@components/BookAddToCollectionComponent';
 import Link from 'next/link';
 
+function getVisiblePageItems(currentPage, totalPages) {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  if (currentPage <= 3) {
+    return [1, 2, 3, 4, 'ellipsis-right', totalPages];
+  }
+
+  if (currentPage >= totalPages - 2) {
+    return [
+      1,
+      'ellipsis-left',
+      totalPages - 3,
+      totalPages - 2,
+      totalPages - 1,
+      totalPages,
+    ];
+  }
+
+  return [
+    1,
+    'ellipsis-left',
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    'ellipsis-right',
+    totalPages,
+  ];
+}
+
 export default function UserBookCollectionComponent({ session, children }) {
   const [userBooks, setUserBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -71,6 +102,7 @@ export default function UserBookCollectionComponent({ session, children }) {
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
   const totalPages = Math.ceil(totalBooks / booksPerPage);
+  const visiblePageItems = getVisiblePageItems(currentPage, totalPages);
 
   return (
     <div className='mt-8'>
@@ -111,40 +143,43 @@ export default function UserBookCollectionComponent({ session, children }) {
             ))}
           </div>
           {totalPages > 1 && (
-            <div className='flex justify-center mt-4'>
+            <div className='mt-4 flex justify-center'>
               <nav aria-label='Pagination'>
-                <ul className='flex items-center'>
+                <ul className='flex flex-wrap items-center justify-center gap-2'>
                   <li>
                     <button
                       onClick={() => paginate(currentPage - 1)}
                       disabled={currentPage === 1}
-                      className='px-3 py-2 rounded-l-md bg-white text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed'
+                      className='rounded-full bg-white px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50'
                     >
                       Prev
                     </button>
                   </li>
-                  {Array.from(
-                    { length: totalPages },
-                    (_, index) => index + 1
-                  ).map(pageNumber => (
-                    <li key={pageNumber}>
-                      <button
-                        onClick={() => paginate(pageNumber)}
-                        className={`px-3 py-2 ${
-                          pageNumber === currentPage
-                            ? 'bg-yellow text-primary'
-                            : 'bg-white text-gray-800 hover:bg-gray-100'
-                        }`}
-                      >
-                        {pageNumber}
-                      </button>
-                    </li>
-                  ))}
+                  {visiblePageItems.map(item =>
+                    typeof item === 'number' ? (
+                      <li key={item}>
+                        <button
+                          onClick={() => paginate(item)}
+                          className={`min-w-[2.5rem] rounded-full px-3 py-2 text-sm ${
+                            item === currentPage
+                              ? 'bg-yellow text-primary'
+                              : 'bg-white text-gray-800 hover:bg-gray-100'
+                          }`}
+                        >
+                          {item}
+                        </button>
+                      </li>
+                    ) : (
+                      <li key={item} className='px-1 text-sm text-accent'>
+                        ...
+                      </li>
+                    )
+                  )}
                   <li>
                     <button
                       onClick={() => paginate(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                      className='px-3 py-2 rounded-r-md bg-white text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed'
+                      className='rounded-full bg-white px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50'
                     >
                       Next
                     </button>
