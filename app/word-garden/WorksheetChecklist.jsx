@@ -626,17 +626,17 @@ function buildPanes(wordDetail) {
       items: [
         {
           id: 'context-category',
-          label: `"${wordDetail.word}" is a type of what in ${
+          label: `What common features does ${wordDetail.word} share with ${
             wordDetail.category ? wordDetail.category : 'this category'
           }?`,
         },
         {
           id: 'context-connections',
-          label: 'Discuss any synonyms, antonym, homonyms, morphemes.',
+          label: `During [ROUTINE], count or sort [OBJECT] while saying "${wordDetail.word}".`,
         },
         {
           id: 'context-known',
-          label: `Relate "${wordDetail.word}" using a metaphor.`,
+          label: `Relate "${wordDetail.word}" using a metaphor, synonyms, antonyms, homonyms, or morphemes.`,
         },
       ],
     },
