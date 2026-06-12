@@ -82,8 +82,10 @@ export interface IBooklist extends Document {
 }
 
 export interface IBookRecommendation {
+  _id?: mongoose.Types.ObjectId;
   bookId: mongoose.Types.ObjectId;
   recommendedBy: mongoose.Types.ObjectId;
+  acceptedBookId?: mongoose.Types.ObjectId;
   status: 'accepted' | 'rejected' | 'offered';
   recommendationReason: string;
 }
@@ -100,6 +102,8 @@ export interface IBook extends Document {
   Link: string;
   Source: string;
   BookOwner: Types.ObjectId;
+  ImportedFromBookId?: Types.ObjectId;
+  ImportedFromRecommendationId?: Types.ObjectId;
   IsArchived: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -309,6 +313,10 @@ const BooklistSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: 'User',
         },
+        acceptedBookId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Book',
+        },
         status: {
           type: String,
           enum: ['accepted', 'rejected', 'offered'],
@@ -336,6 +344,13 @@ const BookSchema = new mongoose.Schema(
     BookOwner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
+    },
+    ImportedFromBookId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Book',
+    },
+    ImportedFromRecommendationId: {
+      type: mongoose.Schema.Types.ObjectId,
     },
     IsArchived: {
       type: Boolean,

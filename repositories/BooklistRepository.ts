@@ -5,15 +5,21 @@ import mongoose from 'mongoose';
 import { RecommendBookData } from '@/domain/interfaces';
 
 export class BooklistRepository extends BaseRepository {
+  private booklistOwnerFilter(userId: mongoose.Types.ObjectId) {
+    return {
+      $expr: {
+        $eq: [{ $toString: '$booklistOwnerId' }, userId.toString()],
+      },
+    };
+  }
+
   private ownedBooklistFilter(
     userId: mongoose.Types.ObjectId,
     booklistId: string
   ) {
     return {
       _id: booklistId,
-      $expr: {
-        $eq: [{ $toString: '$booklistOwnerId' }, userId.toString()],
-      },
+      ...this.booklistOwnerFilter(userId),
     };
   }
 
@@ -470,26 +476,112 @@ export class BooklistRepository extends BaseRepository {
   }
 
   async acceptRecommendation(
+    userEmail: string,
     recommendationId: string
   ): Promise<IBooklist | null> {
+    const user = await this.findUser(userEmail);
+
+    if (!user) {
+      return null;
+    }
+
     try {
-      const updatedBooklist = await this.Booklist.findOneAndUpdate(
-        { 'bookRecommendations._id': recommendationId },
-        { $set: { 'bookRecommendations.$.status': 'accepted' } },
-        { new: true }
-      )
-        .populate('bookRecommendations.bookId')
+      const booklist = await this.Booklist.findOne({
+        'bookRecommendations._id': recommendationId,
+        ...this.booklistOwnerFilter(user._id),
+      })
+        .populate({
+          path: 'bookRecommendations.bookId',
+          model: 'Book',
+        })
         .populate('bookRecommendations.recommendedBy', 'publicProfileName');
 
-      if (!updatedBooklist) {
+      if (!booklist) {
         console.error(
-          'No booklist found with the provided recommendation ID:',
+          'No owned booklist found with the provided recommendation ID:',
           recommendationId
         );
         return null;
       }
 
-      return updatedBooklist;
+      const recommendation = booklist.bookRecommendations.find(
+        item => item._id?.toString() === recommendationId
+      );
+
+      if (!recommendation || !recommendation.bookId) {
+        console.error(
+          'Recommendation or recommended book not found:',
+          recommendationId
+        );
+        return null;
+      }
+
+      const sourceBook = recommendation.bookId as any;
+      const recommendedBy = recommendation.recommendedBy as any;
+      const importedSource = recommendedBy?.publicProfileName
+        ? `Recommended by ${recommendedBy.publicProfileName}`
+        : sourceBook.Source;
+      let acceptedBook = recommendation.acceptedBookId
+        ? await this.Book.findById(recommendation.acceptedBookId)
+        : null;
+
+      if (!acceptedBook) {
+        acceptedBook = await this.Book.findOne({
+          BookOwner: user._id,
+          ImportedFromRecommendationId: recommendation._id,
+        });
+      }
+
+      if (!acceptedBook) {
+        acceptedBook = await this.Book.findOne({
+          _id: { $in: booklist.bookIds },
+          BookOwner: user._id,
+          Name: sourceBook.Name,
+          Author: sourceBook.Author,
+          Source: importedSource,
+        });
+
+        if (acceptedBook) {
+          acceptedBook.ImportedFromBookId = sourceBook._id;
+          acceptedBook.ImportedFromRecommendationId = recommendation._id;
+          await acceptedBook.save();
+        }
+      }
+
+      if (!acceptedBook) {
+        acceptedBook = new this.Book({
+          Name: sourceBook.Name,
+          Author: sourceBook.Author,
+          Description: sourceBook.Description,
+          Age: sourceBook.Age,
+          Series: sourceBook.Series,
+          Publication_Date: sourceBook.Publication_Date,
+          Publisher: sourceBook.Publisher,
+          ISBN: sourceBook.ISBN,
+          Link: sourceBook.Link,
+          Source: importedSource,
+          BookOwner: user._id,
+          ImportedFromBookId: sourceBook._id,
+          ImportedFromRecommendationId: recommendation._id,
+          IsArchived: false,
+        });
+        await acceptedBook.save();
+      }
+
+      if (
+        !booklist.bookIds.some(
+          bookId => bookId.toString() === acceptedBook._id.toString()
+        )
+      ) {
+        booklist.bookIds.push(acceptedBook._id);
+      }
+
+      recommendation.acceptedBookId = acceptedBook._id;
+      recommendation.status = 'accepted';
+      await booklist.save();
+
+      await booklist.populate('bookRecommendations.acceptedBookId');
+      return booklist;
     } catch (error) {
       console.error('Error accepting recommendation:', error);
       throw error;

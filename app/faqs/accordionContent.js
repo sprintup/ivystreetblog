@@ -507,10 +507,7 @@ export const whatIsRecommendationContent = (
 export const acceptingRecommendationContent = (
     <>
         <p className="text-accent mt-4">
-            When you accept a recommendation, you'll have to decide if you want to add their book to your booklist or create a duplicate book from their recommendation in your own collection to add to your booklist. If you just add their recommended book to your booklist, then if they decide to delete that book from their collection, you'll lose that book in your booklist as well. However, if you decide to create a duplicate book in your collection and add it to your booklist, then even if they decide to delete their book, you'll still have a copy of that information.
-        </p>
-        <p className="text-accent mt-4">
-            It's much easier to just add their book to your booklist, as it's not likely people will decide to delete books from their collection over just archiving the books. The downside is that you'll not be able to edit the details of that book, and they will be able to edit the details of the book included in your booklist, giving them a little control over what content is included in your booklist.
+            When you accept a recommendation, Ivy Street creates a copy of the recommended book in your collection and adds that copy to your booklist. This preserves your copy if the person who recommended the original later edits or deletes it.
         </p>
     </>
 );

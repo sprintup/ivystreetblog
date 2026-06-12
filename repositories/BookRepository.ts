@@ -147,12 +147,9 @@ export class BookRepository extends BaseRepository {
         return null;
       }
 
-      const book = await this.Book.findOne({
-        _id: bookId,
-        BookOwner: user._id,
-      });
+      const book = await this.Book.findById(bookId);
       if (!book) {
-        console.error('No owned book found with the provided bookId:', bookId);
+        console.error('No book found with the provided bookId:', bookId);
         return null;
       }
 
@@ -165,7 +162,7 @@ export class BookRepository extends BaseRepository {
 
       return booklist;
     } catch (error) {
-      console.error('Error adding owned book to booklist:', error);
+      console.error('Error adding book to owned booklist:', error);
       throw error;
     }
   }
@@ -420,10 +417,7 @@ export class BookRepository extends BaseRepository {
       });
 
       await this.Booklist.updateMany(
-        {
-          bookIds: bookId,
-          ...this.booklistOwnerFilter(ownedBook.user._id),
-        },
+        { bookIds: bookId },
         { $pull: { bookIds: bookId } }
       );
 

@@ -30,11 +30,12 @@ export default function AddToBooklistButton({ book, signedInUserBooklists }) {
       if (response.ok) {
         setMessage('Book added successfully!');
       } else {
-        throw new Error('Failed to add book.');
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error || 'Failed to add book.');
       }
     } catch (error) {
       console.error('Error adding book to the booklist:', error);
-      setMessage('Failed to add book.');
+      setMessage(error.message || 'Failed to add book.');
     }
   };
 

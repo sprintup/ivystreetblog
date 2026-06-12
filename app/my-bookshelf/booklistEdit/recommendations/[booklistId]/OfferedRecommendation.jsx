@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 
 export default function OfferedRecommendation({ recommendations, booklistId }) {
   const router = useRouter();
+  const [errorMessage, setErrorMessage] = React.useState('');
 
   const refreshData = () => {
     router.refresh();
@@ -25,10 +26,14 @@ export default function OfferedRecommendation({ recommendations, booklistId }) {
       if (response.ok) {
         refreshData();
       } else {
-        console.error('Failed to accept recommendation');
+        const data = await response.json().catch(() => null);
+        setErrorMessage(
+          data?.error || 'Failed to accept recommendation. Please try again.'
+        );
       }
     } catch (error) {
       console.error('Error accepting recommendation:', error);
+      setErrorMessage('Failed to accept recommendation. Please try again.');
     }
   };
 
@@ -59,11 +64,10 @@ export default function OfferedRecommendation({ recommendations, booklistId }) {
       ) : (
         <>
           <p className='mb-4'>
-            Accepting a recommenation will not automatically add it to your
-            booklist. It will simply move to the accepted section below. Then
-            you can add the book to your reading list and decide to put it in
-            your booklist.
+            Accepting a recommendation creates a copy in your collection and
+            adds that copy to this booklist.
           </p>
+          {errorMessage && <p className='mb-4 text-red-500'>{errorMessage}</p>}
           <ul className='space-y-4'>
             {recommendations.map(recommendation => (
               <li

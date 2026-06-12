@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation';
 
 export default function AcceptedRecommendation({ recommendations }) {
   const router = useRouter();
+  const [processingId, setProcessingId] = React.useState('');
+  const [message, setMessage] = React.useState('');
 
   const refreshData = () => {
     router.refresh();
@@ -29,6 +31,34 @@ export default function AcceptedRecommendation({ recommendations }) {
       }
     } catch (error) {
       console.error('Error rejecting recommendation:', error);
+    }
+  };
+
+  const handleFinishAdding = async recommendationId => {
+    setProcessingId(recommendationId);
+    setMessage('');
+
+    try {
+      const response = await fetch('/api/recommendations/accept', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ recommendationId }),
+      });
+      const data = await response.json().catch(() => null);
+
+      if (response.ok) {
+        setMessage('Book added to your collection and booklist.');
+        refreshData();
+      } else {
+        setMessage(data?.error || 'Failed to add the accepted book.');
+      }
+    } catch (error) {
+      console.error('Error finishing accepted recommendation:', error);
+      setMessage('Failed to add the accepted book.');
+    } finally {
+      setProcessingId('');
     }
   };
 
@@ -59,12 +89,11 @@ export default function AcceptedRecommendation({ recommendations }) {
       ) : (
         <>
           <p className='mb-4'>
-            The following recommendations have been accepted. To include the
-            book in the booklist, please click the book link and add it to your
-            booklist. Alternatively, you can manually copy the book details into
-            your collection and then add it to your booklist, which would
-            preserve the book if the book owner ever decides to delete the book.
+            Accepted recommendations are copied into your collection and added
+            to the booklist. Recommendations accepted before this fix can be
+            completed below.
           </p>
+          {message && <p className='mb-4 text-yellow'>{message}</p>}
 
           <ul className='space-y-4'>
             {recommendations.map(recommendation => (
@@ -89,6 +118,17 @@ export default function AcceptedRecommendation({ recommendations }) {
                   {recommendation.recommendationReason}
                 </p>
                 <div>
+                  {!recommendation.acceptedBookId && (
+                    <button
+                      onClick={() => handleFinishAdding(recommendation._id)}
+                      disabled={processingId === recommendation._id}
+                      className='px-2 py-1 bg-green-500 text-white rounded mr-2 hover:bg-green-600 disabled:opacity-50'
+                    >
+                      {processingId === recommendation._id
+                        ? 'Adding...'
+                        : 'Add Copy to Collection and Booklist'}
+                    </button>
+                  )}
                   <button
                     onClick={() => handleReject(recommendation._id)}
                     className='px-2 py-1 bg-red-500 text-white rounded mr-2 hover:bg-red-600'
