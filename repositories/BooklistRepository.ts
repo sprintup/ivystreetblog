@@ -5,6 +5,18 @@ import mongoose from 'mongoose';
 import { RecommendBookData } from '@/domain/interfaces';
 
 export class BooklistRepository extends BaseRepository {
+  private ownedBooklistFilter(
+    userId: mongoose.Types.ObjectId,
+    booklistId: string
+  ) {
+    return {
+      _id: booklistId,
+      $expr: {
+        $eq: [{ $toString: '$booklistOwnerId' }, userId.toString()],
+      },
+    };
+  }
+
   private async findOwnedBooklist(userEmail: string, booklistId: string) {
     const user = await this.findUser(userEmail);
 
@@ -12,10 +24,9 @@ export class BooklistRepository extends BaseRepository {
       return null;
     }
 
-    return this.Booklist.findOne({
-      _id: booklistId,
-      booklistOwnerId: user._id,
-    });
+    return this.Booklist.findOne(
+      this.ownedBooklistFilter(user._id, booklistId)
+    );
   }
 
   async getBooklistsByUserEmail(userEmail: string): Promise<IBooklist[]> {
@@ -182,10 +193,9 @@ export class BooklistRepository extends BaseRepository {
     }
 
     try {
-      const booklist = await this.Booklist.findOne({
-        _id: booklistId,
-        booklistOwnerId: user._id,
-      }).populate({
+      const booklist = await this.Booklist.findOne(
+        this.ownedBooklistFilter(user._id, booklistId)
+      ).populate({
         path: 'bookIds',
         model: 'Book',
         select:
@@ -307,10 +317,9 @@ export class BooklistRepository extends BaseRepository {
     }
 
     try {
-      const removedBooklist = await this.Booklist.findOneAndDelete({
-        _id: booklistId,
-        booklistOwnerId: user._id,
-      });
+      const removedBooklist = await this.Booklist.findOneAndDelete(
+        this.ownedBooklistFilter(user._id, booklistId)
+      );
 
       if (!removedBooklist) {
         console.error(

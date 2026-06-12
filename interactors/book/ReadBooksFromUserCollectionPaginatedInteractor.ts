@@ -29,12 +29,14 @@ export class ReadBooksFromUserCollectionPaginatedInteractor extends BaseInteract
   async execute(
     userEmail: string,
     page: number,
-    limit: number
+    limit: number,
+    isArchived = false
   ): Promise<{ books: IBook[]; totalBooks: number }> {
     const { books, totalBooks } = await this.bookRepo.getUserBooksPaginated(
       userEmail,
       page,
-      limit
+      limit,
+      isArchived
     );
     return {
       books: books.map(book => this.convertToPlainObject(book) as IBook),

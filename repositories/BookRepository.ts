@@ -2,8 +2,24 @@
 import { IBookData } from '@/domain/interfaces';
 import { BookModel, IBook, IBooklist } from '@/domain/models';
 import { BaseRepository } from '@/repositories/BaseRepository';
+import { Types } from 'mongoose';
 
 export class BookRepository extends BaseRepository {
+  private booklistOwnerFilter(userId: Types.ObjectId) {
+    return {
+      $expr: {
+        $eq: [{ $toString: '$booklistOwnerId' }, userId.toString()],
+      },
+    };
+  }
+
+  private ownedBooklistFilter(userId: Types.ObjectId, booklistId: string) {
+    return {
+      _id: booklistId,
+      ...this.booklistOwnerFilter(userId),
+    };
+  }
+
   private async findOwnedBook(userEmail: string, bookId: string) {
     const user = await this.findUser(userEmail);
 
@@ -45,7 +61,8 @@ export class BookRepository extends BaseRepository {
   async getUserBooksPaginated(
     userEmail: string,
     page: number,
-    limit: number
+    limit: number,
+    isArchived = false
   ): Promise<{ books: IBook[]; totalBooks: number }> {
     const user = await this.User.findOne({ email: userEmail });
     if (!user) {
@@ -53,13 +70,17 @@ export class BookRepository extends BaseRepository {
     }
 
     const skip = (page - 1) * limit;
+    const collectionFilter = {
+      BookOwner: user._id,
+      IsArchived: isArchived,
+    };
     const [books, totalBooks] = await Promise.all([
-      this.Book.find({ BookOwner: user._id, IsArchived: false })
+      this.Book.find(collectionFilter)
         .sort({ updatedAt: -1 })
         .skip(skip)
         .limit(limit)
         .exec(),
-      this.Book.countDocuments({ BookOwner: user._id, IsArchived: false }),
+      this.Book.countDocuments(collectionFilter),
     ]);
 
     return { books, totalBooks };
@@ -115,12 +136,14 @@ export class BookRepository extends BaseRepository {
         return null;
       }
 
-      const booklist = await this.Booklist.findOne({
-        _id: booklistId,
-        booklistOwnerId: user._id,
-      });
+      const booklist = await this.Booklist.findOne(
+        this.ownedBooklistFilter(user._id, booklistId)
+      );
       if (!booklist) {
-        console.error('No owned booklist found with the provided booklistId:', booklistId);
+        console.error(
+          'No owned booklist found with the provided booklistId:',
+          booklistId
+        );
         return null;
       }
 
@@ -233,7 +256,10 @@ export class BookRepository extends BaseRepository {
     }
   }
 
-  async getOwnedBookById(userEmail: string, bookId: string): Promise<IBook | null> {
+  async getOwnedBookById(
+    userEmail: string,
+    bookId: string
+  ): Promise<IBook | null> {
     try {
       const ownedBook = await this.findOwnedBook(userEmail, bookId);
 
@@ -311,16 +337,20 @@ export class BookRepository extends BaseRepository {
         return null;
       }
 
-      const booklist = await this.Booklist.findOne({
-        _id: booklistId,
-        booklistOwnerId: user._id,
-      });
+      const booklist = await this.Booklist.findOne(
+        this.ownedBooklistFilter(user._id, booklistId)
+      );
       if (!booklist) {
-        console.error('No owned booklist found with the provided booklistId:', booklistId);
+        console.error(
+          'No owned booklist found with the provided booklistId:',
+          booklistId
+        );
         return null;
       }
 
-      booklist.bookIds = booklist.bookIds.filter(id => id.toString() !== bookId);
+      booklist.bookIds = booklist.bookIds.filter(
+        id => id.toString() !== bookId
+      );
       await booklist.save();
 
       return booklist;
@@ -384,10 +414,16 @@ export class BookRepository extends BaseRepository {
       }
 
       const book = ownedBook.book;
-      await this.Book.deleteOne({ _id: book._id, BookOwner: ownedBook.user._id });
+      await this.Book.deleteOne({
+        _id: book._id,
+        BookOwner: ownedBook.user._id,
+      });
 
       await this.Booklist.updateMany(
-        { bookIds: bookId, booklistOwnerId: ownedBook.user._id },
+        {
+          bookIds: bookId,
+          ...this.booklistOwnerFilter(ownedBook.user._id),
+        },
         { $pull: { bookIds: bookId } }
       );
 

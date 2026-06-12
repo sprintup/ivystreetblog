@@ -1,7 +1,7 @@
 // app/booklistEdit/[id]/page.jsx
 
 'use client';
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -19,10 +19,10 @@ import AddToBooklistButtonComponent from './AddToBooklistButtonComponent';
 
 export default function EditBooklistPage({ params }) {
   const router = useRouter();
-  const { data: session } = useSession({
+  const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
-      return { redirect: '/api/auth/signin?callbackUrl=/my-bookshelf' };
+      router.replace('/api/auth/signin?callbackUrl=/my-bookshelf');
     },
   });
   const [title, setTitle] = useState('');
@@ -32,9 +32,13 @@ export default function EditBooklistPage({ params }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [booklistId, setBooklistId] = useState(params.id);
   const [booklist, setBooklist] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
-  const fetchBooklist = async () => {
+  const fetchBooklist = useCallback(async () => {
+    setIsLoading(true);
+    setErrorMessage('');
+
     try {
       const response = await fetch(`/api/booklist/${params.id}/edit`);
       if (response.ok) {
@@ -45,20 +49,27 @@ export default function EditBooklistPage({ params }) {
         setOpenForRecommendations(data.openToRecommendations);
         setBooklist(data);
       } else {
-        console.error('Error fetching booklist:', response.statusText);
-        setErrorMessage('Failed to fetch booklist. Please try again.');
+        const data = await response.json().catch(() => null);
+        const message =
+          response.status === 404
+            ? 'This booklist could not be found or you do not have permission to edit it.'
+            : data?.error || 'Failed to fetch booklist. Please try again.';
+        console.error('Error fetching booklist:', message);
+        setErrorMessage(message);
       }
     } catch (error) {
       console.error('Error fetching booklist:', error);
       setErrorMessage('An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [params.id]);
 
   useEffect(() => {
-    if (session) {
+    if (status === 'authenticated') {
       fetchBooklist();
     }
-  }, [params.id, session]);
+  }, [fetchBooklist, status]);
 
   const handleBookChange = () => {
     fetchBooklist();
@@ -112,8 +123,32 @@ export default function EditBooklistPage({ params }) {
     }
   };
 
-  if (!booklist) {
+  if (status === 'loading' || isLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (!booklist) {
+    return (
+      <div className='bg-primary text-accent p-4 rounded-lg max-w-4xl mx-auto'>
+        <h2 className='text-2xl mb-4'>Unable to load booklist</h2>
+        <p className='text-red-500 mb-4'>{errorMessage}</p>
+        <div className='flex gap-2'>
+          <button
+            type='button'
+            onClick={fetchBooklist}
+            className='px-4 py-2 bg-yellow text-primary font-bold rounded-lg hover:bg-orange transition duration-300'
+          >
+            Try Again
+          </button>
+          <Link
+            href='/my-bookshelf'
+            className='px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 transition duration-300 no-underline'
+          >
+            Back to My Bookshelf
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -211,7 +246,7 @@ export default function EditBooklistPage({ params }) {
             />
             Open for recommendations
           </label>
-          {booklist.bookRecommendations.length > 0 ? (
+          {booklist.bookRecommendations?.length > 0 ? (
             <div className='text-sm'>
               <Link
                 href={`/my-bookshelf/booklistEdit/recommendations/${booklist._id}`}

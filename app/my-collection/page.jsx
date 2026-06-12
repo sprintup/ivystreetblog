@@ -1,12 +1,13 @@
 // app/my-collection/page.jsx
 
-import React, { Suspense } from 'react';
+import React from 'react';
 import { getServerSession } from 'next-auth/next';
 import { options } from '@auth/options';
-import { ReadBooksFromUserCollectionInteractor } from '@interactors/book/ReadBooksFromUserCollectionInteractor';
+import { ReadBooksFromUserCollectionPaginatedInteractor } from '@interactors/book/ReadBooksFromUserCollectionPaginatedInteractor';
 import UserCollectionMasonry from './UserCollectionMasonry';
 import AddBookForm from './AddBookForm';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import AccordionWrapper from '@/app/(components)/AccordionWrapper';
 import Accordion from '@/app/(components)/Accordion';
 import {
@@ -17,10 +18,48 @@ import {
   whatIsReadingListContent,
 } from '@/app/faqs/accordionContent';
 
-async function CollectionData({ userEmail }) {
+const BOOKS_PER_PAGE = 12;
+
+function getVisiblePageItems(currentPage, totalPages) {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
+
+  if (currentPage <= 3) {
+    return [1, 2, 3, 4, 'ellipsis-right', totalPages];
+  }
+
+  if (currentPage >= totalPages - 2) {
+    return [
+      1,
+      'ellipsis-left',
+      totalPages - 3,
+      totalPages - 2,
+      totalPages - 1,
+      totalPages,
+    ];
+  }
+
+  return [
+    1,
+    'ellipsis-left',
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    'ellipsis-right',
+    totalPages,
+  ];
+}
+
+async function CollectionData({ userEmail, page, isArchived }) {
   const readBooksInteractor =
-    await ReadBooksFromUserCollectionInteractor.create();
-  const booksData = await readBooksInteractor.execute(userEmail);
+    await ReadBooksFromUserCollectionPaginatedInteractor.create();
+  const booksData = await readBooksInteractor.execute(
+    userEmail,
+    page,
+    BOOKS_PER_PAGE,
+    isArchived
+  );
   return booksData;
 }
 
@@ -31,24 +70,38 @@ export default async function UserCollectionPage({ searchParams }) {
     return <div>Please log in to view your collection.</div>;
   }
 
-  const booksData = await CollectionData({ userEmail: session.user.email });
+  const showArchived = searchParams.show === 'archived';
+  const parsedPage = Number.parseInt(searchParams.page, 10);
+  const currentPage = Number.isFinite(parsedPage) ? Math.max(parsedPage, 1) : 1;
+  const booksData = await CollectionData({
+    userEmail: session.user.email,
+    page: currentPage,
+    isArchived: showArchived,
+  });
+  const totalPages = Math.max(
+    1,
+    Math.ceil(booksData.totalBooks / BOOKS_PER_PAGE)
+  );
+
+  if (currentPage > totalPages) {
+    redirect(
+      `/my-collection?show=${showArchived ? 'archived' : 'active'}&page=${totalPages}`
+    );
+  }
 
   return (
-    <Suspense fallback={<div>Loading collection...</div>}>
-      <CollectionContent booksData={booksData} searchParams={searchParams} />
-    </Suspense>
+    <CollectionContent
+      booksData={booksData}
+      showArchived={showArchived}
+      currentPage={currentPage}
+    />
   );
 }
 
-function CollectionContent({ booksData, searchParams }) {
+function CollectionContent({ booksData, showArchived, currentPage }) {
   if (!booksData) {
     return <div>No books found in your collection.</div>;
   }
-
-  const showArchived = searchParams.show === 'archived';
-  const filteredBooks = booksData.filter(
-    book => book.IsArchived === showArchived
-  );
 
   return (
     <div className='bg-primary text-accent p-4 rounded-lg'>
@@ -91,7 +144,90 @@ function CollectionContent({ booksData, searchParams }) {
         </div>
         <AddBookForm />
       </div>
-      <UserCollectionMasonry books={filteredBooks} />
+      {booksData.books.length === 0 ? (
+        <p>
+          No {showArchived ? 'archived' : 'active'} books found in your
+          collection.
+        </p>
+      ) : (
+        <UserCollectionMasonry books={booksData.books} />
+      )}
+      <CollectionPagination
+        currentPage={currentPage}
+        totalBooks={booksData.totalBooks}
+        showArchived={showArchived}
+      />
     </div>
+  );
+}
+
+function CollectionPagination({ currentPage, totalBooks, showArchived }) {
+  const totalPages = Math.ceil(totalBooks / BOOKS_PER_PAGE);
+
+  if (totalPages <= 1) {
+    return null;
+  }
+
+  const visiblePageItems = getVisiblePageItems(currentPage, totalPages);
+  const pageHref = page =>
+    `/my-collection?show=${showArchived ? 'archived' : 'active'}&page=${page}`;
+
+  return (
+    <nav
+      className='mt-6 flex justify-center'
+      aria-label='Collection pagination'
+    >
+      <ul className='flex flex-wrap items-center justify-center gap-2'>
+        <li>
+          {currentPage === 1 ? (
+            <span className='rounded-full bg-white px-3 py-2 text-sm text-gray-800 opacity-50'>
+              Prev
+            </span>
+          ) : (
+            <Link
+              href={pageHref(currentPage - 1)}
+              className='rounded-full bg-white px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 no-underline'
+            >
+              Prev
+            </Link>
+          )}
+        </li>
+        {visiblePageItems.map(item =>
+          typeof item === 'number' ? (
+            <li key={item}>
+              <Link
+                href={pageHref(item)}
+                aria-current={item === currentPage ? 'page' : undefined}
+                className={`block min-w-[2.5rem] rounded-full px-3 py-2 text-center text-sm no-underline ${
+                  item === currentPage
+                    ? 'bg-yellow text-primary'
+                    : 'bg-white text-gray-800 hover:bg-gray-100'
+                }`}
+              >
+                {item}
+              </Link>
+            </li>
+          ) : (
+            <li key={item} className='px-1 text-sm text-accent'>
+              ...
+            </li>
+          )
+        )}
+        <li>
+          {currentPage === totalPages ? (
+            <span className='rounded-full bg-white px-3 py-2 text-sm text-gray-800 opacity-50'>
+              Next
+            </span>
+          ) : (
+            <Link
+              href={pageHref(currentPage + 1)}
+              className='rounded-full bg-white px-3 py-2 text-sm text-gray-800 hover:bg-gray-100 no-underline'
+            >
+              Next
+            </Link>
+          )}
+        </li>
+      </ul>
+    </nav>
   );
 }
